@@ -63,9 +63,16 @@ const firebaseConfig = {
   measurementId: "G-19QXWXBN4M"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Initialize Firebase safely
+let app: ReturnType<typeof initializeApp> | null = null;
+let auth: ReturnType<typeof getAuth> | null = null;
+
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+} catch (error) {
+  console.error('Firebase initialization error:', error);
+}
 
 // ============================================
 // AUTH CONTEXT
@@ -93,6 +100,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       setUser(firebaseUser);
       setLoading(false);
@@ -101,6 +112,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, name: string) => {
+    if (!auth) throw new Error('Auth not initialized');
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     if (userCredential.user) {
       await updateProfile(userCredential.user, { displayName: name });
@@ -108,10 +120,12 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!auth) throw new Error('Auth not initialized');
     await signInWithEmailAndPassword(auth, email, password);
   };
 
   const signInWithApple = async () => {
+    if (!auth) throw new Error('Auth not initialized');
     try {
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
@@ -134,10 +148,12 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    if (!auth) throw new Error('Auth not initialized');
     await signOut(auth);
   };
 
   const resetPassword = async (email: string) => {
+    if (!auth) throw new Error('Auth not initialized');
     await sendPasswordResetEmail(auth, email);
   };
 
@@ -6300,6 +6316,8 @@ function AppContent() {
 }
 
 export default function App() {
+  const [initError, setInitError] = useState<string | null>(null);
+
   // PostHog configuration
   const posthogConfig = {
     apiKey: 'phc_8TrqDmG0xEQ7yPknBB8VoSCe3YHoSmOy59VmJzR9BpO',
@@ -6308,6 +6326,17 @@ export default function App() {
       enableSessionReplay: false,
     },
   };
+
+  // Show error if Firebase failed to initialize
+  if (!app || !auth) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A0F24', padding: 20 }}>
+        <Text style={{ fontSize: 48, marginBottom: 20 }}>⚠️</Text>
+        <Text style={{ fontSize: 20, color: '#FFF', textAlign: 'center', marginBottom: 10 }}>Unable to connect</Text>
+        <Text style={{ fontSize: 14, color: '#AAA', textAlign: 'center' }}>Please check your internet connection and restart the app</Text>
+      </View>
+    );
+  }
 
   return (
     <ErrorBoundary>
