@@ -6228,67 +6228,99 @@ function AnalyticsFlusher() {
   return null;
 }
 
-export default function App() {
+// Error Boundary Component
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: Error | null}> {
+  constructor(props: {children: React.ReactNode}) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('App Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A0F24', padding: 20 }}>
+          <Text style={{ fontSize: 48, marginBottom: 20 }}>😔</Text>
+          <Text style={{ fontSize: 20, color: '#FFF', textAlign: 'center', marginBottom: 10 }}>Something went wrong</Text>
+          <Text style={{ fontSize: 14, color: '#AAA', textAlign: 'center' }}>Please restart the app</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Inner App Component that uses the store
+function AppContent() {
   const store = useStore();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     // Wait for store to hydrate
-    const timer = setTimeout(() => setIsReady(true), 100);
+    const timer = setTimeout(() => setIsReady(true), 500);
     return () => clearTimeout(timer);
   }, []);
 
+  // Show loading while store hydrates
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A0F24' }}>
+        <ActivityIndicator size="large" color="#D4A574" />
+      </View>
+    );
+  }
+
+  // If PIN is set and not unlocked, show lock screen
+  if (store.pinCode && !isUnlocked) {
+    return (
+      <SafeAreaProvider>
+        <AppLockScreen onUnlock={() => setIsUnlocked(true)} />
+        <StatusBar style="light" />
+      </SafeAreaProvider>
+    );
+  }
+
+  return (
+    <SafeAreaProvider>
+      <AnalyticsFlusher />
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+      <StatusBar style="light" />
+    </SafeAreaProvider>
+  );
+}
+
+export default function App() {
   // PostHog configuration
   const posthogConfig = {
     apiKey: 'phc_8TrqDmG0xEQ7yPknBB8VoSCe3YHoSmOy59VmJzR9BpO',
     options: {
       host: 'https://us.i.posthog.com',
-      // Disable session replay to avoid capturing sensitive content
       enableSessionReplay: false,
-    },
-    autocapture: {
-      // Only capture non-sensitive UI interactions
-      captureScreens: true,
-      captureLifecycle: true,
-      captureTouches: false, // Disable touch capture for privacy
     },
   };
 
-  // If PIN is set and not unlocked, show lock screen
-  if (isReady && store.pinCode && !isUnlocked) {
-    return (
+  return (
+    <ErrorBoundary>
       <AuthProvider>
         <PostHogProvider
           apiKey={posthogConfig.apiKey}
           options={posthogConfig.options}
           autocapture={false}
         >
-          <SafeAreaProvider>
-            <AppLockScreen onUnlock={() => setIsUnlocked(true)} />
-            <StatusBar style="light" />
-          </SafeAreaProvider>
+          <AppContent />
         </PostHogProvider>
       </AuthProvider>
-    );
-  }
-
-  return (
-    <AuthProvider>
-      <PostHogProvider
-        apiKey={posthogConfig.apiKey}
-        options={posthogConfig.options}
-        autocapture={false}
-      >
-        <SafeAreaProvider>
-          <AnalyticsFlusher />
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
-          <StatusBar style="light" />
-        </SafeAreaProvider>
-      </PostHogProvider>
-    </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
