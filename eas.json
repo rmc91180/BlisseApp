@@ -4,18 +4,15 @@
     "appVersionSource": "local"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+    "production": {
+      "distribution": "store",
+      "autoIncrement": true
     },
     "preview": {
       "distribution": "internal",
       "ios": {
         "simulator": false
       }
-    },
-    "production": {
-      "autoIncrement": true
     }
   },
   "submit": {

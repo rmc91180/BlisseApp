@@ -1,0 +1,3 @@
+# Netlify redirects for clean URLs
+/privacy    /privacy.html   200
+/terms      /terms.html     200
