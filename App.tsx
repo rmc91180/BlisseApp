@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, createContext, useContext } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, createContext, useContext } from 'react';
 import {
   View,
   Text,
@@ -37,7 +37,7 @@ import * as Linking from 'expo-linking';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 import { initializeApp } from 'firebase/app';
-import { 
+import {
   getAuth, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -50,7 +50,7 @@ import {
   signInWithCredential,
 } from 'firebase/auth';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { PostHogProvider, usePostHog } from 'posthog-react-native';
+import { PostHogProvider, usePostHog, type PostHogOptions } from 'posthog-react-native';
 
 // ============================================
 // FIREBASE CONFIGURATION
@@ -72,6 +72,9 @@ const PIN_SECURE_STORAGE_KEY = 'blisse-pin-code';
 const MAX_PIN_ATTEMPTS = 5;
 const PIN_LOCKOUT_MS = 30 * 1000;
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvzgeaqp';
+const CONFETTI_COLORS = ['#ec4899', '#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b', '#ef4444', '#fbbf24'];
+const ANALYTICS_STRING_LIMIT = 80;
+const FORMSPREE_MESSAGE_LIMIT = 4000;
 
 // ============================================
 // LAZY FIREBASE INITIALIZATION
@@ -644,36 +647,80 @@ const getPlatformName = (platform: string): string => {
 // ============================================
 // Tracks aggregated usage events only.
 // We explicitly disable person profiling and only send sanitized, non-PII properties.
+type AnalyticsEventName =
+  | 'content_tried'
+  | 'feature_used'
+  | 'category_viewed'
+  | 'mood_selected'
+  | 'app_opened'
+  | 'level_reached';
+
+type AnalyticsPropertyValue = string | number | boolean;
+type AnalyticsProperties = Record<string, AnalyticsPropertyValue>;
 
 // PostHog Analytics Helper - uses the PostHog hook inside components
 // For use outside components, we queue events and send them when possible
-let pendingEvents: Array<{ event: string; properties?: Record<string, any> }> = [];
+let pendingEvents: Array<{ event: AnalyticsEventName; properties?: Record<string, unknown> }> = [];
 const ANALYTICS_BASE_PROPERTIES = {
   anonymous: true,
   analytics_mode: 'anonymous_aggregate',
   $process_person_profile: false,
 };
+const ALLOWED_ANALYTICS_PROPERTY_KEYS = new Set([
+  'contentType',
+  'category',
+  'mood',
+  'feature',
+  'level',
+]);
+const FORMSPREE_ALLOWED_FIELDS = new Set([
+  'type',
+  'category',
+  'ideaType',
+  'message',
+  'submittedAt',
+]);
 
-const sanitizeAnalyticsProperties = (properties?: Record<string, any>): Record<string, string | number | boolean> => {
+const sanitizeAnalyticsProperties = (properties?: Record<string, unknown>): AnalyticsProperties => {
   if (!properties) return {};
 
-  const sanitized: Record<string, string | number | boolean> = {};
+  const sanitized: AnalyticsProperties = {};
   Object.entries(properties).forEach(([key, value]) => {
+    if (!ALLOWED_ANALYTICS_PROPERTY_KEYS.has(key)) return;
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-      sanitized[key] = value;
+      sanitized[key] = typeof value === 'string' ? value.trim().slice(0, ANALYTICS_STRING_LIMIT) : value;
     }
   });
   return sanitized;
 };
 
+const sanitizeFormspreePayload = (payload: Record<string, string>): Record<string, string> => {
+  const sanitized: Record<string, string> = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (!FORMSPREE_ALLOWED_FIELDS.has(key)) return;
+    const normalized = value.trim();
+    if (!normalized) return;
+
+    sanitized[key] = key === 'message'
+      ? normalized.slice(0, FORMSPREE_MESSAGE_LIMIT)
+      : normalized.slice(0, ANALYTICS_STRING_LIMIT);
+  });
+  return sanitized;
+};
+
 const submitFormspreeMessage = async (payload: Record<string, string>): Promise<void> => {
+  const sanitizedPayload = sanitizeFormspreePayload(payload);
+  if (!sanitizedPayload.message) {
+    throw new Error('Formspree payload is missing a message');
+  }
+
   const response = await fetch(FORMSPREE_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(sanitizedPayload),
   });
   if (!response.ok) {
     throw new Error(`Formspree request failed (${response.status})`);
@@ -1537,7 +1584,7 @@ const useStore = create<UserState>()(
         };
 
         // Update monthly stats
-        let monthlyStats = [...state.monthlyStats];
+        const monthlyStats = [...state.monthlyStats];
         const monthIndex = monthlyStats.findIndex(m => m.month === currentMonth);
         if (monthIndex >= 0) {
           monthlyStats[monthIndex] = {
@@ -1578,7 +1625,7 @@ const useStore = create<UserState>()(
         const currentMonth = getCurrentMonth();
 
         // Update monthly stats
-        let monthlyStats = [...state.monthlyStats];
+        const monthlyStats = [...state.monthlyStats];
         const monthIndex = monthlyStats.findIndex(m => m.month === currentMonth);
         if (monthIndex >= 0) {
           monthlyStats[monthIndex].starsEarned += starsEarned;
@@ -2038,7 +2085,6 @@ interface ConfettiParticle {
 
 function ConfettiCelebration({ visible, onComplete }: { visible: boolean; onComplete?: () => void }) {
   const [particles, setParticles] = useState<ConfettiParticle[]>([]);
-  const confettiColors = ['#ec4899', '#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b', '#ef4444', '#fbbf24'];
   
   useEffect(() => {
     if (visible) {
@@ -2051,7 +2097,7 @@ function ConfettiCelebration({ visible, onComplete }: { visible: boolean; onComp
           y: new Animated.Value(-20),
           rotation: new Animated.Value(0),
           scale: new Animated.Value(1),
-          color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+          color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
           size: Math.random() * 10 + 6,
         });
       }
@@ -2106,7 +2152,7 @@ function ConfettiCelebration({ visible, onComplete }: { visible: boolean; onComp
         onComplete?.();
       }, 3500);
     }
-  }, [visible]);
+  }, [visible, onComplete]);
   
   if (!visible || particles.length === 0) return null;
   
@@ -2138,11 +2184,11 @@ function ConfettiCelebration({ visible, onComplete }: { visible: boolean; onComp
 }
 
 // Pulse Heart Animation Component
-function PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; onPress: () => void; size?: number; color?: string }) {
+function _PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; onPress: () => void; size?: number; color?: string }) {
   const scaleAnim = useState(new Animated.Value(1))[0];
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
-  const heartColor = color || (filled ? '#ef4444' : themeColors.text.muted);
+  const _heartColor = color || (filled ? '#ef4444' : themeColors.text.muted);
   
   const handlePress = () => {
     // Trigger pulse animation
@@ -2174,7 +2220,7 @@ function PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; on
 }
 
 // Scale In Animation Wrapper
-function ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function _ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const scaleAnim = useState(new Animated.Value(0.8))[0];
   const opacityAnim = useState(new Animated.Value(0))[0];
   
@@ -2193,7 +2239,7 @@ function ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: n
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [delay, opacityAnim, scaleAnim]);
   
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }], opacity: opacityAnim }}>
@@ -2203,7 +2249,7 @@ function ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: n
 }
 
 // Slide Up Animation Wrapper
-function SlideUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function _SlideUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const translateY = useState(new Animated.Value(30))[0];
   const opacityAnim = useState(new Animated.Value(0))[0];
   
@@ -2223,7 +2269,7 @@ function SlideUp({ children, delay = 0 }: { children: React.ReactNode; delay?: n
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [delay, opacityAnim, translateY]);
   
   return (
     <Animated.View style={{ transform: [{ translateY }], opacity: opacityAnim }}>
@@ -2233,7 +2279,7 @@ function SlideUp({ children, delay = 0 }: { children: React.ReactNode; delay?: n
 }
 
 // Shimmer Loading Effect
-function ShimmerEffect({ width: w, height: h, style }: { width: number; height: number; style?: any }) {
+function _ShimmerEffect({ width: w, height: h, style }: { width: number; height: number; style?: any }) {
   const shimmerAnim = useState(new Animated.Value(0))[0];
   
   useEffect(() => {
@@ -2244,7 +2290,7 @@ function ShimmerEffect({ width: w, height: h, style }: { width: number; height: 
         useNativeDriver: true,
       })
     ).start();
-  }, []);
+  }, [shimmerAnim]);
   
   return (
     <View style={[{ width: w, height: h, backgroundColor: colors.card, borderRadius: 8, overflow: 'hidden' }, style]}>
@@ -2276,7 +2322,7 @@ const sounds = {
         const { Audio } = await import('expo-av');
         this._audioModule = Audio;
       } catch (e) {
-        console.log('Failed to load Audio module:', e);
+        console.warn('Failed to load Audio module:', e);
         return null;
       }
     }
@@ -2300,7 +2346,7 @@ const sounds = {
         }
       });
     } catch (e) {
-      console.log('Sound play error:', e);
+      console.warn('Sound play error:', e);
     }
   },
 
@@ -2321,7 +2367,7 @@ const sounds = {
         }
       });
     } catch (e) {
-      console.log('Sound play error:', e);
+      console.warn('Sound play error:', e);
     }
   },
 
@@ -2342,7 +2388,7 @@ const sounds = {
         }
       });
     } catch (e) {
-      console.log('Sound play error:', e);
+      console.warn('Sound play error:', e);
     }
   },
 
@@ -2363,7 +2409,7 @@ const sounds = {
         }
       });
     } catch (e) {
-      console.log('Sound play error:', e);
+      console.warn('Sound play error:', e);
     }
   },
 };
@@ -2390,7 +2436,7 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
       scaleAnim.setValue(0);
       setShowConfetti(false);
     }
-  }, [visible]);
+  }, [visible, achievements.length, scaleAnim]);
 
   const earnedAchievementDetails = achievements.map(id => ACHIEVEMENTS.find(a => a.id === id)).filter(Boolean);
 
@@ -2488,7 +2534,7 @@ const SearchBar = ({ value, onChangeText, onClear, placeholder }: { value: strin
   </View>
 );
 
-const StarBadge = ({ count }: { count: number }) => (
+const _StarBadge = ({ count }: { count: number }) => (
   <View style={styles.starBadge}>
     <Text style={styles.starBadgeText}>⭐ {count}</Text>
   </View>
@@ -2642,7 +2688,7 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
 // ============================================
 function WelcomeScreen({ navigation }: any) {
   const fadeAnim = useState(new Animated.Value(0))[0];
-  useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start(); }, []);
+  useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start(); }, [fadeAnim]);
   return (
     <ScreenWrapper>
       <Animated.View style={[styles.logoContainer, { opacity: fadeAnim }]}>
@@ -2946,7 +2992,7 @@ function LegalScreen({ navigation }: any) {
 // ============================================
 // ADD PLAYLIST MODAL
 // ============================================
-function AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible: boolean; onClose: () => void; onSave: (playlist: { name: string; url: string; mood: string }) => void; editPlaylist?: UserPlaylist | null; }) {
+function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible: boolean; onClose: () => void; onSave: (playlist: { name: string; url: string; mood: string }) => void; editPlaylist?: UserPlaylist | null; }) {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
   const [mood, setMood] = useState('romantic');
@@ -3010,7 +3056,7 @@ function AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible:
 // ============================================
 // AUTHENTICATION SCREENS
 // ============================================
-function AuthScreen({ navigation }: any) {
+function AuthScreen({ navigation: _navigation }: any) {
   const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -3409,7 +3455,8 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
     }
   };
 
-  useEffect(() => { if (visible && !dateNight) generateDateNight(); }, [visible]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- generate once when modal opens unless cleared.
+  useEffect(() => { if (visible && !dateNight) generateDateNight(); }, [visible, dateNight]);
   const handleClose = () => { setDateNight(null); onClose(); };
 
   return (
@@ -3604,7 +3651,7 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
       setNoteText(note?.text || '');
       setRating(note?.rating || 0);
     }
-  }, [visible, itemId]);
+  }, [visible, itemId, itemType, store.notes]);
 
   const handleSave = () => {
     haptic.success();
@@ -3838,7 +3885,7 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
     if (visible) {
       store.refreshWeeklyGoals();
     }
-  }, [visible]);
+  }, [visible, store]);
 
   const completedCount = store.weeklyGoals.filter(g => g.completed).length;
   const totalGoals = store.weeklyGoals.length;
@@ -3896,7 +3943,7 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
 // ============================================
 // DAILY BONUS MODAL
 // ============================================
-function DailyBonusModal({ visible, onClose, onClaim }: { visible: boolean; onClose: () => void; onClaim: () => void }) {
+function DailyBonusModal({ visible, onClose: _onClose, onClaim }: { visible: boolean; onClose: () => void; onClaim: () => void }) {
   const store = useStore();
   const [claimed, setClaimed] = useState(false);
   const [bonusAmount, setBonusAmount] = useState(0);
@@ -3956,7 +4003,7 @@ function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClos
     } else {
       setShowConfetti(false);
     }
-  }, [visible]);
+  }, [visible, newLevel]);
 
   if (!newLevel) return null;
 
@@ -3981,7 +4028,7 @@ function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClos
 // ============================================
 // MOOD PLAYLISTS MODAL
 // ============================================
-function MoodPlaylistsModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
   const store = useStore();
 
   const handleSelectPlaylist = (playlist: MoodPlaylist) => {
@@ -4050,12 +4097,12 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
   // Get smart recommendations from the learning system
   const smartRecs = useMemo(() => {
     return store.getSmartRecommendations(10);
-  }, [store.learningPreferences, store.tried, store.favorites]);
+  }, [store]);
   
   // Get user's preference summary
   const prefSummary = useMemo(() => {
     return store.getUserPreferenceSummary();
-  }, [store.learningPreferences]);
+  }, [store]);
   
   // Group recommendations by type for better display
   const groupedRecs = useMemo(() => {
@@ -4425,7 +4472,7 @@ function FontSizeSelector() {
 // ============================================
 // SETTINGS MODAL
 // ============================================
-function SettingsModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+function SettingsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
   const store = useStore();
   const { user, logout } = useAuth();
   const [showPinSetup, setShowPinSetup] = useState(false);
@@ -4973,9 +5020,26 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
   const [lockoutSecondsLeft, setLockoutSecondsLeft] = useState(0);
 
+  const tryBiometrics = useCallback(async () => {
+    if (store.useBiometrics) {
+      try {
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Unlock Blisse',
+          fallbackLabel: 'Use PIN',
+        });
+        if (result.success) {
+          haptic.success();
+          onUnlock();
+        }
+      } catch (e) {
+        // Biometrics failed, fall back to PIN
+      }
+    }
+  }, [store.useBiometrics, onUnlock]);
+
   useEffect(() => {
-    tryBiometrics();
-  }, []);
+    void tryBiometrics();
+  }, [tryBiometrics]);
 
   useEffect(() => {
     if (!lockoutUntil) return;
@@ -4993,23 +5057,6 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, [lockoutUntil]);
-
-  const tryBiometrics = async () => {
-    if (store.useBiometrics) {
-      try {
-        const result = await LocalAuthentication.authenticateAsync({
-          promptMessage: 'Unlock Blisse',
-          fallbackLabel: 'Use PIN',
-        });
-        if (result.success) {
-          haptic.success();
-          onUnlock();
-        }
-      } catch (e) {
-        // Biometrics failed, fall back to PIN
-      }
-    }
-  };
 
   const handlePinEntry = (digit: string) => {
     if (lockoutUntil) return;
@@ -5108,7 +5155,7 @@ function HomeScreen({ navigation }: any) {
   const [showPlaylists, setShowPlaylists] = useState(false);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
-  const [newLevelData, setNewLevelData] = useState<Level | null>(null);
+  const [newLevelData, _setNewLevelData] = useState<Level | null>(null);
   const [showSeasonal, setShowSeasonal] = useState(false);
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
   const [showMusic, setShowMusic] = useState(false);
@@ -5134,7 +5181,7 @@ function HomeScreen({ navigation }: any) {
     if (!store.dailyBonusClaimed) {
       setTimeout(() => setShowDailyBonus(true), 500);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const tonightPosition = useMemo(() => {
     if (store.currentMood) {
@@ -5808,7 +5855,7 @@ function PositionDetailScreen({ route, navigation }: any) {
         message: `💑 Check this out: "${position.name}"\n\n"${position.vibe}"\n\n${position.description}\n\n🔥 Found on Blisse - let's try it tonight!`,
       });
     } catch (error) {
-      console.log('Share error:', error);
+      console.warn('Share error:', error);
     }
   };
 
@@ -5918,7 +5965,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
         message: `💕 Check this out: "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse - let's try it!`,
       });
     } catch (error) {
-      console.log('Share error:', error);
+      console.warn('Share error:', error);
     }
   };
 
@@ -6024,7 +6071,7 @@ function OralDetailScreen({ route, navigation }: any) {
         message: `👄 Check this out: "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse - interested?`,
       });
     } catch (error) {
-      console.log('Share error:', error);
+      console.warn('Share error:', error);
     }
   };
 
@@ -6133,7 +6180,7 @@ function MassageDetailScreen({ route, navigation }: any) {
         message: `💆 Let's try this massage: "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse`,
       });
     } catch (error) {
-      console.log('Share error:', error);
+      console.warn('Share error:', error);
     }
   };
 
@@ -6241,7 +6288,7 @@ function RolePlayDetailScreen({ route, navigation }: any) {
         message: `🎭 Want to try this with me? "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse`,
       });
     } catch (error) {
-      console.log('Share error:', error);
+      console.warn('Share error:', error);
     }
   };
 
@@ -6431,10 +6478,10 @@ const Tab = createBottomTabNavigator();
 function MainTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { backgroundColor: colors.background.primary, borderTopColor: colors.card, borderTopWidth: 1, height: 85, paddingBottom: 25, paddingTop: 10 }, tabBarActiveTintColor: colors.primary[400], tabBarInactiveTintColor: colors.text.muted }}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🏠</Text> }} />
-      <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>🔍</Text> }} />
-      <Tab.Screen name="Favorites" component={FavoritesScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>❤️</Text> }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color }) => <Text style={{ fontSize: 24 }}>👤</Text> }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>🏠</Text> }} />
+      <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>🔍</Text> }} />
+      <Tab.Screen name="Favorites" component={FavoritesScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>❤️</Text> }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>👤</Text> }} />
     </Tab.Navigator>
   );
 }
@@ -6528,7 +6575,7 @@ function AnalyticsFlusher() {
         posthog.capture(event, {
           ...ANALYTICS_BASE_PROPERTIES,
           ...sanitizeAnalyticsProperties(properties),
-        });
+        }, { disableGeoip: true });
       });
     };
     
@@ -6645,17 +6692,22 @@ function AppContent() {
 
 export default function App() {
   // PostHog configuration
+  const posthogOptions: PostHogOptions = {
+    host: process.env.EXPO_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+    personProfiles: 'never',
+    setDefaultPersonProperties: false,
+    captureAppLifecycleEvents: false,
+    enableSessionReplay: false,
+    sendFeatureFlagEvent: false,
+    preloadFeatureFlags: false,
+    disableGeoip: true,
+    disableRemoteConfig: true,
+    disableSurveys: true,
+    persistence: 'memory',
+  };
   const posthogConfig = {
     apiKey: process.env.EXPO_PUBLIC_POSTHOG_API_KEY || '',
-    options: {
-      host: process.env.EXPO_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
-      enableSessionReplay: false,
-      captureApplicationLifecycleEvents: false,
-      captureDeepLinks: false,
-      recordScreenViews: false,
-      sendFeatureFlagEvent: false,
-      preloadFeatureFlags: false,
-    },
+    options: posthogOptions,
   };
 
   // Firebase now initializes lazily inside AuthProvider

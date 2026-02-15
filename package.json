@@ -53,5 +53,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "typescript": "~5.9.2"
   },
+  "overrides": {
+    "@isaacs/brace-expansion": "5.0.1"
+  },
   "private": true
 }

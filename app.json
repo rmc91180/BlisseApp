@@ -8,7 +8,6 @@
     "userInterfaceStyle": "dark",
     "scheme": "blisse",
     "githubUrl": "https://github.com/blisse-app",
-    "privacy": "unlisted",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
