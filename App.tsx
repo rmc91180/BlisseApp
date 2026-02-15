@@ -1834,8 +1834,8 @@ const useStore = create<UserState>()(
       name: 'blisse-storage',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => {
-        const persistedState = { ...state };
-        delete persistedState.pinCode;
+        const { pinCode: removedPinCode, ...persistedState } = state;
+        void removedPinCode;
         return persistedState;
       },
     }
