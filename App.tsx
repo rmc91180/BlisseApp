@@ -6618,7 +6618,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 }
 
 // Inner App Component that uses the store
-function AppContent() {
+function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) {
   const store = useStore();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -6681,7 +6681,7 @@ function AppContent() {
 
   return (
     <SafeAreaProvider>
-      <AnalyticsFlusher />
+      {enableAnalytics ? <AnalyticsFlusher /> : null}
       <NavigationContainer>
         <AppNavigator />
       </NavigationContainer>
@@ -6718,7 +6718,7 @@ export default function App() {
       <AuthProvider>
         {posthogConfig.apiKey ? (
           <PostHogProvider apiKey={posthogConfig.apiKey} options={posthogConfig.options} autocapture={false}>
-            <AppContent />
+            <AppContent enableAnalytics />
           </PostHogProvider>
         ) : (
           <AppContent />

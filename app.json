@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "newArchEnabled": false,
     "userInterfaceStyle": "dark",
     "scheme": "blisse",
     "githubUrl": "https://github.com/blisse-app",
@@ -19,11 +20,8 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.blisse.app",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "usesAppleSignIn": true,
-      "config": {
-        "usesNonExemptEncryption": false
-      },
       "infoPlist": {
         "NSFaceIDUsageDescription": "Use Face ID to unlock Blisse and keep your content private",
         "ITSAppUsesNonExemptEncryption": false,
@@ -88,11 +86,9 @@
         "expo-build-properties",
         {
           "ios": {
-            "newArchEnabled": false,
             "deploymentTarget": "15.1"
           },
           "android": {
-            "newArchEnabled": false,
             "minSdkVersion": 24
           }
         }
