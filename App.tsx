@@ -2913,8 +2913,8 @@ function LegalScreen({ navigation }: any) {
               <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>10. Modifications & Termination</Text>
               <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>We reserve the right to modify these Terms at any time. Continued use of the App after changes constitutes acceptance of the modified Terms. We may terminate or suspend your access to the App at any time, without notice, for conduct that we believe violates these Terms.</Text>
 
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>11. Governing Law</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to conflict of law principles. Any disputes shall be resolved in the courts of competent jurisdiction.</Text>
+              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>11. Governing Law and Jurisdiction</Text>
+              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>These Terms shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to these Terms or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
 
               <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>12. Contact Us</Text>
               <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>If you have questions about these Terms, please contact us at: legal@blisse.online</Text>
@@ -2972,6 +2972,9 @@ function LegalScreen({ navigation }: any) {
 
               <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Changes to This Policy</Text>
               <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>We may update this Privacy Policy periodically. We will notify you of significant changes through the App. Continued use after changes constitutes acceptance.</Text>
+
+              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Governing Law and Jurisdiction</Text>
+              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>This Privacy Policy shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to this Privacy Policy or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
 
               <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Contact Us</Text>
               <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Questions about privacy? Contact us at: privacy@blisse.online</Text>
@@ -4713,7 +4716,10 @@ function TermsModal({ visible, onClose }: { visible: boolean; onClose: () => voi
             <Text style={styles.legalSection}>9. Changes to Terms</Text>
             <Text style={styles.legalText}>We may update these Terms. Continued use of the App after changes constitutes acceptance of the new Terms.</Text>
             
-            <Text style={styles.legalSection}>10. Contact</Text>
+            <Text style={styles.legalSection}>10. Governing Law and Jurisdiction</Text>
+            <Text style={styles.legalText}>These Terms shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to these Terms or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
+
+            <Text style={styles.legalSection}>11. Contact</Text>
             <Text style={styles.legalText}>Questions? Use the Contact form in the app to reach us.</Text>
           </ScrollView>
         </View>
@@ -4765,6 +4771,9 @@ function PrivacyModal({ visible, onClose }: { visible: boolean; onClose: () => v
 
             <Text style={styles.legalSection}>Your Rights (GDPR/CCPA)</Text>
             <Text style={styles.legalText}>Your data is on your device - you have complete control:{'\n'}• Access: View your data anytime{'\n'}• Deletion: Settings → Reset Data{'\n'}• Portability: Data exists only locally</Text>
+
+            <Text style={styles.legalSection}>Governing Law and Jurisdiction</Text>
+            <Text style={styles.legalText}>This Privacy Policy shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to this Privacy Policy or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
 
             <Text style={styles.legalSection}>Contact</Text>
             <Text style={styles.legalText}>Questions? Contact us at: privacy@blisse.online</Text>
