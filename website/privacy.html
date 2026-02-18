@@ -26,12 +26,25 @@
             text-align: center;
             margin-bottom: 40px;
         }
+        .logo a {
+            text-decoration: none;
+            display: inline-block;
+        }
+        .logo a:focus-visible {
+            outline: 2px solid #c084fc;
+            outline-offset: 4px;
+            border-radius: 8px;
+        }
         .logo h1 {
             font-size: 48px;
             background: linear-gradient(135deg, #a855f7, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            transition: opacity 0.2s ease;
+        }
+        .logo a:hover h1 {
+            opacity: 0.9;
         }
         .card {
             background: rgba(45, 27, 61, 0.8);
@@ -108,7 +121,9 @@
 <body>
     <div class="container">
         <div class="logo">
-            <h1>Blisse</h1>
+            <a href="/" aria-label="Go to Blisse home page">
+                <h1>Blisse</h1>
+            </a>
         </div>
 
         <div class="card">
