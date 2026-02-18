@@ -10,7 +10,6 @@ import {
   Dimensions,
   Animated,
   Modal,
-  Vibration,
   Share,
   Platform,
   Alert,
@@ -2061,11 +2060,11 @@ const colors = {
 // HAPTIC FEEDBACK HELPER
 // ============================================
 const haptic = {
-  light: () => Vibration.vibrate(10),
-  medium: () => Vibration.vibrate(20),
-  success: () => Vibration.vibrate([0, 30, 50, 30]),
-  celebration: () => Vibration.vibrate([0, 50, 100, 50, 100, 50]),
-  error: () => Vibration.vibrate(200),
+  light: () => {},
+  medium: () => {},
+  success: () => {},
+  celebration: () => {},
+  error: () => {},
 };
 
 // ============================================
