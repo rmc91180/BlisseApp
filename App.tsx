@@ -3673,37 +3673,39 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>📝 Notes</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.notesItemName}>{itemName}</Text>
-          <Text style={styles.notesLabel}>Your Rating</Text>
-          <View style={styles.ratingContainer}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <TouchableOpacity key={star} onPress={() => { haptic.light(); setRating(star); }}>
-                <Text style={styles.ratingStar}>{star <= rating ? '⭐' : '☆'}</Text>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <Text style={styles.notesItemName}>{itemName}</Text>
+            <Text style={styles.notesLabel}>Your Rating</Text>
+            <View style={styles.ratingContainer}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity key={star} onPress={() => { haptic.light(); setRating(star); }}>
+                  <Text style={styles.ratingStar}>{star <= rating ? '⭐' : '☆'}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.notesLabel}>Personal Notes</Text>
+            <TextInput style={styles.notesInput} multiline numberOfLines={4} placeholder="How was it? What worked? What to try differently?" placeholderTextColor={colors.text.muted} value={noteText} onChangeText={setNoteText} />
+            <View style={styles.notesButtons}>
+              {existingNote && (
+                <TouchableOpacity style={styles.deleteNoteButton} onPress={handleDelete}>
+                  <Text style={styles.deleteNoteButtonText}>🗑️ Delete</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={styles.saveNoteButton} onPress={handleSave}>
+                <LinearGradient colors={['#a855f7', '#ec4899']} style={styles.saveNoteGradient}>
+                  <Text style={styles.saveNoteText}>Save Note</Text>
+                </LinearGradient>
               </TouchableOpacity>
-            ))}
-          </View>
-          <Text style={styles.notesLabel}>Personal Notes</Text>
-          <TextInput style={styles.notesInput} multiline numberOfLines={4} placeholder="How was it? What worked? What to try differently?" placeholderTextColor={colors.text.muted} value={noteText} onChangeText={setNoteText} />
-          <View style={styles.notesButtons}>
-            {existingNote && (
-              <TouchableOpacity style={styles.deleteNoteButton} onPress={handleDelete}>
-                <Text style={styles.deleteNoteButtonText}>🗑️ Delete</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={styles.saveNoteButton} onPress={handleSave}>
-              <LinearGradient colors={['#a855f7', '#ec4899']} style={styles.saveNoteGradient}>
-                <Text style={styles.saveNoteText}>Save Note</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -4847,56 +4849,58 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '80%' }]}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>📧 Contact Us</Text>
             <TouchableOpacity onPress={handleClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>We'd love to hear from you!</Text>
-          
-          {/* Category Selector */}
-          <View style={styles.contactCategoryRow}>
-            {[
-              { type: 'general' as const, emoji: '💬', label: 'General' },
-              { type: 'bug' as const, emoji: '🐛', label: 'Bug Report' },
-              { type: 'feedback' as const, emoji: '💝', label: 'Feedback' },
-            ].map((item) => (
-              <TouchableOpacity 
-                key={item.type}
-                style={[styles.contactCategoryButton, category === item.type && styles.contactCategoryButtonActive]}
-                onPress={() => { haptic.light(); setCategory(item.type); }}
-              >
-                <Text style={styles.contactCategoryEmoji}>{item.emoji}</Text>
-                <Text style={[styles.contactCategoryText, category === item.type && styles.contactCategoryTextActive]}>{item.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          
-          <TextInput
-            style={[styles.contactInput, styles.contactTextarea]}
-            value={message}
-            onChangeText={setMessage}
-            placeholder="Tell us what's on your mind..."
-            placeholderTextColor={colors.text.muted}
-            multiline
-            numberOfLines={6}
-            textAlignVertical="top"
-          />
-          
-          <TouchableOpacity 
-            style={[styles.contactSendButton, isSubmitting && { opacity: 0.6 }]} 
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <LinearGradient colors={['#8b5cf6', '#ec4899']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.contactSendGradient}>
-              <Text style={styles.contactSendText}>{isSubmitting ? '⏳ Sending...' : '📤 Send Message'}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          
-          <Text style={styles.contactPrivacyNote}>Only the text you type here is sent to support through Formspree email delivery.</Text>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <Text style={styles.modalSubtitle}>We'd love to hear from you!</Text>
+            
+            {/* Category Selector */}
+            <View style={styles.contactCategoryRow}>
+              {[
+                { type: 'general' as const, emoji: '💬', label: 'General' },
+                { type: 'bug' as const, emoji: '🐛', label: 'Bug Report' },
+                { type: 'feedback' as const, emoji: '💝', label: 'Feedback' },
+              ].map((item) => (
+                <TouchableOpacity 
+                  key={item.type}
+                  style={[styles.contactCategoryButton, category === item.type && styles.contactCategoryButtonActive]}
+                  onPress={() => { haptic.light(); setCategory(item.type); }}
+                >
+                  <Text style={styles.contactCategoryEmoji}>{item.emoji}</Text>
+                  <Text style={[styles.contactCategoryText, category === item.type && styles.contactCategoryTextActive]}>{item.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            
+            <TextInput
+              style={[styles.contactInput, styles.contactTextarea]}
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Tell us what's on your mind..."
+              placeholderTextColor={colors.text.muted}
+              multiline
+              numberOfLines={6}
+              textAlignVertical="top"
+            />
+            
+            <TouchableOpacity 
+              style={[styles.contactSendButton, isSubmitting && { opacity: 0.6 }]} 
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+            >
+              <LinearGradient colors={['#8b5cf6', '#ec4899']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.contactSendGradient}>
+                <Text style={styles.contactSendText}>{isSubmitting ? '⏳ Sending...' : '📤 Send Message'}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            
+            <Text style={styles.contactPrivacyNote}>Only the text you type here is sent to support through Formspree email delivery.</Text>
+          </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -4964,56 +4968,58 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '80%' }]}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>💡 Submit an Idea</Text>
             <TouchableOpacity onPress={handleClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Help us make Blisse even better!</Text>
-          
-          {/* Idea Type Selector */}
-          <View style={styles.ideaTypeRow}>
-            {[
-              { type: 'position' as const, emoji: '💑', label: 'Position' },
-              { type: 'feature' as const, emoji: '✨', label: 'Feature' },
-              { type: 'other' as const, emoji: '💬', label: 'Other' },
-            ].map((item) => (
-              <TouchableOpacity 
-                key={item.type}
-                style={[styles.ideaTypeButton, ideaType === item.type && styles.ideaTypeButtonActive]}
-                onPress={() => { haptic.light(); setIdeaType(item.type); }}
-              >
-                <Text style={styles.ideaTypeEmoji}>{item.emoji}</Text>
-                <Text style={[styles.ideaTypeText, ideaType === item.type && styles.ideaTypeTextActive]}>{item.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          
-          <TextInput
-            style={[styles.contactInput, styles.contactTextarea]}
-            value={idea}
-            onChangeText={setIdea}
-            placeholder={ideaType === 'position' ? "Describe your position idea..." : ideaType === 'feature' ? "What feature would you like?" : "Share your thoughts..."}
-            placeholderTextColor={colors.text.muted}
-            multiline
-            numberOfLines={6}
-            textAlignVertical="top"
-          />
-          
-          <TouchableOpacity 
-            style={[styles.contactSendButton, isSubmitting && { opacity: 0.6 }]} 
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <LinearGradient colors={['#06b6d4', '#22c55e']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.contactSendGradient}>
-              <Text style={styles.contactSendText}>{isSubmitting ? '⏳ Sending...' : '🚀 Submit Idea'}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          
-          <Text style={styles.contactPrivacyNote}>Only the idea text you provide is sent to support through Formspree email delivery.</Text>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <Text style={styles.modalSubtitle}>Help us make Blisse even better!</Text>
+            
+            {/* Idea Type Selector */}
+            <View style={styles.ideaTypeRow}>
+              {[
+                { type: 'position' as const, emoji: '💑', label: 'Position' },
+                { type: 'feature' as const, emoji: '✨', label: 'Feature' },
+                { type: 'other' as const, emoji: '💬', label: 'Other' },
+              ].map((item) => (
+                <TouchableOpacity 
+                  key={item.type}
+                  style={[styles.ideaTypeButton, ideaType === item.type && styles.ideaTypeButtonActive]}
+                  onPress={() => { haptic.light(); setIdeaType(item.type); }}
+                >
+                  <Text style={styles.ideaTypeEmoji}>{item.emoji}</Text>
+                  <Text style={[styles.ideaTypeText, ideaType === item.type && styles.ideaTypeTextActive]}>{item.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            
+            <TextInput
+              style={[styles.contactInput, styles.contactTextarea]}
+              value={idea}
+              onChangeText={setIdea}
+              placeholder={ideaType === 'position' ? "Describe your position idea..." : ideaType === 'feature' ? "What feature would you like?" : "Share your thoughts..."}
+              placeholderTextColor={colors.text.muted}
+              multiline
+              numberOfLines={6}
+              textAlignVertical="top"
+            />
+            
+            <TouchableOpacity 
+              style={[styles.contactSendButton, isSubmitting && { opacity: 0.6 }]} 
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+            >
+              <LinearGradient colors={['#06b6d4', '#22c55e']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.contactSendGradient}>
+                <Text style={styles.contactSendText}>{isSubmitting ? '⏳ Sending...' : '🚀 Submit Idea'}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            
+            <Text style={styles.contactPrivacyNote}>Only the idea text you provide is sent to support through Formspree email delivery.</Text>
+          </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
