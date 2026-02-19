@@ -49,6 +49,7 @@ import {
   OAuthProvider,
   signInWithCredential,
 } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { PostHogProvider, usePostHog, type PostHogOptions } from 'posthog-react-native';
 
@@ -78,10 +79,13 @@ const FORMSPREE_MESSAGE_LIMIT = 4000;
 const DAILY_JOKE_NOTIFICATION_TITLE = 'Blisse Daily Tease 💌';
 const DAILY_JOKE_NOTIFICATION_HOUR = 19;
 const DAILY_JOKE_NOTIFICATION_MINUTE = 30;
-const DAILY_JOKE_NOTIFICATION_DAYS_AHEAD = 45;
-const DAILY_JOKE_NOTIFICATION_REFRESH_WINDOW_DAYS = 14;
+const DAILY_JOKE_NOTIFICATION_DAYS_AHEAD = 14;
+const DAILY_JOKE_NOTIFICATION_REFRESH_WINDOW_DAYS = 1;
 const DAILY_JOKE_NOTIFICATION_IDS_KEY = 'blisse-daily-joke-notification-ids-v1';
 const DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY = 'blisse-daily-joke-notification-refresh-at-v1';
+const DAILY_JOKE_BANK_CACHE_KEY = 'blisse-daily-joke-bank-cache-v1';
+const DAILY_JOKE_BANK_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const DAILY_JOKE_BANK_DOC_PATH = ['app_config', 'daily_jokes'] as const;
 
 // ============================================
 // LAZY FIREBASE INITIALIZATION
@@ -90,6 +94,7 @@ const DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY = 'blisse-daily-joke-notification-r
 // ============================================
 let _firebaseApp: ReturnType<typeof initializeApp> | null = null;
 let _firebaseAuth: ReturnType<typeof getAuth> | null = null;
+let _firebaseDb: ReturnType<typeof getFirestore> | null = null;
 let _firebaseError: Error | null = null;
 
 const getFirebaseApp = (): ReturnType<typeof initializeApp> | null => {
@@ -119,6 +124,22 @@ const getFirebaseAuth = (): ReturnType<typeof getAuth> | null => {
   } catch (error) {
     console.error('Firebase auth initialization error:', error);
     _firebaseError = error as Error;
+    return null;
+  }
+};
+
+const getFirebaseDb = (): ReturnType<typeof getFirestore> | null => {
+  if (_firebaseError) return null;
+  if (_firebaseDb) return _firebaseDb;
+
+  const app = getFirebaseApp();
+  if (!app) return null;
+
+  try {
+    _firebaseDb = getFirestore(app);
+    return _firebaseDb;
+  } catch (error) {
+    console.error('Firebase firestore initialization error:', error);
     return null;
   }
 };
@@ -879,6 +900,17 @@ interface DailyJoke {
   punchline: string;
 }
 
+interface DailyJokeBank {
+  setups: string[];
+  punchlines: string[];
+  version?: string;
+}
+
+interface DailyJokeBankCache {
+  fetchedAt: number;
+  bank: DailyJokeBank;
+}
+
 const getDateKey = (date: Date): string => date.toISOString().slice(0, 10);
 
 const getDayOfYear = (date: Date): number => {
@@ -887,15 +919,120 @@ const getDayOfYear = (date: Date): number => {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 };
 
-const getDailyJokeForDate = (date: Date): DailyJoke => {
+const gcd = (a: number, b: number): number => {
+  let x = Math.abs(a);
+  let y = Math.abs(b);
+  while (y !== 0) {
+    const temp = y;
+    y = x % y;
+    x = temp;
+  }
+  return x || 1;
+};
+
+const lcm = (a: number, b: number): number => Math.abs(a * b) / gcd(a, b);
+
+const sanitizeJokePartList = (parts: unknown): string[] => {
+  if (!Array.isArray(parts)) return [];
+  return parts
+    .map((part) => (typeof part === 'string' ? part.trim() : ''))
+    .filter((part) => part.length > 0);
+};
+
+const normalizeDailyJokeBank = (raw: unknown): DailyJokeBank | null => {
+  if (!raw || typeof raw !== 'object') return null;
+  const candidate = raw as { setups?: unknown; punchlines?: unknown; version?: unknown };
+  const setups = sanitizeJokePartList(candidate.setups);
+  const punchlines = sanitizeJokePartList(candidate.punchlines);
+  if (setups.length < 10 || punchlines.length < 10) return null;
+
+  const punchlinePeriod = punchlines.length / gcd(punchlines.length, 13);
+  const yearlyCycle = lcm(setups.length, punchlinePeriod);
+  if (yearlyCycle < 366) {
+    console.warn('Remote daily joke bank rejected: cycle must cover at least 366 unique days.');
+    return null;
+  }
+
+  return {
+    setups,
+    punchlines,
+    version: typeof candidate.version === 'string' ? candidate.version.trim() : undefined,
+  };
+};
+
+const readCachedDailyJokeBank = async (allowStale = false): Promise<DailyJokeBank | null> => {
+  try {
+    const cacheRaw = await AsyncStorage.getItem(DAILY_JOKE_BANK_CACHE_KEY);
+    if (!cacheRaw) return null;
+
+    const parsed = JSON.parse(cacheRaw) as DailyJokeBankCache;
+    const bank = normalizeDailyJokeBank(parsed?.bank);
+    if (!bank) return null;
+
+    const fetchedAt = Number(parsed?.fetchedAt || 0);
+    const isFresh = fetchedAt > 0 && Date.now() - fetchedAt <= DAILY_JOKE_BANK_CACHE_TTL_MS;
+    if (!allowStale && !isFresh) return null;
+
+    return bank;
+  } catch {
+    return null;
+  }
+};
+
+const writeCachedDailyJokeBank = async (bank: DailyJokeBank): Promise<void> => {
+  try {
+    const payload: DailyJokeBankCache = {
+      fetchedAt: Date.now(),
+      bank,
+    };
+    await AsyncStorage.setItem(DAILY_JOKE_BANK_CACHE_KEY, JSON.stringify(payload));
+  } catch {
+    // Non-blocking cache write.
+  }
+};
+
+const fetchRemoteDailyJokeBank = async (): Promise<DailyJokeBank | null> => {
+  try {
+    const db = getFirebaseDb();
+    if (!db) return null;
+
+    const bankDoc = await getDoc(doc(db, DAILY_JOKE_BANK_DOC_PATH[0], DAILY_JOKE_BANK_DOC_PATH[1]));
+    if (!bankDoc.exists()) return null;
+
+    return normalizeDailyJokeBank(bankDoc.data());
+  } catch (error) {
+    console.warn('Remote daily joke bank fetch failed:', error);
+    return null;
+  }
+};
+
+const getDailyJokeBank = async (forceRemote = false): Promise<DailyJokeBank | null> => {
+  if (!forceRemote) {
+    const cachedBank = await readCachedDailyJokeBank(false);
+    if (cachedBank) return cachedBank;
+  }
+
+  const remoteBank = await fetchRemoteDailyJokeBank();
+  if (remoteBank) {
+    await writeCachedDailyJokeBank(remoteBank);
+    return remoteBank;
+  }
+
+  return readCachedDailyJokeBank(true);
+};
+
+const getDailyJokeForDate = (date: Date, bank?: DailyJokeBank | null): DailyJoke => {
+  const setups = bank?.setups?.length ? bank.setups : DAILY_JOKE_SETUPS;
+  const punchlines = bank?.punchlines?.length ? bank.punchlines : DAILY_JOKE_PUNCHLINES;
   const dayIndex = Math.max(0, getDayOfYear(date) - 1);
   const year = date.getFullYear();
-  const setupIndex = dayIndex % DAILY_JOKE_SETUPS.length;
-  const punchlineIndex = (dayIndex * 13 + year) % DAILY_JOKE_PUNCHLINES.length;
+  const setupIndex = dayIndex % setups.length;
+  const punchlineIndex = (dayIndex * 13 + year) % punchlines.length;
+  const bankTag = bank?.version?.length ? bank.version : 'local';
   return {
-    id: `${year}-${setupIndex}-${punchlineIndex}`,
-    setup: DAILY_JOKE_SETUPS[setupIndex],
-    punchline: DAILY_JOKE_PUNCHLINES[punchlineIndex],
+    id: `${year}-${setupIndex}-${punchlineIndex}-${bankTag}`,
+    setup: setups[setupIndex],
+    punchline: punchlines[punchlineIndex],
   };
 };
 
@@ -915,6 +1052,7 @@ const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
 
   try {
     const now = new Date();
+    const jokeBank = await getDailyJokeBank();
     const refreshAtRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY);
     if (refreshAtRaw && new Date(refreshAtRaw) > now) {
       return;
@@ -943,7 +1081,7 @@ const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
       fireDate.setHours(DAILY_JOKE_NOTIFICATION_HOUR, DAILY_JOKE_NOTIFICATION_MINUTE, 0, 0);
       if (fireDate <= now) continue;
 
-      const joke = getDailyJokeForDate(fireDate);
+      const joke = getDailyJokeForDate(fireDate, jokeBank);
       const id = await Notifications.scheduleNotificationAsync({
         content: {
           title: DAILY_JOKE_NOTIFICATION_TITLE,
@@ -5414,6 +5552,7 @@ function HomeScreen({ navigation }: any) {
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
   const [showMusic, setShowMusic] = useState(false);
   const [dailyJokeDateKey, setDailyJokeDateKey] = useState(getDateKey(new Date()));
+  const [dailyJokeBank, setDailyJokeBank] = useState<DailyJokeBank | null>(null);
   const [showDailyPunchline, setShowDailyPunchline] = useState(false);
   
   const greeting = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 18 ? 'Good afternoon' : 'Good evening';
@@ -5427,7 +5566,10 @@ function HomeScreen({ navigation }: any) {
 
   // Current seasonal theme
   const currentSeason = getCurrentSeason();
-  const dailyJoke = useMemo(() => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`)), [dailyJokeDateKey]);
+  const dailyJoke = useMemo(
+    () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank),
+    [dailyJokeDateKey, dailyJokeBank]
+  );
 
   // Check for daily bonus on mount
   useEffect(() => {
@@ -5447,6 +5589,34 @@ function HomeScreen({ navigation }: any) {
     }, 60 * 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const hydrateDailyJokeBank = async () => {
+      const bank = await getDailyJokeBank(false);
+      if (isMounted && bank) {
+        setDailyJokeBank(bank);
+      }
+    };
+    void hydrateDailyJokeBank();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const refreshDailyJokeBank = async () => {
+      const bank = await getDailyJokeBank(true);
+      if (isMounted && bank) {
+        setDailyJokeBank(bank);
+      }
+    };
+    void refreshDailyJokeBank();
+    return () => {
+      isMounted = false;
+    };
+  }, [dailyJokeDateKey]);
 
   useEffect(() => {
     setShowDailyPunchline(false);
