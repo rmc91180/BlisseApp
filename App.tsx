@@ -300,8 +300,45 @@ interface SeasonalTheme {
   foreplay: number[];
   oral: number[];
   roleplay: number[];
+  games: SeasonalGameAction[];
   tips: string[];
 }
+
+type SeasonalGameAction = 'truth_or_dare' | 'date_night' | 'challenge' | 'spin';
+
+interface SeasonalGameOption {
+  id: SeasonalGameAction;
+  emoji: string;
+  title: string;
+  description: string;
+}
+
+const SEASONAL_GAME_OPTIONS: Record<SeasonalGameAction, SeasonalGameOption> = {
+  truth_or_dare: {
+    id: 'truth_or_dare',
+    emoji: '🎲',
+    title: 'Truth or Dare',
+    description: 'Flirty prompts that match the season vibe',
+  },
+  date_night: {
+    id: 'date_night',
+    emoji: '🌙',
+    title: 'Date Night Generator',
+    description: 'Curated evening flow for connection and fun',
+  },
+  challenge: {
+    id: 'challenge',
+    emoji: '🎯',
+    title: 'Seasonal Challenge',
+    description: 'Goal-based activity for playful progression',
+  },
+  spin: {
+    id: 'spin',
+    emoji: '🎰',
+    title: 'Spin Surprise',
+    description: 'Quick randomizer for spontaneous inspiration',
+  },
+};
 
 const SEASONAL_THEMES: SeasonalTheme[] = [
   {
@@ -315,6 +352,7 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     foreplay: [101, 103, 106, 110],
     oral: [201, 202, 205, 206],
     roleplay: [401, 403, 404], // Romantic roleplay
+    games: ['date_night', 'truth_or_dare', 'challenge'],
     tips: ['Set up rose petals', 'Light candles everywhere', 'Prepare chocolate-dipped strawberries', 'Write a love note to read together']
   },
   {
@@ -328,6 +366,7 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     foreplay: [104, 105, 107, 112],
     oral: [204, 206, 211, 212],
     roleplay: [406, 410, 415],
+    games: ['date_night', 'spin', 'challenge'],
     tips: ['Open the windows for fresh air', 'Try morning intimacy', 'Bring flowers to the bedroom', 'Spring clean then celebrate']
   },
   {
@@ -341,6 +380,7 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     foreplay: [102, 108, 109, 111],
     oral: [203, 207, 208, 210],
     roleplay: [407, 411, 416],
+    games: ['spin', 'truth_or_dare', 'challenge'],
     tips: ['Ice cubes for temperature play', 'Try a staycation hotel night', 'Skinny dipping if you can', 'Late night balcony/patio moments']
   },
   {
@@ -354,6 +394,7 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     foreplay: [101, 104, 106, 108],
     oral: [201, 204, 206, 212],
     roleplay: [402, 408, 412],
+    games: ['date_night', 'truth_or_dare', 'spin'],
     tips: ['Fireplace or candles for ambiance', 'Warm blankets and cozy vibes', 'Pumpkin spice massage oil', 'Stay in bed on rainy days']
   },
   {
@@ -367,6 +408,7 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     foreplay: [101, 105, 108, 112],
     oral: [201, 205, 209, 212],
     roleplay: [403, 405, 409],
+    games: ['date_night', 'challenge', 'truth_or_dare'],
     tips: ['Body heat is your friend', 'Hot bath or shower together', 'Fuzzy blankets and bare skin', 'Holiday lingerie surprise']
   },
   {
@@ -380,6 +422,7 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     foreplay: [102, 103, 106, 110],
     oral: [202, 206, 208, 211],
     roleplay: [401, 406, 414],
+    games: ['challenge', 'spin', 'truth_or_dare'],
     tips: ['Make intimacy resolutions together', 'Try something completely new', 'Champagne and celebration', 'Midnight countdown kiss and more']
   },
 ];
@@ -5428,7 +5471,15 @@ function HomeScreen({ navigation }: any) {
       <MoodPlaylistsModal visible={showPlaylists} onClose={() => setShowPlaylists(false)} navigation={navigation} />
       <RecommendationsModal visible={showRecommendations} onClose={() => setShowRecommendations(false)} navigation={navigation} />
       <LevelUpModal visible={showLevelUp} onClose={() => setShowLevelUp(false)} newLevel={newLevelData} />
-      <SeasonalModal visible={showSeasonal} onClose={() => setShowSeasonal(false)} navigation={navigation} />
+      <SeasonalModal
+        visible={showSeasonal}
+        onClose={() => setShowSeasonal(false)}
+        navigation={navigation}
+        onOpenTruthOrDare={() => setShowTruthOrDare(true)}
+        onOpenDateNight={() => setShowDateNight(true)}
+        onOpenChallenge={() => setShowChallenge(true)}
+        onOpenSpinner={() => setShowSpinner(true)}
+      />
       <TruthOrDareModal visible={showTruthOrDare} onClose={() => setShowTruthOrDare(false)} />
       <MusicPlaylistsModal visible={showMusic} onClose={() => setShowMusic(false)} />
     </ScreenWrapper>
@@ -6401,7 +6452,23 @@ function RolePlayDetailScreen({ route, navigation }: any) {
 // ============================================
 // SEASONAL CONTENT MODAL
 // ============================================
-function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+function SeasonalModal({
+  visible,
+  onClose,
+  navigation,
+  onOpenTruthOrDare,
+  onOpenDateNight,
+  onOpenChallenge,
+  onOpenSpinner,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  navigation: any;
+  onOpenTruthOrDare?: () => void;
+  onOpenDateNight?: () => void;
+  onOpenChallenge?: () => void;
+  onOpenSpinner?: () => void;
+}) {
   const currentSeason = getCurrentSeason();
   const store = useStore();
 
@@ -6495,6 +6562,47 @@ function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onC
     store.favoriteRoleplay,
   ]);
 
+  const seasonalGameRecommendations = useMemo(() => {
+    const season = currentSeason;
+    if (!season) return [] as SeasonalGameOption[];
+
+    const totalTried = store.tried.length + store.triedForeplay.length + store.triedOral.length + store.triedMassage.length + store.triedRoleplay.length;
+
+    const scoreGame = (gameId: SeasonalGameAction): number => {
+      let score = 50;
+
+      if (season.games.includes(gameId)) score += 28;
+      if (store.currentMood === 'playful' && (gameId === 'truth_or_dare' || gameId === 'spin')) score += 12;
+      if (store.currentMood === 'passionate' && gameId === 'date_night') score += 10;
+      if (store.currentMood === 'commanding' && gameId === 'challenge') score += 10;
+
+      if (gameId === 'challenge') score += store.currentChallenge ? -8 : 10;
+      if (gameId === 'spin') score += totalTried < 20 ? 8 : 2;
+      if (gameId === 'date_night') score += store.dateNightsCompleted < 3 ? 8 : 3;
+
+      return score;
+    };
+
+    return (Object.keys(SEASONAL_GAME_OPTIONS) as SeasonalGameAction[])
+      .map((gameId) => ({
+        ...SEASONAL_GAME_OPTIONS[gameId],
+        score: scoreGame(gameId),
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map(({ score: _score, ...game }) => game);
+  }, [
+    currentSeason,
+    store.currentMood,
+    store.currentChallenge,
+    store.dateNightsCompleted,
+    store.tried.length,
+    store.triedForeplay.length,
+    store.triedOral.length,
+    store.triedMassage.length,
+    store.triedRoleplay.length,
+  ]);
+
   if (!currentSeason) return null;
 
   const openSeasonalItem = (type: SeasonalContentType, item: any) => {
@@ -6512,6 +6620,30 @@ function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onC
     if (type === 'foreplay') navigation.navigate('ForeplayDetail', { item });
     if (type === 'oral') navigation.navigate('OralDetail', { item });
     if (type === 'roleplay') navigation.navigate('RolePlayDetail', { item });
+  };
+
+  const openSeasonalGame = (gameId: SeasonalGameAction) => {
+    onClose();
+
+    if (gameId === 'truth_or_dare') {
+      if (onOpenTruthOrDare) onOpenTruthOrDare();
+      else Alert.alert('Open from Home', 'Truth or Dare is available on the Home screen.');
+      return;
+    }
+    if (gameId === 'date_night') {
+      if (onOpenDateNight) onOpenDateNight();
+      else Alert.alert('Open from Home', 'Date Night is available on the Home screen.');
+      return;
+    }
+    if (gameId === 'challenge') {
+      if (onOpenChallenge) onOpenChallenge();
+      else Alert.alert('Open from Home', 'Challenges are available on the Home screen.');
+      return;
+    }
+    if (gameId === 'spin') {
+      if (onOpenSpinner) onOpenSpinner();
+      else Alert.alert('Open from Home', 'Spin is available on the Home screen.');
+    }
   };
 
   return (
@@ -6532,6 +6664,25 @@ function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onC
                 <Text key={index} style={styles.seasonalTip}>• {tip}</Text>
               ))}
             </View>
+
+            {/* Seasonal Games */}
+            <Text style={styles.seasonalSectionTitle}>Recommended Games & Fun Activities</Text>
+            {seasonalGameRecommendations.map((game) => (
+              <TouchableOpacity
+                key={game.id}
+                style={styles.seasonalItemCard}
+                onPress={() => openSeasonalGame(game.id)}
+              >
+                <Text style={styles.seasonalItemEmoji}>{game.emoji}</Text>
+                <View style={styles.seasonalItemInfo}>
+                  <Text style={styles.seasonalItemName}>{game.title}</Text>
+                  <Text style={styles.seasonalItemVibe}>{game.description}</Text>
+                </View>
+                <View style={styles.seasonalGamePill}>
+                  <Text style={styles.seasonalGamePillText}>Play</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
 
             {/* Recommended Positions */}
             <Text style={styles.seasonalSectionTitle}>Recommended Positions</Text>
@@ -7339,6 +7490,8 @@ const styles = StyleSheet.create({
   seasonalItemName: { fontSize: 15, fontWeight: '600', color: colors.text.primary },
   seasonalItemVibe: { fontSize: 12, color: colors.text.muted, marginTop: 2 },
   seasonalItemArrow: { fontSize: 16, color: colors.text.muted },
+  seasonalGamePill: { backgroundColor: colors.primary[500] + '35', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+  seasonalGamePillText: { color: colors.primary[400], fontSize: 12, fontWeight: '700' },
   seasonalEmptyText: { fontSize: 13, color: colors.text.muted, marginBottom: 8 },
 
   // ============================================
