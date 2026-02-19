@@ -35,6 +35,7 @@ import { rolePlayScenarios, RolePlayScenario } from '@/content/roleplay';
 import * as Linking from 'expo-linking';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
+import * as Notifications from 'expo-notifications';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth, 
@@ -74,6 +75,13 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvzgeaqp';
 const CONFETTI_COLORS = ['#ec4899', '#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b', '#ef4444', '#fbbf24'];
 const ANALYTICS_STRING_LIMIT = 80;
 const FORMSPREE_MESSAGE_LIMIT = 4000;
+const DAILY_JOKE_NOTIFICATION_TITLE = 'Blisse Daily Tease 💌';
+const DAILY_JOKE_NOTIFICATION_HOUR = 19;
+const DAILY_JOKE_NOTIFICATION_MINUTE = 30;
+const DAILY_JOKE_NOTIFICATION_DAYS_AHEAD = 45;
+const DAILY_JOKE_NOTIFICATION_REFRESH_WINDOW_DAYS = 14;
+const DAILY_JOKE_NOTIFICATION_IDS_KEY = 'blisse-daily-joke-notification-ids-v1';
+const DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY = 'blisse-daily-joke-notification-refresh-at-v1';
 
 // ============================================
 // LAZY FIREBASE INITIALIZATION
@@ -773,6 +781,188 @@ const submitFormspreeMessage = async (payload: Record<string, string>): Promise<
   });
   if (!response.ok) {
     throw new Error(`Formspree request failed (${response.status})`);
+  }
+};
+
+const DAILY_JOKE_SETUPS: string[] = [
+  'Why did the candle blush on date night?',
+  'What did one silk sheet say to the other?',
+  'Why was the bedroom playlist smiling?',
+  'What is the flirtiest way to burn calories?',
+  'Why did the mirror ask for a front-row seat?',
+  'What did the rose whisper at sunset?',
+  'Why did the zipper start laughing?',
+  'What is a couple is favorite cardio?',
+  'Why did the pillow request overtime?',
+  'What did the lace robe say at midnight?',
+  'Why did the massage oil get promoted?',
+  'What is the fastest way to raise the heat?',
+  'Why did the moonlight refuse to leave?',
+  'What did the wink text at 9 PM?',
+  'Why did the couch feel left out?',
+  'What is the secret ingredient in chemistry?',
+  'Why did the lipstick check the time twice?',
+  'What did the teasing glance say?',
+  'Why did the champagne pop early?',
+  'What is the best kind of homework for two?',
+  'Why did the neck kiss get an encore?',
+  'What did the slow dance promise?',
+  'Why did the blanket call it destiny?',
+  'What is a playful way to say hello?',
+  'Why did the hallway become a runway?',
+  'What did the perfume announce?',
+  'Why did the countdown feel electric?',
+  'What is the warmest winter activity?',
+  'Why did the date night timer break?',
+  'What did one heartbeat text the other?',
+  'Why did the naughty grin stay up late?',
+  'What is the best way to start a rematch?',
+  'Why did the dim lights stay on?',
+  'What did the after-dinner look mean?',
+  'Why did the blush travel from cheeks to ears?',
+  'What is tonight is quickest confidence boost?',
+  'Why did the kiss ask for round two?',
+  'What did the playful challenge card say?',
+  'Why did the silk ribbon tie up the evening?',
+  'What did the midnight message tease?',
+];
+
+const DAILY_JOKE_PUNCHLINES: string[] = [
+  'Because things were clearly getting lit.',
+  'Stick with me and tonight gets smoother.',
+  'Two tracks in and everyone forgot their to-do list.',
+  'A slow chase from the kitchen to the bedroom.',
+  'It heard the chemistry was about to be visual.',
+  'Stay close, the petals are just the trailer.',
+  'Every outfit tonight had a short runtime.',
+  'Longer kisses, shorter excuses.',
+  'It knew cuddling might become a contact sport.',
+  'I am not dramatic, I am just effective.',
+  'It keeps making tension disappear on contact.',
+  'One whisper and one daring smile.',
+  'It said this vibe deserves overtime.',
+  'Bring your best look, I brought mine.',
+  'Because the sparks kept moving rooms.',
+  'Confidence with a side of playful chaos.',
+  'It wanted to be seen before being smudged.',
+  'Meet me halfway and lose track of time.',
+  'It heard someone opened the flirt tab.',
+  'Partner squats, with bonus giggles.',
+  'The audience requested another performance.',
+  'Tonight is about rhythm, not rushing.',
+  'It knew cozy was one step from spicy.',
+  'A smile, a kiss, and no further questions.',
+  'Every step looked like a preview.',
+  'You are about to remember this scent.',
+  'Because anticipation is doing push-ups.',
+  'Blankets plus body heat equals happy chaos.',
+  'No one could agree on just one round.',
+  'Same pulse, same trouble.',
+  'It had unfinished business with your lips.',
+  'Winner gets bragging rights and a kiss.',
+  'The mood was too good to interrupt.',
+  'It meant save room for dessert part two.',
+  'Because the plot twist was adorable.',
+  'A compliment and a bold first move.',
+  'The first one was just the warm-up.',
+  'Pick truth, dare, or kiss anyway.',
+  'It tied the evening to your favorite smile.',
+  'Open the app and claim your reward.',
+  'Because flirting is the best foreplay.',
+  'The punchline is you in that look.',
+  'Tonight is forecast: 100% chance of sparks.',
+];
+
+interface DailyJoke {
+  id: string;
+  setup: string;
+  punchline: string;
+}
+
+const getDateKey = (date: Date): string => date.toISOString().slice(0, 10);
+
+const getDayOfYear = (date: Date): number => {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = date.getTime() - start.getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+};
+
+const getDailyJokeForDate = (date: Date): DailyJoke => {
+  const dayIndex = Math.max(0, getDayOfYear(date) - 1);
+  const year = date.getFullYear();
+  const setupIndex = dayIndex % DAILY_JOKE_SETUPS.length;
+  const punchlineIndex = (dayIndex * 13 + year) % DAILY_JOKE_PUNCHLINES.length;
+  return {
+    id: `${year}-${setupIndex}-${punchlineIndex}`,
+    setup: DAILY_JOKE_SETUPS[setupIndex],
+    punchline: DAILY_JOKE_PUNCHLINES[punchlineIndex],
+  };
+};
+
+if (Platform.OS !== 'web') {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+}
+
+const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
+  if (Platform.OS === 'web') return;
+
+  try {
+    const now = new Date();
+    const refreshAtRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY);
+    if (refreshAtRaw && new Date(refreshAtRaw) > now) {
+      return;
+    }
+
+    const permission = await Notifications.getPermissionsAsync();
+    let finalStatus = permission.status;
+    if (finalStatus !== 'granted') {
+      const requested = await Notifications.requestPermissionsAsync();
+      finalStatus = requested.status;
+    }
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    const existingIdsRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_IDS_KEY);
+    if (existingIdsRaw) {
+      const existingIds: string[] = JSON.parse(existingIdsRaw);
+      await Promise.all(existingIds.map((id) => Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined)));
+    }
+
+    const scheduledIds: string[] = [];
+    for (let offset = 0; offset < DAILY_JOKE_NOTIFICATION_DAYS_AHEAD; offset += 1) {
+      const fireDate = new Date();
+      fireDate.setDate(fireDate.getDate() + offset);
+      fireDate.setHours(DAILY_JOKE_NOTIFICATION_HOUR, DAILY_JOKE_NOTIFICATION_MINUTE, 0, 0);
+      if (fireDate <= now) continue;
+
+      const joke = getDailyJokeForDate(fireDate);
+      const id = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: DAILY_JOKE_NOTIFICATION_TITLE,
+          body: `${joke.setup} Open Blisse for the punchline.`,
+          sound: false,
+          data: { type: 'daily_joke_tease', jokeId: joke.id, dateKey: getDateKey(fireDate) },
+        },
+        trigger: fireDate as any,
+      });
+      scheduledIds.push(id);
+    }
+
+    const refreshAt = new Date(now);
+    refreshAt.setDate(refreshAt.getDate() + DAILY_JOKE_NOTIFICATION_REFRESH_WINDOW_DAYS);
+
+    await AsyncStorage.setItem(DAILY_JOKE_NOTIFICATION_IDS_KEY, JSON.stringify(scheduledIds));
+    await AsyncStorage.setItem(DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY, refreshAt.toISOString());
+  } catch (error) {
+    console.warn('Daily joke notification scheduling failed:', error);
   }
 };
 
@@ -5223,6 +5413,8 @@ function HomeScreen({ navigation }: any) {
   const [showSeasonal, setShowSeasonal] = useState(false);
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
   const [showMusic, setShowMusic] = useState(false);
+  const [dailyJokeDateKey, setDailyJokeDateKey] = useState(getDateKey(new Date()));
+  const [showDailyPunchline, setShowDailyPunchline] = useState(false);
   
   const greeting = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 18 ? 'Good afternoon' : 'Good evening';
   
@@ -5235,6 +5427,7 @@ function HomeScreen({ navigation }: any) {
 
   // Current seasonal theme
   const currentSeason = getCurrentSeason();
+  const dailyJoke = useMemo(() => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`)), [dailyJokeDateKey]);
 
   // Check for daily bonus on mount
   useEffect(() => {
@@ -5246,6 +5439,18 @@ function HomeScreen({ navigation }: any) {
       setTimeout(() => setShowDailyBonus(true), 500);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const nextDateKey = getDateKey(new Date());
+      setDailyJokeDateKey((prev) => (prev === nextDateKey ? prev : nextDateKey));
+    }, 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    setShowDailyPunchline(false);
+  }, [dailyJokeDateKey]);
 
   const tonightPosition = useMemo(() => {
     if (store.currentMood) {
@@ -5308,6 +5513,31 @@ function HomeScreen({ navigation }: any) {
           <Text style={[styles.streakBannerText, { color: colors.gold }]}>📅 {store.loginStreak} day login streak!</Text>
         </View>
       )}
+
+      {/* Daily Joke Tease */}
+      <View style={styles.dailyJokeCard}>
+        <View style={styles.dailyJokeHeaderRow}>
+          <Text style={styles.dailyJokeTitle}>😏 Daily Tease</Text>
+          <Text style={styles.dailyJokeDate}>{dailyJokeDateKey}</Text>
+        </View>
+        <Text style={styles.dailyJokeSetup}>{dailyJoke.setup}</Text>
+        {!showDailyPunchline ? (
+          <TouchableOpacity
+            style={styles.dailyJokeRevealButton}
+            onPress={() => {
+              setShowDailyPunchline(true);
+              Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
+            }}
+          >
+            <Text style={styles.dailyJokeRevealText}>Reveal punchline</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.dailyJokePunchlineBox}>
+            <Text style={styles.dailyJokePunchlineLabel}>Punchline</Text>
+            <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
+          </View>
+        )}
+      </View>
 
       {/* Seasonal Card */}
       {currentSeason && (
@@ -6953,6 +7183,11 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
     const appStateSubscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
       if (nextState !== 'active') {
         setIsUnlocked(false);
+        return;
+      }
+
+      if (useStore.getState().hasAgreedToTerms) {
+        void ensureDailyJokeTeaserNotifications();
       }
     });
 
@@ -6961,6 +7196,11 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
       appStateSubscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (!isReady || !store.hasAgreedToTerms) return;
+    void ensureDailyJokeTeaserNotifications();
+  }, [isReady, store.hasAgreedToTerms]);
 
   // Show loading while store hydrates
   if (!isReady) {
@@ -7078,6 +7318,16 @@ const styles = StyleSheet.create({
   starCounterText: { color: '#1a1a1a', fontWeight: '700', fontSize: 14 },
   streakBanner: { backgroundColor: 'rgba(239, 68, 68, 0.2)', borderRadius: 12, padding: 12, marginBottom: 16, alignItems: 'center' },
   streakBannerText: { color: '#ef4444', fontWeight: '600', fontSize: 14 },
+  dailyJokeCard: { backgroundColor: colors.card, borderRadius: 16, padding: 14, marginBottom: 16, borderWidth: 1, borderColor: colors.cardLight },
+  dailyJokeHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  dailyJokeTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary },
+  dailyJokeDate: { fontSize: 11, color: colors.text.muted },
+  dailyJokeSetup: { fontSize: 14, color: colors.text.secondary, lineHeight: 20 },
+  dailyJokeRevealButton: { marginTop: 10, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, backgroundColor: colors.primary[500] + '25' },
+  dailyJokeRevealText: { color: colors.primary[400], fontSize: 13, fontWeight: '600' },
+  dailyJokePunchlineBox: { marginTop: 10, backgroundColor: colors.cardLight, borderRadius: 12, padding: 10 },
+  dailyJokePunchlineLabel: { color: colors.text.muted, fontSize: 11, marginBottom: 4, textTransform: 'uppercase' },
+  dailyJokePunchline: { color: colors.text.primary, fontSize: 14, lineHeight: 20, fontWeight: '600' },
   tonightCard: { borderRadius: 20, overflow: 'hidden', marginBottom: 16 },
   tonightGradient: { padding: 24 },
   tonightLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginBottom: 8 },

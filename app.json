@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.blisse.app",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "Use Face ID to unlock Blisse and keep your content private",
@@ -76,6 +76,7 @@
       "expo-apple-authentication",
       "expo-local-authentication",
       "expo-secure-store",
+      "expo-notifications",
       [
         "expo-av",
         {
