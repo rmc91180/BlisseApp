@@ -298,6 +298,7 @@ interface SeasonalTheme {
   endMonth: number;
   positions: number[];
   foreplay: number[];
+  oral: number[];
   roleplay: number[];
   tips: string[];
 }
@@ -311,7 +312,8 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     color: '#ec4899',
     startMonth: 2, endMonth: 2,
     positions: [1, 5, 8, 12, 18], // Romantic positions
-    foreplay: [1, 5, 10, 15],
+    foreplay: [101, 103, 106, 110],
+    oral: [201, 202, 205, 206],
     roleplay: [401, 403, 404], // Romantic roleplay
     tips: ['Set up rose petals', 'Light candles everywhere', 'Prepare chocolate-dipped strawberries', 'Write a love note to read together']
   },
@@ -323,7 +325,8 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     color: '#84cc16',
     startMonth: 3, endMonth: 5,
     positions: [3, 7, 11, 15, 22],
-    foreplay: [2, 6, 12],
+    foreplay: [104, 105, 107, 112],
+    oral: [204, 206, 211, 212],
     roleplay: [406, 410, 415],
     tips: ['Open the windows for fresh air', 'Try morning intimacy', 'Bring flowers to the bedroom', 'Spring clean then celebrate']
   },
@@ -335,7 +338,8 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     color: '#f59e0b',
     startMonth: 6, endMonth: 8,
     positions: [4, 9, 14, 20, 25],
-    foreplay: [3, 8, 14],
+    foreplay: [102, 108, 109, 111],
+    oral: [203, 207, 208, 210],
     roleplay: [407, 411, 416],
     tips: ['Ice cubes for temperature play', 'Try a staycation hotel night', 'Skinny dipping if you can', 'Late night balcony/patio moments']
   },
@@ -347,7 +351,8 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     color: '#ea580c',
     startMonth: 9, endMonth: 11,
     positions: [2, 6, 10, 16, 21],
-    foreplay: [4, 9, 13],
+    foreplay: [101, 104, 106, 108],
+    oral: [201, 204, 206, 212],
     roleplay: [402, 408, 412],
     tips: ['Fireplace or candles for ambiance', 'Warm blankets and cozy vibes', 'Pumpkin spice massage oil', 'Stay in bed on rainy days']
   },
@@ -359,7 +364,8 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     color: '#3b82f6',
     startMonth: 12, endMonth: 1,
     positions: [1, 5, 8, 12, 17],
-    foreplay: [1, 7, 11],
+    foreplay: [101, 105, 108, 112],
+    oral: [201, 205, 209, 212],
     roleplay: [403, 405, 409],
     tips: ['Body heat is your friend', 'Hot bath or shower together', 'Fuzzy blankets and bare skin', 'Holiday lingerie surprise']
   },
@@ -371,7 +377,8 @@ const SEASONAL_THEMES: SeasonalTheme[] = [
     color: '#a855f7',
     startMonth: 1, endMonth: 1,
     positions: [3, 8, 13, 19, 24],
-    foreplay: [2, 6, 10],
+    foreplay: [102, 103, 106, 110],
+    oral: [202, 206, 208, 211],
     roleplay: [401, 406, 414],
     tips: ['Make intimacy resolutions together', 'Try something completely new', 'Champagne and celebration', 'Midnight countdown kiss and more']
   },
@@ -6396,12 +6403,116 @@ function RolePlayDetailScreen({ route, navigation }: any) {
 // ============================================
 function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
   const currentSeason = getCurrentSeason();
-  
+  const store = useStore();
+
+  type SeasonalContentType = 'position' | 'foreplay' | 'oral' | 'roleplay';
+
+  const seasonalRecommendations = useMemo(() => {
+    const season = currentSeason;
+    if (!season) {
+      return { positions: [], foreplay: [], oral: [], roleplay: [] };
+    }
+
+    const scoreSeasonalItem = (
+      type: SeasonalContentType,
+      item: { id: number; category?: string; mood?: string; difficulty?: string },
+      isSeasonalSeed: boolean
+    ): number => {
+      const categoryScore = item.category ? (store.learningPreferences.categoryScores[item.category] || 50) : 50;
+      const moodScore = item.mood ? (store.learningPreferences.moodScores[item.mood] || 50) : 50;
+      const difficultyScore = item.difficulty ? (store.learningPreferences.difficultyScores[item.difficulty] || 50) : 50;
+      const typeScore = store.learningPreferences.contentTypeScores[type] || 50;
+
+      const triedSet = type === 'position'
+        ? store.tried
+        : type === 'foreplay'
+          ? store.triedForeplay
+          : type === 'oral'
+            ? store.triedOral
+            : store.triedRoleplay;
+
+      const favoriteSet = type === 'position'
+        ? store.favorites
+        : type === 'foreplay'
+          ? store.favoriteForeplay
+          : type === 'oral'
+            ? store.favoriteOral
+            : store.favoriteRoleplay;
+
+      const isTried = triedSet.includes(item.id);
+      const isFavorite = favoriteSet.includes(item.id);
+      const moodMatchBoost = store.currentMood && item.mood === store.currentMood ? 12 : 0;
+      const noveltyBoost = isTried ? -3 : 8;
+      const favoriteBoost = isFavorite ? 10 : 0;
+      const seasonalBoost = isSeasonalSeed ? 18 : 0;
+
+      return (
+        50 +
+        (categoryScore - 50) * 0.35 +
+        (moodScore - 50) * 0.25 +
+        (difficultyScore - 50) * 0.15 +
+        (typeScore - 50) * 0.2 +
+        moodMatchBoost +
+        noveltyBoost +
+        favoriteBoost +
+        seasonalBoost
+      );
+    };
+
+    const build = <T extends { id: number; category?: string; mood?: string; difficulty?: string }>(
+      type: SeasonalContentType,
+      items: T[],
+      seasonalSeedIds: number[],
+      limit: number
+    ): T[] => {
+      return [...items]
+        .map(item => ({
+          item,
+          score: scoreSeasonalItem(type, item, seasonalSeedIds.includes(item.id)),
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map(entry => entry.item);
+    };
+
+    return {
+      positions: build('position', positions, season.positions, 3),
+      foreplay: build('foreplay', foreplayIdeas, season.foreplay, 3),
+      oral: build('oral', oralPlayIdeas, season.oral, 3),
+      roleplay: build('roleplay', rolePlayScenarios, season.roleplay, 2),
+    };
+  }, [
+    currentSeason,
+    store.currentMood,
+    store.learningPreferences,
+    store.tried,
+    store.triedForeplay,
+    store.triedOral,
+    store.triedRoleplay,
+    store.favorites,
+    store.favoriteForeplay,
+    store.favoriteOral,
+    store.favoriteRoleplay,
+  ]);
+
   if (!currentSeason) return null;
 
-  const seasonalPositions = positions.filter(p => currentSeason.positions.includes(p.id));
-  const seasonalForeplay = foreplayIdeas.filter(f => currentSeason.foreplay.includes(f.id));
-  const seasonalRoleplay = rolePlayScenarios.filter(r => currentSeason.roleplay.includes(r.id));
+  const openSeasonalItem = (type: SeasonalContentType, item: any) => {
+    store.trackInteraction({
+      type: 'view',
+      contentType: type,
+      itemId: item.id,
+      category: item.category,
+      mood: item.mood,
+      difficulty: type === 'position' ? item.difficulty : undefined,
+    });
+
+    onClose();
+    if (type === 'position') navigation.navigate('PositionDetail', { position: item });
+    if (type === 'foreplay') navigation.navigate('ForeplayDetail', { item });
+    if (type === 'oral') navigation.navigate('OralDetail', { item });
+    if (type === 'roleplay') navigation.navigate('RolePlayDetail', { item });
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -6424,11 +6535,11 @@ function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onC
 
             {/* Recommended Positions */}
             <Text style={styles.seasonalSectionTitle}>Recommended Positions</Text>
-            {seasonalPositions.slice(0, 3).map((pos) => (
+            {seasonalRecommendations.positions.map((pos) => (
               <TouchableOpacity 
                 key={pos.id} 
                 style={styles.seasonalItemCard}
-                onPress={() => { onClose(); navigation.navigate('PositionDetail', { position: pos }); }}
+                onPress={() => openSeasonalItem('position', pos)}
               >
                 <Text style={styles.seasonalItemEmoji}>💑</Text>
                 <View style={styles.seasonalItemInfo}>
@@ -6438,14 +6549,17 @@ function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onC
                 <Text style={styles.seasonalItemArrow}>→</Text>
               </TouchableOpacity>
             ))}
+            {seasonalRecommendations.positions.length === 0 && (
+              <Text style={styles.seasonalEmptyText}>No seasonal position suggestions yet.</Text>
+            )}
 
             {/* Recommended Foreplay */}
             <Text style={styles.seasonalSectionTitle}>Recommended Foreplay</Text>
-            {seasonalForeplay.slice(0, 2).map((item) => (
+            {seasonalRecommendations.foreplay.map((item) => (
               <TouchableOpacity 
                 key={item.id} 
                 style={styles.seasonalItemCard}
-                onPress={() => { onClose(); navigation.navigate('ForeplayDetail', { item }); }}
+                onPress={() => openSeasonalItem('foreplay', item)}
               >
                 <Text style={styles.seasonalItemEmoji}>💕</Text>
                 <View style={styles.seasonalItemInfo}>
@@ -6455,16 +6569,39 @@ function SeasonalModal({ visible, onClose, navigation }: { visible: boolean; onC
                 <Text style={styles.seasonalItemArrow}>→</Text>
               </TouchableOpacity>
             ))}
+            {seasonalRecommendations.foreplay.length === 0 && (
+              <Text style={styles.seasonalEmptyText}>No seasonal foreplay suggestions yet.</Text>
+            )}
+
+            {/* Recommended Oral Play */}
+            <Text style={styles.seasonalSectionTitle}>Recommended Oral Play</Text>
+            {seasonalRecommendations.oral.map((item) => (
+              <TouchableOpacity 
+                key={item.id} 
+                style={styles.seasonalItemCard}
+                onPress={() => openSeasonalItem('oral', item)}
+              >
+                <Text style={styles.seasonalItemEmoji}>👄</Text>
+                <View style={styles.seasonalItemInfo}>
+                  <Text style={styles.seasonalItemName}>{item.name}</Text>
+                  <Text style={styles.seasonalItemVibe}>{item.vibe}</Text>
+                </View>
+                <Text style={styles.seasonalItemArrow}>→</Text>
+              </TouchableOpacity>
+            ))}
+            {seasonalRecommendations.oral.length === 0 && (
+              <Text style={styles.seasonalEmptyText}>No seasonal oral-play suggestions yet.</Text>
+            )}
 
             {/* Recommended Role Play */}
-            {seasonalRoleplay.length > 0 && (
+            {seasonalRecommendations.roleplay.length > 0 && (
               <>
                 <Text style={styles.seasonalSectionTitle}>Recommended Role Play</Text>
-                {seasonalRoleplay.slice(0, 2).map((item) => (
+                {seasonalRecommendations.roleplay.map((item) => (
                   <TouchableOpacity 
                     key={item.id} 
                     style={styles.seasonalItemCard}
-                    onPress={() => { onClose(); navigation.navigate('RolePlayDetail', { item }); }}
+                    onPress={() => openSeasonalItem('roleplay', item)}
                   >
                     <Text style={styles.seasonalItemEmoji}>🎭</Text>
                     <View style={styles.seasonalItemInfo}>
@@ -7176,11 +7313,11 @@ const styles = StyleSheet.create({
   // ============================================
   // CONTENT TYPE TABS (5 tabs)
   // ============================================
-  contentTypeScroll: { marginBottom: 12 },
-  contentTypeScrollContent: { paddingHorizontal: 4 },
-  contentTypeTab: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, marginRight: 8, backgroundColor: colors.card },
-  contentTypeTabActive: { backgroundColor: colors.primary[500] },
-  contentTypeTabText: { fontSize: 13, color: colors.text.muted },
+  contentTypeScroll: { marginBottom: 14 },
+  contentTypeScrollContent: { paddingHorizontal: 4, paddingRight: 8 },
+  contentTypeTab: { minWidth: 118, paddingHorizontal: 14, paddingVertical: 11, borderRadius: 20, marginRight: 8, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.cardLight, alignItems: 'center', justifyContent: 'center' },
+  contentTypeTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
+  contentTypeTabText: { fontSize: 13, color: colors.text.secondary, fontWeight: '600' },
   contentTypeTabTextActive: { color: '#FFF', fontWeight: '600' },
 
   // ============================================
@@ -7202,6 +7339,7 @@ const styles = StyleSheet.create({
   seasonalItemName: { fontSize: 15, fontWeight: '600', color: colors.text.primary },
   seasonalItemVibe: { fontSize: 12, color: colors.text.muted, marginTop: 2 },
   seasonalItemArrow: { fontSize: 16, color: colors.text.muted },
+  seasonalEmptyText: { fontSize: 13, color: colors.text.muted, marginBottom: 8 },
 
   // ============================================
   // SEASONAL CARD (Home Screen)
