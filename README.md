@@ -29,6 +29,8 @@ Blisse now supports a remote daily joke bank from Firestore with local fallback.
 }
 ```
 
+Seed file in repo: `firebase/daily_jokes.seed.json`
+
 ### Behavior
 - The app reads this bank and caches it locally.
 - If Firestore is unavailable or empty, Blisse uses built-in jokes.
