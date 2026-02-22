@@ -32,6 +32,7 @@ import { foreplayIdeas, foreplayCategories, ForeplayIdea } from '@/content/forep
 import { oralPlayIdeas, oralCategories, OralPlayIdea } from '@/content/oralplay';
 import { massageTechniques, MassageTechnique } from '@/content/massage';
 import { rolePlayScenarios, RolePlayScenario } from '@/content/roleplay';
+import { AppLanguage, SUPPORTED_LANGUAGES, getContentTypeKey, getLanguageLabel, translateTerm, translateUi } from '@/i18n/translations';
 import * as Linking from 'expo-linking';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
@@ -1762,6 +1763,7 @@ interface UserState {
   // Security & Settings
   pinCode: string | null;
   useBiometrics: boolean;
+  language: AppLanguage;
   hasAgreedToTerms: boolean;
   agreedToTermsDate: string | null;
   // Smart Learning
@@ -1802,6 +1804,7 @@ interface UserState {
   // Security & Settings Actions
   setPinCode: (pin: string | null) => void;
   setUseBiometrics: (use: boolean) => void;
+  setLanguage: (language: AppLanguage) => void;
   agreeToTerms: () => void;
   resetOnboarding: () => void;
   // Smart Learning Actions
@@ -1855,6 +1858,7 @@ const useStore = create<UserState>()(
       dailyBonusClaimed: false,
       pinCode: null,
       useBiometrics: false,
+      language: 'en',
       hasAgreedToTerms: false,
       agreedToTermsDate: null,
       // Smart Learning
@@ -2224,6 +2228,7 @@ const useStore = create<UserState>()(
         void savePinToSecureStorage(pin);
       },
       setUseBiometrics: (use) => set({ useBiometrics: use }),
+      setLanguage: (language) => set({ language }),
       agreeToTerms: () => set({ hasAgreedToTerms: true, agreedToTermsDate: new Date().toISOString() }),
 
       resetOnboarding: () => {
@@ -2343,6 +2348,19 @@ const useStore = create<UserState>()(
     }
   )
 );
+
+const useI18n = () => {
+  const language = useStore((state) => state.language);
+  const t = useCallback((key: string, params?: Record<string, string | number>) => {
+    return translateUi(language, key, params);
+  }, [language]);
+  const localizeTerm = useCallback((term: string) => {
+    return translateTerm(language, term);
+  }, [language]);
+  const languageLabel = useMemo(() => getLanguageLabel(language), [language]);
+
+  return { language, languageLabel, t, localizeTerm };
+};
 
 // ============================================
 // THEME SYSTEM
@@ -4934,8 +4952,10 @@ function FontSizeSelector() {
 // ============================================
 function SettingsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
   const store = useStore();
+  const { languageLabel, t } = useI18n();
   const { user, logout } = useAuth();
   const [showPinSetup, setShowPinSetup] = useState(false);
+  const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const [showAboutBlisse, setShowAboutBlisse] = useState(false);
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
@@ -5025,36 +5045,36 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { maxHeight: '90%' }]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>⚙️ Settings</Text>
+              <Text style={styles.modalTitle}>⚙️ {t('settings.title')}</Text>
               <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
             {/* Security Section */}
-            <Text style={styles.settingsSectionTitle}>🔒 Privacy & Security</Text>
+            <Text style={styles.settingsSectionTitle}>🔒 {t('settings.section.security')}</Text>
             
             {!showPinSetup ? (
               <>
                 <TouchableOpacity style={styles.settingsItem} onPress={() => store.pinCode ? handleRemovePin() : setShowPinSetup(true)}>
-                  <Text style={styles.settingsItemText}>{store.pinCode ? '🔐 Change PIN Lock' : '🔓 Set PIN Lock'}</Text>
-                  <Text style={styles.settingsItemValue}>{store.pinCode ? 'Enabled ✓' : 'Off'}</Text>
+                  <Text style={styles.settingsItemText}>{store.pinCode ? `🔐 ${t('settings.pin.change')}` : `🔓 ${t('settings.pin.set')}`}</Text>
+                  <Text style={styles.settingsItemValue}>{store.pinCode ? `${t('settings.pin.enabled')} ✓` : t('settings.pin.off')}</Text>
                 </TouchableOpacity>
                 
                 {store.pinCode && (
                   <TouchableOpacity style={styles.settingsItem} onPress={handleToggleBiometrics}>
-                    <Text style={styles.settingsItemText}>👆 Use Face/Touch ID</Text>
-                    <Text style={styles.settingsItemValue}>{store.useBiometrics ? 'On ✓' : 'Off'}</Text>
+                    <Text style={styles.settingsItemText}>👆 {t('settings.biometrics')}</Text>
+                    <Text style={styles.settingsItemValue}>{store.useBiometrics ? `${t('settings.on')} ✓` : t('settings.pin.off')}</Text>
                   </TouchableOpacity>
                 )}
               </>
             ) : (
               <View style={styles.pinSetupContainer}>
-                <Text style={styles.pinSetupTitle}>Set 4-Digit PIN</Text>
+                <Text style={styles.pinSetupTitle}>{t('settings.pin.setup_title')}</Text>
                 <TextInput
                   style={styles.pinInput}
                   value={newPin}
                   onChangeText={setNewPin}
-                  placeholder="Enter PIN"
+                  placeholder={t('settings.pin.enter')}
                   placeholderTextColor={colors.text.muted}
                   keyboardType="numeric"
                   maxLength={4}
@@ -5064,7 +5084,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                   style={styles.pinInput}
                   value={confirmPin}
                   onChangeText={setConfirmPin}
-                  placeholder="Confirm PIN"
+                  placeholder={t('settings.pin.confirm')}
                   placeholderTextColor={colors.text.muted}
                   keyboardType="numeric"
                   maxLength={4}
@@ -5073,50 +5093,85 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                 {pinError ? <Text style={styles.pinError}>{pinError}</Text> : null}
                 <View style={styles.pinButtonsRow}>
                   <TouchableOpacity style={styles.pinCancelButton} onPress={() => { setShowPinSetup(false); setNewPin(''); setConfirmPin(''); setPinError(''); }}>
-                    <Text style={styles.pinCancelText}>Cancel</Text>
+                    <Text style={styles.pinCancelText}>{t('settings.pin.cancel')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.pinSaveButton} onPress={handleSetPin}>
-                    <Text style={styles.pinSaveText}>Save PIN</Text>
+                    <Text style={styles.pinSaveText}>{t('settings.pin.save')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
 
+            {/* Language Section */}
+            <Text style={styles.settingsSectionTitle}>🌐 {t('settings.section.language')}</Text>
+            <TouchableOpacity style={styles.settingsItem} onPress={() => setShowLanguageOptions((prev) => !prev)}>
+              <Text style={styles.settingsItemText}>{t('settings.language')}</Text>
+              <Text style={styles.settingsItemValue}>{languageLabel} ▾</Text>
+            </TouchableOpacity>
+            {showLanguageOptions && (
+              <View style={styles.languageDropdown}>
+                {SUPPORTED_LANGUAGES.map((item) => (
+                  <TouchableOpacity
+                    key={item.code}
+                    style={[
+                      styles.languageOption,
+                      store.language === item.code && styles.languageOptionActive,
+                    ]}
+                    onPress={() => {
+                      store.setLanguage(item.code);
+                      setShowLanguageOptions(false);
+                      haptic.light();
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.languageOptionText,
+                        store.language === item.code && styles.languageOptionTextActive,
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                    {store.language === item.code ? <Text style={styles.languageOptionCheck}>✓</Text> : null}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
             {/* Appearance Section */}
-            <Text style={styles.settingsSectionTitle}>🎨 Appearance</Text>
+            <Text style={styles.settingsSectionTitle}>🎨 {t('settings.section.appearance')}</Text>
             <ThemeSelector />
             <FontSizeSelector />
 
             {/* Account Section */}
-            <Text style={styles.settingsSectionTitle}>👤 Account</Text>
+            <Text style={styles.settingsSectionTitle}>👤 {t('settings.section.account')}</Text>
             <View style={styles.settingsItem}>
-              <Text style={styles.settingsItemText}>Name</Text>
-              <Text style={styles.settingsItemValue}>{store.name || 'Not set'}</Text>
+              <Text style={styles.settingsItemText}>{t('settings.account.name')}</Text>
+              <Text style={styles.settingsItemValue}>{store.name || t('common.not_set')}</Text>
             </View>
             <View style={styles.settingsItem}>
-              <Text style={styles.settingsItemText}>Experience</Text>
-              <Text style={styles.settingsItemValue}>{store.experience || 'Not set'}</Text>
+              <Text style={styles.settingsItemText}>{t('settings.account.experience')}</Text>
+              <Text style={styles.settingsItemValue}>{store.experience || t('common.not_set')}</Text>
             </View>
             <TouchableOpacity style={styles.settingsItem} onPress={() => setShowAboutBlisse(true)}>
-              <Text style={styles.settingsItemText}>💞 About Blisse</Text>
-              <Text style={styles.settingsItemValue}>Open</Text>
+              <Text style={styles.settingsItemText}>💞 {t('settings.account.about')}</Text>
+              <Text style={styles.settingsItemValue}>{t('common.open')}</Text>
             </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.settingsItem, { borderColor: colors.error }]}
             onPress={handleDeleteAccount}
           >
-            <Text style={[styles.settingsItemText, { color: colors.error }]}>❌ Delete Account</Text>
+            <Text style={[styles.settingsItemText, { color: colors.error }]}>❌ {t('settings.account.delete')}</Text>
           </TouchableOpacity>
 
             {/* Data Section */}
-            <Text style={styles.settingsSectionTitle}>📊 Your Data</Text>
+            <Text style={styles.settingsSectionTitle}>📊 {t('settings.section.data')}</Text>
             <View style={styles.settingsItem}>
-              <Text style={styles.settingsItemText}>Total Stars</Text>
+              <Text style={styles.settingsItemText}>{t('settings.data.total_stars')}</Text>
               <Text style={styles.settingsItemValue}>⭐ {store.totalStars}</Text>
             </View>
             <View style={styles.settingsItem}>
-              <Text style={styles.settingsItemText}>Items Tried</Text>
+              <Text style={styles.settingsItemText}>{t('settings.data.items_tried')}</Text>
               <Text style={styles.settingsItemValue}>{store.tried.length + store.triedForeplay.length + store.triedOral.length + store.triedMassage.length + store.triedRoleplay.length}</Text>
             </View>
             
@@ -5126,7 +5181,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                 { text: 'Reset Everything', style: 'destructive', onPress: () => { store.resetOnboarding(); onClose(); } }
               ]);
             }}>
-              <Text style={[styles.settingsItemText, { color: colors.error }]}>🗑️ Reset All Data</Text>
+              <Text style={[styles.settingsItemText, { color: colors.error }]}>🗑️ {t('settings.data.reset')}</Text>
             </TouchableOpacity>
             </ScrollView>
           </View>
@@ -5671,6 +5726,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
 // ============================================
 function HomeScreen({ navigation }: any) {
   const store = useStore();
+  const { t, localizeTerm } = useI18n();
   const introAnim = useRef(new Animated.Value(0)).current;
   const suggestionsAnim = useRef(new Animated.Value(0)).current;
   const actionsAnim = useRef(new Animated.Value(0)).current;
@@ -5692,7 +5748,12 @@ function HomeScreen({ navigation }: any) {
   const [dailyJokeBank, setDailyJokeBank] = useState<DailyJokeBank | null>(null);
   const [showDailyPunchline, setShowDailyPunchline] = useState(false);
   
-  const greeting = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 18 ? 'Good afternoon' : 'Good evening';
+  const greeting =
+    new Date().getHours() < 12
+      ? t('home.greeting.morning')
+      : new Date().getHours() < 18
+        ? t('home.greeting.afternoon')
+        : t('home.greeting.evening');
   
   // Level system
   const currentLevel = getLevel(store.totalStars);
@@ -5812,7 +5873,7 @@ function HomeScreen({ navigation }: any) {
         <View style={styles.homeHeaderTop}>
           <View>
             <Text style={styles.greeting}>{greeting} ✨</Text>
-            <Text style={styles.title}>Hey {store.name || 'there'}!</Text>
+            <Text style={styles.title}>{t('home.hey_name', { name: store.name || t('home.there') })}</Text>
           </View>
           <TouchableOpacity style={styles.starCounter} onPress={() => setShowInsights(true)}>
             <Text style={styles.starCounterText}>⭐ {store.totalStars}</Text>
@@ -5832,11 +5893,11 @@ function HomeScreen({ navigation }: any) {
             <Text style={styles.levelEmoji}>{currentLevel.emoji}</Text>
             <View style={styles.levelInfo}>
               <Text style={[styles.levelTitle, { color: currentLevel.color }]}>{currentLevel.title}</Text>
-              <Text style={styles.levelSubtitle}>Level {currentLevel.level}</Text>
+              <Text style={styles.levelSubtitle}>{t('home.level', { level: currentLevel.level })}</Text>
             </View>
             {nextLevel && (
               <View style={styles.levelNextBadge}>
-                <Text style={styles.levelNextText}>Next: {nextLevel.emoji}</Text>
+                <Text style={styles.levelNextText}>{t('home.next', { emoji: nextLevel.emoji })}</Text>
               </View>
             )}
           </View>
@@ -5844,7 +5905,7 @@ function HomeScreen({ navigation }: any) {
             <Animated.View style={[styles.levelProgressFill, { width: `${progressToNext}%`, backgroundColor: currentLevel.color }]} />
           </View>
           {nextLevel && (
-            <Text style={styles.levelProgressText}>{nextLevel.minStars - store.totalStars} stars to {nextLevel.title}</Text>
+            <Text style={styles.levelProgressText}>{t('home.stars_to_level', { count: nextLevel.minStars - store.totalStars, title: nextLevel.title })}</Text>
           )}
           <Text style={styles.levelMotivatorText}>{levelMotivator}</Text>
         </TouchableOpacity>
@@ -5852,14 +5913,14 @@ function HomeScreen({ navigation }: any) {
         {/* Streak Banner */}
         {store.currentStreak >= 2 && (
           <View style={styles.streakBanner}>
-            <Text style={styles.streakBannerText}>🔥 {store.currentStreak} week streak! Keep it up!</Text>
+            <Text style={styles.streakBannerText}>🔥 {t('home.week_streak', { count: store.currentStreak })}</Text>
           </View>
         )}
 
         {/* Login Streak Banner */}
         {store.loginStreak >= 3 && (
           <View style={[styles.streakBanner, { backgroundColor: colors.gold + '20' }]}>
-            <Text style={[styles.streakBannerText, { color: colors.gold }]}>📅 {store.loginStreak} day login streak!</Text>
+            <Text style={[styles.streakBannerText, { color: colors.gold }]}>📅 {t('home.day_login_streak', { count: store.loginStreak })}</Text>
           </View>
         )}
       </Animated.View>
@@ -5868,7 +5929,7 @@ function HomeScreen({ navigation }: any) {
         {/* Daily Joke Tease */}
         <View style={styles.dailyJokeCard}>
           <View style={styles.dailyJokeHeaderRow}>
-            <Text style={styles.dailyJokeTitle}>😏 Daily Tease</Text>
+            <Text style={styles.dailyJokeTitle}>😏 {t('home.daily_tease')}</Text>
             <Text style={styles.dailyJokeDate}>{dailyJokeDateKey}</Text>
           </View>
           <Text style={styles.dailyJokeSetup}>{dailyJoke.setup}</Text>
@@ -5880,11 +5941,11 @@ function HomeScreen({ navigation }: any) {
                 Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
               }}
             >
-              <Text style={styles.dailyJokeRevealText}>Reveal punchline</Text>
+              <Text style={styles.dailyJokeRevealText}>{t('home.reveal_punchline')}</Text>
             </TouchableOpacity>
           ) : (
             <View style={styles.dailyJokePunchlineBox}>
-              <Text style={styles.dailyJokePunchlineLabel}>Punchline</Text>
+              <Text style={styles.dailyJokePunchlineLabel}>{t('home.punchline')}</Text>
               <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
             </View>
           )}
@@ -5906,7 +5967,7 @@ function HomeScreen({ navigation }: any) {
         <TouchableOpacity onPress={() => { haptic.light(); navigation.navigate('PositionDetail', { position: tonightPosition }); }} activeOpacity={0.9}>
           <View style={styles.tonightCard}>
             <LinearGradient colors={['#7c3aed', '#db2777']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.tonightGradient}>
-              <Text style={styles.tonightLabel}>Tonight's Suggestion</Text>
+              <Text style={styles.tonightLabel}>{t('home.tonight_suggestion')}</Text>
               <Text style={styles.tonightTitle}>{tonightPosition.name}</Text>
               <Text style={styles.tonightSubtitle}>{tonightPosition.vibe}</Text>
               <Text style={styles.tonightTeaser}>{tonightTeaser}</Text>
@@ -5925,21 +5986,21 @@ function HomeScreen({ navigation }: any) {
           <LinearGradient colors={['#f59e0b', '#ef4444']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎰</Text>
             <Text style={styles.featureButtonText}>Spin</Text>
-            <Text style={styles.featureButtonSubtext}>Whimsy wheel for bold giggles</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.playful')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowDateNight(true)}>
           <LinearGradient colors={['#8b5cf6', '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🌙</Text>
             <Text style={styles.featureButtonText}>Date Night</Text>
-            <Text style={styles.featureButtonSubtext}>Curated romance, reloaded</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.romance')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowTruthOrDare(true)}>
           <LinearGradient colors={['#ef4444', '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎲</Text>
             <Text style={styles.featureButtonText}>Truth/Dare</Text>
-            <Text style={styles.featureButtonSubtext}>Deeper truths, playful dares</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.truth_dare')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -5950,21 +6011,21 @@ function HomeScreen({ navigation }: any) {
           <LinearGradient colors={['#06b6d4', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎯</Text>
             <Text style={styles.featureButtonText}>Challenge</Text>
-            <Text style={styles.featureButtonSubtext}>Team up and level your love</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.challenge')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowMusic(true)}>
           <LinearGradient colors={['#1DB954', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎵</Text>
             <Text style={styles.featureButtonText}>Music</Text>
-            <Text style={styles.featureButtonSubtext}>Mood tracks for two</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.music')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowRecommendations(true)}>
           <LinearGradient colors={['#3b82f6', '#8b5cf6']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>💡</Text>
             <Text style={styles.featureButtonText}>For You</Text>
-            <Text style={styles.featureButtonSubtext}>Personalized sparks for your duo</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.for_you')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -5975,21 +6036,21 @@ function HomeScreen({ navigation }: any) {
           <LinearGradient colors={['#ec4899', '#f43f5e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎭</Text>
             <Text style={styles.featureButtonText}>Moods</Text>
-            <Text style={styles.featureButtonSubtext}>Pick your vibe, set the tone</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.moods')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowWeeklyGoals(true)}>
           <LinearGradient colors={['#84cc16', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>📋</Text>
             <Text style={styles.featureButtonText}>Goals</Text>
-            <Text style={styles.featureButtonSubtext}>Quick wins that keep flame alive</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.goals')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowAchievements(true)}>
           <LinearGradient colors={['#fbbf24', '#f59e0b']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🏆</Text>
             <Text style={styles.featureButtonText}>Trophies</Text>
-            <Text style={styles.featureButtonSubtext}>Milestones worth bragging about</Text>
+            <Text style={styles.featureButtonSubtext}>{t('home.quality.trophies')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -5998,14 +6059,14 @@ function HomeScreen({ navigation }: any) {
       {/* Weekly Goals Preview */}
       {store.weeklyGoals.length > 0 && (
         <TouchableOpacity style={styles.weeklyGoalsPreview} onPress={() => setShowWeeklyGoals(true)}>
-          <Text style={styles.weeklyGoalsPreviewTitle}>📋 Weekly Goals</Text>
+          <Text style={styles.weeklyGoalsPreviewTitle}>📋 {t('home.weekly_goals')}</Text>
           <View style={styles.weeklyGoalsPreviewProgress}>
             {store.weeklyGoals.map((goal, index) => (
               <View key={index} style={[styles.weeklyGoalDot, goal.completed && styles.weeklyGoalDotComplete]} />
             ))}
           </View>
           <Text style={styles.weeklyGoalsPreviewText}>
-            {store.weeklyGoals.filter(g => g.completed).length}/{store.weeklyGoals.length} done
+            {store.weeklyGoals.filter(g => g.completed).length}/{store.weeklyGoals.length} {t('common.done')}
           </Text>
         </TouchableOpacity>
       )}
@@ -6041,19 +6102,19 @@ function HomeScreen({ navigation }: any) {
         </TouchableOpacity>
       )}
 
-      <Text style={styles.sectionTitle}>How are you feeling?</Text>
+      <Text style={styles.sectionTitle}>{t('home.how_feeling')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.moodScroll} contentContainerStyle={styles.horizontalScrollContent}>
         {moods.map((mood) => (
           <TouchableOpacity key={mood.id} style={[styles.moodChip, store.currentMood === mood.id && { backgroundColor: mood.color }]} onPress={() => { haptic.light(); store.setCurrentMood(store.currentMood === mood.id ? null : mood.id); }}>
-            <Text style={styles.moodChipText}>{mood.emoji} {mood.label}</Text>
+            <Text style={styles.moodChipText}>{mood.emoji} {localizeTerm(mood.label)}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       <View style={styles.statsRow}>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{store.tried.length + store.triedForeplay.length + store.triedOral.length + store.triedMassage.length + store.triedRoleplay.length}</Text><Text style={styles.statLabel}>Tried</Text></View>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{store.favorites.length + store.favoriteForeplay.length + store.favoriteOral.length + store.favoriteMassage.length + store.favoriteRoleplay.length}</Text><Text style={styles.statLabel}>Favorites</Text></View>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{positions.length + foreplayIdeas.length + oralPlayIdeas.length + massageTechniques.length + rolePlayScenarios.length}</Text><Text style={styles.statLabel}>Total</Text></View>
+        <View style={styles.statCard}><Text style={styles.statNumber}>{store.tried.length + store.triedForeplay.length + store.triedOral.length + store.triedMassage.length + store.triedRoleplay.length}</Text><Text style={styles.statLabel}>{t('stats.tried')}</Text></View>
+        <View style={styles.statCard}><Text style={styles.statNumber}>{store.favorites.length + store.favoriteForeplay.length + store.favoriteOral.length + store.favoriteMassage.length + store.favoriteRoleplay.length}</Text><Text style={styles.statLabel}>{t('stats.favorites')}</Text></View>
+        <View style={styles.statCard}><Text style={styles.statNumber}>{positions.length + foreplayIdeas.length + oralPlayIdeas.length + massageTechniques.length + rolePlayScenarios.length}</Text><Text style={styles.statLabel}>{t('stats.total')}</Text></View>
       </View>
 
       <SpinnerModal visible={showSpinner} onClose={() => setShowSpinner(false)} navigation={navigation} />
@@ -6087,6 +6148,7 @@ function ExploreScreen({ navigation }: any) {
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'>('positions');
   const [sortBy, setSortBy] = useState<'all' | 'untried' | 'tried'>('all');
   const store = useStore();
+  const { language, t, localizeTerm } = useI18n();
   const currentCategories = contentType === 'positions' ? categories : contentType === 'foreplay' ? foreplayCategories : contentType === 'oral' ? oralCategories : contentType === 'massage' ? massageCategories : rolePlayCategories;
 
   const filteredPositions = useMemo(() => {
@@ -6153,35 +6215,42 @@ function ExploreScreen({ navigation }: any) {
 
   return (
     <ScreenWrapper>
-      <View style={styles.exploreHeader}><Text style={styles.title}>Explore</Text></View>
+      <View style={styles.exploreHeader}><Text style={styles.title}>{t('explore.title')}</Text></View>
       
       {/* Content Type Tabs - Scrollable for 5 options */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.contentTypeScroll} contentContainerStyle={styles.contentTypeScrollContent}>
         <TouchableOpacity style={[styles.contentTypeTab, contentType === 'positions' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('positions')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'positions' && styles.contentTypeTabTextActive]}>💑 Positions</Text>
+          <Text style={[styles.contentTypeTabText, contentType === 'positions' && styles.contentTypeTabTextActive]}>💑 {t('explore.type.positions')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.contentTypeTab, contentType === 'foreplay' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('foreplay')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'foreplay' && styles.contentTypeTabTextActive]}>💕 Foreplay</Text>
+          <Text style={[styles.contentTypeTabText, contentType === 'foreplay' && styles.contentTypeTabTextActive]}>💕 {t('explore.type.foreplay')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.contentTypeTab, contentType === 'oral' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('oral')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'oral' && styles.contentTypeTabTextActive]}>👄 Oral</Text>
+          <Text style={[styles.contentTypeTabText, contentType === 'oral' && styles.contentTypeTabTextActive]}>👄 {t('explore.type.oral')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.contentTypeTab, contentType === 'massage' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('massage')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'massage' && styles.contentTypeTabTextActive]}>💆 Massage</Text>
+          <Text style={[styles.contentTypeTabText, contentType === 'massage' && styles.contentTypeTabTextActive]}>💆 {t('explore.type.massage')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.contentTypeTab, contentType === 'roleplay' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('roleplay')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'roleplay' && styles.contentTypeTabTextActive]}>🎭 Role Play</Text>
+          <Text style={[styles.contentTypeTabText, contentType === 'roleplay' && styles.contentTypeTabTextActive]}>🎭 {t('explore.type.roleplay')}</Text>
         </TouchableOpacity>
       </ScrollView>
 
-      <SearchBar value={searchQuery} onChangeText={setSearchQuery} onClear={() => setSearchQuery('')} placeholder={`Search ${contentType}...`} />
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onClear={() => setSearchQuery('')}
+        placeholder={t('explore.search_placeholder', {
+          type: translateUi(language, getContentTypeKey(contentType)).toLowerCase(),
+        })}
+      />
       
       {/* Sort Options */}
       <View style={styles.sortContainer}>
         {(['all', 'untried', 'tried'] as const).map((option) => (
           <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { haptic.light(); setSortBy(option); }}>
             <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
-              {option === 'all' ? 'All' : option === 'untried' ? '✨ New' : '✓ Tried'}
+              {option === 'all' ? t('explore.sort.all') : option === 'untried' ? `✨ ${t('explore.sort.new')}` : `✓ ${t('explore.sort.tried')}`}
             </Text>
           </TouchableOpacity>
         ))}
@@ -6190,11 +6259,11 @@ function ExploreScreen({ navigation }: any) {
       <View style={styles.categoryWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
           <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => { haptic.light(); setSelectedCategory(null); }}>
-            <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>All</Text>
+            <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>{t('common.all')}</Text>
           </TouchableOpacity>
           {currentCategories.map((cat) => (
             <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { haptic.light(); setSelectedCategory(cat); }}>
-              <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>{cat}</Text>
+              <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>{localizeTerm(cat)}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -6202,31 +6271,31 @@ function ExploreScreen({ navigation }: any) {
       {contentType === 'positions' && (
         <FlatList data={filteredPositions} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>No results found</Text></View>}
+          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
         />
       )}
       {contentType === 'foreplay' && (
         <FlatList data={filteredForeplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>No results found</Text></View>}
+          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
         />
       )}
       {contentType === 'oral' && (
         <FlatList data={filteredOral} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>No results found</Text></View>}
+          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
         />
       )}
       {contentType === 'massage' && (
         <FlatList data={filteredMassage} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <MassageCard item={item} onPress={() => navigation.navigate('MassageDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>No results found</Text></View>}
+          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
         />
       )}
       {contentType === 'roleplay' && (
         <FlatList data={filteredRoleplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <RolePlayCard item={item} onPress={() => navigation.navigate('RolePlayDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>No results found</Text></View>}
+          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
         />
       )}
     </ScreenWrapper>
@@ -6235,6 +6304,7 @@ function ExploreScreen({ navigation }: any) {
 
 function FavoritesScreen({ navigation }: any) {
   const store = useStore();
+  const { t } = useI18n();
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral'>('positions');
   const [showRecentlyTried, setShowRecentlyTried] = useState(false);
   const favoritePositions = positions.filter((p) => store.favorites.includes(p.id));
@@ -6257,15 +6327,15 @@ function FavoritesScreen({ navigation }: any) {
 
   return (
     <ScreenWrapper>
-      <View style={styles.exploreHeader}><Text style={styles.title}>Favorites</Text></View>
+      <View style={styles.exploreHeader}><Text style={styles.title}>{t('favorites.title')}</Text></View>
       
       {/* View Toggle */}
       <View style={styles.viewToggleContainer}>
         <TouchableOpacity style={[styles.viewToggleButton, !showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { haptic.light(); setShowRecentlyTried(false); }}>
-          <Text style={[styles.viewToggleText, !showRecentlyTried && styles.viewToggleTextActive]}>❤️ Favorites</Text>
+          <Text style={[styles.viewToggleText, !showRecentlyTried && styles.viewToggleTextActive]}>❤️ {t('favorites.favorites_toggle')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.viewToggleButton, showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { haptic.light(); setShowRecentlyTried(true); }}>
-          <Text style={[styles.viewToggleText, showRecentlyTried && styles.viewToggleTextActive]}>🕐 Recently Tried</Text>
+          <Text style={[styles.viewToggleText, showRecentlyTried && styles.viewToggleTextActive]}>🕐 {t('favorites.recent_toggle')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -6273,31 +6343,31 @@ function FavoritesScreen({ navigation }: any) {
         <>
           <View style={styles.tripleToggleContainer}>
             <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'positions' && styles.tripleToggleButtonActive]} onPress={() => { haptic.light(); setContentType('positions'); }}>
-              <Text style={[styles.tripleToggleButtonText, contentType === 'positions' && styles.tripleToggleButtonTextActive]}>Positions ({favoritePositions.length})</Text>
+              <Text style={[styles.tripleToggleButtonText, contentType === 'positions' && styles.tripleToggleButtonTextActive]}>{t('favorites.positions_count', { count: favoritePositions.length })}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'foreplay' && styles.tripleToggleButtonActive]} onPress={() => { haptic.light(); setContentType('foreplay'); }}>
-              <Text style={[styles.tripleToggleButtonText, contentType === 'foreplay' && styles.tripleToggleButtonTextActive]}>Foreplay ({favoriteForeplayItems.length})</Text>
+              <Text style={[styles.tripleToggleButtonText, contentType === 'foreplay' && styles.tripleToggleButtonTextActive]}>{t('favorites.foreplay_count', { count: favoriteForeplayItems.length })}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'oral' && styles.tripleToggleButtonActive]} onPress={() => { haptic.light(); setContentType('oral'); }}>
-              <Text style={[styles.tripleToggleButtonText, contentType === 'oral' && styles.tripleToggleButtonTextActive]}>Oral ({favoriteOralItems.length})</Text>
+              <Text style={[styles.tripleToggleButtonText, contentType === 'oral' && styles.tripleToggleButtonTextActive]}>{t('favorites.oral_count', { count: favoriteOralItems.length })}</Text>
             </TouchableOpacity>
           </View>
           {contentType === 'positions' && (favoritePositions.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>No favorite positions yet</Text><Text style={styles.emptySubtitle}>Tap the heart on positions you love</Text></View>
+            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>{t('favorites.empty.positions.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.positions.subtitle')}</Text></View>
           ) : (
             <FlatList data={favoritePositions} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
               renderItem={({ item }) => <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />}
             />
           ))}
           {contentType === 'foreplay' && (favoriteForeplayItems.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>No favorite foreplay yet</Text><Text style={styles.emptySubtitle}>Tap the heart on ideas you love</Text></View>
+            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>{t('favorites.empty.foreplay.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.foreplay.subtitle')}</Text></View>
           ) : (
             <FlatList data={favoriteForeplayItems} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
               renderItem={({ item }) => <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />}
             />
           ))}
           {contentType === 'oral' && (favoriteOralItems.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>No favorite oral yet</Text><Text style={styles.emptySubtitle}>Tap the heart on ideas you love</Text></View>
+            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>{t('favorites.empty.oral.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.oral.subtitle')}</Text></View>
           ) : (
             <FlatList data={favoriteOralItems} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
               renderItem={({ item }) => <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />}
@@ -6307,7 +6377,7 @@ function FavoritesScreen({ navigation }: any) {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           {recentlyTried.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>🕐</Text><Text style={styles.emptyTitle}>No recent activity</Text><Text style={styles.emptySubtitle}>Mark items as tried to see them here</Text></View>
+            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>🕐</Text><Text style={styles.emptyTitle}>{t('favorites.empty.recent.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.recent.subtitle')}</Text></View>
           ) : (
             recentlyTried.map((entry: any, index) => (
               <TouchableOpacity key={index} style={styles.recentlyTriedItem} onPress={() => {
@@ -6333,6 +6403,7 @@ function FavoritesScreen({ navigation }: any) {
 
 function ProfileScreen({ navigation }: any) {
   const store = useStore();
+  const { t } = useI18n();
   const { user, logout } = useAuth();
   const [showAchievements, setShowAchievements] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
@@ -6349,19 +6420,19 @@ function ProfileScreen({ navigation }: any) {
 
   const handleLogout = () => {
     Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
+      t('profile.signout.title'),
+      t('profile.signout.message'),
       [
         { text: 'Cancel', style: 'cancel' },
         { 
-          text: 'Sign Out', 
+          text: t('profile.menu.signout'), 
           style: 'destructive',
           onPress: async () => {
             try {
               await logout();
               haptic.light();
             } catch (error) {
-              Alert.alert('Error', 'Failed to sign out');
+              Alert.alert('Error', t('profile.signout.error'));
             }
           }
         }
@@ -6373,32 +6444,32 @@ function ProfileScreen({ navigation }: any) {
     <ScreenWrapper scroll>
       <View style={styles.profileHeader}>
         <View style={[styles.avatar, { borderColor: currentLevel.color }]}><Text style={styles.avatarText}>{store.name?.charAt(0)?.toUpperCase() || user?.displayName?.charAt(0)?.toUpperCase() || '?'}</Text></View>
-        <Text style={styles.profileName}>{store.name || user?.displayName || 'Friend'}</Text>
+        <Text style={styles.profileName}>{store.name || user?.displayName || t('profile.friend')}</Text>
         <Text style={[styles.profileEmail, { color: themeColors.text.muted }]}>{user?.email}</Text>
         <Text style={[styles.profileLevel, { color: currentLevel.color }]}>{currentLevel.emoji} {currentLevel.title}</Text>
         <View style={styles.profileStarBadge}>
-          <Text style={styles.profileStarText}>⭐ {store.totalStars} stars earned</Text>
+          <Text style={styles.profileStarText}>⭐ {t('profile.stars_earned', { count: store.totalStars })}</Text>
         </View>
-        {store.pinCode && <Text style={styles.pinProtectedBadge}>🔐 Protected</Text>}
+        {store.pinCode && <Text style={styles.pinProtectedBadge}>🔐 {t('profile.protected')}</Text>}
       </View>
 
       {/* Streak Banner */}
       {store.currentStreak >= 1 && (
         <View style={styles.profileStreakBanner}>
-          <Text style={styles.profileStreakText}>🔥 {store.currentStreak} week streak</Text>
+          <Text style={styles.profileStreakText}>🔥 {t('profile.week_streak', { count: store.currentStreak })}</Text>
         </View>
       )}
 
       <View style={styles.statsRow}>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{totalTried}</Text><Text style={styles.statLabel}>Tried</Text></View>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{store.favorites.length + store.favoriteForeplay.length + store.favoriteOral.length + store.favoriteMassage.length + store.favoriteRoleplay.length}</Text><Text style={styles.statLabel}>Favorites</Text></View>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{store.completedChallenges.length}</Text><Text style={styles.statLabel}>Challenges</Text></View>
+        <View style={styles.statCard}><Text style={styles.statNumber}>{totalTried}</Text><Text style={styles.statLabel}>{t('stats.tried')}</Text></View>
+        <View style={styles.statCard}><Text style={styles.statNumber}>{store.favorites.length + store.favoriteForeplay.length + store.favoriteOral.length + store.favoriteMassage.length + store.favoriteRoleplay.length}</Text><Text style={styles.statLabel}>{t('stats.favorites')}</Text></View>
+        <View style={styles.statCard}><Text style={styles.statNumber}>{store.completedChallenges.length}</Text><Text style={styles.statLabel}>{t('stats.challenges')}</Text></View>
       </View>
 
       <View style={styles.progressSection}>
-        <Text style={styles.sectionTitle}>Your Progress</Text>
+        <Text style={styles.sectionTitle}>{t('profile.progress')}</Text>
         <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${(totalTried / totalContent) * 100}%` }]} /></View>
-        <Text style={styles.progressText}>{totalTried} of {totalContent} items tried ({Math.round((totalTried / totalContent) * 100)}%)</Text>
+        <Text style={styles.progressText}>{t('profile.progress_text', { tried: totalTried, total: totalContent, percent: Math.round((totalTried / totalContent) * 100) })}</Text>
       </View>
 
       {/* Quick Action Buttons */}
@@ -6406,15 +6477,15 @@ function ProfileScreen({ navigation }: any) {
         <TouchableOpacity style={styles.profileActionButton} onPress={() => setShowAchievements(true)}>
           <LinearGradient colors={['#f59e0b', '#ef4444']} style={styles.profileActionGradient}>
             <Text style={styles.profileActionEmoji}>🏆</Text>
-            <Text style={styles.profileActionText}>Achievements</Text>
+            <Text style={styles.profileActionText}>{t('profile.achievements')}</Text>
             <Text style={styles.profileActionCount}>{store.earnedAchievements.length}/{ACHIEVEMENTS.length}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.profileActionButton} onPress={() => setShowInsights(true)}>
           <LinearGradient colors={['#06b6d4', '#8b5cf6']} style={styles.profileActionGradient}>
             <Text style={styles.profileActionEmoji}>📊</Text>
-            <Text style={styles.profileActionText}>Insights</Text>
-            <Text style={styles.profileActionCount}>View Stats</Text>
+            <Text style={styles.profileActionText}>{t('profile.insights')}</Text>
+            <Text style={styles.profileActionCount}>{t('profile.view_stats')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -6422,7 +6493,7 @@ function ProfileScreen({ navigation }: any) {
       {/* Recent Achievements */}
       {store.earnedAchievements.length > 0 && (
         <View style={styles.recentAchievementsSection}>
-          <Text style={styles.sectionTitle}>Recent Achievements</Text>
+          <Text style={styles.sectionTitle}>{t('profile.recent_achievements')}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {store.earnedAchievements.slice(-5).reverse().map(id => {
               const achievement = ACHIEVEMENTS.find(a => a.id === id);
@@ -6439,14 +6510,14 @@ function ProfileScreen({ navigation }: any) {
 
       {store.notes.length > 0 && (
         <View style={styles.notesSection}>
-          <Text style={styles.sectionTitle}>Your Notes ({store.notes.length})</Text>
+          <Text style={styles.sectionTitle}>{t('profile.notes', { count: store.notes.length })}</Text>
           {store.notes.slice(-3).reverse().map((note) => {
             const item = note.type === 'position' ? positions.find(p => p.id === note.itemId) : note.type === 'foreplay' ? foreplayIdeas.find(f => f.id === note.itemId) : note.type === 'massage' ? massageTechniques.find(m => m.id === note.itemId) : note.type === 'roleplay' ? rolePlayScenarios.find(r => r.id === note.itemId) : oralPlayIdeas.find(o => o.id === note.itemId);
             return (
               <View key={note.id} style={styles.notePreview}>
-                <Text style={styles.notePreviewName}>{item?.name || 'Unknown'}</Text>
+                <Text style={styles.notePreviewName}>{item?.name || t('profile.unknown')}</Text>
                 <Text style={styles.notePreviewRating}>{'⭐'.repeat(note.rating)}</Text>
-                <Text style={styles.notePreviewText} numberOfLines={1}>{note.text || 'No notes'}</Text>
+                <Text style={styles.notePreviewText} numberOfLines={1}>{note.text || t('profile.no_notes')}</Text>
               </View>
             );
           })}
@@ -6455,32 +6526,32 @@ function ProfileScreen({ navigation }: any) {
 
       <View style={styles.menuSection}>
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowSettings(true)}>
-          <Text style={styles.menuItemText}>⚙️  Settings & Security</Text>
+          <Text style={styles.menuItemText}>⚙️  {t('profile.menu.settings')}</Text>
           <Text style={styles.menuItemArrow}>→</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowIdeas(true)}>
-          <Text style={styles.menuItemText}>💡  Submit an Idea</Text>
+          <Text style={styles.menuItemText}>💡  {t('profile.menu.ideas')}</Text>
           <Text style={styles.menuItemArrow}>→</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowContact(true)}>
-          <Text style={styles.menuItemText}>📧  Contact Us</Text>
+          <Text style={styles.menuItemText}>📧  {t('profile.menu.contact')}</Text>
           <Text style={styles.menuItemArrow}>→</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowTerms(true)}>
-          <Text style={styles.menuItemText}>📜  Terms of Service</Text>
+          <Text style={styles.menuItemText}>📜  {t('profile.menu.terms')}</Text>
           <Text style={styles.menuItemArrow}>→</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowPrivacy(true)}>
-          <Text style={styles.menuItemText}>🔐  Privacy Policy</Text>
+          <Text style={styles.menuItemText}>🔐  {t('profile.menu.privacy')}</Text>
           <Text style={styles.menuItemArrow}>→</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.menuItem, styles.logoutMenuItem]} onPress={handleLogout}>
-          <Text style={[styles.menuItemText, { color: themeColors.error }]}>🚪  Sign Out</Text>
+          <Text style={[styles.menuItemText, { color: themeColors.error }]}>🚪  {t('profile.menu.signout')}</Text>
           <Text style={styles.menuItemArrow}>→</Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.versionText}>Blisse v1.0.0 • Made with 💕</Text>
+      <Text style={styles.versionText}>{t('profile.version')}</Text>
 
       <AchievementsModal visible={showAchievements} onClose={() => setShowAchievements(false)} />
       <InsightsModal visible={showInsights} onClose={() => setShowInsights(false)} />
@@ -7373,12 +7444,13 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
+  const { t } = useI18n();
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { backgroundColor: colors.background.primary, borderTopColor: colors.card, borderTopWidth: 1, height: 85, paddingBottom: 25, paddingTop: 10 }, tabBarActiveTintColor: colors.primary[400], tabBarInactiveTintColor: colors.text.muted }}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>🏠</Text> }} />
-      <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>🔍</Text> }} />
-      <Tab.Screen name="Favorites" component={FavoritesScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>❤️</Text> }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>👤</Text> }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('tabs.home'), tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>🏠</Text> }} />
+      <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarLabel: t('tabs.explore'), tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>🔍</Text> }} />
+      <Tab.Screen name="Favorites" component={FavoritesScreen} options={{ tabBarLabel: t('tabs.favorites'), tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>❤️</Text> }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: t('tabs.profile'), tabBarIcon: ({ color: _color }) => <Text style={{ fontSize: 24 }}>👤</Text> }} />
     </Tab.Navigator>
   );
 }
@@ -8162,6 +8234,12 @@ const styles = StyleSheet.create({
   settingsItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.card, padding: 16, borderRadius: 12, marginBottom: 8 },
   settingsItemText: { fontSize: 15, color: colors.text.primary },
   settingsItemValue: { fontSize: 14, color: colors.text.muted },
+  languageDropdown: { backgroundColor: colors.card, borderRadius: 12, padding: 8, marginBottom: 12 },
+  languageOption: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 10, borderRadius: 10 },
+  languageOptionActive: { backgroundColor: colors.primary[500] + '25' },
+  languageOptionText: { fontSize: 14, color: colors.text.primary, fontWeight: '500' },
+  languageOptionTextActive: { color: colors.primary[400], fontWeight: '700' },
+  languageOptionCheck: { color: colors.primary[400], fontSize: 14, fontWeight: '700' },
   pinSetupContainer: { backgroundColor: colors.card, borderRadius: 12, padding: 16, marginBottom: 8 },
   pinSetupTitle: { fontSize: 16, fontWeight: '600', color: colors.text.primary, marginBottom: 16, textAlign: 'center' },
   pinInput: { backgroundColor: colors.cardLight, borderRadius: 8, padding: 14, fontSize: 18, color: colors.text.primary, textAlign: 'center', marginBottom: 12, letterSpacing: 8 },
