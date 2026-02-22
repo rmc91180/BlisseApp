@@ -3038,9 +3038,12 @@ const PrimaryButton = ({ title, onPress, disabled = false }: { title: string; on
   );
 };
 
-const BackButton = ({ onPress }: { onPress: () => void }) => (
-  <TouchableOpacity onPress={() => { haptic.light(); onPress(); }} style={styles.backButton}><Text style={styles.backButtonText}>← Back</Text></TouchableOpacity>
-);
+const BackButton = ({ onPress }: { onPress: () => void }) => {
+  const { t } = useI18n();
+  return (
+    <TouchableOpacity onPress={() => { haptic.light(); onPress(); }} style={styles.backButton}><Text style={styles.backButtonText}>← {t('common.back')}</Text></TouchableOpacity>
+  );
+};
 
 const OptionCard = ({ title, subtitle, selected, onPress }: { title: string; subtitle?: string; selected: boolean; onPress: () => void }) => (
   <TouchableOpacity style={[styles.optionCard, selected && styles.optionCardSelected]} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.7}>
@@ -6070,7 +6073,7 @@ function HomeScreen({ navigation }: any) {
               <Text style={styles.tonightSubtitle}>{tonightPosition.vibe}</Text>
               <Text style={styles.tonightTeaser}>{tonightTeaser}</Text>
               {!store.tried.includes(tonightPosition.id) && (
-                <View style={styles.newBadge}><Text style={styles.newBadgeText}>✨ NEW +3 ⭐</Text></View>
+                <View style={styles.newBadge}><Text style={styles.newBadgeText}>✨ {t('home.new_badge', { count: 3 })}</Text></View>
               )}
             </LinearGradient>
           </View>
@@ -6083,21 +6086,21 @@ function HomeScreen({ navigation }: any) {
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowSpinner(true)}>
           <LinearGradient colors={['#f59e0b', '#ef4444']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎰</Text>
-            <Text style={styles.featureButtonText}>Spin</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.spin')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.playful')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowDateNight(true)}>
           <LinearGradient colors={['#8b5cf6', '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🌙</Text>
-            <Text style={styles.featureButtonText}>Date Night</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.date_night')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.romance')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowTruthOrDare(true)}>
           <LinearGradient colors={['#ef4444', '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎲</Text>
-            <Text style={styles.featureButtonText}>Truth/Dare</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.truth_dare')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.truth_dare')}</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -6108,21 +6111,21 @@ function HomeScreen({ navigation }: any) {
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowChallenge(true)}>
           <LinearGradient colors={['#06b6d4', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎯</Text>
-            <Text style={styles.featureButtonText}>Challenge</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.challenge')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.challenge')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowMusic(true)}>
           <LinearGradient colors={['#1DB954', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎵</Text>
-            <Text style={styles.featureButtonText}>Music</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.music')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.music')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowRecommendations(true)}>
           <LinearGradient colors={['#3b82f6', '#8b5cf6']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>💡</Text>
-            <Text style={styles.featureButtonText}>For You</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.for_you')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.for_you')}</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -6133,21 +6136,21 @@ function HomeScreen({ navigation }: any) {
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowPlaylists(true)}>
           <LinearGradient colors={['#ec4899', '#f43f5e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎭</Text>
-            <Text style={styles.featureButtonText}>Moods</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.moods')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.moods')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowWeeklyGoals(true)}>
           <LinearGradient colors={['#84cc16', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>📋</Text>
-            <Text style={styles.featureButtonText}>Goals</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.goals')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.goals')}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowAchievements(true)}>
           <LinearGradient colors={['#fbbf24', '#f59e0b']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🏆</Text>
-            <Text style={styles.featureButtonText}>Trophies</Text>
+            <Text style={styles.featureButtonText}>{t('home.feature.trophies')}</Text>
             <Text style={styles.featureButtonSubtext}>{t('home.quality.trophies')}</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -6174,12 +6177,12 @@ function HomeScreen({ navigation }: any) {
         <TouchableOpacity style={styles.quickStatCard} onPress={() => setShowAchievements(true)}>
           <Text style={styles.quickStatEmoji}>🏆</Text>
           <Text style={styles.quickStatNumber}>{store.earnedAchievements.length}/{ACHIEVEMENTS.length}</Text>
-          <Text style={styles.quickStatLabel}>Achievements</Text>
+          <Text style={styles.quickStatLabel}>{t('home.quick_stats.achievements')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickStatCard} onPress={() => setShowInsights(true)}>
           <Text style={styles.quickStatEmoji}>📊</Text>
           <Text style={styles.quickStatNumber}>{store.activityLog.length}</Text>
-          <Text style={styles.quickStatLabel}>Activities</Text>
+          <Text style={styles.quickStatLabel}>{t('home.quick_stats.activities')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -6187,7 +6190,7 @@ function HomeScreen({ navigation }: any) {
       {store.currentChallenge && (
         <TouchableOpacity style={styles.challengePreview} onPress={() => setShowChallenge(true)}>
           <View style={styles.challengePreviewHeader}>
-            <Text style={styles.challengePreviewLabel}>🎯 Active Challenge</Text>
+            <Text style={styles.challengePreviewLabel}>🎯 {t('home.challenge.active')}</Text>
             <Text style={styles.challengePreviewReward}>+3 ⭐</Text>
           </View>
           <Text style={styles.challengePreviewName}>
@@ -6698,7 +6701,7 @@ function ProfileScreen({ navigation }: any) {
 // ============================================
 function PositionDetailScreen({ route, navigation }: any) {
   const { position }: { position: Position } = route.params;
-  const { localizeTerm } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   const isFavorite = store.favorites.includes(position.id);
   const isTried = store.tried.includes(position.id);
@@ -6743,7 +6746,7 @@ function PositionDetailScreen({ route, navigation }: any) {
             {!isTried && (
               <View style={styles.detailStarHint}>
                 <Text style={styles.detailStarHintText}>
-                  {position.difficulty === 'Advanced' ? '✨ Try this for +5 ⭐' : position.difficulty === 'Intermediate' ? '✨ Try this for +3 ⭐' : '✨ Try this for +3 ⭐'}
+                  {position.difficulty === 'Advanced' ? t('detail.try_for_stars', { count: 5 }) : t('detail.try_for_stars', { count: 3 })}
                 </Text>
               </View>
             )}
@@ -6752,20 +6755,20 @@ function PositionDetailScreen({ route, navigation }: any) {
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? 'Tried!' : 'Mark Tried'}</Text>
+              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleFavorite(position.id); }}>
               <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? 'Favorited' : 'Favorite'}</Text>
+              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
               <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? 'View Notes' : 'Add Notes'}</Text>
+              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
             </TouchableOpacity>
           </View>
           {/* Share Button */}
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>📤 Share with Partner</Text>
+            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
           </TouchableOpacity>
           {existingNote && (
             <View style={styles.notePreviewDetail}>
@@ -6774,29 +6777,29 @@ function PositionDetailScreen({ route, navigation }: any) {
             </View>
           )}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>What is it?</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
             <Text style={styles.detailText}>{position.description}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>How To</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
             <Text style={styles.detailText}>{position.howTo}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Why It Works</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.why_it_works')}</Text>
             <Text style={styles.detailText}>{position.whyItWorks}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Tips</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
             {position.tips.map((tip, index) => (
               <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
             ))}
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Good For</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.good_for')}</Text>
             <View style={styles.tagsContainer}>{position.goodFor.map((tag, index) => (<View key={index} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>))}</View>
           </View>
           <View style={[styles.detailSection, { marginBottom: 40 }]}>
-            <Text style={styles.detailSectionTitle}>Pairs Well With</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
             <View style={styles.tagsContainer}>{position.pairsWellWith.map((item, index) => (<View key={index} style={[styles.tag, styles.tagOutline]}><Text style={styles.tagTextOutline}>{item}</Text></View>))}</View>
           </View>
         </ScrollView>
@@ -6809,7 +6812,7 @@ function PositionDetailScreen({ route, navigation }: any) {
 
 function ForeplayDetailScreen({ route, navigation }: any) {
   const { item }: { item: ForeplayIdea } = route.params;
-  const { localizeTerm } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   const isFavorite = store.favoriteForeplay.includes(item.id);
   const isTried = store.triedForeplay.includes(item.id);
@@ -6853,7 +6856,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
             <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {localizeTerm(item.duration)}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>✨ Try this for +2 ⭐</Text>
+                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 2 })}</Text>
               </View>
             )}
           </View>
@@ -6861,20 +6864,20 @@ function ForeplayDetailScreen({ route, navigation }: any) {
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? 'Tried!' : 'Mark Tried'}</Text>
+              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }}>
               <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? 'Favorited' : 'Favorite'}</Text>
+              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
               <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? 'View Notes' : 'Add Notes'}</Text>
+              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
             </TouchableOpacity>
           </View>
           {/* Share Button */}
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>📤 Share with Partner</Text>
+            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
           </TouchableOpacity>
           {existingNote && (
             <View style={styles.notePreviewDetail}>
@@ -6883,21 +6886,21 @@ function ForeplayDetailScreen({ route, navigation }: any) {
             </View>
           )}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>What is it?</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
             <Text style={styles.detailText}>{item.description}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>How To</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
             <Text style={styles.detailText}>{item.howTo}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Tips</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
             {item.tips.map((tip, index) => (
               <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
             ))}
           </View>
           <View style={[styles.detailSection, { marginBottom: 40 }]}>
-            <Text style={styles.detailSectionTitle}>Pairs Well With</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
             <View style={styles.tagsContainer}>
               {item.pairsWellWith.map((pos, index) => (
                 <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
@@ -6916,7 +6919,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
 
 function OralDetailScreen({ route, navigation }: any) {
   const { item }: { item: OralPlayIdea } = route.params;
-  const { localizeTerm } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   const isFavorite = store.favoriteOral?.includes(item.id) || false;
   const isTried = store.triedOral?.includes(item.id) || false;
@@ -6960,7 +6963,7 @@ function OralDetailScreen({ route, navigation }: any) {
             <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual')}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>✨ Try this for +2 ⭐</Text>
+                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 2 })}</Text>
               </View>
             )}
           </View>
@@ -6968,20 +6971,20 @@ function OralDetailScreen({ route, navigation }: any) {
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? 'Tried!' : 'Mark Tried'}</Text>
+              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }}>
               <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? 'Favorited' : 'Favorite'}</Text>
+              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
               <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? 'View Notes' : 'Add Notes'}</Text>
+              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
             </TouchableOpacity>
           </View>
           {/* Share Button */}
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>📤 Share with Partner</Text>
+            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
           </TouchableOpacity>
           {existingNote && (
             <View style={styles.notePreviewDetail}>
@@ -6990,21 +6993,21 @@ function OralDetailScreen({ route, navigation }: any) {
             </View>
           )}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>What is it?</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
             <Text style={styles.detailText}>{item.description}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>How To</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
             <Text style={styles.detailText}>{item.howTo}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Tips</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
             {item.tips.map((tip, index) => (
               <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
             ))}
           </View>
           <View style={[styles.detailSection, { marginBottom: 40 }]}>
-            <Text style={styles.detailSectionTitle}>Pairs Well With</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
             <View style={styles.tagsContainer}>
               {item.pairsWellWith.map((pos, index) => (
                 <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
@@ -7026,7 +7029,7 @@ function OralDetailScreen({ route, navigation }: any) {
 // ============================================
 function MassageDetailScreen({ route, navigation }: any) {
   const { item } = route.params as { item: MassageTechnique };
-  const { localizeTerm } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   const mood = moods.find((m) => m.id === item.mood);
   const isFavorite = store.favoriteMassage.includes(item.id);
@@ -7070,7 +7073,7 @@ function MassageDetailScreen({ route, navigation }: any) {
             <Text style={styles.detailCategory}>{item.bodyArea} • {localizeTerm(item.duration)}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>✨ Try this for +3 ⭐</Text>
+                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 3 })}</Text>
               </View>
             )}
           </View>
@@ -7078,19 +7081,19 @@ function MassageDetailScreen({ route, navigation }: any) {
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? 'Tried!' : 'Mark Tried'}</Text>
+              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }}>
               <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? 'Favorited' : 'Favorite'}</Text>
+              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
               <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? 'View Notes' : 'Add Notes'}</Text>
+              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>📤 Share with Partner</Text>
+            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
           </TouchableOpacity>
           {existingNote && (
             <View style={styles.notePreviewDetail}>
@@ -7099,21 +7102,21 @@ function MassageDetailScreen({ route, navigation }: any) {
             </View>
           )}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>What is it?</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
             <Text style={styles.detailText}>{item.description}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>How To</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
             <Text style={styles.detailText}>{item.howTo}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Tips</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
             {item.tips.map((tip, index) => (
               <Text key={index} style={styles.detailTip}>• {tip}</Text>
             ))}
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Pairs Well With</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
             <View style={styles.tagRow}>
               {item.pairsWellWith.map((pos, index) => (
                 <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
@@ -7135,7 +7138,7 @@ function MassageDetailScreen({ route, navigation }: any) {
 // ============================================
 function RolePlayDetailScreen({ route, navigation }: any) {
   const { item } = route.params as { item: RolePlayScenario };
-  const { localizeTerm } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   const mood = moods.find((m) => m.id === item.mood);
   const isFavorite = store.favoriteRoleplay.includes(item.id);
@@ -7186,7 +7189,7 @@ function RolePlayDetailScreen({ route, navigation }: any) {
             </View>
             {!isTried && (
               <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>✨ Try this for +4 ⭐</Text>
+                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 4 })}</Text>
               </View>
             )}
           </View>
@@ -7194,19 +7197,19 @@ function RolePlayDetailScreen({ route, navigation }: any) {
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? 'Tried!' : 'Mark Tried'}</Text>
+              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }}>
               <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? 'Favorited' : 'Favorite'}</Text>
+              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
               <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? 'View Notes' : 'Add Notes'}</Text>
+              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>📤 Share with Partner</Text>
+            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
           </TouchableOpacity>
           {existingNote && (
             <View style={styles.notePreviewDetail}>
@@ -7215,25 +7218,25 @@ function RolePlayDetailScreen({ route, navigation }: any) {
             </View>
           )}
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>The Scenario</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.scenario')}</Text>
             <Text style={styles.detailText}>{item.description}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Setup</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.setup')}</Text>
             <Text style={styles.detailText}>{item.setup}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>How to Play</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to_play')}</Text>
             <Text style={styles.detailText}>{item.howToPlay}</Text>
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Tips for Success</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips_for_success')}</Text>
             {item.tips.map((tip, index) => (
               <Text key={index} style={styles.detailTip}>• {tip}</Text>
             ))}
           </View>
           <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>Pairs Well With</Text>
+            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
             <View style={styles.tagRow}>
               {item.pairsWellWith.map((pos, index) => (
                 <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
@@ -7270,7 +7273,7 @@ function SeasonalModal({
   onOpenChallenge?: () => void;
   onOpenSpinner?: () => void;
 }) {
-  const { language } = useI18n();
+  const { language, t } = useI18n();
   const currentSeason = getCurrentSeason();
   const store = useStore();
 
@@ -7431,22 +7434,22 @@ function SeasonalModal({
 
     if (gameId === 'truth_or_dare') {
       if (onOpenTruthOrDare) onOpenTruthOrDare();
-      else Alert.alert('Open from Home', 'Truth or Dare is available on the Home screen.');
+      else Alert.alert(t('seasonal.open_from_home.title'), t('seasonal.open_from_home.truth_or_dare'));
       return;
     }
     if (gameId === 'date_night') {
       if (onOpenDateNight) onOpenDateNight();
-      else Alert.alert('Open from Home', 'Date Night is available on the Home screen.');
+      else Alert.alert(t('seasonal.open_from_home.title'), t('seasonal.open_from_home.date_night'));
       return;
     }
     if (gameId === 'challenge') {
       if (onOpenChallenge) onOpenChallenge();
-      else Alert.alert('Open from Home', 'Challenges are available on the Home screen.');
+      else Alert.alert(t('seasonal.open_from_home.title'), t('seasonal.open_from_home.challenge'));
       return;
     }
     if (gameId === 'spin') {
       if (onOpenSpinner) onOpenSpinner();
-      else Alert.alert('Open from Home', 'Spin is available on the Home screen.');
+      else Alert.alert(t('seasonal.open_from_home.title'), t('seasonal.open_from_home.spin'));
     }
   };
 
@@ -7463,14 +7466,14 @@ function SeasonalModal({
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Tips Section */}
             <View style={[styles.seasonalTipsCard, { backgroundColor: currentSeason.color + '20' }]}>
-              <Text style={styles.seasonalTipsTitle}>💡 Seasonal Tips</Text>
+              <Text style={styles.seasonalTipsTitle}>{t('seasonal.tips_title')}</Text>
               {currentSeason.tips.map((tip, index) => (
                 <Text key={index} style={styles.seasonalTip}>• {tip}</Text>
               ))}
             </View>
 
             {/* Seasonal Games */}
-            <Text style={styles.seasonalSectionTitle}>Recommended Games & Fun Activities</Text>
+            <Text style={styles.seasonalSectionTitle}>{t('seasonal.section.games')}</Text>
             {seasonalGameRecommendations.map((game) => (
               <TouchableOpacity
                 key={game.id}
@@ -7483,13 +7486,13 @@ function SeasonalModal({
                   <Text style={styles.seasonalItemVibe}>{game.description}</Text>
                 </View>
                 <View style={styles.seasonalGamePill}>
-                  <Text style={styles.seasonalGamePillText}>Play</Text>
+                  <Text style={styles.seasonalGamePillText}>{t('seasonal.play')}</Text>
                 </View>
               </TouchableOpacity>
             ))}
 
             {/* Recommended Positions */}
-            <Text style={styles.seasonalSectionTitle}>Recommended Positions</Text>
+            <Text style={styles.seasonalSectionTitle}>{t('seasonal.section.positions')}</Text>
             {seasonalRecommendations.positions.map((pos) => (
               <TouchableOpacity 
                 key={pos.id} 
@@ -7505,11 +7508,11 @@ function SeasonalModal({
               </TouchableOpacity>
             ))}
             {seasonalRecommendations.positions.length === 0 && (
-              <Text style={styles.seasonalEmptyText}>No seasonal position suggestions yet.</Text>
+              <Text style={styles.seasonalEmptyText}>{t('seasonal.empty.positions')}</Text>
             )}
 
             {/* Recommended Foreplay */}
-            <Text style={styles.seasonalSectionTitle}>Recommended Foreplay</Text>
+            <Text style={styles.seasonalSectionTitle}>{t('seasonal.section.foreplay')}</Text>
             {seasonalRecommendations.foreplay.map((item) => (
               <TouchableOpacity 
                 key={item.id} 
@@ -7525,11 +7528,11 @@ function SeasonalModal({
               </TouchableOpacity>
             ))}
             {seasonalRecommendations.foreplay.length === 0 && (
-              <Text style={styles.seasonalEmptyText}>No seasonal foreplay suggestions yet.</Text>
+              <Text style={styles.seasonalEmptyText}>{t('seasonal.empty.foreplay')}</Text>
             )}
 
             {/* Recommended Oral Play */}
-            <Text style={styles.seasonalSectionTitle}>Recommended Oral Play</Text>
+            <Text style={styles.seasonalSectionTitle}>{t('seasonal.section.oral')}</Text>
             {seasonalRecommendations.oral.map((item) => (
               <TouchableOpacity 
                 key={item.id} 
@@ -7545,13 +7548,13 @@ function SeasonalModal({
               </TouchableOpacity>
             ))}
             {seasonalRecommendations.oral.length === 0 && (
-              <Text style={styles.seasonalEmptyText}>No seasonal oral-play suggestions yet.</Text>
+              <Text style={styles.seasonalEmptyText}>{t('seasonal.empty.oral')}</Text>
             )}
 
             {/* Recommended Role Play */}
             {seasonalRecommendations.roleplay.length > 0 && (
               <>
-                <Text style={styles.seasonalSectionTitle}>Recommended Role Play</Text>
+                <Text style={styles.seasonalSectionTitle}>{t('seasonal.section.roleplay')}</Text>
                 {seasonalRecommendations.roleplay.map((item) => (
                   <TouchableOpacity 
                     key={item.id} 
