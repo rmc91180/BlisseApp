@@ -2947,6 +2947,7 @@ const sounds = {
 // STAR CELEBRATION MODAL
 // ============================================
 function StarCelebrationModal({ visible, onClose, stars, achievements }: { visible: boolean; onClose: () => void; stars: number; achievements: string[] }) {
+  const { t } = useI18n();
   const scaleAnim = useState(new Animated.Value(0))[0];
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -2975,12 +2976,12 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
         <ConfettiCelebration visible={showConfetti} />
         <Animated.View style={[styles.celebrationContent, { transform: [{ scale: scaleAnim }] }]}>
           <Text style={styles.celebrationEmoji}>🌟</Text>
-          <Text style={styles.celebrationTitle}>+{stars} Stars!</Text>
-          <Text style={styles.celebrationSubtitle}>Keep exploring together!</Text>
+          <Text style={styles.celebrationTitle}>{t('celebration.stars_earned', { count: stars })}</Text>
+          <Text style={styles.celebrationSubtitle}>{t('celebration.keep_exploring')}</Text>
           
           {earnedAchievementDetails.length > 0 && (
             <View style={styles.achievementEarnedContainer}>
-              <Text style={styles.achievementEarnedTitle}>🏆 Achievement Unlocked!</Text>
+              <Text style={styles.achievementEarnedTitle}>{t('celebration.achievement_unlocked')}</Text>
               {earnedAchievementDetails.map((achievement) => (
                 <View key={achievement!.id} style={styles.achievementEarnedItem}>
                   <Text style={styles.achievementEarnedEmoji}>{achievement!.emoji}</Text>
@@ -2994,7 +2995,7 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
           )}
 
           <TouchableOpacity style={styles.celebrationButton} onPress={onClose}>
-            <Text style={styles.celebrationButtonText}>Awesome!</Text>
+            <Text style={styles.celebrationButtonText}>{t('celebration.awesome')}</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>
@@ -3259,7 +3260,7 @@ function NameInputScreen({ navigation }: any) {
       <BackButton onPress={() => navigation.goBack()} />
       <View style={styles.screenContent}>
         <Text style={styles.title}>{uiPack('onboarding.name.title')}</Text>
-        <Text style={styles.subtitle}>This is how we'll greet you</Text>
+        <Text style={styles.subtitle}>{t('onboarding.name.greeting_preview')}</Text>
         <TextInput style={styles.textInput} placeholder={uiPack('onboarding.name.placeholder')} placeholderTextColor={colors.text.muted} value={name} onChangeText={setName} autoFocus />
       </View>
       <View style={styles.buttons}><PrimaryButton title={t('common.continue')} onPress={handleContinue} disabled={!name.trim()} /></View>
@@ -3355,7 +3356,7 @@ function ExperienceLevelScreen({ navigation }: any) {
 // ENHANCED LEGAL SCREEN
 // ============================================
 function LegalScreen({ navigation }: any) {
-  const { authPack } = useI18n();
+  const { authPack, t } = useI18n();
   const [hasReadTerms, setHasReadTerms] = useState(false);
   const [hasReadPrivacy, setHasReadPrivacy] = useState(false);
   const [confirmedAge, setConfirmedAge] = useState(false);
@@ -3395,18 +3396,18 @@ function LegalScreen({ navigation }: any) {
         
         <View style={[styles.legalHighlightBox, { marginTop: 20, marginBottom: 24 }]}>
           <Text style={{ fontSize: 24, marginBottom: 8 }}>🔐</Text>
-          <Text style={[styles.legalHighlightTitle, { color: themeColors.text.primary }]}>Your Privacy Matters</Text>
-          <Text style={[styles.legalHighlightTextSmall, { color: themeColors.text.secondary }]}>Most app activity data stays on your device. Only sign-in details and messages you explicitly send are transmitted to third-party services.</Text>
+          <Text style={[styles.legalHighlightTitle, { color: themeColors.text.primary }]}>{t('legal.privacy_matters_title')}</Text>
+          <Text style={[styles.legalHighlightTextSmall, { color: themeColors.text.secondary }]}>{t('legal.privacy_matters_subtitle')}</Text>
         </View>
 
         <View style={[styles.legalCheckSection, { backgroundColor: themeColors.card }]}>
           <View style={styles.legalCheckHeader}>
             <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>📜 {authPack('legalConsent', 'termsOfService')}</Text>
             <TouchableOpacity style={[styles.readButton, { backgroundColor: themeColors.primary[500] + '20' }]} onPress={() => setShowTermsModal(true)}>
-              <Text style={[styles.readButtonText, { color: themeColors.primary[400] }]}>Read Terms</Text>
+              <Text style={[styles.readButtonText, { color: themeColors.primary[400] }]}>{t('legal.read_terms')}</Text>
             </TouchableOpacity>
           </View>
-          <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted }]}>• You must be 18+{'\n'}• All activities require consent{'\n'}• For adult couples only</Text>
+          <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted }]}>{t('legal.terms_summary')}</Text>
           <TouchableOpacity style={[styles.checkboxRow, hasReadTerms && styles.checkboxRowSelected]} onPress={() => hasReadTerms ? setHasReadTerms(false) : setShowTermsModal(true)}>
             <View style={[styles.checkbox, hasReadTerms && styles.checkboxChecked]}>{hasReadTerms && <Text style={styles.checkmark}>✓</Text>}</View>
             <Text style={styles.checkboxText}>{authPack('legalConsent', 'termsAcceptance')} {authPack('legalConsent', 'termsOfService')}</Text>
@@ -3417,10 +3418,10 @@ function LegalScreen({ navigation }: any) {
           <View style={styles.legalCheckHeader}>
             <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>🔐 {authPack('legalConsent', 'privacyPolicy')}</Text>
             <TouchableOpacity style={[styles.readButton, { backgroundColor: themeColors.primary[500] + '20' }]} onPress={() => setShowPrivacyModal(true)}>
-              <Text style={[styles.readButtonText, { color: themeColors.primary[400] }]}>Read Policy</Text>
+              <Text style={[styles.readButtonText, { color: themeColors.primary[400] }]}>{t('legal.read_policy')}</Text>
             </TouchableOpacity>
           </View>
-          <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted }]}>• Data stored locally only{'\n'}• We never see your activity{'\n'}• Delete app = delete data</Text>
+          <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted }]}>{t('legal.privacy_summary')}</Text>
           <TouchableOpacity style={[styles.checkboxRow, hasReadPrivacy && styles.checkboxRowSelected]} onPress={() => hasReadPrivacy ? setHasReadPrivacy(false) : setShowPrivacyModal(true)}>
             <View style={[styles.checkbox, hasReadPrivacy && styles.checkboxChecked]}>{hasReadPrivacy && <Text style={styles.checkmark}>✓</Text>}</View>
             <Text style={styles.checkboxText}>{authPack('legalConsent', 'termsAcceptance')} {authPack('legalConsent', 'privacyPolicy')}</Text>
@@ -3429,7 +3430,7 @@ function LegalScreen({ navigation }: any) {
 
         <View style={[styles.legalCheckSection, { backgroundColor: themeColors.card }]}>
           <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>🔞 {authPack('legalConsent', 'ageWarning')}</Text>
-          <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted, marginTop: 8 }]}>Blisse contains adult content for couples 18+.</Text>
+          <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted, marginTop: 8 }]}>{t('legal.adult_content_notice')}</Text>
           <TouchableOpacity style={[styles.checkboxRow, confirmedAge && styles.checkboxRowSelected]} onPress={() => setConfirmedAge(!confirmedAge)}>
             <View style={[styles.checkbox, confirmedAge && styles.checkboxChecked]}>{confirmedAge && <Text style={styles.checkmark}>✓</Text>}</View>
             <Text style={styles.checkboxText}>{authPack('legalConsent', 'ageVerification')}</Text>
@@ -3567,6 +3568,7 @@ function LegalScreen({ navigation }: any) {
 // ADD PLAYLIST MODAL
 // ============================================
 function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible: boolean; onClose: () => void; onSave: (playlist: { name: string; url: string; mood: string }) => void; editPlaylist?: UserPlaylist | null; }) {
+  const { t } = useI18n();
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
   const [mood, setMood] = useState('romantic');
@@ -3583,9 +3585,9 @@ function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible
   const validateUrl = (testUrl: string): boolean => /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(testUrl) || testUrl.includes('spotify:');
 
   const handleSave = () => {
-    if (!name.trim()) { setError('Please enter a playlist name'); return; }
-    if (!url.trim()) { setError('Please enter a playlist URL'); return; }
-    if (!validateUrl(url.trim())) { setError('Please enter a valid URL'); return; }
+    if (!name.trim()) { setError(t('playlist.error.name_required')); return; }
+    if (!url.trim()) { setError(t('playlist.error.url_required')); return; }
+    if (!validateUrl(url.trim())) { setError(t('playlist.error.url_invalid')); return; }
     onSave({ name: name.trim(), url: url.trim(), mood });
     setName(''); setUrl(''); setMood('romantic'); setError('');
   };
@@ -3597,16 +3599,16 @@ function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: themeColors.card }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: themeColors.text.primary }]}>{editPlaylist ? '✏️ Edit Playlist' : '➕ Add Playlist'}</Text>
+            <Text style={[styles.modalTitle, { color: themeColors.text.primary }]}>{editPlaylist ? `✏️ ${t('playlist.edit_title')}` : `➕ ${t('playlist.add_title')}`}</Text>
             <TouchableOpacity onPress={onClose}><Text style={[styles.modalClose, { color: themeColors.text.muted }]}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={[styles.legalSection, { color: themeColors.text.secondary, marginTop: 0, fontSize: 14 }]}>Name</Text>
-            <TextInput style={[styles.contactInput, { backgroundColor: themeColors.cardLight, color: themeColors.text.primary }]} placeholder="My Playlist" placeholderTextColor={themeColors.text.muted} value={name} onChangeText={setName} maxLength={50} />
-            <Text style={[styles.legalSection, { color: themeColors.text.secondary, fontSize: 14 }]}>URL</Text>
-            <TextInput style={[styles.contactInput, { backgroundColor: themeColors.cardLight, color: themeColors.text.primary }]} placeholder="https://open.spotify.com/..." placeholderTextColor={themeColors.text.muted} value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" />
+            <Text style={[styles.legalSection, { color: themeColors.text.secondary, marginTop: 0, fontSize: 14 }]}>{t('playlist.name_label')}</Text>
+            <TextInput style={[styles.contactInput, { backgroundColor: themeColors.cardLight, color: themeColors.text.primary }]} placeholder={t('playlist.name_placeholder')} placeholderTextColor={themeColors.text.muted} value={name} onChangeText={setName} maxLength={50} />
+            <Text style={[styles.legalSection, { color: themeColors.text.secondary, fontSize: 14 }]}>{t('playlist.url_label')}</Text>
+            <TextInput style={[styles.contactInput, { backgroundColor: themeColors.cardLight, color: themeColors.text.primary }]} placeholder={t('playlist.url_placeholder')} placeholderTextColor={themeColors.text.muted} value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" />
             {detectedPlatform && <Text style={{ color: themeColors.text.muted, fontSize: 13, marginBottom: 8 }}>{getPlatformIcon(detectedPlatform)} {getPlatformName(detectedPlatform)}</Text>}
-            <Text style={[styles.legalSection, { color: themeColors.text.secondary, fontSize: 14 }]}>Mood</Text>
+            <Text style={[styles.legalSection, { color: themeColors.text.secondary, fontSize: 14 }]}>{t('playlist.mood_label')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
               {PLAYLIST_MOODS.map((m) => (
                 <TouchableOpacity key={m.id} style={[{ paddingVertical: 10, paddingHorizontal: 14, borderRadius: 12, backgroundColor: themeColors.cardLight, alignItems: 'center' }, mood === m.id && { backgroundColor: themeColors.primary[500] + '30', borderWidth: 1, borderColor: themeColors.primary[500] }]} onPress={() => setMood(m.id)}>
@@ -3618,8 +3620,8 @@ function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible
             {error ? <Text style={{ color: '#ef4444', fontSize: 13, textAlign: 'center', marginBottom: 12 }}>{error}</Text> : null}
           </ScrollView>
           <View style={{ flexDirection: 'row', gap: 12, marginTop: 16 }}>
-            <TouchableOpacity style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: themeColors.cardLight, alignItems: 'center' }} onPress={onClose}><Text style={{ color: themeColors.text.muted, fontSize: 15 }}>Cancel</Text></TouchableOpacity>
-            <TouchableOpacity style={{ flex: 2, padding: 14, borderRadius: 12, backgroundColor: themeColors.primary[500], alignItems: 'center' }} onPress={handleSave}><Text style={{ color: '#FFF', fontSize: 15, fontWeight: '600' }}>{editPlaylist ? 'Update' : 'Add'}</Text></TouchableOpacity>
+            <TouchableOpacity style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: themeColors.cardLight, alignItems: 'center' }} onPress={onClose}><Text style={{ color: themeColors.text.muted, fontSize: 15 }}>{t('common.cancel')}</Text></TouchableOpacity>
+            <TouchableOpacity style={{ flex: 2, padding: 14, borderRadius: 12, backgroundColor: themeColors.primary[500], alignItems: 'center' }} onPress={handleSave}><Text style={{ color: '#FFF', fontSize: 15, fontWeight: '600' }}>{editPlaylist ? t('common.update') : t('common.add')}</Text></TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -3631,7 +3633,7 @@ function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible
 // AUTHENTICATION SCREENS
 // ============================================
 function AuthScreen({ navigation: _navigation }: any) {
-  const { authPack, uiPack } = useI18n();
+  const { authPack, uiPack, t } = useI18n();
   const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -3786,7 +3788,7 @@ function AuthScreen({ navigation: _navigation }: any) {
 
             {mode === 'signup' && (
               <View style={styles.authInputContainer}>
-                <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>Your Name</Text>
+                <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{t('auth.name')}</Text>
                 <TextInput
                   style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                   value={name}
@@ -3917,6 +3919,7 @@ function SignInScreen({ navigation }: any) {
 // FEATURE MODALS
 // ============================================
 function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+  const { t } = useI18n();
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<{ type: string; item: any } | null>(null);
   const [spinType, setSpinType] = useState<'all' | 'position' | 'foreplay' | 'oral'>('all');
@@ -3954,10 +3957,10 @@ function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onCl
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🎰 Random Spinner</Text>
+            <Text style={styles.modalTitle}>{t('spinner.title')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Spin for a surprise suggestion!</Text>
+          <Text style={styles.modalSubtitle}>{t('spinner.subtitle')}</Text>
           <View style={styles.spinTypeContainer}>
             {(['all', 'position', 'foreplay', 'oral'] as const).map((type) => (
               <TouchableOpacity key={type} style={[styles.spinTypeButton, spinType === type && styles.spinTypeButtonActive]} onPress={() => { haptic.light(); setSpinType(type); }}>
@@ -3974,17 +3977,19 @@ function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onCl
           </View>
           {result && !spinning && (
             <View style={styles.spinnerResult}>
-              <Text style={styles.spinnerResultType}>{result.type === 'position' ? '💑 Position' : result.type === 'foreplay' ? '💕 Foreplay' : '👄 Oral'}</Text>
+              <Text style={styles.spinnerResultType}>
+                {result.type === 'position' ? t('spinner.type.position') : result.type === 'foreplay' ? t('spinner.type.foreplay') : t('spinner.type.oral')}
+              </Text>
               <Text style={styles.spinnerResultName}>{result.item.name}</Text>
               <Text style={styles.spinnerResultVibe}>{result.item.vibe}</Text>
               <TouchableOpacity style={styles.viewResultButton} onPress={handleViewResult}>
-                <Text style={styles.viewResultButtonText}>View Details →</Text>
+                <Text style={styles.viewResultButtonText}>{t('spinner.view_details')}</Text>
               </TouchableOpacity>
             </View>
           )}
           <TouchableOpacity style={[styles.spinButton, spinning && styles.spinButtonDisabled]} onPress={spin} disabled={spinning}>
             <LinearGradient colors={spinning ? ['#4a4a4a', '#3a3a3a'] : ['#f59e0b', '#ef4444']} style={styles.spinButtonGradient}>
-              <Text style={styles.spinButtonText}>{spinning ? 'Spinning...' : '🎰 SPIN!'}</Text>
+              <Text style={styles.spinButtonText}>{spinning ? t('spinner.spinning') : t('spinner.cta')}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -3994,6 +3999,7 @@ function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onCl
 }
 
 function DateNightModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+  const { t } = useI18n();
   const store = useStore();
   const [dateNight, setDateNight] = useState<{ foreplay: ForeplayIdea | null; oral: OralPlayIdea | null; position: Position | null } | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -4040,14 +4046,14 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🌙 Date Night</Text>
+            <Text style={styles.modalTitle}>{t('date_night.title')}</Text>
             <TouchableOpacity onPress={handleClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Your curated evening journey • Earn ⭐5 stars!</Text>
+          <Text style={styles.modalSubtitle}>{t('date_night.subtitle')}</Text>
           {dateNight && (
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.dateNightStep}>
-                <View style={styles.dateNightStepHeader}><Text style={styles.dateNightStepNumber}>1</Text><Text style={styles.dateNightStepLabel}>Start With</Text></View>
+                <View style={styles.dateNightStepHeader}><Text style={styles.dateNightStepNumber}>1</Text><Text style={styles.dateNightStepLabel}>{t('date_night.step.start')}</Text></View>
                 <TouchableOpacity style={styles.dateNightCard} onPress={() => { handleClose(); navigation.navigate('ForeplayDetail', { item: dateNight.foreplay }); }}>
                   <Text style={styles.dateNightCardEmoji}>💕</Text>
                   <View style={styles.dateNightCardContent}><Text style={styles.dateNightCardName}>{dateNight.foreplay?.name}</Text><Text style={styles.dateNightCardVibe}>{dateNight.foreplay?.vibe}</Text></View>
@@ -4055,7 +4061,7 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
                 </TouchableOpacity>
               </View>
               <View style={styles.dateNightStep}>
-                <View style={styles.dateNightStepHeader}><Text style={styles.dateNightStepNumber}>2</Text><Text style={styles.dateNightStepLabel}>Then Try</Text></View>
+                <View style={styles.dateNightStepHeader}><Text style={styles.dateNightStepNumber}>2</Text><Text style={styles.dateNightStepLabel}>{t('date_night.step.then')}</Text></View>
                 <TouchableOpacity style={styles.dateNightCard} onPress={() => { handleClose(); navigation.navigate('OralDetail', { item: dateNight.oral }); }}>
                   <Text style={styles.dateNightCardEmoji}>👄</Text>
                   <View style={styles.dateNightCardContent}><Text style={styles.dateNightCardName}>{dateNight.oral?.name}</Text><Text style={styles.dateNightCardVibe}>{dateNight.oral?.vibe}</Text></View>
@@ -4063,7 +4069,7 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
                 </TouchableOpacity>
               </View>
               <View style={styles.dateNightStep}>
-                <View style={styles.dateNightStepHeader}><Text style={styles.dateNightStepNumber}>3</Text><Text style={styles.dateNightStepLabel}>Finish With</Text></View>
+                <View style={styles.dateNightStepHeader}><Text style={styles.dateNightStepNumber}>3</Text><Text style={styles.dateNightStepLabel}>{t('date_night.step.finish')}</Text></View>
                 <TouchableOpacity style={styles.dateNightCard} onPress={() => { handleClose(); navigation.navigate('PositionDetail', { position: dateNight.position }); }}>
                   <Text style={styles.dateNightCardEmoji}>💑</Text>
                   <View style={styles.dateNightCardContent}><Text style={styles.dateNightCardName}>{dateNight.position?.name}</Text><Text style={styles.dateNightCardVibe}>{dateNight.position?.vibe}</Text></View>
@@ -4073,12 +4079,12 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
               
               <TouchableOpacity style={styles.completeDateNightButton} onPress={handleCompleteDateNight}>
                 <LinearGradient colors={['#84cc16', '#22c55e']} style={styles.completeDateNightGradient}>
-                  <Text style={styles.completeDateNightText}>✓ Complete Date Night (+5 ⭐)</Text>
+                  <Text style={styles.completeDateNightText}>{t('date_night.complete')}</Text>
                 </LinearGradient>
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.regenerateButton} onPress={generateDateNight}>
-                <Text style={styles.regenerateButtonText}>🔄 Generate New Plan</Text>
+                <Text style={styles.regenerateButtonText}>{t('date_night.regenerate')}</Text>
               </TouchableOpacity>
             </ScrollView>
           )}
@@ -4095,6 +4101,7 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
 }
 
 function ChallengeModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+  const { t } = useI18n();
   const store = useStore();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
@@ -4159,47 +4166,47 @@ function ChallengeModal({ visible, onClose, navigation }: { visible: boolean; on
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🎯 Challenge Mode</Text>
+            <Text style={styles.modalTitle}>{t('challenge.title')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           {store.currentChallenge && challengeItem ? (
             <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={styles.modalSubtitle}>Complete for bonus stars!</Text>
+              <Text style={styles.modalSubtitle}>{t('challenge.subtitle')}</Text>
               <View style={styles.challengeCard}>
-                <Text style={styles.challengeType}>{store.currentChallenge.type === 'position' ? '💑 Position' : store.currentChallenge.type === 'foreplay' ? '💕 Foreplay' : '👄 Oral'}</Text>
+                <Text style={styles.challengeType}>{store.currentChallenge.type === 'position' ? t('challenge.type.position') : store.currentChallenge.type === 'foreplay' ? t('challenge.type.foreplay') : t('challenge.type.oral')}</Text>
                 <Text style={styles.challengeName}>{challengeItem.name}</Text>
                 <Text style={styles.challengeVibe}>{challengeItem.vibe}</Text>
                 <View style={styles.challengeReward}>
-                  <Text style={styles.challengeRewardText}>🏆 Reward: +3 bonus ⭐</Text>
+                  <Text style={styles.challengeRewardText}>{t('challenge.reward')}</Text>
                 </View>
                 <TouchableOpacity style={styles.challengeViewButton} onPress={handleViewChallenge}>
-                  <Text style={styles.challengeViewButtonText}>View Details →</Text>
+                  <Text style={styles.challengeViewButtonText}>{t('challenge.view_details')}</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
                 <LinearGradient colors={['#84cc16', '#22c55e']} style={styles.completeButtonGradient}>
-                  <Text style={styles.completeButtonText}>✓ Complete Challenge!</Text>
+                  <Text style={styles.completeButtonText}>{t('challenge.complete')}</Text>
                 </LinearGradient>
               </TouchableOpacity>
               <TouchableOpacity style={styles.skipButton} onPress={generateChallenge}>
-                <Text style={styles.skipButtonText}>Skip & Get New Challenge</Text>
+                <Text style={styles.skipButtonText}>{t('challenge.skip')}</Text>
               </TouchableOpacity>
               <View style={styles.challengeStats}>
-                <Text style={styles.challengeStatsText}>🏆 Challenges completed: {store.completedChallenges.length}</Text>
+                <Text style={styles.challengeStatsText}>{t('challenge.completed_count', { count: store.completedChallenges.length })}</Text>
               </View>
             </ScrollView>
           ) : (
             <View style={styles.noChallengeContainer}>
               <Text style={styles.noChallengeEmoji}>🎯</Text>
-              <Text style={styles.noChallengeTitle}>No Active Challenge</Text>
-              <Text style={styles.noChallengeSubtitle}>Get a challenge to earn bonus stars!</Text>
+              <Text style={styles.noChallengeTitle}>{t('challenge.none_title')}</Text>
+              <Text style={styles.noChallengeSubtitle}>{t('challenge.none_subtitle')}</Text>
               <TouchableOpacity style={styles.generateChallengeButton} onPress={generateChallenge}>
                 <LinearGradient colors={['#a855f7', '#ec4899']} style={styles.generateChallengeGradient}>
-                  <Text style={styles.generateChallengeText}>Generate Challenge</Text>
+                  <Text style={styles.generateChallengeText}>{t('challenge.generate')}</Text>
                 </LinearGradient>
               </TouchableOpacity>
               {store.completedChallenges.length > 0 && (
-                <View style={styles.challengeStats}><Text style={styles.challengeStatsText}>🏆 Challenges completed: {store.completedChallenges.length}</Text></View>
+                <View style={styles.challengeStats}><Text style={styles.challengeStatsText}>{t('challenge.completed_count', { count: store.completedChallenges.length })}</Text></View>
               )}
             </View>
           )}
@@ -4216,6 +4223,7 @@ function ChallengeModal({ visible, onClose, navigation }: { visible: boolean; on
 }
 
 function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible: boolean; onClose: () => void; itemId: number; itemType: 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay'; itemName: string }) {
+  const { t } = useI18n();
   const store = useStore();
   const existingNote = store.notes.find(n => n.itemId === itemId && n.type === itemType);
   const [noteText, setNoteText] = useState(existingNote?.text || '');
@@ -4249,12 +4257,12 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>📝 Notes</Text>
+            <Text style={styles.modalTitle}>{t('notes.title')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <Text style={styles.notesItemName}>{itemName}</Text>
-            <Text style={styles.notesLabel}>Your Rating</Text>
+            <Text style={styles.notesLabel}>{t('notes.rating')}</Text>
             <View style={styles.ratingContainer}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => { haptic.light(); setRating(star); }}>
@@ -4262,17 +4270,17 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
                 </TouchableOpacity>
               ))}
             </View>
-            <Text style={styles.notesLabel}>Personal Notes</Text>
-            <TextInput style={styles.notesInput} multiline numberOfLines={4} placeholder="How was it? What worked? What to try differently?" placeholderTextColor={colors.text.muted} value={noteText} onChangeText={setNoteText} />
+            <Text style={styles.notesLabel}>{t('notes.personal')}</Text>
+            <TextInput style={styles.notesInput} multiline numberOfLines={4} placeholder={t('notes.placeholder')} placeholderTextColor={colors.text.muted} value={noteText} onChangeText={setNoteText} />
             <View style={styles.notesButtons}>
               {existingNote && (
                 <TouchableOpacity style={styles.deleteNoteButton} onPress={handleDelete}>
-                  <Text style={styles.deleteNoteButtonText}>🗑️ Delete</Text>
+                  <Text style={styles.deleteNoteButtonText}>🗑️ {t('common.delete')}</Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity style={styles.saveNoteButton} onPress={handleSave}>
                 <LinearGradient colors={['#a855f7', '#ec4899']} style={styles.saveNoteGradient}>
-                  <Text style={styles.saveNoteText}>Save Note</Text>
+                  <Text style={styles.saveNoteText}>{t('notes.save')}</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
@@ -4284,6 +4292,7 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
 }
 
 function AchievementsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useI18n();
   const store = useStore();
   
   const groupedAchievements = {
@@ -4298,10 +4307,10 @@ function AchievementsModal({ visible, onClose }: { visible: boolean; onClose: ()
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🏆 Achievements</Text>
+            <Text style={styles.modalTitle}>🏆 {t('profile.achievements')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.achievementProgress}>{store.earnedAchievements.length} / {ACHIEVEMENTS.length} unlocked</Text>
+          <Text style={styles.achievementProgress}>{t('achievements.progress', { earned: store.earnedAchievements.length, total: ACHIEVEMENTS.length })}</Text>
           <ScrollView showsVerticalScrollIndicator={false}>
             {Object.entries(groupedAchievements).map(([category, achievements]) => (
               <View key={category} style={styles.achievementCategory}>
@@ -4333,6 +4342,7 @@ function AchievementsModal({ visible, onClose }: { visible: boolean; onClose: ()
 }
 
 function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { language, t } = useI18n();
   const store = useStore();
   const currentMonth = getCurrentMonth();
   const currentMonthStats = store.monthlyStats.find(m => m.month === currentMonth);
@@ -4344,7 +4354,8 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
   const formatMonth = (monthStr: string) => {
     const [year, month] = monthStr.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1);
-    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const locale = language === 'es' ? 'es-ES' : language === 'pt' ? 'pt-BR' : 'en-US';
+    return date.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   };
 
   return (
@@ -4352,7 +4363,7 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>📊 Insights</Text>
+            <Text style={styles.modalTitle}>📊 {t('profile.insights')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -4362,15 +4373,15 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
               <View style={styles.insightStatsRow}>
                 <View style={styles.insightStat}>
                   <Text style={styles.insightStatNumber}>{currentMonthStats?.totalSessions || 0}</Text>
-                  <Text style={styles.insightStatLabel}>Sessions</Text>
+                  <Text style={styles.insightStatLabel}>{t('insights.sessions')}</Text>
                 </View>
                 <View style={styles.insightStat}>
                   <Text style={styles.insightStatNumber}>⭐ {currentMonthStats?.starsEarned || 0}</Text>
-                  <Text style={styles.insightStatLabel}>Stars Earned</Text>
+                  <Text style={styles.insightStatLabel}>{t('insights.stars_earned')}</Text>
                 </View>
                 <View style={styles.insightStat}>
                   <Text style={styles.insightStatNumber}>{currentMonthStats?.newThingsTried || 0}</Text>
-                  <Text style={styles.insightStatLabel}>New Things</Text>
+                  <Text style={styles.insightStatLabel}>{t('insights.new_things')}</Text>
                 </View>
               </View>
             </View>
@@ -4378,15 +4389,15 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
             {/* Comparison */}
             {lastMonthStats && (
               <View style={styles.comparisonCard}>
-                <Text style={styles.comparisonTitle}>vs. Last Month</Text>
+                <Text style={styles.comparisonTitle}>{t('insights.vs_last_month')}</Text>
                 <View style={styles.comparisonRow}>
-                  <Text style={styles.comparisonLabel}>Sessions:</Text>
+                  <Text style={styles.comparisonLabel}>{t('insights.sessions')}:</Text>
                   <Text style={[styles.comparisonValue, (currentMonthStats?.totalSessions || 0) > lastMonthStats.totalSessions ? styles.comparisonUp : styles.comparisonDown]}>
                     {(currentMonthStats?.totalSessions || 0) >= lastMonthStats.totalSessions ? '↑' : '↓'} {Math.abs((currentMonthStats?.totalSessions || 0) - lastMonthStats.totalSessions)}
                   </Text>
                 </View>
                 <View style={styles.comparisonRow}>
-                  <Text style={styles.comparisonLabel}>Stars:</Text>
+                  <Text style={styles.comparisonLabel}>{t('insights.stars_short')}:</Text>
                   <Text style={[styles.comparisonValue, (currentMonthStats?.starsEarned || 0) > lastMonthStats.starsEarned ? styles.comparisonUp : styles.comparisonDown]}>
                     {(currentMonthStats?.starsEarned || 0) >= lastMonthStats.starsEarned ? '↑' : '↓'} {Math.abs((currentMonthStats?.starsEarned || 0) - lastMonthStats.starsEarned)}
                   </Text>
@@ -4398,25 +4409,25 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
             <View style={styles.streakCard}>
               <Text style={styles.streakEmoji}>🔥</Text>
               <Text style={styles.streakNumber}>{store.currentStreak}</Text>
-              <Text style={styles.streakLabel}>Week Streak</Text>
-              {store.currentStreak >= 2 && <Text style={styles.streakMessage}>Keep it going!</Text>}
+              <Text style={styles.streakLabel}>{t('insights.week_streak')}</Text>
+              {store.currentStreak >= 2 && <Text style={styles.streakMessage}>{t('insights.keep_going')}</Text>}
             </View>
 
             {/* All Time Stats */}
             <View style={styles.insightCard}>
-              <Text style={styles.insightCardTitle}>All Time</Text>
+              <Text style={styles.insightCardTitle}>{t('insights.all_time')}</Text>
               <View style={styles.insightStatsRow}>
                 <View style={styles.insightStat}>
                   <Text style={styles.insightStatNumber}>⭐ {store.totalStars}</Text>
-                  <Text style={styles.insightStatLabel}>Total Stars</Text>
+                  <Text style={styles.insightStatLabel}>{t('insights.total_stars')}</Text>
                 </View>
                 <View style={styles.insightStat}>
                   <Text style={styles.insightStatNumber}>{store.tried.length + store.triedForeplay.length + store.triedOral.length}</Text>
-                  <Text style={styles.insightStatLabel}>Things Tried</Text>
+                  <Text style={styles.insightStatLabel}>{t('insights.things_tried')}</Text>
                 </View>
                 <View style={styles.insightStat}>
                   <Text style={styles.insightStatNumber}>{store.completedChallenges.length}</Text>
-                  <Text style={styles.insightStatLabel}>Challenges</Text>
+                  <Text style={styles.insightStatLabel}>{t('insights.challenges')}</Text>
                 </View>
               </View>
             </View>
@@ -4424,7 +4435,7 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
             {/* Recent Activity */}
             {store.activityLog.length > 0 && (
               <View style={styles.recentActivityCard}>
-                <Text style={styles.insightCardTitle}>Recent Activity</Text>
+                <Text style={styles.insightCardTitle}>{t('insights.recent_activity')}</Text>
                 {store.activityLog.slice(-5).reverse().map((activity) => {
                   const item = activity.type === 'position' 
                     ? positions.find(p => p.id === activity.itemId)
@@ -4437,7 +4448,7 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
                         {activity.type === 'position' ? '💑' : activity.type === 'foreplay' ? '💕' : activity.type === 'oral' ? '👄' : '🌙'}
                       </Text>
                       <View style={styles.activityInfo}>
-                        <Text style={styles.activityName}>{item?.name || 'Session'}</Text>
+                        <Text style={styles.activityName}>{item?.name || t('insights.session_fallback')}</Text>
                         <Text style={styles.activityDate}>{new Date(activity.date).toLocaleDateString()}</Text>
                       </View>
                       <Text style={styles.activityStars}>+{activity.starsEarned} ⭐</Text>
@@ -4457,6 +4468,7 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
 // WEEKLY GOALS MODAL
 // ============================================
 function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useI18n();
   const store = useStore();
   
   useEffect(() => {
@@ -4473,17 +4485,17 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🎯 Weekly Goals</Text>
+            <Text style={styles.modalTitle}>🎯 {t('home.weekly_goals')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Complete goals to earn bonus stars!</Text>
+          <Text style={styles.modalSubtitle}>{t('weekly_goals.subtitle')}</Text>
           
           {/* Progress Bar */}
           <View style={styles.weeklyProgressContainer}>
             <View style={styles.weeklyProgressBar}>
               <View style={[styles.weeklyProgressFill, { width: `${(completedCount / Math.max(totalGoals, 1)) * 100}%` }]} />
             </View>
-            <Text style={styles.weeklyProgressText}>{completedCount}/{totalGoals} completed</Text>
+            <Text style={styles.weeklyProgressText}>{t('weekly_goals.progress', { completed: completedCount, total: totalGoals })}</Text>
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -4509,7 +4521,7 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
           {completedCount === totalGoals && totalGoals > 0 && (
             <View style={styles.allGoalsComplete}>
               <Text style={styles.allGoalsCompleteEmoji}>🎉</Text>
-              <Text style={styles.allGoalsCompleteText}>All goals completed this week!</Text>
+              <Text style={styles.allGoalsCompleteText}>{t('weekly_goals.all_completed')}</Text>
             </View>
           )}
         </View>
@@ -4522,6 +4534,7 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
 // DAILY BONUS MODAL
 // ============================================
 function DailyBonusModal({ visible, onClose: _onClose, onClaim }: { visible: boolean; onClose: () => void; onClaim: () => void }) {
+  const { t } = useI18n();
   const store = useStore();
   const [claimed, setClaimed] = useState(false);
   const [bonusAmount, setBonusAmount] = useState(0);
@@ -4544,21 +4557,21 @@ function DailyBonusModal({ visible, onClose: _onClose, onClaim }: { visible: boo
           {!claimed ? (
             <>
               <Text style={styles.dailyBonusEmoji}>🎁</Text>
-              <Text style={styles.dailyBonusTitle}>Daily Bonus!</Text>
+              <Text style={styles.dailyBonusTitle}>{t('daily_bonus.title')}</Text>
               <Text style={styles.dailyBonusSubtitle}>
-                {store.loginStreak > 1 ? `${store.loginStreak} day streak! 🔥` : 'Welcome back!'}
+                {store.loginStreak > 1 ? t('daily_bonus.streak', { count: store.loginStreak }) : t('daily_bonus.welcome_back')}
               </Text>
               <TouchableOpacity style={styles.dailyBonusButton} onPress={handleClaim}>
                 <LinearGradient colors={[colors.gold, '#f59e0b']} style={styles.dailyBonusButtonGradient}>
-                  <Text style={styles.dailyBonusButtonText}>Claim Reward</Text>
+                  <Text style={styles.dailyBonusButtonText}>{t('daily_bonus.claim')}</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </>
           ) : (
             <>
               <Text style={styles.dailyBonusEmoji}>🌟</Text>
-              <Text style={styles.dailyBonusTitle}>+{bonusAmount} Stars!</Text>
-              <Text style={styles.dailyBonusSubtitle}>Come back tomorrow for more!</Text>
+              <Text style={styles.dailyBonusTitle}>{t('daily_bonus.stars', { count: bonusAmount })}</Text>
+              <Text style={styles.dailyBonusSubtitle}>{t('daily_bonus.come_back')}</Text>
             </>
           )}
         </View>
@@ -4571,6 +4584,7 @@ function DailyBonusModal({ visible, onClose: _onClose, onClaim }: { visible: boo
 // LEVEL UP MODAL
 // ============================================
 function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClose: () => void; newLevel: Level | null }) {
+  const { t } = useI18n();
   const [showConfetti, setShowConfetti] = useState(false);
   
   useEffect(() => {
@@ -4591,11 +4605,11 @@ function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClos
         <ConfettiCelebration visible={showConfetti} />
         <View style={styles.levelUpContent}>
           <Text style={styles.levelUpEmoji}>{newLevel.emoji}</Text>
-          <Text style={styles.levelUpTitle}>Level Up!</Text>
+          <Text style={styles.levelUpTitle}>{t('level_up.title')}</Text>
           <Text style={[styles.levelUpNewLevel, { color: newLevel.color }]}>{newLevel.title}</Text>
-          <Text style={styles.levelUpSubtitle}>You've reached level {newLevel.level}</Text>
+          <Text style={styles.levelUpSubtitle}>{t('level_up.subtitle', { level: newLevel.level })}</Text>
           <TouchableOpacity style={styles.celebrationButton} onPress={onClose}>
-            <Text style={styles.celebrationButtonText}>Amazing!</Text>
+            <Text style={styles.celebrationButtonText}>{t('level_up.button')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -4607,6 +4621,7 @@ function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClos
 // MOOD PLAYLISTS MODAL
 // ============================================
 function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+  const { t } = useI18n();
   const store = useStore();
 
   const handleSelectPlaylist = (playlist: MoodPlaylist) => {
@@ -4620,10 +4635,10 @@ function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { vis
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '80%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🎵 Mood Playlists</Text>
+            <Text style={styles.modalTitle}>{t('mood_playlists.title')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Set your vibe for tonight</Text>
+          <Text style={styles.modalSubtitle}>{t('mood_playlists.subtitle')}</Text>
           
           <ScrollView showsVerticalScrollIndicator={false}>
             {MOOD_PLAYLISTS.map((playlist) => (
@@ -4652,8 +4667,8 @@ function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { vis
                 <Text style={styles.playlistEmoji}>🎲</Text>
               </View>
               <View style={styles.playlistInfo}>
-                <Text style={styles.playlistName}>Surprise Me</Text>
-                <Text style={styles.playlistDescription}>Show me everything!</Text>
+                <Text style={styles.playlistName}>{t('mood_playlists.surprise')}</Text>
+                <Text style={styles.playlistDescription}>{t('mood_playlists.surprise_desc')}</Text>
               </View>
               {!store.currentMood && <Text style={styles.playlistCheck}>✓</Text>}
             </TouchableOpacity>
@@ -4668,6 +4683,7 @@ function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { vis
 // RECOMMENDATIONS MODAL
 // ============================================
 function RecommendationsModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
+  const { t } = useI18n();
   const store = useStore();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
@@ -4705,11 +4721,11 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'position': return 'Positions';
-      case 'foreplay': return 'Foreplay';
-      case 'oral': return 'Oral Play';
-      case 'massage': return 'Massage';
-      case 'roleplay': return 'Role Play';
+      case 'position': return t('recommendations.type.position');
+      case 'foreplay': return t('recommendations.type.foreplay');
+      case 'oral': return t('recommendations.type.oral');
+      case 'massage': return t('recommendations.type.massage');
+      case 'roleplay': return t('recommendations.type.roleplay');
       default: return type;
     }
   };
@@ -4749,15 +4765,15 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '85%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>💡 For You</Text>
+            <Text style={styles.modalTitle}>💡 {t('home.feature.for_you')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Personalized based on what you enjoy</Text>
+          <Text style={styles.modalSubtitle}>{t('recommendations.subtitle')}</Text>
           
           {/* Preference summary */}
           {prefSummary.categories.length > 0 && (
             <View style={[styles.prefSummaryContainer, { backgroundColor: themeColors.card }]}>
-              <Text style={[styles.prefSummaryTitle, { color: themeColors.text.secondary }]}>Your Preferences</Text>
+              <Text style={[styles.prefSummaryTitle, { color: themeColors.text.secondary }]}>{t('recommendations.preferences_title')}</Text>
               <View style={styles.prefTagsRow}>
                 {prefSummary.categories.slice(0, 3).map((cat, i) => (
                   <View key={`cat-${i}`} style={[styles.prefTag, { backgroundColor: themeColors.primary[500] + '30' }]}>
@@ -4803,10 +4819,10 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
               <View style={styles.noRecsContainer}>
                 <Text style={styles.noRecsEmoji}>🔮</Text>
                 <Text style={[styles.noRecsText, { color: themeColors.text.muted }]}>
-                  Try some content to get personalized recommendations!
+                  {t('recommendations.empty_title')}
                 </Text>
                 <Text style={[styles.noRecsSubtext, { color: themeColors.text.muted }]}>
-                  The more you explore, the better we can suggest things you'll love.
+                  {t('recommendations.empty_subtitle')}
                 </Text>
               </View>
             )}
@@ -4821,6 +4837,7 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
 // TRUTH OR DARE MODAL
 // ============================================
 function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useI18n();
   const [intensity, setIntensity] = useState<'mild' | 'medium' | 'spicy' | 'wild'>('mild');
   const [currentItem, setCurrentItem] = useState<TruthOrDareItem | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -4852,10 +4869,10 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🎲 Truth or Dare</Text>
+            <Text style={styles.modalTitle}>{t('truth_dare.title')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>A spicy couples game</Text>
+          <Text style={styles.modalSubtitle}>{t('truth_dare.subtitle')}</Text>
           
           {/* Intensity Selector */}
           <View style={styles.intensitySelector}>
@@ -4866,7 +4883,7 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
                 onPress={() => { haptic.light(); setIntensity(level); }}
               >
                 <Text style={[styles.intensityOptionText, intensity === level && { color: intensityColors[level] }]}>
-                  {level === 'mild' ? '😊' : level === 'medium' ? '😏' : level === 'spicy' ? '🔥' : '🌶️'} {level.charAt(0).toUpperCase() + level.slice(1)}
+                  {level === 'mild' ? '😊' : level === 'medium' ? '😏' : level === 'spicy' ? '🔥' : '🌶️'} {t(`truth_dare.intensity.${level}`)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -4875,28 +4892,28 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
           {/* Current Card */}
           {currentItem ? (
             <Animated.View style={[styles.todCard, { backgroundColor: intensityColors[currentItem.intensity] + '20', borderColor: intensityColors[currentItem.intensity], transform: [{ scale: spinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0.95] }) }] }]}>
-              <Text style={styles.todCardType}>{currentItem.type === 'truth' ? '🤔 TRUTH' : '😈 DARE'}</Text>
+              <Text style={styles.todCardType}>{currentItem.type === 'truth' ? t('truth_dare.card.truth') : t('truth_dare.card.dare')}</Text>
               <Text style={styles.todCardText}>{currentItem.text}</Text>
             </Animated.View>
           ) : (
             <View style={styles.todPlaceholder}>
               <Text style={styles.todPlaceholderEmoji}>🎲</Text>
-              <Text style={styles.todPlaceholderText}>Choose Truth, Dare, or Random!</Text>
+              <Text style={styles.todPlaceholderText}>{t('truth_dare.placeholder')}</Text>
             </View>
           )}
 
           {/* Action Buttons */}
           <View style={styles.todButtonsRow}>
             <TouchableOpacity style={[styles.todButton, { backgroundColor: '#06b6d4' }]} onPress={() => spin('truth')} disabled={isSpinning}>
-              <Text style={styles.todButtonText}>🤔 Truth</Text>
+              <Text style={styles.todButtonText}>🤔 {t('truth_dare.truth')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.todButton, { backgroundColor: '#ec4899' }]} onPress={() => spin('dare')} disabled={isSpinning}>
-              <Text style={styles.todButtonText}>😈 Dare</Text>
+              <Text style={styles.todButtonText}>😈 {t('truth_dare.dare')}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={[styles.todRandomButton]} onPress={() => spin('random')} disabled={isSpinning}>
             <LinearGradient colors={['#8b5cf6', '#ec4899']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.todRandomGradient}>
-              <Text style={styles.todRandomText}>🎲 Random</Text>
+              <Text style={styles.todRandomText}>🎲 {t('truth_dare.random')}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -4909,10 +4926,11 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
 // MUSIC PLAYLISTS MODAL (Enhanced)
 // ============================================
 function MusicPlaylistsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useI18n();
   const openPlaylist = (url: string) => {
     haptic.light();
     Linking.openURL(url).catch(() => {
-      Alert.alert('Oops', 'Could not open music app. Make sure you have Spotify or Apple Music installed.');
+      Alert.alert(t('music.error_title'), t('music.error_message'));
     });
   };
 
@@ -4921,10 +4939,10 @@ function MusicPlaylistsModal({ visible, onClose }: { visible: boolean; onClose: 
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '85%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🎵 Mood Music</Text>
+            <Text style={styles.modalTitle}>{t('music.title')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
-          <Text style={styles.modalSubtitle}>Curated playlists for every vibe</Text>
+          <Text style={styles.modalSubtitle}>{t('music.subtitle')}</Text>
           
           <ScrollView showsVerticalScrollIndicator={false}>
             {CURATED_PLAYLISTS.map((playlist, index) => (
@@ -4933,10 +4951,10 @@ function MusicPlaylistsModal({ visible, onClose }: { visible: boolean; onClose: 
                 <Text style={styles.musicPlaylistDesc}>{playlist.description}</Text>
                 <View style={styles.musicButtonsRow}>
                   <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#1DB954' }]} onPress={() => openPlaylist(playlist.spotifyUrl)}>
-                    <Text style={styles.musicButtonText}>Spotify</Text>
+                    <Text style={styles.musicButtonText}>{t('music.spotify')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#FA243C' }]} onPress={() => openPlaylist(playlist.appleMusicUrl)}>
-                    <Text style={styles.musicButtonText}>Apple Music</Text>
+                    <Text style={styles.musicButtonText}>{t('music.apple_music')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -4955,12 +4973,13 @@ function MusicPlaylistsModal({ visible, onClose }: { visible: boolean; onClose: 
 // THEME SELECTOR COMPONENT
 // ============================================
 function ThemeSelector() {
+  const { t } = useI18n();
   const themeStore = useThemeStore();
   const currentColors = getThemeColors(themeStore.currentTheme);
   
   return (
     <View style={styles.themeSelectorContainer}>
-      <Text style={[styles.themeSelectorLabel, { color: currentColors.text.primary }]}>Color Theme</Text>
+      <Text style={[styles.themeSelectorLabel, { color: currentColors.text.primary }]}>{t('settings.appearance.color_theme')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.themeSelectorScroll}>
         {THEMES.map((theme) => (
           <TouchableOpacity
@@ -4997,18 +5016,19 @@ function ThemeSelector() {
 // FONT SIZE SELECTOR COMPONENT
 // ============================================
 function FontSizeSelector() {
+  const { t } = useI18n();
   const themeStore = useThemeStore();
   const currentColors = getThemeColors(themeStore.currentTheme);
   
   const sizes: { id: FontSizePreset; label: string; preview: string }[] = [
-    { id: 'small', label: 'Small', preview: 'Aa' },
-    { id: 'medium', label: 'Medium', preview: 'Aa' },
-    { id: 'large', label: 'Large', preview: 'Aa' },
+    { id: 'small', label: t('settings.font.small'), preview: 'Aa' },
+    { id: 'medium', label: t('settings.font.medium'), preview: 'Aa' },
+    { id: 'large', label: t('settings.font.large'), preview: 'Aa' },
   ];
   
   return (
     <View style={styles.fontSelectorContainer}>
-      <Text style={[styles.themeSelectorLabel, { color: currentColors.text.primary }]}>Font Size</Text>
+      <Text style={[styles.themeSelectorLabel, { color: currentColors.text.primary }]}>{t('settings.appearance.font_size')}</Text>
       <View style={styles.fontSizeOptions}>
         {sizes.map((size) => (
           <TouchableOpacity
@@ -5063,11 +5083,11 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
 
   const handleSetPin = () => {
     if (newPin.length !== 4) {
-      setPinError('PIN must be 4 digits');
+      setPinError(t('settings.pin.error_length'));
       return;
     }
     if (newPin !== confirmPin) {
-      setPinError('PINs do not match');
+      setPinError(t('settings.pin.error_match'));
       return;
     }
     store.setPinCode(newPin);
@@ -5076,13 +5096,13 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
     setConfirmPin('');
     setPinError('');
     haptic.success();
-    Alert.alert('✅ PIN Set', 'Your app is now protected with a PIN.');
+    Alert.alert(t('settings.pin.set_success_title'), t('settings.pin.set_success_message'));
   };
 
   const handleRemovePin = () => {
-    Alert.alert('Remove PIN?', 'Your app will no longer be protected.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', style: 'destructive', onPress: () => { store.setPinCode(null); haptic.light(); } }
+    Alert.alert(t('settings.pin.remove_title'), t('settings.pin.remove_message'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('settings.pin.remove_action'), style: 'destructive', onPress: () => { store.setPinCode(null); haptic.light(); } }
     ]);
   };
 
@@ -5091,7 +5111,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
       const compatible = await LocalAuthentication.hasHardwareAsync();
       const enrolled = await LocalAuthentication.isEnrolledAsync();
       if (!compatible || !enrolled) {
-        Alert.alert('Not Available', 'Biometric authentication is not set up on this device.');
+        Alert.alert(t('settings.biometrics.not_available_title'), t('settings.biometrics.not_available_message'));
         return;
       }
     }
@@ -5101,17 +5121,17 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'Delete Account?',
-      'This will permanently delete your Blisse account and all synced data. Local app data will also be reset. This cannot be undone.',
+      t('settings.account.delete_confirm_title'),
+      t('settings.account.delete_confirm_message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
             try {
               if (!user) {
-                Alert.alert('Error', 'No account is currently signed in.');
+                Alert.alert(t('common.error'), t('settings.account.no_user'));
                 return;
               }
               await deleteUser(user);
@@ -5119,7 +5139,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
               await logout();
               onClose();
               haptic.success();
-              Alert.alert('Account Deleted', 'Your account has been deleted.');
+              Alert.alert(t('settings.account.deleted_title'), t('settings.account.deleted_message'));
             } catch (error: any) {
               if (error?.code === 'auth/requires-recent-login') {
                 try {
@@ -5128,9 +5148,9 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                   // Ignore logout failure and still show re-auth guidance.
                 }
                 onClose();
-                Alert.alert('Sign In Required', 'For security, please sign in again and retry account deletion.');
+                Alert.alert(t('settings.account.reauth_title'), t('settings.account.reauth_message'));
               } else {
-                Alert.alert('Error', 'Failed to delete account. Please try again later.');
+                Alert.alert(t('common.error'), t('settings.account.delete_failed'));
               }
             }
           },
@@ -5276,9 +5296,9 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
             </View>
             
             <TouchableOpacity style={[styles.settingsItem, { borderColor: colors.error }]} onPress={() => {
-              Alert.alert('Reset All Data?', 'This will delete all your progress, favorites, and notes. This cannot be undone.', [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Reset Everything', style: 'destructive', onPress: () => { store.resetOnboarding(); onClose(); } }
+              Alert.alert(t('settings.data.reset_confirm_title'), t('settings.data.reset_confirm_message'), [
+                { text: t('common.cancel'), style: 'cancel' },
+                { text: t('settings.data.reset_confirm_action'), style: 'destructive', onPress: () => { store.resetOnboarding(); onClose(); } }
               ]);
             }}>
               <Text style={[styles.settingsItemText, { color: colors.error }]}>🗑️ {t('settings.data.reset')}</Text>
@@ -5456,6 +5476,7 @@ function AboutBlisseModal({ visible, onClose }: { visible: boolean; onClose: () 
 // CONTACT FORM MODAL (In-App Submission)
 // ============================================
 function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useI18n();
   const [category, setCategory] = useState<'general' | 'bug' | 'feedback'>('general');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -5463,7 +5484,7 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
 
   const handleSubmit = async () => {
     if (!message.trim()) {
-      Alert.alert('Please enter a message');
+      Alert.alert(t('contact.empty_message'));
       return;
     }
     
@@ -5481,7 +5502,7 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
       haptic.success();
     } catch (error) {
       haptic.error();
-      Alert.alert('Message Not Sent', 'Unable to send your message right now. Please try again in a moment.');
+      Alert.alert(t('contact.error_title'), t('contact.error_message'));
     }
     
     setIsSubmitting(false);
@@ -5501,10 +5522,10 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
           <View style={styles.modalContent}>
             <View style={styles.successContainer}>
               <Text style={styles.successEmoji}>✅</Text>
-              <Text style={styles.successTitle}>Message Sent!</Text>
-              <Text style={styles.successText}>Thank you for reaching out. We'll review your message and get back to you if needed.</Text>
+              <Text style={styles.successTitle}>{t('contact.success_title')}</Text>
+              <Text style={styles.successText}>{t('contact.success_message')}</Text>
               <TouchableOpacity style={styles.successButton} onPress={handleClose}>
-                <Text style={styles.successButtonText}>Done</Text>
+                <Text style={styles.successButtonText}>{t('common.done')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -5518,18 +5539,18 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '80%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>📧 Contact Us</Text>
+            <Text style={styles.modalTitle}>📧 {t('profile.menu.contact')}</Text>
             <TouchableOpacity onPress={handleClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-            <Text style={styles.modalSubtitle}>We'd love to hear from you!</Text>
+            <Text style={styles.modalSubtitle}>{t('contact.subtitle')}</Text>
             
             {/* Category Selector */}
             <View style={styles.contactCategoryRow}>
               {[
-                { type: 'general' as const, emoji: '💬', label: 'General' },
-                { type: 'bug' as const, emoji: '🐛', label: 'Bug Report' },
-                { type: 'feedback' as const, emoji: '💝', label: 'Feedback' },
+                { type: 'general' as const, emoji: '💬', label: t('contact.category.general') },
+                { type: 'bug' as const, emoji: '🐛', label: t('contact.category.bug') },
+                { type: 'feedback' as const, emoji: '💝', label: t('contact.category.feedback') },
               ].map((item) => (
                 <TouchableOpacity 
                   key={item.type}
@@ -5546,7 +5567,7 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
               style={[styles.contactInput, styles.contactTextarea]}
               value={message}
               onChangeText={setMessage}
-              placeholder="Tell us what's on your mind..."
+              placeholder={t('contact.placeholder')}
               placeholderTextColor={colors.text.muted}
               multiline
               numberOfLines={6}
@@ -5559,11 +5580,11 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
               disabled={isSubmitting}
             >
               <LinearGradient colors={['#8b5cf6', '#ec4899']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.contactSendGradient}>
-                <Text style={styles.contactSendText}>{isSubmitting ? '⏳ Sending...' : '📤 Send Message'}</Text>
+                <Text style={styles.contactSendText}>{isSubmitting ? t('contact.sending') : t('contact.send')}</Text>
               </LinearGradient>
             </TouchableOpacity>
             
-            <Text style={styles.contactPrivacyNote}>Only the text you type here is sent to support through Formspree email delivery.</Text>
+            <Text style={styles.contactPrivacyNote}>{t('contact.privacy_note')}</Text>
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
@@ -5575,6 +5596,7 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
 // IDEAS/FEEDBACK FORM MODAL (In-App Submission)
 // ============================================
 function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useI18n();
   const [ideaType, setIdeaType] = useState<'position' | 'feature' | 'other'>('position');
   const [idea, setIdea] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -5582,7 +5604,7 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
 
   const handleSubmit = async () => {
     if (!idea.trim()) {
-      Alert.alert('Please describe your idea');
+      Alert.alert(t('ideas.empty_message'));
       return;
     }
     
@@ -5600,7 +5622,7 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
       haptic.success();
     } catch (error) {
       haptic.error();
-      Alert.alert('Idea Not Sent', 'Unable to submit your idea right now. Please try again in a moment.');
+      Alert.alert(t('ideas.error_title'), t('ideas.error_message'));
     }
     
     setIsSubmitting(false);
@@ -5620,10 +5642,10 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
           <View style={styles.modalContent}>
             <View style={styles.successContainer}>
               <Text style={styles.successEmoji}>🎉</Text>
-              <Text style={styles.successTitle}>Idea Submitted!</Text>
-              <Text style={styles.successText}>Thank you for helping make Blisse better! We review every submission.</Text>
+              <Text style={styles.successTitle}>{t('ideas.success_title')}</Text>
+              <Text style={styles.successText}>{t('ideas.success_message')}</Text>
               <TouchableOpacity style={styles.successButton} onPress={handleClose}>
-                <Text style={styles.successButtonText}>Awesome!</Text>
+                <Text style={styles.successButtonText}>{t('celebration.awesome')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -5637,18 +5659,18 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '80%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>💡 Submit an Idea</Text>
+            <Text style={styles.modalTitle}>💡 {t('ideas.title')}</Text>
             <TouchableOpacity onPress={handleClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-            <Text style={styles.modalSubtitle}>Help us make Blisse even better!</Text>
+            <Text style={styles.modalSubtitle}>{t('ideas.subtitle')}</Text>
             
             {/* Idea Type Selector */}
             <View style={styles.ideaTypeRow}>
               {[
-                { type: 'position' as const, emoji: '💑', label: 'Position' },
-                { type: 'feature' as const, emoji: '✨', label: 'Feature' },
-                { type: 'other' as const, emoji: '💬', label: 'Other' },
+                { type: 'position' as const, emoji: '💑', label: t('ideas.type.position') },
+                { type: 'feature' as const, emoji: '✨', label: t('ideas.type.feature') },
+                { type: 'other' as const, emoji: '💬', label: t('ideas.type.other') },
               ].map((item) => (
                 <TouchableOpacity 
                   key={item.type}
@@ -5665,7 +5687,7 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
               style={[styles.contactInput, styles.contactTextarea]}
               value={idea}
               onChangeText={setIdea}
-              placeholder={ideaType === 'position' ? "Describe your position idea..." : ideaType === 'feature' ? "What feature would you like?" : "Share your thoughts..."}
+              placeholder={ideaType === 'position' ? t('ideas.placeholder.position') : ideaType === 'feature' ? t('ideas.placeholder.feature') : t('ideas.placeholder.other')}
               placeholderTextColor={colors.text.muted}
               multiline
               numberOfLines={6}
@@ -5678,11 +5700,11 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
               disabled={isSubmitting}
             >
               <LinearGradient colors={['#06b6d4', '#22c55e']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.contactSendGradient}>
-                <Text style={styles.contactSendText}>{isSubmitting ? '⏳ Sending...' : '🚀 Submit Idea'}</Text>
+                <Text style={styles.contactSendText}>{isSubmitting ? t('ideas.sending') : t('ideas.send')}</Text>
               </LinearGradient>
             </TouchableOpacity>
             
-            <Text style={styles.contactPrivacyNote}>Only the idea text you provide is sent to support through Formspree email delivery.</Text>
+            <Text style={styles.contactPrivacyNote}>{t('ideas.privacy_note')}</Text>
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
@@ -5694,6 +5716,7 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
 // APP LOCK SCREEN
 // ============================================
 function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
+  const { t } = useI18n();
   const store = useStore();
   const [enteredPin, setEnteredPin] = useState('');
   const [error, setError] = useState('');
@@ -5705,8 +5728,8 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
     if (store.useBiometrics) {
       try {
         const result = await LocalAuthentication.authenticateAsync({
-          promptMessage: 'Unlock Blisse',
-          fallbackLabel: 'Use PIN',
+          promptMessage: t('lock.unlock_prompt'),
+          fallbackLabel: t('lock.use_pin'),
         });
         if (result.success) {
           haptic.success();
@@ -5716,7 +5739,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
         // Biometrics failed, fall back to PIN
       }
     }
-  }, [store.useBiometrics, onUnlock]);
+  }, [store.useBiometrics, onUnlock, t]);
 
   useEffect(() => {
     void tryBiometrics();
@@ -5757,9 +5780,9 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
         const nextAttempts = attempts + 1;
         if (nextAttempts >= MAX_PIN_ATTEMPTS) {
           setLockoutUntil(Date.now() + PIN_LOCKOUT_MS);
-          setError('Too many attempts. Please wait.');
+          setError(t('lock.too_many'));
         } else {
-          setError('Incorrect PIN');
+          setError(t('lock.incorrect_pin'));
         }
         setEnteredPin('');
         setAttempts(nextAttempts);
@@ -5777,7 +5800,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
     <LinearGradient colors={[colors.background.primary, colors.background.secondary]} style={styles.lockScreenContainer}>
       <SafeAreaView style={styles.lockScreenContent}>
         <Text style={styles.lockScreenTitle}>🔐 Blisse</Text>
-        <Text style={styles.lockScreenSubtitle}>Enter your PIN</Text>
+        <Text style={styles.lockScreenSubtitle}>{t('lock.enter_pin')}</Text>
         
         {/* PIN Dots */}
         <View style={styles.pinDotsRow}>
@@ -5787,7 +5810,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
         </View>
         
         {lockoutUntil ? (
-          <Text style={styles.lockScreenError}>Too many attempts. Try again in {lockoutSecondsLeft}s.</Text>
+          <Text style={styles.lockScreenError}>{t('lock.too_many_wait', { seconds: lockoutSecondsLeft })}</Text>
         ) : error ? (
           <Text style={styles.lockScreenError}>{error}</Text>
         ) : null}
@@ -6556,7 +6579,7 @@ function ProfileScreen({ navigation }: any) {
       t('profile.signout.title'),
       t('profile.signout.message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         { 
           text: t('profile.menu.signout'), 
           style: 'destructive',
@@ -6565,7 +6588,7 @@ function ProfileScreen({ navigation }: any) {
               await logout();
               haptic.light();
             } catch (error) {
-              Alert.alert('Error', t('profile.signout.error'));
+              Alert.alert(t('common.error'), t('profile.signout.error'));
             }
           }
         }
@@ -7611,6 +7634,7 @@ function OnboardingStack() {
 }
 
 function AppNavigator() {
+  const { t } = useI18n();
   const store = useStore();
   const { user, loading: authLoading, initError } = useAuth();
   const [isReady, setIsReady] = useState(false);
@@ -7624,6 +7648,7 @@ function AppNavigator() {
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 48, marginBottom: 16 }}>🌸</Text>
         <Text style={{ color: themeColors.text.primary, fontSize: 28, fontWeight: '700' }}>Blisse</Text>
+        <Text style={{ color: themeColors.text.secondary, fontSize: 14, marginTop: 8 }}>{t('common.loading')}</Text>
         <ActivityIndicator color={themeColors.primary[500]} style={{ marginTop: 20 }} />
       </View>
     );
@@ -7633,7 +7658,7 @@ function AppNavigator() {
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
         <Text style={{ fontSize: 44, marginBottom: 16 }}>⚠️</Text>
-        <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700', textAlign: 'center', marginBottom: 10 }}>Authentication Unavailable</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700', textAlign: 'center', marginBottom: 10 }}>{t('app.auth_unavailable')}</Text>
         <Text style={{ color: themeColors.text.secondary, fontSize: 14, textAlign: 'center' }}>{initError}</Text>
       </View>
     );
@@ -7715,11 +7740,12 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 
   render() {
     if (this.state.hasError) {
+      const language = useStore.getState().language;
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A0F24', padding: 20 }}>
           <Text style={{ fontSize: 48, marginBottom: 20 }}>😔</Text>
-          <Text style={{ fontSize: 20, color: '#FFF', textAlign: 'center', marginBottom: 10 }}>Something went wrong</Text>
-          <Text style={{ fontSize: 14, color: '#AAA', textAlign: 'center' }}>Please restart the app</Text>
+          <Text style={{ fontSize: 20, color: '#FFF', textAlign: 'center', marginBottom: 10 }}>{translateUi(language, 'app.error.title')}</Text>
+          <Text style={{ fontSize: 14, color: '#AAA', textAlign: 'center' }}>{translateUi(language, 'app.error.restart')}</Text>
         </View>
       );
     }
