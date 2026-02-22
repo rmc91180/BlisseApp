@@ -299,7 +299,7 @@ const ES_CONTENT: LegalLocaleContent = {
     sections: [
       {
         heading: 'Lo que Blisse te ayuda a hacer',
-        body: '- Convertir "que hacemos hoy?" en opciones faciles\n- Fortalecer confianza y quimica con retos y juegos\n- Mantener constancia con metas semanales\n- Personalizar ideas segun su mood y feedback',
+        body: '- Convertir "que hacemos hoy?" en opciones faciles\n- Fortalecer confianza y quimica con retos y juegos\n- Mantener constancia con metas semanales\n- Personalizar ideas segun su estado de animo y sus comentarios',
       },
       {
         heading: 'Nuestro estilo',
@@ -443,7 +443,7 @@ const PT_CONTENT: LegalLocaleContent = {
     sections: [
       {
         heading: 'Como o Blisse ajuda voces',
-        body: '- Transformar "o que fazemos hoje?" em opcoes simples\n- Fortalecer confianca e quimica com jogos e desafios\n- Manter constancia com metas semanais\n- Personalizar ideias com base no mood e feedback',
+        body: '- Transformar "o que fazemos hoje?" em opcoes simples\n- Fortalecer confianca e quimica com jogos e desafios\n- Manter constancia com metas semanais\n- Personalizar ideias com base no ambiente e nos comentarios de voces',
       },
       {
         heading: 'Nosso estilo',
