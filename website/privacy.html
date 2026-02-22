@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - Blisse</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #1A0F24 0%, #2D1B3D 100%);
@@ -17,195 +13,201 @@
             color: #FFF8E7;
             line-height: 1.6;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .logo a {
-            text-decoration: none;
-            display: inline-block;
-        }
-        .logo a:focus-visible {
-            outline: 2px solid #c084fc;
-            outline-offset: 4px;
-            border-radius: 8px;
-        }
+        .container { max-width: 920px; margin: 0 auto; padding: 32px 20px 44px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; gap: 14px; }
+        .logo a { text-decoration: none; color: inherit; }
         .logo h1 {
-            font-size: 48px;
+            font-size: 42px;
             background: linear-gradient(135deg, #a855f7, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            transition: opacity 0.2s ease;
         }
-        .logo a:hover h1 {
-            opacity: 0.9;
+        .language-select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFF8E7;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-weight: 600;
         }
         .card {
-            background: rgba(45, 27, 61, 0.8);
+            background: rgba(45, 27, 61, 0.82);
             border-radius: 16px;
-            padding: 32px;
-            backdrop-filter: blur(10px);
+            padding: 28px;
             border: 1px solid rgba(168, 85, 247, 0.2);
         }
-        h2 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            color: #FFF8E7;
-        }
-        .date {
-            color: #9CA3AF;
-            font-size: 14px;
-            margin-bottom: 32px;
-        }
-        h3 {
-            font-size: 18px;
-            color: #a855f7;
-            margin-top: 24px;
-            margin-bottom: 12px;
-        }
-        p, ul {
-            color: #D1D5DB;
-            margin-bottom: 16px;
-        }
-        ul {
-            padding-left: 24px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
-        .highlight {
-            background: rgba(168, 85, 247, 0.15);
+        h2 { font-size: 30px; margin-bottom: 6px; }
+        .date { color: #9CA3AF; font-size: 14px; margin-bottom: 20px; }
+        .intro {
+            background: rgba(168, 85, 247, 0.14);
             border-left: 4px solid #a855f7;
-            padding: 16px;
+            padding: 14px;
             border-radius: 8px;
-            margin: 24px 0;
-        }
-        .highlight p {
-            margin: 0;
+            margin-bottom: 20px;
             color: #FFF8E7;
         }
+        .section { margin-top: 18px; }
+        .section h3 { font-size: 18px; color: #c084fc; margin-bottom: 8px; }
+        .section p { color: #D1D5DB; white-space: pre-line; }
         .footer {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 26px;
             color: #9CA3AF;
             font-size: 14px;
         }
-        .footer a {
-            color: #a855f7;
-            text-decoration: none;
-        }
-        .check-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        .check-list li::before {
-            content: "✓ ";
-            color: #22c55e;
-        }
-        .x-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        .x-list li::before {
-            content: "✗ ";
-            color: #ef4444;
-        }
+        .footer a { color: #a855f7; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <a href="/" aria-label="Go to Blisse home page">
-                <h1>Blisse</h1>
-            </a>
+        <div class="topbar">
+            <div class="logo">
+                <a id="homeLink" href="/"><h1>Blisse</h1></a>
+            </div>
+            <select id="languageSelect" class="language-select" aria-label="Select language">
+                <option value="en">English</option>
+                <option value="es">Espanol</option>
+                <option value="pt">Portugues</option>
+            </select>
         </div>
 
         <div class="card">
-            <h2>Privacy Policy</h2>
-            <p class="date">Last Updated: February 2026</p>
-
-            <div class="highlight">
-                <p><strong>Your privacy is our highest priority.</strong> We understand the sensitive nature of Blisse and have built it to protect your information.</p>
-            </div>
-
-            <h3>Data Stored Locally on Your Device</h3>
-            <p>Your personal data including preferences, favorites, notes, activity history, and settings are stored <strong>ONLY on your device</strong> using secure local storage.</p>
-            <ul class="check-list">
-                <li>We do NOT have servers storing your personal information</li>
-                <li>Most activity data stays on your phone</li>
-                <li>Authentication and submitted support messages are sent only to required processors</li>
-                <li>Deleting the App permanently removes all personal data</li>
-            </ul>
-
-            <h3>Authentication Services</h3>
-            <p>Sign-in is handled by Apple Sign-In and Firebase Authentication (Google). We do not store passwords or access your credentials directly. These services have their own privacy policies.</p>
-
-            <h3>Anonymous Analytics</h3>
-            <p>We use PostHog for anonymous, aggregated analytics to improve the App. This includes:</p>
-            <ul>
-                <li>Which features are most popular</li>
-                <li>General usage patterns</li>
-                <li>App performance metrics</li>
-            </ul>
-            <p>We disable person profiling and send only sanitized event metadata. Free-text notes and support messages are never sent to analytics.</p>
-
-            <h3>Information We NEVER Collect</h3>
-            <ul class="x-list">
-                <li>Biometric data (Face ID/Touch ID is handled by your device's secure enclave)</li>
-                <li>Your location</li>
-                <li>Your free-text notes or support messages in analytics streams</li>
-                <li>Photos, contacts, or any other personal files</li>
-                <li>Any sale of your personal information</li>
-            </ul>
-
-            <h3>Third-Party Services</h3>
-            <p>The App uses the following third-party services:</p>
-            <ul>
-                <li><strong>Firebase Authentication</strong> (Google) - for secure sign-in</li>
-                <li><strong>Apple Sign-In</strong> - for iOS authentication</li>
-                <li><strong>PostHog</strong> - for anonymous analytics</li>
-                <li><strong>Formspree</strong> - for support messages you submit</li>
-            </ul>
-            <p>Each service has its own privacy policy governing their data practices.</p>
-
-            <h3>Data Retention</h3>
-            <p>Your local data persists until you delete it via Settings or uninstall the App. Anonymous analytics data is retained for up to 24 months to analyze long-term trends.</p>
-
-            <h3>Children's Privacy</h3>
-            <p>Blisse is strictly for adults 18 years and older. We do not knowingly collect data from anyone under 18. If we learn we have collected information from a minor, we will delete it immediately.</p>
-
-            <h3>Your Rights (GDPR/CCPA)</h3>
-            <p>Since your personal data is stored locally on your device, you have complete control:</p>
-            <ul>
-                <li><strong>Access:</strong> View your data anytime in the App</li>
-                <li><strong>Deletion:</strong> Delete all data via Settings → Reset Data</li>
-                <li><strong>Portability:</strong> Your data exists only on your device</li>
-            </ul>
-            <p>For EU residents (GDPR) and California residents (CCPA), you may contact us to exercise additional rights regarding any data we may process.</p>
-
-            <h3>Security</h3>
-            <p>We use industry-standard security practices. Local data is protected by your device's security. The optional PIN lock uses secure storage. Biometric authentication is handled entirely by your device's secure enclave.</p>
-
-            <h3>Changes to This Policy</h3>
-            <p>We may update this Privacy Policy periodically. We will notify you of significant changes through the App. Continued use after changes constitutes acceptance.</p>
-
-            <h3>Governing Law and Jurisdiction</h3>
-            <p>This Privacy Policy shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to this Privacy Policy or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</p>
-
-            <h3>Contact Us</h3>
-            <p>Questions about privacy? Contact us at: <a href="mailto:privacy@blisse.online" style="color: #a855f7;">privacy@blisse.online</a></p>
+            <h2 id="docTitle">Privacy Policy</h2>
+            <p id="docDate" class="date">Last Updated: February 2026</p>
+            <p id="docIntro" class="intro"></p>
+            <div id="docSections"></div>
         </div>
 
         <div class="footer">
-            <p>&copy; 2026 Blisse. All rights reserved.</p>
-            <p><a href="/terms">Terms of Service</a> · <a href="/privacy">Privacy Policy</a></p>
+            <p id="footerCopyright">© 2026 Blisse. All rights reserved.</p>
+            <p><a id="footerTerms" href="/terms">Terms of Service</a> · <a id="footerPrivacy" href="/privacy">Privacy Policy</a></p>
         </div>
     </div>
+
+    <script>
+        const PRIVACY_TRANSLATIONS = {
+            en: {
+                title: 'Privacy Policy',
+                date: 'Last Updated: February 2026',
+                intro: 'Your privacy is our highest priority. We understand the sensitive nature of Blisse and have built it to protect your information.',
+                sections: [
+                    { heading: 'Our Commitment to Privacy', body: 'Blisse is designed with privacy as our highest priority. We understand the sensitive nature of this App and have built it to protect your information.' },
+                    { heading: 'Data Stored Locally on Your Device', body: 'Your preferences, favorites, notes, activity history, and settings are stored locally on your device. Authentication is processed by Firebase, and contact or idea messages are sent only when you explicitly submit them through Formspree email delivery.' },
+                    { heading: 'Authentication Services', body: 'Sign-in is handled by Apple Sign-In and Firebase Authentication (Google). We do not store passwords or access your credentials directly.' },
+                    { heading: 'Anonymous Analytics', body: 'We use PostHog for anonymous, aggregated analytics to improve the App. This includes:\n- Which features are most popular\n- General usage patterns\n- App performance metrics\n\nWe disable person profiling and send only sanitized event metadata. We do not send free-text notes or contact messages to analytics.' },
+                    { heading: 'Information We NEVER Collect', body: '- Your biometric data\n- Your photos, contacts, or personal files\n- Your precise location\n- Your free-text notes or support messages in analytics streams\n- Any sale of your personal information' },
+                    { heading: 'Third-Party Services', body: 'The App uses:\n- Firebase Authentication (Google)\n- Apple Sign-In\n- PostHog\n- Formspree\n\nEach service has its own privacy policy governing data practices.' },
+                    { heading: 'Data Retention', body: 'Your local data persists until you delete it via Settings or uninstall the App. Anonymous analytics data is retained for up to 24 months to analyze long-term trends.' },
+                    { heading: "Children's Privacy", body: 'Blisse is strictly for adults 18 years and older. We do not knowingly collect data from anyone under 18.' },
+                    { heading: 'Your Rights (GDPR/CCPA)', body: 'Since your data is local to your device, you have complete control:\n- Access: View your data anytime in the App\n- Deletion: Delete all data via Settings -> Reset Data\n- Portability: Data exists only on your device' },
+                    { heading: 'Security', body: "We use industry-standard security practices. Local data is protected by your device security. Biometric authentication is handled entirely by your device's secure enclave." },
+                    { heading: 'Changes to This Policy', body: 'We may update this Privacy Policy periodically. Continued use after changes constitutes acceptance.' },
+                    { heading: 'Governing Law and Jurisdiction', body: 'This Privacy Policy is governed by the laws of the State of Israel. Any dispute is subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.' },
+                    { heading: 'Contact Us', body: 'Questions about privacy? Contact us at: privacy@blisse.online' }
+                ],
+                footerTerms: 'Terms of Service',
+                footerPrivacy: 'Privacy Policy',
+                footerCopyright: '© 2026 Blisse. All rights reserved.',
+            },
+            es: {
+                title: 'Politica de privacidad',
+                date: 'Ultima actualizacion: febrero 2026',
+                intro: 'Tu privacidad es nuestra prioridad. Entendemos la naturaleza sensible de Blisse y la diseniamos para proteger tu informacion.',
+                sections: [
+                    { heading: 'Nuestro compromiso con la privacidad', body: 'Blisse se diseno con privacidad como prioridad maxima.' },
+                    { heading: 'Datos almacenados localmente', body: 'Tus preferencias, favoritos, notas, historial y configuraciones se guardan en tu dispositivo. La autenticacion se procesa por Firebase y los mensajes se envian solo cuando tu los envias.' },
+                    { heading: 'Servicios de autenticacion', body: 'El inicio de sesion se gestiona con Apple Sign-In y Firebase Authentication (Google). No almacenamos contrasenas ni credenciales.' },
+                    { heading: 'Analitica anonima', body: 'Usamos PostHog para analitica anonima y agregada:\n- funciones mas usadas\n- patrones generales\n- rendimiento de la app\n\nDesactivamos perfiles de persona y enviamos solo metadatos saneados.' },
+                    { heading: 'Informacion que NUNCA recopilamos', body: '- datos biometricos\n- fotos, contactos o archivos personales\n- ubicacion precisa\n- notas o mensajes de texto libre en analitica\n- venta de informacion personal' },
+                    { heading: 'Servicios de terceros', body: 'La App usa:\n- Firebase Authentication (Google)\n- Apple Sign-In\n- PostHog\n- Formspree\n\nCada servicio tiene su propia politica de privacidad.' },
+                    { heading: 'Retencion de datos', body: 'Tus datos locales permanecen hasta que los borres en Ajustes o desinstales la App. Los datos anonimos pueden mantenerse hasta 24 meses.' },
+                    { heading: 'Privacidad de menores', body: 'Blisse es solo para adultos de 18 anos o mas. No recopilamos datos de menores de forma intencional.' },
+                    { heading: 'Tus derechos (GDPR/CCPA)', body: 'Tienes control total sobre tus datos locales:\n- acceso\n- eliminacion\n- portabilidad' },
+                    { heading: 'Seguridad', body: 'Aplicamos practicas estandar de seguridad. La biometria la gestiona tu dispositivo.' },
+                    { heading: 'Cambios a esta politica', body: 'Podemos actualizar esta politica periodicamente. El uso continuo implica aceptacion.' },
+                    { heading: 'Ley aplicable y jurisdiccion', body: 'Esta politica se rige por las leyes del Estado de Israel. Toda disputa se somete a la jurisdiccion exclusiva de los tribunales competentes de Tel Aviv, Israel.' },
+                    { heading: 'Contacto', body: 'Preguntas sobre privacidad: privacy@blisse.online' }
+                ],
+                footerTerms: 'Terminos de servicio',
+                footerPrivacy: 'Politica de privacidad',
+                footerCopyright: '© 2026 Blisse. Todos los derechos reservados.',
+            },
+            pt: {
+                title: 'Politica de privacidade',
+                date: 'Ultima atualizacao: fevereiro 2026',
+                intro: 'Sua privacidade e nossa maior prioridade. Sabemos que o Blisse e sensivel e foi criado para proteger suas informacoes.',
+                sections: [
+                    { heading: 'Nosso compromisso com a privacidade', body: 'Blisse foi criado com privacidade como prioridade maxima.' },
+                    { heading: 'Dados armazenados localmente', body: 'Preferencias, favoritos, notas, historico e configuracoes ficam no seu dispositivo. A autenticacao e processada pelo Firebase e mensagens so sao enviadas quando voce envia.' },
+                    { heading: 'Servicos de autenticacao', body: 'Login e feito por Apple Sign-In e Firebase Authentication (Google). Nao armazenamos senhas nem credenciais.' },
+                    { heading: 'Analitica anonima', body: 'Usamos PostHog para analitica anonima e agregada:\n- recursos mais usados\n- padroes gerais\n- desempenho do app\n\nDesativamos perfil de pessoa e enviamos apenas metadados saneados.' },
+                    { heading: 'Informacoes que NUNCA coletamos', body: '- dados biometricos\n- fotos, contatos ou arquivos pessoais\n- localizacao precisa\n- notas ou mensagens de texto livre na analitica\n- venda de dados pessoais' },
+                    { heading: 'Servicos de terceiros', body: 'O App usa:\n- Firebase Authentication (Google)\n- Apple Sign-In\n- PostHog\n- Formspree\n\nCada servico possui sua propria politica de privacidade.' },
+                    { heading: 'Retencao de dados', body: 'Seus dados locais permanecem ate que voce os apague em Configuracoes ou desinstale o App. Dados anonimos podem ser mantidos por ate 24 meses.' },
+                    { heading: 'Privacidade infantil', body: 'Blisse e apenas para adultos com 18 anos ou mais. Nao coletamos dados de menores intencionalmente.' },
+                    { heading: 'Seus direitos (GDPR/CCPA)', body: 'Voce tem controle total sobre dados locais:\n- acesso\n- exclusao\n- portabilidade' },
+                    { heading: 'Seguranca', body: 'Aplicamos praticas padrao de seguranca. Biometria e gerenciada pelo seu dispositivo.' },
+                    { heading: 'Alteracoes desta politica', body: 'Podemos atualizar esta politica periodicamente. Uso continuo implica aceitacao.' },
+                    { heading: 'Lei aplicavel e jurisdicao', body: 'Esta politica e regida pelas leis do Estado de Israel. Qualquer disputa sera submetida a jurisdicao exclusiva dos tribunais competentes de Tel Aviv, Israel.' },
+                    { heading: 'Contato', body: 'Duvidas sobre privacidade: privacy@blisse.online' }
+                ],
+                footerTerms: 'Termos de servico',
+                footerPrivacy: 'Politica de privacidade',
+                footerCopyright: '© 2026 Blisse. Todos os direitos reservados.',
+            },
+        };
+
+        function getInitialLanguage() {
+            const params = new URLSearchParams(window.location.search);
+            const fromQuery = params.get('lang');
+            if (fromQuery && PRIVACY_TRANSLATIONS[fromQuery]) return fromQuery;
+            const saved = localStorage.getItem('blisse_site_lang');
+            if (saved && PRIVACY_TRANSLATIONS[saved]) return saved;
+            const nav = (navigator.language || 'en').toLowerCase();
+            if (nav.startsWith('es')) return 'es';
+            if (nav.startsWith('pt')) return 'pt';
+            return 'en';
+        }
+
+        function applyLanguage(lang) {
+            const copy = PRIVACY_TRANSLATIONS[lang] || PRIVACY_TRANSLATIONS.en;
+            localStorage.setItem('blisse_site_lang', lang);
+            document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+            document.title = `${copy.title} - Blisse`;
+            document.getElementById('docTitle').textContent = copy.title;
+            document.getElementById('docDate').textContent = copy.date;
+            document.getElementById('docIntro').textContent = copy.intro;
+            document.getElementById('footerTerms').textContent = copy.footerTerms;
+            document.getElementById('footerPrivacy').textContent = copy.footerPrivacy;
+            document.getElementById('footerCopyright').textContent = copy.footerCopyright;
+
+            const sections = document.getElementById('docSections');
+            sections.innerHTML = '';
+            copy.sections.forEach((section) => {
+                const sectionEl = document.createElement('section');
+                sectionEl.className = 'section';
+                const heading = document.createElement('h3');
+                heading.textContent = section.heading;
+                const body = document.createElement('p');
+                body.textContent = section.body;
+                sectionEl.appendChild(heading);
+                sectionEl.appendChild(body);
+                sections.appendChild(sectionEl);
+            });
+
+            document.getElementById('languageSelect').value = lang;
+            document.getElementById('homeLink').href = `/?lang=${lang}`;
+            document.getElementById('footerTerms').href = `/terms?lang=${lang}`;
+            document.getElementById('footerPrivacy').href = `/privacy?lang=${lang}`;
+        }
+
+        document.getElementById('languageSelect').addEventListener('change', (event) => {
+            applyLanguage(event.target.value);
+        });
+
+        applyLanguage(getInitialLanguage());
+    </script>
 </body>
 </html>

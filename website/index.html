@@ -114,6 +114,16 @@
             align-items: center;
         }
 
+        .language-select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
@@ -563,11 +573,11 @@
     <div class="age-gate" id="ageGate">
         <div class="age-gate-content">
             <div style="font-size: 64px; margin-bottom: 24px;">🔞</div>
-            <h2>Age Verification Required</h2>
-            <p>Blisse contains adult content intended for couples 18 years and older. Please confirm your age to continue.</p>
+            <h2 id="ageGateTitle">Age Verification Required</h2>
+            <p id="ageGateSubtitle">Blisse contains adult content intended for couples 18 years and older. Please confirm your age to continue.</p>
             <div class="age-gate-buttons">
-                <button class="btn btn-primary" onclick="verifyAge()">I am 18 or older</button>
-                <button class="btn btn-secondary" onclick="window.location.href='https://google.com'">Exit</button>
+                <button id="ageGateConfirm" class="btn btn-primary" onclick="verifyAge()">I am 18 or older</button>
+                <button id="ageGateExit" class="btn btn-secondary" onclick="window.location.href='https://google.com'">Exit</button>
             </div>
         </div>
     </div>
@@ -579,11 +589,16 @@
     <nav>
         <a href="/" class="logo">Blisse</a>
         <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#about">About</a>
-            <a href="#privacy">Privacy</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/terms">Terms</a>
+            <a id="navFeatures" href="#features">Features</a>
+            <a id="navAbout" href="#about">About</a>
+            <a id="navPrivacy" href="#privacy">Privacy</a>
+            <a id="navPrivacyPolicy" href="/privacy">Privacy Policy</a>
+            <a id="navTerms" href="/terms">Terms</a>
+            <select id="languageSelect" class="language-select" aria-label="Select language">
+                <option value="en">English</option>
+                <option value="es">Espanol</option>
+                <option value="pt">Portugues</option>
+            </select>
         </div>
     </nav>
 
@@ -606,13 +621,13 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                 </svg>
-                App Store - Coming Soon
+                <span id="badgeIosText">App Store - Coming Soon</span>
             </div>
             <div class="coming-soon-badge">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
                 </svg>
-                Google Play - Coming Soon
+                <span id="badgeAndroidText">Google Play - Coming Soon</span>
             </div>
         </div>
     </section>
@@ -627,61 +642,61 @@
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🎰</div>
-                <h3>Spin, Surprise, Smile</h3>
-                <p>Quick random picks that turn indecision into laughs, chemistry, and “let’s try this” energy.</p>
+                <h3 id="featureTitle1">Spin, Surprise, Smile</h3>
+                <p id="featureBody1">Quick random picks that turn indecision into laughs, chemistry, and "let’s try this" energy.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🌙</div>
-                <h3>Date Night, Instantly</h3>
-                <p>Curated plans and mood-first prompts that make romance feel effortless on busy days.</p>
+                <h3 id="featureTitle2">Date Night, Instantly</h3>
+                <p id="featureBody2">Curated plans and mood-first prompts that make romance feel effortless on busy days.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🎲</div>
-                <h3>Truth or Dare for Adults</h3>
-                <p>Questions that deepen trust and dares that keep things playful, bold, and connected.</p>
+                <h3 id="featureTitle3">Truth or Dare for Adults</h3>
+                <p id="featureBody3">Questions that deepen trust and dares that keep things playful, bold, and connected.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🎮</div>
-                <h3>Games, Challenges, Rituals</h3>
-                <p>Weekly missions and fun activities that build momentum in your relationship, not pressure.</p>
+                <h3 id="featureTitle4">Games, Challenges, Rituals</h3>
+                <p id="featureBody4">Weekly missions and fun activities that build momentum in your relationship, not pressure.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
-                <h3>Your Couple Progress Arc</h3>
-                <p>Earn stars, unlock tiers, and watch your shared growth story unfold over time.</p>
+                <h3 id="featureTitle5">Your Couple Progress Arc</h3>
+                <p id="featureBody5">Earn stars, unlock tiers, and watch your shared growth story unfold over time.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🔐</div>
-                <h3>Private & Secure</h3>
-                <p>Privacy-first by design: local data, optional app lock, and anonymous analytics only.</p>
+                <h3 id="featureTitle6">Private & Secure</h3>
+                <p id="featureBody6">Privacy-first by design: local data, optional app lock, and anonymous analytics only.</p>
             </div>
         </div>
     </section>
 
     <section class="about-section" id="about">
         <div class="section-header">
-            <h2>About Blisse</h2>
-            <p>We are building the app we wanted for ourselves: less awkward advice, more real connection.</p>
+            <h2 id="aboutHeading">About Blisse</h2>
+            <p id="aboutSubheading">We are building the app we wanted for ourselves: less awkward advice, more real connection.</p>
         </div>
         <div class="about-grid">
             <article class="about-card">
-                <h3>From one real couple to another 💞</h3>
-                <p>Blisse began with a simple question: why does keeping the spark alive feel harder than it should?</p>
-                <p>After too many generic date lists and forgettable ideas, we built a playful relationship playground where couples can explore, laugh, and reconnect with intention.</p>
-                <p>No pressure, no perfection. Just practical intimacy tools that make your relationship feel alive, warm, and fun again.</p>
+                <h3 id="aboutCardTitle">From one real couple to another 💞</h3>
+                <p id="aboutCardP1">Blisse began with a simple question: why does keeping the spark alive feel harder than it should?</p>
+                <p id="aboutCardP2">After too many generic date lists and forgettable ideas, we built a playful relationship playground where couples can explore, laugh, and reconnect with intention.</p>
+                <p id="aboutCardP3">No pressure, no perfection. Just practical intimacy tools that make your relationship feel alive, warm, and fun again.</p>
             </article>
             <aside class="about-card">
-                <h3>What we care about</h3>
+                <h3 id="aboutCareTitle">What we care about</h3>
                 <ul class="about-points">
-                    <li>💬 Emotional closeness and better communication</li>
-                    <li>🎉 Playful intimacy without awkwardness</li>
-                    <li>🧭 Personalized paths that adapt to your vibe</li>
-                    <li>🔐 Privacy and trust at the foundation</li>
+                    <li id="aboutPoint1">💬 Emotional closeness and better communication</li>
+                    <li id="aboutPoint2">🎉 Playful intimacy without awkwardness</li>
+                    <li id="aboutPoint3">🧭 Personalized paths that adapt to your vibe</li>
+                    <li id="aboutPoint4">🔐 Privacy and trust at the foundation</li>
                 </ul>
             </aside>
         </div>
@@ -692,42 +707,42 @@
         <div class="privacy-content">
             <div class="privacy-badge">
                 <span>🔐</span>
-                <p>Privacy-First Design</p>
+                <p id="privacyBadgeText">Privacy-First Design</p>
             </div>
 
-            <h2>Your Privacy is Our Priority</h2>
-            <p style="color: var(--text-secondary); margin-top: 16px; font-size: 18px;">
+            <h2 id="privacyHeading">Your Privacy is Our Priority</h2>
+            <p id="privacySubheading" style="color: var(--text-secondary); margin-top: 16px; font-size: 18px;">
                 We understand the sensitive nature of Blisse. That's why we built it with your privacy as the foundation.
             </p>
 
             <div class="privacy-points">
                 <div class="privacy-point">
                     <span class="check">✓</span>
-                    <p>All personal data stored locally on your device only</p>
+                    <p id="privacyPoint1">All personal data stored locally on your device only</p>
                 </div>
                 <div class="privacy-point">
                     <span class="check">✓</span>
-                    <p>We never see your favorites, notes, or activity</p>
+                    <p id="privacyPoint2">We never see your favorites, notes, or activity</p>
                 </div>
                 <div class="privacy-point">
                     <span class="check">✓</span>
-                    <p>No servers storing your personal information</p>
+                    <p id="privacyPoint3">No servers storing your personal information</p>
                 </div>
                 <div class="privacy-point">
                     <span class="check">✓</span>
-                    <p>Delete the app = delete all your data</p>
+                    <p id="privacyPoint4">Delete the app = delete all your data</p>
                 </div>
                 <div class="privacy-point">
                     <span class="check">✓</span>
-                    <p>Only anonymous analytics to improve the app</p>
+                    <p id="privacyPoint5">Only anonymous analytics to improve the app</p>
                 </div>
                 <div class="privacy-point">
                     <span class="check">✓</span>
-                    <p>No ads, no data selling, ever</p>
+                    <p id="privacyPoint6">No ads, no data selling, ever</p>
                 </div>
             </div>
 
-            <a href="/privacy" class="btn btn-secondary" style="margin-top: 48px;">Read Our Privacy Policy</a>
+            <a id="privacyCta" href="/privacy" class="btn btn-secondary" style="margin-top: 48px;">Read Our Privacy Policy</a>
         </div>
     </section>
 
@@ -736,49 +751,281 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <span class="logo">Blisse</span>
-                <p>Intimate wellness for couples.<br>Explore, connect, grow together.</p>
+                <p id="footerBrand">Intimate wellness for couples.<br>Explore, connect, grow together.</p>
             </div>
 
             <div class="footer-links">
-                <h4>Legal</h4>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
+                <h4 id="footerLegalTitle">Legal</h4>
+                <a id="footerPrivacyLink" href="/privacy">Privacy Policy</a>
+                <a id="footerTermsLink" href="/terms">Terms of Service</a>
             </div>
 
             <div class="footer-links">
-                <h4>Contact</h4>
+                <h4 id="footerContactTitle">Contact</h4>
                 <a href="mailto:hello@blisse.online">hello@blisse.online</a>
                 <a href="mailto:support@blisse.online">support@blisse.online</a>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 Blisse. All rights reserved.</p>
-            <p>Made with 💜 for couples everywhere</p>
+            <p id="footerCopyright">&copy; 2026 Blisse. All rights reserved.</p>
+            <p id="footerTagline">Made with 💜 for couples everywhere</p>
         </div>
     </footer>
 
     <script>
-        const HERO_VARIANTS = {
-            A: {
-                badge: 'Playful intimacy for real couples',
-                lead: 'Ignite the Spark.',
-                accent: 'Keep the Play.',
-                description: 'Blisse helps you turn everyday moments into unforgettable connection with ideas, games, and rituals that feel fun, warm, and deeply personal.',
-                primaryCta: 'Get App Updates',
-                secondaryCta: 'See Features',
-                featuresHeading: 'Built to Keep You Curious',
-                featuresSubheading: 'Every feature is designed to make closeness easier, playfulness natural, and connection a shared habit.'
+        const SITE_TRANSLATIONS = {
+            en: {
+                title: 'Blisse - Intimate Wellness for Couples',
+                ageTitle: 'Age Verification Required',
+                ageSubtitle: 'Blisse contains adult content intended for couples 18 years and older. Please confirm your age to continue.',
+                ageConfirm: 'I am 18 or older',
+                ageExit: 'Exit',
+                navFeatures: 'Features',
+                navAbout: 'About',
+                navPrivacy: 'Privacy',
+                navPrivacyPolicy: 'Privacy Policy',
+                navTerms: 'Terms',
+                badgeIos: 'App Store - Coming Soon',
+                badgeAndroid: 'Google Play - Coming Soon',
+                hero: {
+                    A: {
+                        badge: 'Playful intimacy for real couples',
+                        lead: 'Ignite the Spark.',
+                        accent: 'Keep the Play.',
+                        description: 'Blisse helps you turn everyday moments into unforgettable connection with ideas, games, and rituals that feel fun, warm, and deeply personal.',
+                        primaryCta: 'Get App Updates',
+                        secondaryCta: 'See Features',
+                        featuresHeading: 'Built to Keep You Curious',
+                        featuresSubheading: 'Every feature is designed to make closeness easier, playfulness natural, and connection a shared habit.'
+                    },
+                    B: {
+                        badge: 'Less routine. More chemistry.',
+                        lead: 'Date Nights,',
+                        accent: 'Reimagined.',
+                        description: 'From playful prompts to personalized mood picks, Blisse helps couples reconnect fast and keep that spark alive all week.',
+                        primaryCta: 'Join Early Access',
+                        secondaryCta: 'How It Works',
+                        featuresHeading: 'Your Relationship Playground',
+                        featuresSubheading: 'Quick rituals, fun challenges, and meaningful prompts designed to keep you emotionally close and physically playful.'
+                    }
+                },
+                featureTitles: [
+                    'Spin, Surprise, Smile',
+                    'Date Night, Instantly',
+                    'Truth or Dare for Adults',
+                    'Games, Challenges, Rituals',
+                    'Your Couple Progress Arc',
+                    'Private & Secure'
+                ],
+                featureBodies: [
+                    'Quick random picks that turn indecision into laughs, chemistry, and "lets try this" energy.',
+                    'Curated plans and mood-first prompts that make romance feel effortless on busy days.',
+                    'Questions that deepen trust and dares that keep things playful, bold, and connected.',
+                    'Weekly missions and fun activities that build momentum in your relationship, not pressure.',
+                    'Earn stars, unlock tiers, and watch your shared growth story unfold over time.',
+                    'Privacy-first by design: local data, optional app lock, and anonymous analytics only.'
+                ],
+                aboutHeading: 'About Blisse',
+                aboutSubheading: 'We are building the app we wanted for ourselves: less awkward advice, more real connection.',
+                aboutCardTitle: 'From one real couple to another 💞',
+                aboutCardP1: 'Blisse began with a simple question: why does keeping the spark alive feel harder than it should?',
+                aboutCardP2: 'After too many generic date lists and forgettable ideas, we built a playful relationship playground where couples can explore, laugh, and reconnect with intention.',
+                aboutCardP3: 'No pressure, no perfection. Just practical intimacy tools that make your relationship feel alive, warm, and fun again.',
+                aboutCareTitle: 'What we care about',
+                aboutPoints: [
+                    '💬 Emotional closeness and better communication',
+                    '🎉 Playful intimacy without awkwardness',
+                    '🧭 Personalized paths that adapt to your vibe',
+                    '🔐 Privacy and trust at the foundation'
+                ],
+                privacyBadge: 'Privacy-First Design',
+                privacyHeading: 'Your Privacy is Our Priority',
+                privacySubheading: 'We understand the sensitive nature of Blisse. Thats why we built it with your privacy as the foundation.',
+                privacyPoints: [
+                    'All personal data stored locally on your device only',
+                    'We never see your favorites, notes, or activity',
+                    'No servers storing your personal information',
+                    'Delete the app = delete all your data',
+                    'Only anonymous analytics to improve the app',
+                    'No ads, no data selling, ever'
+                ],
+                privacyCta: 'Read Our Privacy Policy',
+                footerBrand: 'Intimate wellness for couples.<br>Explore, connect, grow together.',
+                footerLegalTitle: 'Legal',
+                footerPrivacyLink: 'Privacy Policy',
+                footerTermsLink: 'Terms of Service',
+                footerContactTitle: 'Contact',
+                footerCopyright: '© 2026 Blisse. All rights reserved.',
+                footerTagline: 'Made with 💜 for couples everywhere'
             },
-            B: {
-                badge: 'Less routine. More chemistry.',
-                lead: 'Date Nights,',
-                accent: 'Reimagined.',
-                description: 'From playful prompts to personalized mood picks, Blisse helps couples reconnect fast and keep that spark alive all week.',
-                primaryCta: 'Join Early Access',
-                secondaryCta: 'How It Works',
-                featuresHeading: 'Your Relationship Playground',
-                featuresSubheading: 'Quick rituals, fun challenges, and meaningful prompts designed to keep you emotionally close and physically playful.'
+            es: {
+                title: 'Blisse - Bienestar intimo para parejas',
+                ageTitle: 'Verificacion de edad requerida',
+                ageSubtitle: 'Blisse contiene contenido para adultos para parejas de 18 anos o mas. Confirma tu edad para continuar.',
+                ageConfirm: 'Tengo 18 anos o mas',
+                ageExit: 'Salir',
+                navFeatures: 'Funciones',
+                navAbout: 'Nosotros',
+                navPrivacy: 'Privacidad',
+                navPrivacyPolicy: 'Politica de privacidad',
+                navTerms: 'Terminos',
+                badgeIos: 'App Store - Proximamente',
+                badgeAndroid: 'Google Play - Proximamente',
+                hero: {
+                    A: {
+                        badge: 'Intimidad divertida para parejas reales',
+                        lead: 'Enciende la chispa.',
+                        accent: 'Mantengan el juego.',
+                        description: 'Blisse les ayuda a convertir momentos cotidianos en conexion inolvidable con ideas, juegos y rituales calidos y personalizados.',
+                        primaryCta: 'Recibir novedades',
+                        secondaryCta: 'Ver funciones',
+                        featuresHeading: 'Disenado para mantener la curiosidad',
+                        featuresSubheading: 'Cada funcion facilita la cercania, la diversion y la conexion compartida.'
+                    },
+                    B: {
+                        badge: 'Menos rutina. Mas quimica.',
+                        lead: 'Noches de cita,',
+                        accent: 'reinventadas.',
+                        description: 'Desde prompts divertidos hasta ideas personalizadas, Blisse ayuda a reconectar rapido y mantener la chispa toda la semana.',
+                        primaryCta: 'Unirme al acceso temprano',
+                        secondaryCta: 'Como funciona',
+                        featuresHeading: 'Tu espacio de juego en pareja',
+                        featuresSubheading: 'Rituales, retos y prompts para mantenerse emocionalmente cerca y playful.'
+                    }
+                },
+                featureTitles: [
+                    'Girar, sorprender, sonreir',
+                    'Cita nocturna al instante',
+                    'Verdad o reto para adultos',
+                    'Juegos, retos y rituales',
+                    'Su progreso en pareja',
+                    'Privado y seguro'
+                ],
+                featureBodies: [
+                    'Picks aleatorios que convierten la indecision en risas, quimica y ganas de probar.',
+                    'Planes curados y prompts por mood para que el romance fluya incluso en dias ocupados.',
+                    'Preguntas que profundizan confianza y retos que mantienen la diversion.',
+                    'Misiones semanales y actividades para crear momentum sin presion.',
+                    'Ganen estrellas, desbloqueen niveles y sigan su historia de crecimiento.',
+                    'Privacidad por diseno: datos locales, bloqueo opcional y analitica anonima.'
+                ],
+                aboutHeading: 'Sobre Blisse',
+                aboutSubheading: 'Estamos construyendo la app que queriamos: menos consejos incomodos, mas conexion real.',
+                aboutCardTitle: 'De una pareja real para otra 💞',
+                aboutCardP1: 'Blisse nacio de una pregunta simple: por que mantener viva la chispa se siente mas dificil de lo que deberia?',
+                aboutCardP2: 'Despues de demasiadas listas genericas, creamos un espacio divertido para explorar, reir y reconectar con intencion.',
+                aboutCardP3: 'Sin presion y sin perfeccion. Solo herramientas utiles para volver a sentir la relacion viva y cercana.',
+                aboutCareTitle: 'Lo que nos importa',
+                aboutPoints: [
+                    '💬 Cercania emocional y mejor comunicacion',
+                    '🎉 Intimidad divertida sin incomodidad',
+                    '🧭 Caminos personalizados segun su vibe',
+                    '🔐 Privacidad y confianza como base'
+                ],
+                privacyBadge: 'Diseno centrado en privacidad',
+                privacyHeading: 'Tu privacidad es prioridad',
+                privacySubheading: 'Sabemos que Blisse es sensible. Por eso la construimos con privacidad como base.',
+                privacyPoints: [
+                    'Datos personales guardados localmente en tu dispositivo',
+                    'Nunca vemos tus favoritos, notas ni actividad',
+                    'Sin servidores para guardar informacion personal',
+                    'Eliminar la app = eliminar tus datos',
+                    'Solo analitica anonima para mejorar',
+                    'Sin anuncios ni venta de datos'
+                ],
+                privacyCta: 'Leer politica de privacidad',
+                footerBrand: 'Bienestar intimo para parejas.<br>Exploren, conecten y crezcan juntos.',
+                footerLegalTitle: 'Legal',
+                footerPrivacyLink: 'Politica de privacidad',
+                footerTermsLink: 'Terminos de servicio',
+                footerContactTitle: 'Contacto',
+                footerCopyright: '© 2026 Blisse. Todos los derechos reservados.',
+                footerTagline: 'Hecho con 💜 para parejas de todo el mundo'
+            },
+            pt: {
+                title: 'Blisse - Bem-estar intimo para casais',
+                ageTitle: 'Verificacao de idade obrigatoria',
+                ageSubtitle: 'Blisse contem conteudo adulto para casais com 18 anos ou mais. Confirme sua idade para continuar.',
+                ageConfirm: 'Tenho 18 anos ou mais',
+                ageExit: 'Sair',
+                navFeatures: 'Recursos',
+                navAbout: 'Sobre',
+                navPrivacy: 'Privacidade',
+                navPrivacyPolicy: 'Politica de privacidade',
+                navTerms: 'Termos',
+                badgeIos: 'App Store - Em breve',
+                badgeAndroid: 'Google Play - Em breve',
+                hero: {
+                    A: {
+                        badge: 'Intimidade divertida para casais reais',
+                        lead: 'Acenda a faica.',
+                        accent: 'Mantenha a brincadeira.',
+                        description: 'Blisse ajuda voces a transformar momentos comuns em conexao inesquecivel com ideias, jogos e rituais calorosos.',
+                        primaryCta: 'Receber atualizacoes',
+                        secondaryCta: 'Ver recursos',
+                        featuresHeading: 'Criado para manter a curiosidade',
+                        featuresSubheading: 'Cada recurso facilita a proximidade, a diversao e a conexao como habito do casal.'
+                    },
+                    B: {
+                        badge: 'Menos rotina. Mais quimica.',
+                        lead: 'Noites de encontro,',
+                        accent: 'reimaginadas.',
+                        description: 'De prompts divertidos a ideias personalizadas, o Blisse ajuda o casal a reconectar rapido e manter a chama acesa.',
+                        primaryCta: 'Entrar no acesso antecipado',
+                        secondaryCta: 'Como funciona',
+                        featuresHeading: 'Seu playground de relacionamento',
+                        featuresSubheading: 'Rituais, desafios e prompts para manter proximidade emocional e leveza.'
+                    }
+                },
+                featureTitles: [
+                    'Girar, surpreender, sorrir',
+                    'Date night instantaneo',
+                    'Verdade ou desafio para adultos',
+                    'Jogos, desafios e rituais',
+                    'Seu arco de progresso',
+                    'Privado e seguro'
+                ],
+                featureBodies: [
+                    'Escolhas aleatorias que transformam indecisao em risos, quimica e vontade de tentar.',
+                    'Planos curados e prompts por mood para deixar o romance mais facil nos dias corridos.',
+                    'Perguntas que aprofundam confianca e desafios que mantem tudo divertido.',
+                    'Missoes semanais e atividades para criar ritmo no relacionamento, sem pressao.',
+                    'Ganhem estrelas, desbloqueiem niveis e acompanhem sua evolucao juntos.',
+                    'Privacidade por padrao: dados locais, bloqueio opcional e analitica anonima.'
+                ],
+                aboutHeading: 'Sobre o Blisse',
+                aboutSubheading: 'Estamos construindo o app que queriamos para nos: menos conselhos engessados, mais conexao real.',
+                aboutCardTitle: 'De um casal real para outro 💞',
+                aboutCardP1: 'O Blisse nasceu de uma pergunta simples: por que manter a chama viva parece tao dificil?',
+                aboutCardP2: 'Depois de muitas listas genericas, criamos um espaco divertido para explorar, rir e reconectar com intencao.',
+                aboutCardP3: 'Sem pressao e sem perfeccionismo. Apenas ferramentas praticas para deixar a relacao viva e acolhedora.',
+                aboutCareTitle: 'O que valorizamos',
+                aboutPoints: [
+                    '💬 Proximidade emocional e melhor comunicacao',
+                    '🎉 Intimidade divertida sem constrangimento',
+                    '🧭 Caminhos personalizados ao seu vibe',
+                    '🔐 Privacidade e confianca como base'
+                ],
+                privacyBadge: 'Design com foco em privacidade',
+                privacyHeading: 'Sua privacidade em primeiro lugar',
+                privacySubheading: 'Sabemos que o Blisse e sensivel. Por isso ele foi construido com privacidade como fundamento.',
+                privacyPoints: [
+                    'Dados pessoais guardados localmente no seu dispositivo',
+                    'Nunca vemos seus favoritos, notas ou atividade',
+                    'Sem servidores para armazenar dados pessoais',
+                    'Excluir o app = excluir seus dados',
+                    'Apenas analitica anonima para melhorar o app',
+                    'Sem anuncios e sem venda de dados'
+                ],
+                privacyCta: 'Ler politica de privacidade',
+                footerBrand: 'Bem-estar intimo para casais.<br>Explorem, conectem e crescam juntos.',
+                footerLegalTitle: 'Legal',
+                footerPrivacyLink: 'Politica de privacidade',
+                footerTermsLink: 'Termos de servico',
+                footerContactTitle: 'Contato',
+                footerCopyright: '© 2026 Blisse. Todos os direitos reservados.',
+                footerTagline: 'Feito com 💜 para casais em todo lugar'
             }
         };
 
@@ -796,35 +1043,115 @@
             return assigned;
         }
 
-        function applyLandingVariant() {
-            const variant = getLandingVariant();
-            const copy = HERO_VARIANTS[variant] || HERO_VARIANTS.A;
-            const subject = encodeURIComponent(`Blisse Early Access (${variant})`);
+        function getInitialLanguage() {
+            const params = new URLSearchParams(window.location.search);
+            const fromQuery = params.get('lang');
+            if (fromQuery && SITE_TRANSLATIONS[fromQuery]) return fromQuery;
+            const saved = localStorage.getItem('blisse_site_lang');
+            if (saved && SITE_TRANSLATIONS[saved]) return saved;
+            const nav = (navigator.language || 'en').toLowerCase();
+            if (nav.startsWith('es')) return 'es';
+            if (nav.startsWith('pt')) return 'pt';
+            return 'en';
+        }
 
-            document.getElementById('heroBadgeText').textContent = copy.badge;
-            document.getElementById('heroHeadlineLead').textContent = copy.lead;
-            document.getElementById('heroHeadlineAccent').textContent = copy.accent;
-            document.getElementById('heroDescription').textContent = copy.description;
-            document.getElementById('heroPrimaryCta').textContent = copy.primaryCta;
-            document.getElementById('heroSecondaryCta').textContent = copy.secondaryCta;
-            document.getElementById('featuresHeading').textContent = copy.featuresHeading;
-            document.getElementById('featuresSubheading').textContent = copy.featuresSubheading;
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el && typeof value === 'string') el.textContent = value;
+        }
+
+        function applyLandingVariant(lang) {
+            const variant = getLandingVariant();
+            const copy = SITE_TRANSLATIONS[lang].hero[variant] || SITE_TRANSLATIONS[lang].hero.A;
+            const subject = encodeURIComponent(`Blisse Early Access (${variant} - ${lang.toUpperCase()})`);
+            setText('heroBadgeText', copy.badge);
+            setText('heroHeadlineLead', copy.lead);
+            setText('heroHeadlineAccent', copy.accent);
+            setText('heroDescription', copy.description);
+            setText('heroPrimaryCta', copy.primaryCta);
+            setText('heroSecondaryCta', copy.secondaryCta);
+            setText('featuresHeading', copy.featuresHeading);
+            setText('featuresSubheading', copy.featuresSubheading);
             document.getElementById('heroPrimaryCta').href = `mailto:hello@blisse.online?subject=${subject}`;
             document.body.setAttribute('data-ab-variant', variant);
         }
 
-        // Age verification
+        function applyLanguage(lang) {
+            const copy = SITE_TRANSLATIONS[lang] || SITE_TRANSLATIONS.en;
+            localStorage.setItem('blisse_site_lang', lang);
+            document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+            document.title = copy.title;
+
+            setText('ageGateTitle', copy.ageTitle);
+            setText('ageGateSubtitle', copy.ageSubtitle);
+            setText('ageGateConfirm', copy.ageConfirm);
+            setText('ageGateExit', copy.ageExit);
+            setText('navFeatures', copy.navFeatures);
+            setText('navAbout', copy.navAbout);
+            setText('navPrivacy', copy.navPrivacy);
+            setText('navPrivacyPolicy', copy.navPrivacyPolicy);
+            setText('navTerms', copy.navTerms);
+            setText('badgeIosText', copy.badgeIos);
+            setText('badgeAndroidText', copy.badgeAndroid);
+
+            for (let i = 0; i < 6; i += 1) {
+                setText(`featureTitle${i + 1}`, copy.featureTitles[i]);
+                setText(`featureBody${i + 1}`, copy.featureBodies[i]);
+            }
+
+            setText('aboutHeading', copy.aboutHeading);
+            setText('aboutSubheading', copy.aboutSubheading);
+            setText('aboutCardTitle', copy.aboutCardTitle);
+            setText('aboutCardP1', copy.aboutCardP1);
+            setText('aboutCardP2', copy.aboutCardP2);
+            setText('aboutCardP3', copy.aboutCardP3);
+            setText('aboutCareTitle', copy.aboutCareTitle);
+            for (let i = 0; i < 4; i += 1) {
+                setText(`aboutPoint${i + 1}`, copy.aboutPoints[i]);
+            }
+
+            setText('privacyBadgeText', copy.privacyBadge);
+            setText('privacyHeading', copy.privacyHeading);
+            setText('privacySubheading', copy.privacySubheading);
+            for (let i = 0; i < 6; i += 1) {
+                setText(`privacyPoint${i + 1}`, copy.privacyPoints[i]);
+            }
+            setText('privacyCta', copy.privacyCta);
+
+            document.getElementById('footerBrand').innerHTML = copy.footerBrand;
+            setText('footerLegalTitle', copy.footerLegalTitle);
+            setText('footerPrivacyLink', copy.footerPrivacyLink);
+            setText('footerTermsLink', copy.footerTermsLink);
+            setText('footerContactTitle', copy.footerContactTitle);
+            setText('footerCopyright', copy.footerCopyright);
+            setText('footerTagline', copy.footerTagline);
+
+            const policyUrl = `/privacy?lang=${lang}`;
+            const termsUrl = `/terms?lang=${lang}`;
+            document.getElementById('navPrivacyPolicy').href = policyUrl;
+            document.getElementById('navTerms').href = termsUrl;
+            document.getElementById('footerPrivacyLink').href = policyUrl;
+            document.getElementById('footerTermsLink').href = termsUrl;
+            document.getElementById('privacyCta').href = policyUrl;
+
+            applyLandingVariant(lang);
+            document.getElementById('languageSelect').value = lang;
+        }
+
         function verifyAge() {
             localStorage.setItem('blisse_age_verified', 'true');
             document.getElementById('ageGate').classList.add('hidden');
         }
 
-        // Check if already verified
         if (localStorage.getItem('blisse_age_verified') === 'true') {
             document.getElementById('ageGate').classList.add('hidden');
         }
 
-        applyLandingVariant();
+        const initialLanguage = getInitialLanguage();
+        document.getElementById('languageSelect').addEventListener('change', (event) => {
+            applyLanguage(event.target.value);
+        });
+        applyLanguage(initialLanguage);
     </script>
 </body>
 </html>

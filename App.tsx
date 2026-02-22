@@ -34,6 +34,7 @@ import { massageTechniques as baseMassageTechniques, MassageTechnique } from '@/
 import { rolePlayScenarios as baseRolePlayScenarios, RolePlayScenario } from '@/content/roleplay';
 import { AppLanguage, SUPPORTED_LANGUAGES, getContentTypeKey, getLanguageLabel, translateFromAuthPack, translateFromUiPack, translateTerm, translateUi } from '@/i18n/translations';
 import { ContentCatalog, getLocalizedContentCatalog } from '@/i18n/localizedContent';
+import { getLegalContent } from '@/i18n/legalContent';
 import * as Linking from 'expo-linking';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
@@ -3046,6 +3047,30 @@ const BackButton = ({ onPress }: { onPress: () => void }) => {
   );
 };
 
+const LanguageQuickSwitcher = ({ compact = false }: { compact?: boolean }) => {
+  const store = useStore();
+  return (
+    <View style={[styles.quickLanguageSwitcher, compact && styles.quickLanguageSwitcherCompact]}>
+      {SUPPORTED_LANGUAGES.map((item) => (
+        <TouchableOpacity
+          key={item.code}
+          style={[styles.quickLanguageButton, store.language === item.code && styles.quickLanguageButtonActive]}
+          onPress={() => {
+            haptic.light();
+            store.setLanguage(item.code);
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={item.label}
+        >
+          <Text style={[styles.quickLanguageButtonText, store.language === item.code && styles.quickLanguageButtonTextActive]}>
+            {item.code.toUpperCase()}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
 const OptionCard = ({ title, subtitle, selected, onPress }: { title: string; subtitle?: string; selected: boolean; onPress: () => void }) => (
   <TouchableOpacity style={[styles.optionCard, selected && styles.optionCardSelected]} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.7}>
     <Text style={[styles.optionTitle, selected && styles.optionTitleSelected]}>{title}</Text>
@@ -3059,13 +3084,16 @@ const MultiSelectChip = ({ label, selected, onPress }: { label: string; selected
   </TouchableOpacity>
 );
 
-const SearchBar = ({ value, onChangeText, onClear, placeholder }: { value: string; onChangeText: (text: string) => void; onClear: () => void; placeholder?: string }) => (
-  <View style={styles.searchContainer}>
-    <Text style={styles.searchIcon}>🔍</Text>
-    <TextInput style={styles.searchInput} value={value} onChangeText={onChangeText} placeholder={placeholder || "Search..."} placeholderTextColor={colors.text.muted} />
-    {value.length > 0 && <TouchableOpacity onPress={onClear} style={styles.clearButton}><Text style={styles.clearButtonText}>✕</Text></TouchableOpacity>}
-  </View>
-);
+const SearchBar = ({ value, onChangeText, onClear, placeholder }: { value: string; onChangeText: (text: string) => void; onClear: () => void; placeholder?: string }) => {
+  const { t } = useI18n();
+  return (
+    <View style={styles.searchContainer}>
+      <Text style={styles.searchIcon}>🔍</Text>
+      <TextInput style={styles.searchInput} value={value} onChangeText={onChangeText} placeholder={placeholder || `${t('common.search')}...`} placeholderTextColor={colors.text.muted} />
+      {value.length > 0 && <TouchableOpacity onPress={onClear} style={styles.clearButton}><Text style={styles.clearButtonText}>✕</Text></TouchableOpacity>}
+    </View>
+  );
+};
 
 const _StarBadge = ({ count }: { count: number }) => (
   <View style={styles.starBadge}>
@@ -3236,6 +3264,7 @@ function WelcomeScreen({ navigation }: any) {
           <View style={styles.bloomCore} />
         </LinearGradient>
       </Animated.View>
+      <LanguageQuickSwitcher />
       <View style={styles.content}>
         <Text style={styles.titleLarge}>Blisse</Text>
         <Text style={styles.subtitle}>{authPack('welcome', 'subtitle')}</Text>
@@ -3356,7 +3385,8 @@ function ExperienceLevelScreen({ navigation }: any) {
 // ENHANCED LEGAL SCREEN
 // ============================================
 function LegalScreen({ navigation }: any) {
-  const { authPack, t } = useI18n();
+  const { authPack, t, language } = useI18n();
+  const legalContent = useMemo(() => getLegalContent(language), [language]);
   const [hasReadTerms, setHasReadTerms] = useState(false);
   const [hasReadPrivacy, setHasReadPrivacy] = useState(false);
   const [confirmedAge, setConfirmedAge] = useState(false);
@@ -3448,54 +3478,24 @@ function LegalScreen({ navigation }: any) {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { maxHeight: '90%', backgroundColor: themeColors.card }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: themeColors.text.primary }]}>📜 Terms of Service</Text>
+              <Text style={[styles.modalTitle, { color: themeColors.text.primary }]}>📜 {legalContent.terms.title}</Text>
               <TouchableOpacity onPress={() => setShowTermsModal(false)}><Text style={[styles.modalClose, { color: themeColors.text.muted }]}>✕</Text></TouchableOpacity>
             </View>
             <ScrollView showsVerticalScrollIndicator={true} onScroll={handleTermsScroll} scrollEventThrottle={16}>
-              <Text style={[styles.legalTitle, { color: themeColors.text.primary }]}>Terms of Service</Text>
-              <Text style={[styles.legalDate, { color: themeColors.text.muted }]}>Last Updated: February 2026</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>1. Acceptance of Terms</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>By downloading, installing, or using Blisse ("the App"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the App.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>2. Eligibility</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>You must be at least 18 years of age to use this App. By using Blisse, you represent and warrant that you are at least 18 years old and have the legal capacity to enter into this agreement. The App contains adult content intended for consenting adults only.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>3. Description of Service</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Blisse is an intimate wellness app designed to help couples explore and enhance their relationship through curated suggestions, activity tracking, and educational content. The App is intended for use by consenting adult couples.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>4. User Conduct & Consent</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>You agree to use the App responsibly and ethically. All activities suggested by the App require enthusiastic, ongoing consent from all parties involved. You are solely responsible for ensuring consent in your relationships. The App does not encourage or condone any non-consensual activities.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>5. Health & Safety Disclaimer</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>The content in this App is for informational and entertainment purposes only. It is NOT medical, therapeutic, or professional health advice. Always consult qualified healthcare professionals for any health concerns. Use suggestions at your own discretion and within your physical capabilities.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>6. Intellectual Property</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>All content, features, and functionality of the App, including but not limited to text, graphics, logos, and software, are the exclusive property of Blisse and are protected by copyright, trademark, and other intellectual property laws. You may not reproduce, distribute, or create derivative works without prior written consent.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>7. Privacy</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Your privacy is important to us. Please review our Privacy Policy, which explains how we handle your information. By using the App, you consent to our privacy practices as described therein.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>8. Limitation of Liability</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>THE APP IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. TO THE MAXIMUM EXTENT PERMITTED BY LAW, BLISSE SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF THE APP. You use the App at your own risk and discretion.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>9. Indemnification</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>You agree to indemnify and hold harmless Blisse, its affiliates, and their respective officers, directors, and employees from any claims, damages, or expenses arising from your use of the App or violation of these Terms.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>10. Modifications & Termination</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>We reserve the right to modify these Terms at any time. Continued use of the App after changes constitutes acceptance of the modified Terms. We may terminate or suspend your access to the App at any time, without notice, for conduct that we believe violates these Terms.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>11. Governing Law and Jurisdiction</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>These Terms shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to these Terms or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>12. Contact Us</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>If you have questions about these Terms, please contact us at: legal@blisse.online</Text>
-
-              {!termsScrolledToEnd && <View style={styles.scrollHint}><Text style={[styles.scrollHintText, { color: themeColors.primary[400] }]}>↓ Scroll to read all</Text></View>}
+              <Text style={[styles.legalTitle, { color: themeColors.text.primary }]}>{legalContent.terms.title}</Text>
+              <Text style={[styles.legalDate, { color: themeColors.text.muted }]}>{legalContent.terms.lastUpdated}</Text>
+              {legalContent.terms.intro ? <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>{legalContent.terms.intro}</Text> : null}
+              {legalContent.terms.sections.map((section) => (
+                <View key={section.heading}>
+                  <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>{section.heading}</Text>
+                  <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>{section.body}</Text>
+                </View>
+              ))}
+              {!termsScrolledToEnd && <View style={styles.scrollHint}><Text style={[styles.scrollHintText, { color: themeColors.primary[400] }]}>↓ {legalContent.common.scrollHint}</Text></View>}
               <View style={{ height: 20 }} />
             </ScrollView>
             <TouchableOpacity style={[styles.legalConfirmButton, { backgroundColor: termsScrolledToEnd ? themeColors.primary[500] : themeColors.text.muted }, !termsScrolledToEnd && { opacity: 0.5 }]} onPress={() => { if (termsScrolledToEnd) { setHasReadTerms(true); setShowTermsModal(false); } }} disabled={!termsScrolledToEnd}>
-              <Text style={styles.legalConfirmButtonText}>{termsScrolledToEnd ? 'I Have Read & Agree' : 'Please Read All'}</Text>
+              <Text style={styles.legalConfirmButtonText}>{termsScrolledToEnd ? legalContent.common.readAgree : legalContent.common.readAll}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -3505,57 +3505,24 @@ function LegalScreen({ navigation }: any) {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { maxHeight: '90%', backgroundColor: themeColors.card }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: themeColors.text.primary }]}>🔐 Privacy Policy</Text>
+              <Text style={[styles.modalTitle, { color: themeColors.text.primary }]}>🔐 {legalContent.privacy.title}</Text>
               <TouchableOpacity onPress={() => setShowPrivacyModal(false)}><Text style={[styles.modalClose, { color: themeColors.text.muted }]}>✕</Text></TouchableOpacity>
             </View>
             <ScrollView showsVerticalScrollIndicator={true} onScroll={handlePrivacyScroll} scrollEventThrottle={16}>
-              <Text style={[styles.legalTitle, { color: themeColors.text.primary }]}>Privacy Policy</Text>
-              <Text style={[styles.legalDate, { color: themeColors.text.muted }]}>Last Updated: February 2026</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Our Commitment to Privacy</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Blisse is designed with privacy as our highest priority. We understand the sensitive nature of this App and have built it to protect your information. This policy explains what data we collect and how we use it.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Data Stored Locally on Your Device</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Your preferences, favorites, notes, activity history, and settings are stored locally on your device. Authentication is processed by Firebase, and contact/idea messages are sent only when you explicitly submit them through Formspree email delivery.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Authentication Services</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Sign-in is handled by Apple Sign-In and Firebase Authentication (Google). We do not store passwords or access your credentials directly. These services have their own privacy policies.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Anonymous Analytics</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>We use PostHog for anonymous, aggregated analytics to improve the App. This includes:{'\n'}• Which features are most popular{'\n'}• General usage patterns{'\n'}• App performance metrics{'\n\n'}We disable person profiling and send only sanitized event metadata (for example feature, category, and mood). We do not send free-text notes or contact messages to analytics.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Information We NEVER Collect</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>• Your biometric data (Face ID/Touch ID is handled by your device){'\n'}• Your photos, contacts, or personal files{'\n'}• Your precise location{'\n'}• Your free-text notes or support messages in analytics streams{'\n'}• Any sale of your personal information</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Third-Party Services</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>The App uses the following third-party services:{'\n'}• Firebase Authentication (Google) - for secure sign-in{'\n'}• Apple Sign-In - for iOS authentication{'\n'}• PostHog - for anonymous analytics{'\n'}• Formspree - for direct support messages that you submit{'\n\n'}Each service has its own privacy policy governing their data practices.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Data Retention</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Your local data persists until you delete it via Settings or uninstall the App. Anonymous analytics data is retained for up to 24 months to analyze long-term trends.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Children's Privacy</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Blisse is strictly for adults 18 years and older. We do not knowingly collect data from anyone under 18. If we learn we have collected information from a minor, we will delete it immediately.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Your Rights (GDPR/CCPA)</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Since your personal data is stored locally on your device, you have complete control:{'\n'}• Access: View your data anytime in the App{'\n'}• Deletion: Delete all data via Settings → Reset Data{'\n'}• Portability: Your data exists only on your device{'\n\n'}For EU residents (GDPR) and California residents (CCPA), you may contact us to exercise additional rights regarding any data we may process.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Security</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>We use industry-standard security practices. Local data is protected by your device's security. The optional PIN lock uses secure storage. Biometric authentication is handled entirely by your device's secure enclave.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Changes to This Policy</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>We may update this Privacy Policy periodically. We will notify you of significant changes through the App. Continued use after changes constitutes acceptance.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Governing Law and Jurisdiction</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>This Privacy Policy shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to this Privacy Policy or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
-
-              <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>Contact Us</Text>
-              <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>Questions about privacy? Contact us at: privacy@blisse.online</Text>
-
-              {!privacyScrolledToEnd && <View style={styles.scrollHint}><Text style={[styles.scrollHintText, { color: themeColors.primary[400] }]}>↓ Scroll to read all</Text></View>}
+              <Text style={[styles.legalTitle, { color: themeColors.text.primary }]}>{legalContent.privacy.title}</Text>
+              <Text style={[styles.legalDate, { color: themeColors.text.muted }]}>{legalContent.privacy.lastUpdated}</Text>
+              {legalContent.privacy.intro ? <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>{legalContent.privacy.intro}</Text> : null}
+              {legalContent.privacy.sections.map((section) => (
+                <View key={section.heading}>
+                  <Text style={[styles.legalSection, { color: themeColors.text.primary }]}>{section.heading}</Text>
+                  <Text style={[styles.legalText, { color: themeColors.text.secondary }]}>{section.body}</Text>
+                </View>
+              ))}
+              {!privacyScrolledToEnd && <View style={styles.scrollHint}><Text style={[styles.scrollHintText, { color: themeColors.primary[400] }]}>↓ {legalContent.common.scrollHint}</Text></View>}
               <View style={{ height: 20 }} />
             </ScrollView>
             <TouchableOpacity style={[styles.legalConfirmButton, { backgroundColor: privacyScrolledToEnd ? themeColors.primary[500] : themeColors.text.muted }, !privacyScrolledToEnd && { opacity: 0.5 }]} onPress={() => { if (privacyScrolledToEnd) { setHasReadPrivacy(true); setShowPrivacyModal(false); } }} disabled={!privacyScrolledToEnd}>
-              <Text style={styles.legalConfirmButtonText}>{privacyScrolledToEnd ? 'I Have Read & Agree' : 'Please Read All'}</Text>
+              <Text style={styles.legalConfirmButtonText}>{privacyScrolledToEnd ? legalContent.common.readAgree : legalContent.common.readAll}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -3778,6 +3745,7 @@ function AuthScreen({ navigation: _navigation }: any) {
               <Text style={[styles.authSubtitle, { color: themeColors.text.muted }]}>
                 {authPack(modeScreen, 'subtitle')}
               </Text>
+              <LanguageQuickSwitcher compact />
             </View>
 
             {error ? (
@@ -5316,51 +5284,27 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
 // TERMS OF USE MODAL
 // ============================================
 function TermsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { language } = useI18n();
+  const legalContent = useMemo(() => getLegalContent(language), [language]);
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>📜 Terms of Service</Text>
+            <Text style={styles.modalTitle}>📜 {legalContent.terms.title}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={styles.legalTitle}>Terms of Service</Text>
-            <Text style={styles.legalDate}>Last Updated: February 2026</Text>
-            
-            <Text style={styles.legalSection}>1. Acceptance of Terms</Text>
-            <Text style={styles.legalText}>By using Blisse ("the App"), you agree to these Terms of Service. If you do not agree, please do not use the App.</Text>
-            
-            <Text style={styles.legalSection}>2. Age Requirement</Text>
-            <Text style={styles.legalText}>You must be at least 18 years old to use Blisse. By using the App, you confirm that you are of legal age in your jurisdiction.</Text>
-            
-            <Text style={styles.legalSection}>3. Intended Use</Text>
-            <Text style={styles.legalText}>Blisse is designed for consenting adult couples to enhance their intimate relationships. The App provides suggestions and ideas that should only be explored with full consent from all parties involved.</Text>
-            
-            <Text style={styles.legalSection}>4. Consent is Essential</Text>
-            <Text style={styles.legalText}>All activities suggested by Blisse require enthusiastic consent from both partners. Never pressure a partner into any activity. Communication and respect are fundamental.</Text>
-            
-            <Text style={styles.legalSection}>5. Health & Safety</Text>
-            <Text style={styles.legalText}>Some positions or activities may not be suitable for everyone. Consider physical limitations, health conditions, and comfort levels. Consult a healthcare provider if you have concerns.</Text>
-            
-            <Text style={styles.legalSection}>6. Privacy</Text>
-            <Text style={styles.legalText}>Your data is stored locally on your device. We do not collect, transmit, or sell your personal information. See our Privacy Policy for details.</Text>
-            
-            <Text style={styles.legalSection}>7. Content</Text>
-            <Text style={styles.legalText}>All content is for educational and entertainment purposes. We do not guarantee any specific outcomes from using the App.</Text>
-            
-            <Text style={styles.legalSection}>8. Limitation of Liability</Text>
-            <Text style={styles.legalText}>Blisse and its creators are not liable for any physical, emotional, or other harm that may result from using the App. Use at your own risk and discretion.</Text>
-            
-            <Text style={styles.legalSection}>9. Changes to Terms</Text>
-            <Text style={styles.legalText}>We may update these Terms. Continued use of the App after changes constitutes acceptance of the new Terms.</Text>
-            
-            <Text style={styles.legalSection}>10. Governing Law and Jurisdiction</Text>
-            <Text style={styles.legalText}>These Terms shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to these Terms or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
-
-            <Text style={styles.legalSection}>11. Contact</Text>
-            <Text style={styles.legalText}>Questions? Use the Contact form in the app to reach us.</Text>
+            <Text style={styles.legalTitle}>{legalContent.terms.title}</Text>
+            <Text style={styles.legalDate}>{legalContent.terms.lastUpdated}</Text>
+            {legalContent.terms.intro ? <Text style={styles.legalText}>{legalContent.terms.intro}</Text> : null}
+            {legalContent.terms.sections.map((section) => (
+              <View key={section.heading}>
+                <Text style={styles.legalSection}>{section.heading}</Text>
+                <Text style={styles.legalText}>{section.body}</Text>
+              </View>
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -5372,51 +5316,27 @@ function TermsModal({ visible, onClose }: { visible: boolean; onClose: () => voi
 // PRIVACY POLICY MODAL
 // ============================================
 function PrivacyModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { language } = useI18n();
+  const legalContent = useMemo(() => getLegalContent(language), [language]);
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>🔐 Privacy Policy</Text>
+            <Text style={styles.modalTitle}>🔐 {legalContent.privacy.title}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={styles.legalTitle}>Privacy Policy</Text>
-            <Text style={styles.legalDate}>Last Updated: February 2026</Text>
-
-            <Text style={styles.legalSection}>Our Commitment to Privacy</Text>
-            <Text style={styles.legalText}>Blisse is designed with privacy as our highest priority. We understand the sensitive nature of this App and have built it to protect your information.</Text>
-
-            <Text style={styles.legalSection}>Data Stored Locally</Text>
-            <Text style={styles.legalText}>✓ Your favorites, notes, and progress are stored locally on your device{'\n'}✓ Authentication is handled by Firebase only for sign-in{'\n'}✓ Contact and idea messages are sent only when you press submit{'\n'}✓ Deleting the App removes local app data from your device</Text>
-
-            <Text style={styles.legalSection}>Authentication Services</Text>
-            <Text style={styles.legalText}>Sign-in is handled by Apple Sign-In and Firebase Authentication (Google). We never store passwords or credentials directly.</Text>
-
-            <Text style={styles.legalSection}>Anonymous Analytics</Text>
-            <Text style={styles.legalText}>We use PostHog for anonymous, aggregated analytics:{'\n'}• Which features are most popular{'\n'}• General usage patterns{'\n'}• App performance metrics{'\n\n'}This data is:{'\n'}✓ Sent with person profiling disabled{'\n'}✓ Limited to sanitized event metadata{'\n'}✓ Used solely to improve the App</Text>
-
-            <Text style={styles.legalSection}>What We NEVER Collect</Text>
-            <Text style={styles.legalText}>• Your biometric data (handled by your device){'\n'}• Your photos, contacts, or personal files{'\n'}• Your precise location{'\n'}• Free-text notes or support messages in analytics{'\n'}• Any sale of your personal information</Text>
-
-            <Text style={styles.legalSection}>Third-Party Services</Text>
-            <Text style={styles.legalText}>• Firebase Authentication (Google){'\n'}• Apple Sign-In{'\n'}• PostHog (anonymous analytics){'\n'}• Formspree (support messages you submit){'\n\n'}Each has their own privacy policy.</Text>
-
-            <Text style={styles.legalSection}>PIN Lock & Biometrics</Text>
-            <Text style={styles.legalText}>The optional PIN is stored securely on your device only. Face ID/Touch ID is handled entirely by your device's secure enclave - we never access biometric data.</Text>
-
-            <Text style={styles.legalSection}>Children's Privacy</Text>
-            <Text style={styles.legalText}>Blisse is strictly for adults 18+. We do not knowingly collect data from minors.</Text>
-
-            <Text style={styles.legalSection}>Your Rights (GDPR/CCPA)</Text>
-            <Text style={styles.legalText}>Your data is on your device - you have complete control:{'\n'}• Access: View your data anytime{'\n'}• Deletion: Settings → Reset Data{'\n'}• Portability: Data exists only locally</Text>
-
-            <Text style={styles.legalSection}>Governing Law and Jurisdiction</Text>
-            <Text style={styles.legalText}>This Privacy Policy shall be governed by and construed in accordance with the laws of the State of Israel, without regard to conflict of law principles. Any dispute arising out of or relating to this Privacy Policy or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel.</Text>
-
-            <Text style={styles.legalSection}>Contact</Text>
-            <Text style={styles.legalText}>Questions? Contact us at: privacy@blisse.online</Text>
+            <Text style={styles.legalTitle}>{legalContent.privacy.title}</Text>
+            <Text style={styles.legalDate}>{legalContent.privacy.lastUpdated}</Text>
+            {legalContent.privacy.intro ? <Text style={styles.legalText}>{legalContent.privacy.intro}</Text> : null}
+            {legalContent.privacy.sections.map((section) => (
+              <View key={section.heading}>
+                <Text style={styles.legalSection}>{section.heading}</Text>
+                <Text style={styles.legalText}>{section.body}</Text>
+              </View>
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -5425,46 +5345,29 @@ function PrivacyModal({ visible, onClose }: { visible: boolean; onClose: () => v
 }
 
 function AboutBlisseModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { language } = useI18n();
+  const legalContent = useMemo(() => getLegalContent(language), [language]);
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>💞 About Blisse</Text>
+            <Text style={styles.modalTitle}>💞 {legalContent.about.title}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={styles.legalTitle}>Why We Built Blisse</Text>
-            <Text style={styles.legalDate}>Made by a real couple, for real couples</Text>
-
-            <Text style={styles.legalText}>
-              Blisse started from a simple realization: once real life gets busy, connection can drift into autopilot.
-              We wanted a playful way to bring back intention, excitement, and emotional closeness without pressure.
-            </Text>
-
-            <Text style={styles.legalText}>
-              So we built the app we wished we had: a relationship playground with suggestions, games, and rituals
-              that help couples talk more, laugh more, and explore together at their own pace.
-            </Text>
-
-            <Text style={styles.legalSection}>What Blisse helps you do</Text>
-            <Text style={styles.legalText}>
-              • Turn “What should we do tonight?” into easy, fun options{'\n'}
-              • Build trust and chemistry with playful prompts and dares{'\n'}
-              • Keep momentum with weekly goals and shared milestones{'\n'}
-              • Personalize ideas based on your mood and feedback loop
-            </Text>
-
-            <Text style={styles.legalSection}>Our vibe</Text>
-            <Text style={styles.legalText}>
-              No judgment. No performance pressure. Just meaningful connection with a little mischief and a lot of heart.
-            </Text>
-
-            <Text style={styles.legalSection}>Our promise</Text>
-            <Text style={styles.legalText}>
-              We design Blisse to feel emotionally warm, playful, and private by default, so you can focus on each other.
-            </Text>
+            <Text style={styles.legalTitle}>{legalContent.about.title}</Text>
+            <Text style={styles.legalDate}>{legalContent.about.subtitle}</Text>
+            {legalContent.about.intro.map((paragraph) => (
+              <Text key={paragraph} style={styles.legalText}>{paragraph}</Text>
+            ))}
+            {legalContent.about.sections.map((section) => (
+              <View key={section.heading}>
+                <Text style={styles.legalSection}>{section.heading}</Text>
+                <Text style={styles.legalText}>{section.body}</Text>
+              </View>
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -6003,6 +5906,7 @@ function HomeScreen({ navigation }: any) {
             <Text style={styles.starCounterText}>⭐ {store.totalStars}</Text>
           </TouchableOpacity>
         </View>
+        <LanguageQuickSwitcher compact />
       </View>
 
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
@@ -8407,6 +8311,41 @@ const styles = StyleSheet.create({
   languageOptionText: { fontSize: 14, color: colors.text.primary, fontWeight: '500' },
   languageOptionTextActive: { color: colors.primary[400], fontWeight: '700' },
   languageOptionCheck: { color: colors.primary[400], fontSize: 14, fontWeight: '700' },
+  quickLanguageSwitcher: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    backgroundColor: colors.card,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    padding: 4,
+    marginBottom: 16,
+  },
+  quickLanguageSwitcherCompact: {
+    alignSelf: 'flex-start',
+    marginBottom: 0,
+    marginTop: 10,
+  },
+  quickLanguageButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    minWidth: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickLanguageButtonActive: {
+    backgroundColor: colors.primary[500] + '25',
+  },
+  quickLanguageButtonText: {
+    color: colors.text.secondary,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+  },
+  quickLanguageButtonTextActive: {
+    color: colors.primary[400],
+  },
   pinSetupContainer: { backgroundColor: colors.card, borderRadius: 12, padding: 16, marginBottom: 8 },
   pinSetupTitle: { fontSize: 16, fontWeight: '600', color: colors.text.primary, marginBottom: 16, textAlign: 'center' },
   pinInput: { backgroundColor: colors.cardLight, borderRadius: 8, padding: 14, fontSize: 18, color: colors.text.primary, textAlign: 'center', marginBottom: 12, letterSpacing: 8 },
