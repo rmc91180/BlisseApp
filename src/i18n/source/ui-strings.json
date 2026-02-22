@@ -1,0 +1,1134 @@
+{
+  "version": "1.0",
+  "languages": ["en", "es", "pt-BR"],
+  
+  "common": {
+    "appName": {
+      "en": "Blisse",
+      "es": "Blisse",
+      "pt-BR": "Blisse"
+    },
+    "continue": {
+      "en": "Continue",
+      "es": "Continuar",
+      "pt-BR": "Continuar"
+    },
+    "back": {
+      "en": "Back",
+      "es": "Atrás",
+      "pt-BR": "Voltar"
+    },
+    "cancel": {
+      "en": "Cancel",
+      "es": "Cancelar",
+      "pt-BR": "Cancelar"
+    },
+    "save": {
+      "en": "Save",
+      "es": "Guardar",
+      "pt-BR": "Salvar"
+    },
+    "done": {
+      "en": "Done",
+      "es": "Listo",
+      "pt-BR": "Concluído"
+    },
+    "skip": {
+      "en": "Skip",
+      "es": "Omitir",
+      "pt-BR": "Pular"
+    },
+    "next": {
+      "en": "Next",
+      "es": "Siguiente",
+      "pt-BR": "Próximo"
+    },
+    "loading": {
+      "en": "Loading...",
+      "es": "Cargando...",
+      "pt-BR": "Carregando..."
+    },
+    "error": {
+      "en": "Something went wrong",
+      "es": "Algo salió mal",
+      "pt-BR": "Algo deu errado"
+    },
+    "tryAgain": {
+      "en": "Try Again",
+      "es": "Intentar de nuevo",
+      "pt-BR": "Tentar novamente"
+    },
+    "yes": {
+      "en": "Yes",
+      "es": "Sí",
+      "pt-BR": "Sim"
+    },
+    "no": {
+      "en": "No",
+      "es": "No",
+      "pt-BR": "Não"
+    }
+  },
+
+  "onboarding": {
+    "welcome": {
+      "title": {
+        "en": "Welcome to Blisse",
+        "es": "Bienvenido a Blisse",
+        "pt-BR": "Bem-vindo ao Blisse"
+      },
+      "subtitle": {
+        "en": "Your journey to deeper connection starts here",
+        "es": "Tu viaje hacia una conexión más profunda comienza aquí",
+        "pt-BR": "Sua jornada para uma conexão mais profunda começa aqui"
+      },
+      "getStarted": {
+        "en": "Get Started",
+        "es": "Comenzar",
+        "pt-BR": "Começar"
+      },
+      "alreadyHaveAccount": {
+        "en": "Already have an account?",
+        "es": "¿Ya tienes una cuenta?",
+        "pt-BR": "Já tem uma conta?"
+      },
+      "signIn": {
+        "en": "Sign In",
+        "es": "Iniciar Sesión",
+        "pt-BR": "Entrar"
+      }
+    },
+    "name": {
+      "title": {
+        "en": "What should we call you?",
+        "es": "¿Cómo te llamamos?",
+        "pt-BR": "Como devemos te chamar?"
+      },
+      "placeholder": {
+        "en": "Your name or nickname",
+        "es": "Tu nombre o apodo",
+        "pt-BR": "Seu nome ou apelido"
+      }
+    },
+    "relationship": {
+      "title": {
+        "en": "Tell us about your relationship",
+        "es": "Cuéntanos sobre tu relación",
+        "pt-BR": "Conte-nos sobre seu relacionamento"
+      },
+      "subtitle": {
+        "en": "This helps us personalize your experience",
+        "es": "Esto nos ayuda a personalizar tu experiencia",
+        "pt-BR": "Isso nos ajuda a personalizar sua experiência"
+      },
+      "types": {
+        "hetero": {
+          "en": "Man & Woman",
+          "es": "Hombre y Mujer",
+          "pt-BR": "Homem e Mulher"
+        },
+        "mm": {
+          "en": "Man & Man",
+          "es": "Hombre y Hombre",
+          "pt-BR": "Homem e Homem"
+        },
+        "ff": {
+          "en": "Woman & Woman",
+          "es": "Mujer y Mujer",
+          "pt-BR": "Mulher e Mulher"
+        },
+        "other": {
+          "en": "Other / Flexible",
+          "es": "Otro / Flexible",
+          "pt-BR": "Outro / Flexível"
+        }
+      },
+      "duration": {
+        "title": {
+          "en": "How long have you been together?",
+          "es": "¿Cuánto tiempo llevan juntos?",
+          "pt-BR": "Há quanto tempo estão juntos?"
+        },
+        "new": {
+          "en": "Less than 1 year",
+          "es": "Menos de 1 año",
+          "pt-BR": "Menos de 1 ano"
+        },
+        "established": {
+          "en": "1-5 years",
+          "es": "1-5 años",
+          "pt-BR": "1-5 anos"
+        },
+        "longterm": {
+          "en": "5-10 years",
+          "es": "5-10 años",
+          "pt-BR": "5-10 anos"
+        },
+        "veteran": {
+          "en": "10+ years",
+          "es": "10+ años",
+          "pt-BR": "10+ anos"
+        }
+      }
+    },
+    "preferences": {
+      "title": {
+        "en": "What interests you?",
+        "es": "¿Qué te interesa?",
+        "pt-BR": "O que te interessa?"
+      },
+      "subtitle": {
+        "en": "Select all that apply",
+        "es": "Selecciona todo lo que aplique",
+        "pt-BR": "Selecione tudo que se aplica"
+      },
+      "options": {
+        "deepConnection": {
+          "en": "Deeper connection",
+          "es": "Conexión más profunda",
+          "pt-BR": "Conexão mais profunda"
+        },
+        "tryingNew": {
+          "en": "Trying new things",
+          "es": "Probar cosas nuevas",
+          "pt-BR": "Experimentar coisas novas"
+        },
+        "quickMoments": {
+          "en": "Quick intimate moments",
+          "es": "Momentos íntimos rápidos",
+          "pt-BR": "Momentos íntimos rápidos"
+        },
+        "extendedSessions": {
+          "en": "Extended sessions",
+          "es": "Sesiones extendidas",
+          "pt-BR": "Sessões prolongadas"
+        },
+        "foreplayFocus": {
+          "en": "Foreplay & anticipation",
+          "es": "Preliminares y anticipación",
+          "pt-BR": "Preliminares e antecipação"
+        },
+        "adventurous": {
+          "en": "Adventurous experiences",
+          "es": "Experiencias aventureras",
+          "pt-BR": "Experiências aventureiras"
+        },
+        "communication": {
+          "en": "Better communication",
+          "es": "Mejor comunicación",
+          "pt-BR": "Melhor comunicação"
+        },
+        "playful": {
+          "en": "Playful & fun",
+          "es": "Juguetón y divertido",
+          "pt-BR": "Brincalhão e divertido"
+        }
+      }
+    },
+    "experience": {
+      "title": {
+        "en": "Your experience level",
+        "es": "Tu nivel de experiencia",
+        "pt-BR": "Seu nível de experiência"
+      },
+      "beginner": {
+        "en": "Just starting to explore",
+        "es": "Empezando a explorar",
+        "pt-BR": "Começando a explorar"
+      },
+      "intermediate": {
+        "en": "Comfortable but curious",
+        "es": "Cómodo pero curioso",
+        "pt-BR": "Confortável mas curioso"
+      },
+      "advanced": {
+        "en": "Very experienced",
+        "es": "Muy experimentado",
+        "pt-BR": "Muito experiente"
+      }
+    },
+    "legal": {
+      "title": {
+        "en": "Before we continue",
+        "es": "Antes de continuar",
+        "pt-BR": "Antes de continuar"
+      },
+      "ageVerification": {
+        "en": "I confirm that I am 18 years of age or older",
+        "es": "Confirmo que tengo 18 años o más",
+        "pt-BR": "Confirmo que tenho 18 anos ou mais"
+      },
+      "termsAcceptance": {
+        "en": "I agree to the",
+        "es": "Acepto los",
+        "pt-BR": "Eu concordo com os"
+      },
+      "termsOfService": {
+        "en": "Terms of Service",
+        "es": "Términos de Servicio",
+        "pt-BR": "Termos de Serviço"
+      },
+      "and": {
+        "en": "and",
+        "es": "y",
+        "pt-BR": "e"
+      },
+      "privacyPolicy": {
+        "en": "Privacy Policy",
+        "es": "Política de Privacidad",
+        "pt-BR": "Política de Privacidade"
+      }
+    }
+  },
+
+  "auth": {
+    "signIn": {
+      "title": {
+        "en": "Welcome Back",
+        "es": "Bienvenido de nuevo",
+        "pt-BR": "Bem-vindo de volta"
+      },
+      "email": {
+        "en": "Email",
+        "es": "Correo electrónico",
+        "pt-BR": "Email"
+      },
+      "password": {
+        "en": "Password",
+        "es": "Contraseña",
+        "pt-BR": "Senha"
+      },
+      "forgotPassword": {
+        "en": "Forgot password?",
+        "es": "¿Olvidaste tu contraseña?",
+        "pt-BR": "Esqueceu a senha?"
+      },
+      "button": {
+        "en": "Sign In",
+        "es": "Iniciar Sesión",
+        "pt-BR": "Entrar"
+      },
+      "noAccount": {
+        "en": "Don't have an account?",
+        "es": "¿No tienes una cuenta?",
+        "pt-BR": "Não tem uma conta?"
+      },
+      "signUp": {
+        "en": "Sign Up",
+        "es": "Registrarse",
+        "pt-BR": "Cadastrar-se"
+      }
+    },
+    "signUp": {
+      "title": {
+        "en": "Create Account",
+        "es": "Crear Cuenta",
+        "pt-BR": "Criar Conta"
+      },
+      "confirmPassword": {
+        "en": "Confirm Password",
+        "es": "Confirmar Contraseña",
+        "pt-BR": "Confirmar Senha"
+      },
+      "passwordRequirements": {
+        "en": "At least 8 characters",
+        "es": "Al menos 8 caracteres",
+        "pt-BR": "Pelo menos 8 caracteres"
+      },
+      "button": {
+        "en": "Create Account",
+        "es": "Crear Cuenta",
+        "pt-BR": "Criar Conta"
+      },
+      "orContinueWith": {
+        "en": "Or continue with",
+        "es": "O continuar con",
+        "pt-BR": "Ou continue com"
+      }
+    }
+  },
+
+  "home": {
+    "greeting": {
+      "morning": {
+        "en": "Good morning",
+        "es": "Buenos días",
+        "pt-BR": "Bom dia"
+      },
+      "afternoon": {
+        "en": "Good afternoon",
+        "es": "Buenas tardes",
+        "pt-BR": "Boa tarde"
+      },
+      "evening": {
+        "en": "Good evening",
+        "es": "Buenas noches",
+        "pt-BR": "Boa noite"
+      }
+    },
+    "tonight": {
+      "title": {
+        "en": "Tonight's Suggestion",
+        "es": "Sugerencia de Esta Noche",
+        "pt-BR": "Sugestão de Hoje"
+      },
+      "seeDetails": {
+        "en": "See Details",
+        "es": "Ver Detalles",
+        "pt-BR": "Ver Detalhes"
+      },
+      "refresh": {
+        "en": "Try Another",
+        "es": "Probar Otra",
+        "pt-BR": "Tentar Outra"
+      }
+    },
+    "mood": {
+      "title": {
+        "en": "How are you feeling?",
+        "es": "¿Cómo te sientes?",
+        "pt-BR": "Como você está se sentindo?"
+      },
+      "passionate": {
+        "en": "Passionate",
+        "es": "Apasionado",
+        "pt-BR": "Apaixonado"
+      },
+      "playful": {
+        "en": "Playful",
+        "es": "Juguetón",
+        "pt-BR": "Brincalhão"
+      },
+      "flowing": {
+        "en": "Flowing",
+        "es": "Fluido",
+        "pt-BR": "Fluido"
+      },
+      "grounded": {
+        "en": "Grounded",
+        "es": "Conectado",
+        "pt-BR": "Conectado"
+      },
+      "commanding": {
+        "en": "Commanding",
+        "es": "Dominante",
+        "pt-BR": "Dominante"
+      },
+      "unified": {
+        "en": "Unified",
+        "es": "Unificado",
+        "pt-BR": "Unificado"
+      },
+      "dynamic": {
+        "en": "Dynamic",
+        "es": "Dinámico",
+        "pt-BR": "Dinâmico"
+      },
+      "blossoming": {
+        "en": "Blossoming",
+        "es": "Floreciente",
+        "pt-BR": "Florescendo"
+      }
+    },
+    "quickAccess": {
+      "foreplay": {
+        "en": "Foreplay Ideas",
+        "es": "Ideas de Preliminares",
+        "pt-BR": "Ideias de Preliminares"
+      },
+      "sessionBuilder": {
+        "en": "Build a Session",
+        "es": "Crear una Sesión",
+        "pt-BR": "Criar uma Sessão"
+      },
+      "random": {
+        "en": "Surprise Me",
+        "es": "Sorpréndeme",
+        "pt-BR": "Me Surpreenda"
+      }
+    },
+    "journey": {
+      "title": {
+        "en": "Your Journey",
+        "es": "Tu Viaje",
+        "pt-BR": "Sua Jornada"
+      },
+      "viewAll": {
+        "en": "View All Progress",
+        "es": "Ver Todo el Progreso",
+        "pt-BR": "Ver Todo o Progresso"
+      }
+    }
+  },
+
+  "explore": {
+    "title": {
+      "en": "Explore",
+      "es": "Explorar",
+      "pt-BR": "Explorar"
+    },
+    "search": {
+      "placeholder": {
+        "en": "Search positions...",
+        "es": "Buscar posiciones...",
+        "pt-BR": "Buscar posições..."
+      }
+    },
+    "sections": {
+      "positions": {
+        "en": "Positions",
+        "es": "Posiciones",
+        "pt-BR": "Posições"
+      },
+      "foreplay": {
+        "en": "Foreplay",
+        "es": "Preliminares",
+        "pt-BR": "Preliminares"
+      },
+      "byMood": {
+        "en": "By Mood",
+        "es": "Por Estado de Ánimo",
+        "pt-BR": "Por Humor"
+      }
+    },
+    "seeAll": {
+      "en": "See all",
+      "es": "Ver todo",
+      "pt-BR": "Ver tudo"
+    }
+  },
+
+  "categories": {
+    "womanOnTop": {
+      "en": "Woman on Top",
+      "es": "Mujer Arriba",
+      "pt-BR": "Mulher por Cima"
+    },
+    "manOnTop": {
+      "en": "Man on Top",
+      "es": "Hombre Arriba",
+      "pt-BR": "Homem por Cima"
+    },
+    "oral": {
+      "en": "Oral",
+      "es": "Oral",
+      "pt-BR": "Oral"
+    },
+    "rearEntry": {
+      "en": "Rear Entry",
+      "es": "Entrada Trasera",
+      "pt-BR": "Entrada Traseira"
+    },
+    "sitting": {
+      "en": "Sitting",
+      "es": "Sentados",
+      "pt-BR": "Sentados"
+    },
+    "sideBySide": {
+      "en": "Side by Side",
+      "es": "Lado a Lado",
+      "pt-BR": "Lado a Lado"
+    },
+    "standing": {
+      "en": "Standing",
+      "es": "De Pie",
+      "pt-BR": "Em Pé"
+    },
+    "furniture": {
+      "en": "Furniture",
+      "es": "Muebles",
+      "pt-BR": "Móveis"
+    },
+    "exotic": {
+      "en": "Exotic",
+      "es": "Exótico",
+      "pt-BR": "Exótico"
+    },
+    "anal": {
+      "en": "Anal",
+      "es": "Anal",
+      "pt-BR": "Anal"
+    },
+    "wetAndWild": {
+      "en": "Wet & Wild",
+      "es": "Mojado y Salvaje",
+      "pt-BR": "Molhado e Selvagem"
+    },
+    "lightBondage": {
+      "en": "Light Bondage",
+      "es": "Bondage Suave",
+      "pt-BR": "Bondage Suave"
+    },
+    "pillowAndProps": {
+      "en": "Pillow & Props",
+      "es": "Almohadas y Accesorios",
+      "pt-BR": "Travesseiros e Acessórios"
+    }
+  },
+
+  "difficulty": {
+    "beginner": {
+      "en": "Beginner",
+      "es": "Principiante",
+      "pt-BR": "Iniciante"
+    },
+    "intermediate": {
+      "en": "Intermediate",
+      "es": "Intermedio",
+      "pt-BR": "Intermediário"
+    },
+    "advanced": {
+      "en": "Advanced",
+      "es": "Avanzado",
+      "pt-BR": "Avançado"
+    }
+  },
+
+  "positionDetail": {
+    "howTo": {
+      "en": "How To",
+      "es": "Cómo Hacerlo",
+      "pt-BR": "Como Fazer"
+    },
+    "whyItWorks": {
+      "en": "Why It Works",
+      "es": "Por Qué Funciona",
+      "pt-BR": "Por Que Funciona"
+    },
+    "tips": {
+      "en": "Tips",
+      "es": "Consejos",
+      "pt-BR": "Dicas"
+    },
+    "pairsWellWith": {
+      "en": "Pairs Well With",
+      "es": "Combina Bien Con",
+      "pt-BR": "Combina Bem Com"
+    },
+    "goodFor": {
+      "en": "Good For",
+      "es": "Bueno Para",
+      "pt-BR": "Bom Para"
+    },
+    "markAsTried": {
+      "en": "Mark as Tried",
+      "es": "Marcar como Probado",
+      "pt-BR": "Marcar como Experimentado"
+    },
+    "tried": {
+      "en": "Tried ✓",
+      "es": "Probado ✓",
+      "pt-BR": "Experimentado ✓"
+    },
+    "addToFavorites": {
+      "en": "Add to Favorites",
+      "es": "Agregar a Favoritos",
+      "pt-BR": "Adicionar aos Favoritos"
+    }
+  },
+
+  "favorites": {
+    "title": {
+      "en": "Favorites",
+      "es": "Favoritos",
+      "pt-BR": "Favoritos"
+    },
+    "empty": {
+      "title": {
+        "en": "No favorites yet",
+        "es": "Sin favoritos aún",
+        "pt-BR": "Nenhum favorito ainda"
+      },
+      "subtitle": {
+        "en": "Save positions you want to try by tapping the heart icon",
+        "es": "Guarda posiciones que quieras probar tocando el ícono de corazón",
+        "pt-BR": "Salve posições que quer experimentar tocando no ícone de coração"
+      }
+    },
+    "filters": {
+      "all": {
+        "en": "All",
+        "es": "Todo",
+        "pt-BR": "Tudo"
+      },
+      "positions": {
+        "en": "Positions",
+        "es": "Posiciones",
+        "pt-BR": "Posições"
+      },
+      "foreplay": {
+        "en": "Foreplay",
+        "es": "Preliminares",
+        "pt-BR": "Preliminares"
+      }
+    }
+  },
+
+  "profile": {
+    "title": {
+      "en": "Profile",
+      "es": "Perfil",
+      "pt-BR": "Perfil"
+    },
+    "memberSince": {
+      "en": "Member since",
+      "es": "Miembro desde",
+      "pt-BR": "Membro desde"
+    },
+    "journey": {
+      "positionsTried": {
+        "en": "Positions Tried",
+        "es": "Posiciones Probadas",
+        "pt-BR": "Posições Experimentadas"
+      },
+      "foreplayExplored": {
+        "en": "Foreplay Explored",
+        "es": "Preliminares Explorados",
+        "pt-BR": "Preliminares Explorados"
+      }
+    }
+  },
+
+  "settings": {
+    "title": {
+      "en": "Settings",
+      "es": "Configuración",
+      "pt-BR": "Configurações"
+    },
+    "sections": {
+      "relationship": {
+        "en": "Relationship",
+        "es": "Relación",
+        "pt-BR": "Relacionamento"
+      },
+      "preferences": {
+        "en": "Preferences",
+        "es": "Preferencias",
+        "pt-BR": "Preferências"
+      },
+      "app": {
+        "en": "App",
+        "es": "Aplicación",
+        "pt-BR": "Aplicativo"
+      },
+      "privacy": {
+        "en": "Privacy & Security",
+        "es": "Privacidad y Seguridad",
+        "pt-BR": "Privacidade e Segurança"
+      },
+      "data": {
+        "en": "Your Data",
+        "es": "Tus Datos",
+        "pt-BR": "Seus Dados"
+      },
+      "about": {
+        "en": "About",
+        "es": "Acerca de",
+        "pt-BR": "Sobre"
+      }
+    },
+    "items": {
+      "relationshipType": {
+        "en": "Relationship Type",
+        "es": "Tipo de Relación",
+        "pt-BR": "Tipo de Relacionamento"
+      },
+      "experienceLevel": {
+        "en": "Experience Level",
+        "es": "Nivel de Experiencia",
+        "pt-BR": "Nível de Experiência"
+      },
+      "interests": {
+        "en": "Interests",
+        "es": "Intereses",
+        "pt-BR": "Interesses"
+      },
+      "hiddenCategories": {
+        "en": "Hidden Categories",
+        "es": "Categorías Ocultas",
+        "pt-BR": "Categorias Ocultas"
+      },
+      "language": {
+        "en": "Language",
+        "es": "Idioma",
+        "pt-BR": "Idioma"
+      },
+      "appearance": {
+        "en": "Appearance",
+        "es": "Apariencia",
+        "pt-BR": "Aparência"
+      },
+      "notifications": {
+        "en": "Notifications",
+        "es": "Notificaciones",
+        "pt-BR": "Notificações"
+      },
+      "sounds": {
+        "en": "Sounds",
+        "es": "Sonidos",
+        "pt-BR": "Sons"
+      },
+      "appLock": {
+        "en": "App Lock",
+        "es": "Bloqueo de App",
+        "pt-BR": "Bloqueio do App"
+      },
+      "statistics": {
+        "en": "Your Statistics",
+        "es": "Tus Estadísticas",
+        "pt-BR": "Suas Estatísticas"
+      },
+      "exportData": {
+        "en": "Export My Data",
+        "es": "Exportar Mis Datos",
+        "pt-BR": "Exportar Meus Dados"
+      },
+      "clearData": {
+        "en": "Clear All Data",
+        "es": "Borrar Todos los Datos",
+        "pt-BR": "Limpar Todos os Dados"
+      },
+      "terms": {
+        "en": "Terms of Service",
+        "es": "Términos de Servicio",
+        "pt-BR": "Termos de Serviço"
+      },
+      "privacy": {
+        "en": "Privacy Policy",
+        "es": "Política de Privacidad",
+        "pt-BR": "Política de Privacidade"
+      },
+      "support": {
+        "en": "Contact Support",
+        "es": "Contactar Soporte",
+        "pt-BR": "Contatar Suporte"
+      },
+      "rate": {
+        "en": "Rate Blisse",
+        "es": "Calificar Blisse",
+        "pt-BR": "Avaliar Blisse"
+      },
+      "signOut": {
+        "en": "Sign Out",
+        "es": "Cerrar Sesión",
+        "pt-BR": "Sair"
+      }
+    },
+    "appearance": {
+      "light": {
+        "en": "Light",
+        "es": "Claro",
+        "pt-BR": "Claro"
+      },
+      "dark": {
+        "en": "Dark",
+        "es": "Oscuro",
+        "pt-BR": "Escuro"
+      },
+      "system": {
+        "en": "System",
+        "es": "Sistema",
+        "pt-BR": "Sistema"
+      }
+    }
+  },
+
+  "notifications": {
+    "settings": {
+      "title": {
+        "en": "Notifications",
+        "es": "Notificaciones",
+        "pt-BR": "Notificações"
+      },
+      "enabled": {
+        "en": "Allow Notifications",
+        "es": "Permitir Notificaciones",
+        "pt-BR": "Permitir Notificações"
+      },
+      "dailySuggestion": {
+        "en": "Daily Suggestion",
+        "es": "Sugerencia Diaria",
+        "pt-BR": "Sugestão Diária"
+      },
+      "weeklyInspiration": {
+        "en": "Weekly Inspiration",
+        "es": "Inspiración Semanal",
+        "pt-BR": "Inspiração Semanal"
+      },
+      "achievements": {
+        "en": "Achievement Alerts",
+        "es": "Alertas de Logros",
+        "pt-BR": "Alertas de Conquistas"
+      },
+      "hideContent": {
+        "en": "Hide notification content",
+        "es": "Ocultar contenido de notificación",
+        "pt-BR": "Ocultar conteúdo da notificação"
+      }
+    },
+    "messages": {
+      "dailyReady": {
+        "en": "Your daily suggestion is ready",
+        "es": "Tu sugerencia diaria está lista",
+        "pt-BR": "Sua sugestão diária está pronta"
+      },
+      "weeklyReady": {
+        "en": "Your weekly inspiration is here",
+        "es": "Tu inspiración semanal está aquí",
+        "pt-BR": "Sua inspiração semanal chegou"
+      },
+      "achievementUnlocked": {
+        "en": "Achievement unlocked!",
+        "es": "¡Logro desbloqueado!",
+        "pt-BR": "Conquista desbloqueada!"
+      }
+    }
+  },
+
+  "sessionBuilder": {
+    "title": {
+      "en": "Build a Session",
+      "es": "Crear una Sesión",
+      "pt-BR": "Criar uma Sessão"
+    },
+    "time": {
+      "title": {
+        "en": "How much time do you have?",
+        "es": "¿Cuánto tiempo tienes?",
+        "pt-BR": "Quanto tempo você tem?"
+      },
+      "15min": {
+        "en": "15 min",
+        "es": "15 min",
+        "pt-BR": "15 min"
+      },
+      "30min": {
+        "en": "30 min",
+        "es": "30 min",
+        "pt-BR": "30 min"
+      },
+      "45min": {
+        "en": "45 min",
+        "es": "45 min",
+        "pt-BR": "45 min"
+      },
+      "60plus": {
+        "en": "60+ min",
+        "es": "60+ min",
+        "pt-BR": "60+ min"
+      }
+    },
+    "vibe": {
+      "title": {
+        "en": "What's the vibe?",
+        "es": "¿Cuál es la vibra?",
+        "pt-BR": "Qual é a vibe?"
+      },
+      "romantic": {
+        "en": "Romantic",
+        "es": "Romántico",
+        "pt-BR": "Romântico"
+      },
+      "playful": {
+        "en": "Playful",
+        "es": "Juguetón",
+        "pt-BR": "Brincalhão"
+      },
+      "passionate": {
+        "en": "Passionate",
+        "es": "Apasionado",
+        "pt-BR": "Apaixonado"
+      },
+      "relaxed": {
+        "en": "Relaxed",
+        "es": "Relajado",
+        "pt-BR": "Relaxado"
+      }
+    },
+    "include": {
+      "title": {
+        "en": "Include",
+        "es": "Incluir",
+        "pt-BR": "Incluir"
+      },
+      "foreplay": {
+        "en": "Foreplay warmup",
+        "es": "Calentamiento previo",
+        "pt-BR": "Aquecimento prévio"
+      },
+      "positions": {
+        "en": "Main positions",
+        "es": "Posiciones principales",
+        "pt-BR": "Posições principais"
+      },
+      "cooldown": {
+        "en": "Cooldown / aftercare",
+        "es": "Enfriamiento / cuidado posterior",
+        "pt-BR": "Relaxamento / cuidados"
+      }
+    },
+    "generate": {
+      "en": "Generate Session",
+      "es": "Generar Sesión",
+      "pt-BR": "Gerar Sessão"
+    },
+    "yourSession": {
+      "en": "Your Session",
+      "es": "Tu Sesión",
+      "pt-BR": "Sua Sessão"
+    },
+    "startTimer": {
+      "en": "Start Session",
+      "es": "Iniciar Sesión",
+      "pt-BR": "Iniciar Sessão"
+    }
+  },
+
+  "ideas": {
+    "title": {
+      "en": "Submit an Idea",
+      "es": "Enviar una Idea",
+      "pt-BR": "Enviar uma Ideia"
+    },
+    "myIdeas": {
+      "en": "My Ideas",
+      "es": "Mis Ideas",
+      "pt-BR": "Minhas Ideias"
+    },
+    "type": {
+      "title": {
+        "en": "What type of idea?",
+        "es": "¿Qué tipo de idea?",
+        "pt-BR": "Que tipo de ideia?"
+      },
+      "position": {
+        "en": "Position",
+        "es": "Posición",
+        "pt-BR": "Posição"
+      },
+      "foreplay": {
+        "en": "Foreplay idea",
+        "es": "Idea de preliminares",
+        "pt-BR": "Ideia de preliminares"
+      },
+      "feature": {
+        "en": "App feature",
+        "es": "Función de la app",
+        "pt-BR": "Recurso do app"
+      }
+    },
+    "name": {
+      "en": "Give it a name",
+      "es": "Ponle un nombre",
+      "pt-BR": "Dê um nome"
+    },
+    "description": {
+      "en": "Describe it",
+      "es": "Descríbelo",
+      "pt-BR": "Descreva"
+    },
+    "submit": {
+      "en": "Submit Idea",
+      "es": "Enviar Idea",
+      "pt-BR": "Enviar Ideia"
+    },
+    "status": {
+      "submitted": {
+        "en": "Submitted",
+        "es": "Enviada",
+        "pt-BR": "Enviada"
+      },
+      "underReview": {
+        "en": "Under Review",
+        "es": "En Revisión",
+        "pt-BR": "Em Revisão"
+      },
+      "accepted": {
+        "en": "Accepted",
+        "es": "Aceptada",
+        "pt-BR": "Aceita"
+      },
+      "declined": {
+        "en": "Not Accepted",
+        "es": "No Aceptada",
+        "pt-BR": "Não Aceita"
+      },
+      "published": {
+        "en": "Published",
+        "es": "Publicada",
+        "pt-BR": "Publicada"
+      }
+    },
+    "disclaimer": {
+      "en": "By submitting, you agree that your idea may be used in Blisse.",
+      "es": "Al enviar, aceptas que tu idea puede ser utilizada en Blisse.",
+      "pt-BR": "Ao enviar, você concorda que sua ideia pode ser usada no Blisse."
+    }
+  },
+
+  "search": {
+    "placeholder": {
+      "en": "Search...",
+      "es": "Buscar...",
+      "pt-BR": "Buscar..."
+    },
+    "trySearching": {
+      "en": "Try searching for...",
+      "es": "Intenta buscar...",
+      "pt-BR": "Tente buscar..."
+    },
+    "suggestions": {
+      "gentle": {
+        "en": "something gentle",
+        "es": "algo suave",
+        "pt-BR": "algo suave"
+      },
+      "quick": {
+        "en": "quick and passionate",
+        "es": "rápido y apasionado",
+        "pt-BR": "rápido e apaixonado"
+      },
+      "romantic": {
+        "en": "romantic and slow",
+        "es": "romántico y lento",
+        "pt-BR": "romântico e lento"
+      },
+      "adventurous": {
+        "en": "something adventurous",
+        "es": "algo aventurero",
+        "pt-BR": "algo aventureiro"
+      }
+    },
+    "results": {
+      "en": "results",
+      "es": "resultados",
+      "pt-BR": "resultados"
+    },
+    "noResults": {
+      "en": "No results found",
+      "es": "No se encontraron resultados",
+      "pt-BR": "Nenhum resultado encontrado"
+    }
+  },
+
+  "empty": {
+    "noContent": {
+      "en": "Nothing here yet",
+      "es": "Nada aquí todavía",
+      "pt-BR": "Nada aqui ainda"
+    }
+  },
+
+  "errors": {
+    "networkError": {
+      "en": "Please check your connection",
+      "es": "Por favor verifica tu conexión",
+      "pt-BR": "Por favor verifique sua conexão"
+    },
+    "genericError": {
+      "en": "Something went wrong. Please try again.",
+      "es": "Algo salió mal. Por favor intenta de nuevo.",
+      "pt-BR": "Algo deu errado. Por favor tente novamente."
+    }
+  }
+}

@@ -1,0 +1,529 @@
+{
+  "version": "1.0",
+  "languages": ["en", "es", "pt-BR"],
+  "screens": {
+    "welcome": {
+      "en": {
+        "title": "Welcome to Blisse",
+        "subtitle": "Your journey to deeper intimacy starts here",
+        "getStarted": "Get Started",
+        "alreadyHaveAccount": "Already have an account?",
+        "signIn": "Sign In"
+      },
+      "es": {
+        "title": "Bienvenido a Blisse",
+        "subtitle": "Tu viaje hacia una intimidad más profunda comienza aquí",
+        "getStarted": "Comenzar",
+        "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+        "signIn": "Iniciar Sesión"
+      },
+      "pt-BR": {
+        "title": "Bem-vindo ao Blisse",
+        "subtitle": "Sua jornada para uma intimidade mais profunda começa aqui",
+        "getStarted": "Começar",
+        "alreadyHaveAccount": "Já tem uma conta?",
+        "signIn": "Entrar"
+      }
+    },
+    "signup": {
+      "en": {
+        "title": "Create Your Account",
+        "subtitle": "Join thousands of couples exploring deeper connection",
+        "email": "Email",
+        "emailPlaceholder": "your@email.com",
+        "password": "Password",
+        "passwordPlaceholder": "Create a secure password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Re-enter your password",
+        "passwordRequirements": "At least 8 characters with a number",
+        "createAccount": "Create Account",
+        "orContinueWith": "Or continue with",
+        "google": "Continue with Google",
+        "apple": "Continue with Apple"
+      },
+      "es": {
+        "title": "Crea Tu Cuenta",
+        "subtitle": "Únete a miles de parejas explorando una conexión más profunda",
+        "email": "Correo electrónico",
+        "emailPlaceholder": "tu@correo.com",
+        "password": "Contraseña",
+        "passwordPlaceholder": "Crea una contraseña segura",
+        "confirmPassword": "Confirmar Contraseña",
+        "confirmPasswordPlaceholder": "Vuelve a ingresar tu contraseña",
+        "passwordRequirements": "Al menos 8 caracteres con un número",
+        "createAccount": "Crear Cuenta",
+        "orContinueWith": "O continúa con",
+        "google": "Continuar con Google",
+        "apple": "Continuar con Apple"
+      },
+      "pt-BR": {
+        "title": "Crie Sua Conta",
+        "subtitle": "Junte-se a milhares de casais explorando uma conexão mais profunda",
+        "email": "E-mail",
+        "emailPlaceholder": "seu@email.com",
+        "password": "Senha",
+        "passwordPlaceholder": "Crie uma senha segura",
+        "confirmPassword": "Confirmar Senha",
+        "confirmPasswordPlaceholder": "Digite sua senha novamente",
+        "passwordRequirements": "Pelo menos 8 caracteres com um número",
+        "createAccount": "Criar Conta",
+        "orContinueWith": "Ou continue com",
+        "google": "Continuar com Google",
+        "apple": "Continuar com Apple"
+      }
+    },
+    "login": {
+      "en": {
+        "title": "Welcome Back",
+        "subtitle": "Sign in to continue your journey",
+        "email": "Email",
+        "emailPlaceholder": "your@email.com",
+        "password": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "forgotPassword": "Forgot password?",
+        "signIn": "Sign In",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up"
+      },
+      "es": {
+        "title": "Bienvenido de Nuevo",
+        "subtitle": "Inicia sesión para continuar tu viaje",
+        "email": "Correo electrónico",
+        "emailPlaceholder": "tu@correo.com",
+        "password": "Contraseña",
+        "passwordPlaceholder": "Ingresa tu contraseña",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "signIn": "Iniciar Sesión",
+        "noAccount": "¿No tienes una cuenta?",
+        "signUp": "Regístrate"
+      },
+      "pt-BR": {
+        "title": "Bem-vindo de Volta",
+        "subtitle": "Entre para continuar sua jornada",
+        "email": "E-mail",
+        "emailPlaceholder": "seu@email.com",
+        "password": "Senha",
+        "passwordPlaceholder": "Digite sua senha",
+        "forgotPassword": "Esqueceu a senha?",
+        "signIn": "Entrar",
+        "noAccount": "Não tem uma conta?",
+        "signUp": "Cadastre-se"
+      }
+    },
+    "legalConsent": {
+      "en": {
+        "title": "Before We Continue",
+        "subtitle": "Please review and accept the following",
+        "ageVerification": "I confirm that I am 18 years of age or older",
+        "termsAcceptance": "I have read and agree to the",
+        "termsOfService": "Terms of Service",
+        "and": "and",
+        "privacyPolicy": "Privacy Policy",
+        "dataConsent": "I understand that Blisse collects data to personalize my experience, as described in the Privacy Policy",
+        "continue": "Continue",
+        "mustAcceptAll": "Please accept all items to continue",
+        "ageWarning": "This app is intended for adults 18 years and older"
+      },
+      "es": {
+        "title": "Antes de Continuar",
+        "subtitle": "Por favor revisa y acepta lo siguiente",
+        "ageVerification": "Confirmo que tengo 18 años de edad o más",
+        "termsAcceptance": "He leído y acepto los",
+        "termsOfService": "Términos de Servicio",
+        "and": "y la",
+        "privacyPolicy": "Política de Privacidad",
+        "dataConsent": "Entiendo que Blisse recopila datos para personalizar mi experiencia, como se describe en la Política de Privacidad",
+        "continue": "Continuar",
+        "mustAcceptAll": "Por favor acepta todos los elementos para continuar",
+        "ageWarning": "Esta aplicación está destinada a adultos de 18 años o más"
+      },
+      "pt-BR": {
+        "title": "Antes de Continuar",
+        "subtitle": "Por favor, revise e aceite o seguinte",
+        "ageVerification": "Confirmo que tenho 18 anos de idade ou mais",
+        "termsAcceptance": "Li e concordo com os",
+        "termsOfService": "Termos de Serviço",
+        "and": "e a",
+        "privacyPolicy": "Política de Privacidade",
+        "dataConsent": "Entendo que o Blisse coleta dados para personalizar minha experiência, conforme descrito na Política de Privacidade",
+        "continue": "Continuar",
+        "mustAcceptAll": "Por favor, aceite todos os itens para continuar",
+        "ageWarning": "Este aplicativo é destinado a adultos com 18 anos ou mais"
+      }
+    },
+    "onboardingRelationship": {
+      "en": {
+        "title": "Tell Us About You",
+        "subtitle": "This helps us personalize your experience",
+        "relationshipType": "Relationship type",
+        "relationshipOptions": {
+          "hetero": "Man & Woman",
+          "mm": "Man & Man",
+          "ff": "Woman & Woman",
+          "other": "Other / Prefer not to say"
+        },
+        "relationshipDuration": "How long have you been together?",
+        "durationOptions": {
+          "new": "Less than 1 year",
+          "established": "1-5 years",
+          "longterm": "5-10 years",
+          "veteran": "10+ years"
+        },
+        "skip": "Skip for now",
+        "continue": "Continue"
+      },
+      "es": {
+        "title": "Cuéntanos Sobre Ti",
+        "subtitle": "Esto nos ayuda a personalizar tu experiencia",
+        "relationshipType": "Tipo de relación",
+        "relationshipOptions": {
+          "hetero": "Hombre y Mujer",
+          "mm": "Hombre y Hombre",
+          "ff": "Mujer y Mujer",
+          "other": "Otro / Prefiero no decir"
+        },
+        "relationshipDuration": "¿Cuánto tiempo llevan juntos?",
+        "durationOptions": {
+          "new": "Menos de 1 año",
+          "established": "1-5 años",
+          "longterm": "5-10 años",
+          "veteran": "Más de 10 años"
+        },
+        "skip": "Saltar por ahora",
+        "continue": "Continuar"
+      },
+      "pt-BR": {
+        "title": "Conte-nos Sobre Você",
+        "subtitle": "Isso nos ajuda a personalizar sua experiência",
+        "relationshipType": "Tipo de relacionamento",
+        "relationshipOptions": {
+          "hetero": "Homem e Mulher",
+          "mm": "Homem e Homem",
+          "ff": "Mulher e Mulher",
+          "other": "Outro / Prefiro não dizer"
+        },
+        "relationshipDuration": "Há quanto tempo estão juntos?",
+        "durationOptions": {
+          "new": "Menos de 1 ano",
+          "established": "1-5 anos",
+          "longterm": "5-10 anos",
+          "veteran": "Mais de 10 anos"
+        },
+        "skip": "Pular por enquanto",
+        "continue": "Continuar"
+      }
+    },
+    "onboardingPreferences": {
+      "en": {
+        "title": "Your Preferences",
+        "subtitle": "Select what interests you most (choose any that apply)",
+        "preferencesLabel": "What are you looking to explore?",
+        "preferences": {
+          "deepConnection": "Deeper emotional connection",
+          "spiceThingsUp": "Spicing things up",
+          "newPositions": "Trying new positions",
+          "foreplayIdeas": "Foreplay & anticipation",
+          "quickies": "Quick intimate moments",
+          "extendedSessions": "Extended, slow sessions",
+          "communication": "Better communication",
+          "adventurous": "More adventurous experiences"
+        },
+        "experienceLevel": "How would you describe your experience level?",
+        "experienceLevels": {
+          "beginner": "Just starting to explore",
+          "intermediate": "Comfortable but curious",
+          "advanced": "Very experienced"
+        },
+        "skip": "Skip for now",
+        "continue": "Continue"
+      },
+      "es": {
+        "title": "Tus Preferencias",
+        "subtitle": "Selecciona lo que más te interesa (elige todas las que apliquen)",
+        "preferencesLabel": "¿Qué estás buscando explorar?",
+        "preferences": {
+          "deepConnection": "Conexión emocional más profunda",
+          "spiceThingsUp": "Darle sabor a la relación",
+          "newPositions": "Probar nuevas posiciones",
+          "foreplayIdeas": "Juegos previos y anticipación",
+          "quickies": "Momentos íntimos rápidos",
+          "extendedSessions": "Sesiones largas y lentas",
+          "communication": "Mejor comunicación",
+          "adventurous": "Experiencias más aventureras"
+        },
+        "experienceLevel": "¿Cómo describirías tu nivel de experiencia?",
+        "experienceLevels": {
+          "beginner": "Apenas comenzando a explorar",
+          "intermediate": "Cómodo pero curioso",
+          "advanced": "Muy experimentado"
+        },
+        "skip": "Saltar por ahora",
+        "continue": "Continuar"
+      },
+      "pt-BR": {
+        "title": "Suas Preferências",
+        "subtitle": "Selecione o que mais te interessa (escolha todas que se aplicam)",
+        "preferencesLabel": "O que você está buscando explorar?",
+        "preferences": {
+          "deepConnection": "Conexão emocional mais profunda",
+          "spiceThingsUp": "Apimentar a relação",
+          "newPositions": "Experimentar novas posições",
+          "foreplayIdeas": "Preliminares e antecipação",
+          "quickies": "Momentos íntimos rápidos",
+          "extendedSessions": "Sessões longas e lentas",
+          "communication": "Melhor comunicação",
+          "adventurous": "Experiências mais aventureiras"
+        },
+        "experienceLevel": "Como você descreveria seu nível de experiência?",
+        "experienceLevels": {
+          "beginner": "Apenas começando a explorar",
+          "intermediate": "Confortável mas curioso",
+          "advanced": "Muito experiente"
+        },
+        "skip": "Pular por enquanto",
+        "continue": "Continuar"
+      }
+    },
+    "onboardingMood": {
+      "en": {
+        "title": "What Draws You?",
+        "subtitle": "Select the moods that resonate with you",
+        "moods": {
+          "flowing": {
+            "name": "Flowing",
+            "description": "Gentle, unhurried, like water"
+          },
+          "passionate": {
+            "name": "Passionate",
+            "description": "Intense, fiery, consuming"
+          },
+          "playful": {
+            "name": "Playful",
+            "description": "Fun, lighthearted, spontaneous"
+          },
+          "unified": {
+            "name": "Unified",
+            "description": "Deep connection, two becoming one"
+          },
+          "commanding": {
+            "name": "Commanding",
+            "description": "Taking or giving control"
+          },
+          "blossoming": {
+            "name": "Blossoming",
+            "description": "Tender, opening, vulnerable"
+          },
+          "dynamic": {
+            "name": "Dynamic",
+            "description": "Active, energetic, athletic"
+          },
+          "grounded": {
+            "name": "Grounded",
+            "description": "Present, stable, secure"
+          }
+        },
+        "skip": "Skip for now",
+        "finish": "Let's Begin"
+      },
+      "es": {
+        "title": "¿Qué Te Atrae?",
+        "subtitle": "Selecciona los estados de ánimo que resuenan contigo",
+        "moods": {
+          "flowing": {
+            "name": "Fluido",
+            "description": "Suave, sin prisa, como el agua"
+          },
+          "passionate": {
+            "name": "Apasionado",
+            "description": "Intenso, ardiente, consumidor"
+          },
+          "playful": {
+            "name": "Juguetón",
+            "description": "Divertido, ligero, espontáneo"
+          },
+          "unified": {
+            "name": "Unificado",
+            "description": "Conexión profunda, dos volviéndose uno"
+          },
+          "commanding": {
+            "name": "Dominante",
+            "description": "Tomar o dar el control"
+          },
+          "blossoming": {
+            "name": "Floreciente",
+            "description": "Tierno, abriéndose, vulnerable"
+          },
+          "dynamic": {
+            "name": "Dinámico",
+            "description": "Activo, energético, atlético"
+          },
+          "grounded": {
+            "name": "Arraigado",
+            "description": "Presente, estable, seguro"
+          }
+        },
+        "skip": "Saltar por ahora",
+        "finish": "Comencemos"
+      },
+      "pt-BR": {
+        "title": "O Que Te Atrai?",
+        "subtitle": "Selecione os humores que ressoam com você",
+        "moods": {
+          "flowing": {
+            "name": "Fluido",
+            "description": "Suave, sem pressa, como água"
+          },
+          "passionate": {
+            "name": "Apaixonado",
+            "description": "Intenso, ardente, consumidor"
+          },
+          "playful": {
+            "name": "Divertido",
+            "description": "Leve, descontraído, espontâneo"
+          },
+          "unified": {
+            "name": "Unificado",
+            "description": "Conexão profunda, dois se tornando um"
+          },
+          "commanding": {
+            "name": "Dominante",
+            "description": "Tomar ou dar o controle"
+          },
+          "blossoming": {
+            "name": "Florescendo",
+            "description": "Terno, se abrindo, vulnerável"
+          },
+          "dynamic": {
+            "name": "Dinâmico",
+            "description": "Ativo, energético, atlético"
+          },
+          "grounded": {
+            "name": "Enraizado",
+            "description": "Presente, estável, seguro"
+          }
+        },
+        "skip": "Pular por enquanto",
+        "finish": "Vamos Começar"
+      }
+    },
+    "onboardingComplete": {
+      "en": {
+        "title": "You're All Set!",
+        "subtitle": "Your personalized experience awaits",
+        "message": "Based on your preferences, we'll suggest positions, activities, and ideas tailored just for you.",
+        "tip": "You can always update your preferences in Settings",
+        "enterApp": "Enter Blisse"
+      },
+      "es": {
+        "title": "¡Todo Listo!",
+        "subtitle": "Tu experiencia personalizada te espera",
+        "message": "Basándonos en tus preferencias, te sugeriremos posiciones, actividades e ideas hechas a tu medida.",
+        "tip": "Siempre puedes actualizar tus preferencias en Configuración",
+        "enterApp": "Entrar a Blisse"
+      },
+      "pt-BR": {
+        "title": "Tudo Pronto!",
+        "subtitle": "Sua experiência personalizada te espera",
+        "message": "Com base nas suas preferências, vamos sugerir posições, atividades e ideias feitas sob medida para você.",
+        "tip": "Você sempre pode atualizar suas preferências em Configurações",
+        "enterApp": "Entrar no Blisse"
+      }
+    },
+    "forgotPassword": {
+      "en": {
+        "title": "Reset Password",
+        "subtitle": "Enter your email and we'll send you a reset link",
+        "email": "Email",
+        "emailPlaceholder": "your@email.com",
+        "sendLink": "Send Reset Link",
+        "backToLogin": "Back to Sign In",
+        "emailSent": "Check your email for the reset link",
+        "emailNotFound": "We couldn't find an account with that email"
+      },
+      "es": {
+        "title": "Restablecer Contraseña",
+        "subtitle": "Ingresa tu correo y te enviaremos un enlace para restablecerla",
+        "email": "Correo electrónico",
+        "emailPlaceholder": "tu@correo.com",
+        "sendLink": "Enviar Enlace",
+        "backToLogin": "Volver a Iniciar Sesión",
+        "emailSent": "Revisa tu correo para el enlace de restablecimiento",
+        "emailNotFound": "No pudimos encontrar una cuenta con ese correo"
+      },
+      "pt-BR": {
+        "title": "Redefinir Senha",
+        "subtitle": "Digite seu e-mail e enviaremos um link para redefinir",
+        "email": "E-mail",
+        "emailPlaceholder": "seu@email.com",
+        "sendLink": "Enviar Link",
+        "backToLogin": "Voltar para Entrar",
+        "emailSent": "Verifique seu e-mail para o link de redefinição",
+        "emailNotFound": "Não conseguimos encontrar uma conta com esse e-mail"
+      }
+    },
+    "validation": {
+      "en": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "passwordRequired": "Password is required",
+        "passwordTooShort": "Password must be at least 8 characters",
+        "passwordNeedsNumber": "Password must contain a number",
+        "passwordsDontMatch": "Passwords don't match",
+        "allFieldsRequired": "Please fill in all required fields"
+      },
+      "es": {
+        "emailRequired": "El correo electrónico es requerido",
+        "emailInvalid": "Por favor ingresa un correo válido",
+        "passwordRequired": "La contraseña es requerida",
+        "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+        "passwordNeedsNumber": "La contraseña debe contener un número",
+        "passwordsDontMatch": "Las contraseñas no coinciden",
+        "allFieldsRequired": "Por favor completa todos los campos requeridos"
+      },
+      "pt-BR": {
+        "emailRequired": "O e-mail é obrigatório",
+        "emailInvalid": "Por favor, digite um e-mail válido",
+        "passwordRequired": "A senha é obrigatória",
+        "passwordTooShort": "A senha deve ter pelo menos 8 caracteres",
+        "passwordNeedsNumber": "A senha deve conter um número",
+        "passwordsDontMatch": "As senhas não coincidem",
+        "allFieldsRequired": "Por favor, preencha todos os campos obrigatórios"
+      }
+    },
+    "common": {
+      "en": {
+        "back": "Back",
+        "next": "Next",
+        "skip": "Skip",
+        "cancel": "Cancel",
+        "save": "Save",
+        "loading": "Loading...",
+        "error": "Something went wrong. Please try again.",
+        "success": "Success!",
+        "stepOf": "Step {current} of {total}"
+      },
+      "es": {
+        "back": "Atrás",
+        "next": "Siguiente",
+        "skip": "Saltar",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "loading": "Cargando...",
+        "error": "Algo salió mal. Por favor intenta de nuevo.",
+        "success": "¡Éxito!",
+        "stepOf": "Paso {current} de {total}"
+      },
+      "pt-BR": {
+        "back": "Voltar",
+        "next": "Próximo",
+        "skip": "Pular",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "loading": "Carregando...",
+        "error": "Algo deu errado. Por favor, tente novamente.",
+        "success": "Sucesso!",
+        "stepOf": "Passo {current} de {total}"
+      }
+    }
+  }
+}

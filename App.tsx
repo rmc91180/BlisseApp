@@ -32,7 +32,7 @@ import { foreplayIdeas, foreplayCategories, ForeplayIdea } from '@/content/forep
 import { oralPlayIdeas, oralCategories, OralPlayIdea } from '@/content/oralplay';
 import { massageTechniques, MassageTechnique } from '@/content/massage';
 import { rolePlayScenarios, RolePlayScenario } from '@/content/roleplay';
-import { AppLanguage, SUPPORTED_LANGUAGES, getContentTypeKey, getLanguageLabel, translateTerm, translateUi } from '@/i18n/translations';
+import { AppLanguage, SUPPORTED_LANGUAGES, getContentTypeKey, getLanguageLabel, translateFromAuthPack, translateFromUiPack, translateTerm, translateUi } from '@/i18n/translations';
 import * as Linking from 'expo-linking';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
@@ -2354,12 +2354,20 @@ const useI18n = () => {
   const t = useCallback((key: string, params?: Record<string, string | number>) => {
     return translateUi(language, key, params);
   }, [language]);
+  const uiPack = useCallback((path: string, params?: Record<string, string | number>) => {
+    const translated = translateFromUiPack(language, path, params);
+    return translated || path;
+  }, [language]);
+  const authPack = useCallback((screen: string, path: string, params?: Record<string, string | number>) => {
+    const translated = translateFromAuthPack(language, screen, path, params);
+    return translated || path;
+  }, [language]);
   const localizeTerm = useCallback((term: string) => {
     return translateTerm(language, term);
   }, [language]);
   const languageLabel = useMemo(() => getLanguageLabel(language), [language]);
 
-  return { language, languageLabel, t, localizeTerm };
+  return { language, languageLabel, t, uiPack, authPack, localizeTerm };
 };
 
 // ============================================
@@ -3160,6 +3168,7 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
 // ONBOARDING SCREENS
 // ============================================
 function WelcomeScreen({ navigation }: any) {
+  const { authPack } = useI18n();
   const fadeAnim = useState(new Animated.Value(0))[0];
   useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start(); }, [fadeAnim]);
   return (
@@ -3171,12 +3180,12 @@ function WelcomeScreen({ navigation }: any) {
       </Animated.View>
       <View style={styles.content}>
         <Text style={styles.titleLarge}>Blisse</Text>
-        <Text style={styles.subtitle}>Your journey to deeper{'\n'}connection starts here</Text>
+        <Text style={styles.subtitle}>{authPack('welcome', 'subtitle')}</Text>
       </View>
       <View style={styles.buttons}>
-        <PrimaryButton title="Get Started" onPress={() => navigation.navigate('NameInput')} />
+        <PrimaryButton title={authPack('welcome', 'getStarted')} onPress={() => navigation.navigate('NameInput')} />
         <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('SignIn')}>
-          <Text style={styles.secondaryButtonText}>Already have an account? <Text style={styles.linkText}>Sign In</Text></Text>
+          <Text style={styles.secondaryButtonText}>{authPack('welcome', 'alreadyHaveAccount')} <Text style={styles.linkText}>{authPack('welcome', 'signIn')}</Text></Text>
         </TouchableOpacity>
       </View>
     </ScreenWrapper>
@@ -3184,6 +3193,7 @@ function WelcomeScreen({ navigation }: any) {
 }
 
 function NameInputScreen({ navigation }: any) {
+  const { t, uiPack } = useI18n();
   const [name, setName] = useState('');
   const store = useStore();
   const handleContinue = () => { store.setName(name); navigation.navigate('RelationshipType'); };
@@ -3191,64 +3201,94 @@ function NameInputScreen({ navigation }: any) {
     <ScreenWrapper>
       <BackButton onPress={() => navigation.goBack()} />
       <View style={styles.screenContent}>
-        <Text style={styles.title}>What should we call you?</Text>
+        <Text style={styles.title}>{uiPack('onboarding.name.title')}</Text>
         <Text style={styles.subtitle}>This is how we'll greet you</Text>
-        <TextInput style={styles.textInput} placeholder="Your name or nickname" placeholderTextColor={colors.text.muted} value={name} onChangeText={setName} autoFocus />
+        <TextInput style={styles.textInput} placeholder={uiPack('onboarding.name.placeholder')} placeholderTextColor={colors.text.muted} value={name} onChangeText={setName} autoFocus />
       </View>
-      <View style={styles.buttons}><PrimaryButton title="Continue" onPress={handleContinue} disabled={!name.trim()} /></View>
+      <View style={styles.buttons}><PrimaryButton title={t('common.continue')} onPress={handleContinue} disabled={!name.trim()} /></View>
     </ScreenWrapper>
   );
 }
 
 function RelationshipTypeScreen({ navigation }: any) {
+  const { authPack } = useI18n();
   const store = useStore();
   const [selected, setSelected] = useState<string | null>(store.relationshipType);
-  const options = [{ id: 'hetero', title: 'Man & Woman' }, { id: 'mm', title: 'Man & Man' }, { id: 'ff', title: 'Woman & Woman' }, { id: 'other', title: 'Other / Flexible' }];
+  const options = [
+    { id: 'hetero', title: authPack('onboardingRelationship', 'relationshipOptions.hetero') },
+    { id: 'mm', title: authPack('onboardingRelationship', 'relationshipOptions.mm') },
+    { id: 'ff', title: authPack('onboardingRelationship', 'relationshipOptions.ff') },
+    { id: 'other', title: authPack('onboardingRelationship', 'relationshipOptions.other') },
+  ];
   const handleContinue = () => { if (selected) store.setRelationshipType(selected); navigation.navigate('Preferences'); };
   return (
     <ScreenWrapper>
       <BackButton onPress={() => navigation.goBack()} />
       <View style={styles.screenContent}>
-        <Text style={styles.title}>Hi {store.name}! 👋</Text>
-        <Text style={styles.subtitle}>Tell us about your relationship</Text>
+        <Text style={styles.title}>{store.name ? `${store.name} 👋` : authPack('onboardingRelationship', 'title')}</Text>
+        <Text style={styles.subtitle}>{authPack('onboardingRelationship', 'subtitle')}</Text>
         <View style={styles.optionsContainer}>{options.map((opt) => <OptionCard key={opt.id} title={opt.title} selected={selected === opt.id} onPress={() => setSelected(opt.id)} />)}</View>
       </View>
-      <View style={styles.buttons}><PrimaryButton title="Continue" onPress={handleContinue} disabled={!selected} /></View>
+      <View style={styles.buttons}><PrimaryButton title={authPack('onboardingRelationship', 'continue')} onPress={handleContinue} disabled={!selected} /></View>
     </ScreenWrapper>
   );
 }
 
 function PreferencesScreen({ navigation }: any) {
+  const { authPack } = useI18n();
   const store = useStore();
+  const options = useMemo(() => [
+    { id: 'deepConnection', label: authPack('onboardingPreferences', 'preferences.deepConnection') },
+    { id: 'spiceThingsUp', label: authPack('onboardingPreferences', 'preferences.spiceThingsUp') },
+    { id: 'newPositions', label: authPack('onboardingPreferences', 'preferences.newPositions') },
+    { id: 'foreplayIdeas', label: authPack('onboardingPreferences', 'preferences.foreplayIdeas') },
+    { id: 'quickies', label: authPack('onboardingPreferences', 'preferences.quickies') },
+    { id: 'extendedSessions', label: authPack('onboardingPreferences', 'preferences.extendedSessions') },
+    { id: 'communication', label: authPack('onboardingPreferences', 'preferences.communication') },
+    { id: 'adventurous', label: authPack('onboardingPreferences', 'preferences.adventurous') },
+  ], [authPack]);
   const [selected, setSelected] = useState<string[]>(store.interests);
-  const options = ['Deeper connection', 'Trying new things', 'Quick moments', 'Extended sessions', 'Foreplay focus', 'Adventurous', 'Better communication', 'Playful & fun'];
   const toggleOption = (opt: string) => setSelected((prev) => prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]);
   const handleContinue = () => { store.setInterests(selected); navigation.navigate('ExperienceLevel'); };
   return (
     <ScreenWrapper scroll>
       <BackButton onPress={() => navigation.goBack()} />
-      <Text style={styles.title}>What interests you?</Text>
-      <Text style={styles.subtitle}>Select all that apply</Text>
-      <View style={styles.chipsContainer}>{options.map((opt) => <MultiSelectChip key={opt} label={opt} selected={selected.includes(opt)} onPress={() => toggleOption(opt)} />)}</View>
-      <View style={[styles.buttons, { marginTop: 40 }]}><PrimaryButton title="Continue" onPress={handleContinue} /></View>
+      <Text style={styles.title}>{authPack('onboardingPreferences', 'title')}</Text>
+      <Text style={styles.subtitle}>{authPack('onboardingPreferences', 'subtitle')}</Text>
+      <View style={styles.chipsContainer}>
+        {options.map((opt) => (
+          <MultiSelectChip
+            key={opt.id}
+            label={opt.label}
+            selected={selected.includes(opt.id)}
+            onPress={() => toggleOption(opt.id)}
+          />
+        ))}
+      </View>
+      <View style={[styles.buttons, { marginTop: 40 }]}><PrimaryButton title={authPack('onboardingPreferences', 'continue')} onPress={handleContinue} /></View>
     </ScreenWrapper>
   );
 }
 
 function ExperienceLevelScreen({ navigation }: any) {
+  const { uiPack, authPack } = useI18n();
   const store = useStore();
   const [selected, setSelected] = useState<string | null>(store.experience);
-  const options = [{ id: 'beginner', title: '🌱 Just Starting', subtitle: 'New to exploring together' }, { id: 'intermediate', title: '🌿 Comfortable', subtitle: 'Some experience, want more' }, { id: 'advanced', title: '🌳 Experienced', subtitle: 'Ready for anything' }];
+  const options = [
+    { id: 'beginner', title: `🌱 ${uiPack('onboarding.experience.beginner')}`, subtitle: authPack('onboardingPreferences', 'experienceLevels.beginner') },
+    { id: 'intermediate', title: `🌿 ${uiPack('onboarding.experience.intermediate')}`, subtitle: authPack('onboardingPreferences', 'experienceLevels.intermediate') },
+    { id: 'advanced', title: `🌳 ${uiPack('onboarding.experience.advanced')}`, subtitle: authPack('onboardingPreferences', 'experienceLevels.advanced') },
+  ];
   const handleContinue = () => { if (selected) store.setExperience(selected); navigation.navigate('Legal'); };
   return (
     <ScreenWrapper>
       <BackButton onPress={() => navigation.goBack()} />
       <View style={styles.screenContent}>
-        <Text style={styles.title}>Your experience level</Text>
-        <Text style={styles.subtitle}>This helps us personalize suggestions</Text>
+        <Text style={styles.title}>{uiPack('onboarding.experience.title')}</Text>
+        <Text style={styles.subtitle}>{authPack('onboardingPreferences', 'experienceLevel')}</Text>
         <View style={styles.optionsContainer}>{options.map((opt) => <OptionCard key={opt.id} title={opt.title} subtitle={opt.subtitle} selected={selected === opt.id} onPress={() => setSelected(opt.id)} />)}</View>
       </View>
-      <View style={styles.buttons}><PrimaryButton title="Continue" onPress={handleContinue} disabled={!selected} /></View>
+      <View style={styles.buttons}><PrimaryButton title={authPack('onboardingPreferences', 'continue')} onPress={handleContinue} disabled={!selected} /></View>
     </ScreenWrapper>
   );
 }
@@ -3258,6 +3298,7 @@ function ExperienceLevelScreen({ navigation }: any) {
 // ENHANCED LEGAL SCREEN
 // ============================================
 function LegalScreen({ navigation }: any) {
+  const { authPack } = useI18n();
   const [hasReadTerms, setHasReadTerms] = useState(false);
   const [hasReadPrivacy, setHasReadPrivacy] = useState(false);
   const [confirmedAge, setConfirmedAge] = useState(false);
@@ -3292,8 +3333,8 @@ function LegalScreen({ navigation }: any) {
     <ScreenWrapper>
       <BackButton onPress={() => navigation.goBack()} />
       <ScrollView style={styles.screenContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Before we begin</Text>
-        <Text style={styles.subtitle}>Please review and confirm the following</Text>
+        <Text style={styles.title}>{authPack('legalConsent', 'title')}</Text>
+        <Text style={styles.subtitle}>{authPack('legalConsent', 'subtitle')}</Text>
         
         <View style={[styles.legalHighlightBox, { marginTop: 20, marginBottom: 24 }]}>
           <Text style={{ fontSize: 24, marginBottom: 8 }}>🔐</Text>
@@ -3303,7 +3344,7 @@ function LegalScreen({ navigation }: any) {
 
         <View style={[styles.legalCheckSection, { backgroundColor: themeColors.card }]}>
           <View style={styles.legalCheckHeader}>
-            <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>📜 Terms of Service</Text>
+            <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>📜 {authPack('legalConsent', 'termsOfService')}</Text>
             <TouchableOpacity style={[styles.readButton, { backgroundColor: themeColors.primary[500] + '20' }]} onPress={() => setShowTermsModal(true)}>
               <Text style={[styles.readButtonText, { color: themeColors.primary[400] }]}>Read Terms</Text>
             </TouchableOpacity>
@@ -3311,13 +3352,13 @@ function LegalScreen({ navigation }: any) {
           <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted }]}>• You must be 18+{'\n'}• All activities require consent{'\n'}• For adult couples only</Text>
           <TouchableOpacity style={[styles.checkboxRow, hasReadTerms && styles.checkboxRowSelected]} onPress={() => hasReadTerms ? setHasReadTerms(false) : setShowTermsModal(true)}>
             <View style={[styles.checkbox, hasReadTerms && styles.checkboxChecked]}>{hasReadTerms && <Text style={styles.checkmark}>✓</Text>}</View>
-            <Text style={styles.checkboxText}>I have read and agree to the Terms of Service</Text>
+            <Text style={styles.checkboxText}>{authPack('legalConsent', 'termsAcceptance')} {authPack('legalConsent', 'termsOfService')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={[styles.legalCheckSection, { backgroundColor: themeColors.card }]}>
           <View style={styles.legalCheckHeader}>
-            <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>🔐 Privacy Policy</Text>
+            <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>🔐 {authPack('legalConsent', 'privacyPolicy')}</Text>
             <TouchableOpacity style={[styles.readButton, { backgroundColor: themeColors.primary[500] + '20' }]} onPress={() => setShowPrivacyModal(true)}>
               <Text style={[styles.readButtonText, { color: themeColors.primary[400] }]}>Read Policy</Text>
             </TouchableOpacity>
@@ -3325,24 +3366,24 @@ function LegalScreen({ navigation }: any) {
           <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted }]}>• Data stored locally only{'\n'}• We never see your activity{'\n'}• Delete app = delete data</Text>
           <TouchableOpacity style={[styles.checkboxRow, hasReadPrivacy && styles.checkboxRowSelected]} onPress={() => hasReadPrivacy ? setHasReadPrivacy(false) : setShowPrivacyModal(true)}>
             <View style={[styles.checkbox, hasReadPrivacy && styles.checkboxChecked]}>{hasReadPrivacy && <Text style={styles.checkmark}>✓</Text>}</View>
-            <Text style={styles.checkboxText}>I have read and agree to the Privacy Policy</Text>
+            <Text style={styles.checkboxText}>{authPack('legalConsent', 'termsAcceptance')} {authPack('legalConsent', 'privacyPolicy')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={[styles.legalCheckSection, { backgroundColor: themeColors.card }]}>
-          <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>🔞 Age Verification</Text>
+          <Text style={[styles.legalCheckTitle, { color: themeColors.text.primary }]}>🔞 {authPack('legalConsent', 'ageWarning')}</Text>
           <Text style={[styles.legalCheckSummary, { color: themeColors.text.muted, marginTop: 8 }]}>Blisse contains adult content for couples 18+.</Text>
           <TouchableOpacity style={[styles.checkboxRow, confirmedAge && styles.checkboxRowSelected]} onPress={() => setConfirmedAge(!confirmedAge)}>
             <View style={[styles.checkbox, confirmedAge && styles.checkboxChecked]}>{confirmedAge && <Text style={styles.checkmark}>✓</Text>}</View>
-            <Text style={styles.checkboxText}>I confirm that I am 18 years or older</Text>
+            <Text style={styles.checkboxText}>{authPack('legalConsent', 'ageVerification')}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ height: 100 }} />
       </ScrollView>
 
       <View style={styles.buttons}>
-        <PrimaryButton title="Enter Blisse" onPress={handleEnter} disabled={!allConfirmed} />
-        {!allConfirmed && <Text style={[styles.legalHint, { color: themeColors.text.muted }]}>Please confirm all items above</Text>}
+        <PrimaryButton title={authPack('onboardingComplete', 'enterApp')} onPress={handleEnter} disabled={!allConfirmed} />
+        {!allConfirmed && <Text style={[styles.legalHint, { color: themeColors.text.muted }]}>{authPack('legalConsent', 'mustAcceptAll')}</Text>}
       </View>
 
       <Modal visible={showTermsModal} animationType="slide" transparent>
@@ -3533,6 +3574,7 @@ function _AddPlaylistModal({ visible, onClose, onSave, editPlaylist }: { visible
 // AUTHENTICATION SCREENS
 // ============================================
 function AuthScreen({ navigation: _navigation }: any) {
+  const { authPack, uiPack } = useI18n();
   const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -3545,6 +3587,7 @@ function AuthScreen({ navigation: _navigation }: any) {
   const { signIn, signUp, signInWithApple, resetPassword } = useAuth();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const modeScreen = mode === 'signin' ? 'login' : mode === 'signup' ? 'signup' : 'forgotPassword';
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -3552,11 +3595,11 @@ function AuthScreen({ navigation: _navigation }: any) {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError(authPack('validation', 'allFieldsRequired'));
       return;
     }
     if (!validateEmail(email)) {
-      setError('Please enter a valid email');
+      setError(authPack('validation', 'emailInvalid'));
       return;
     }
     
@@ -3569,15 +3612,15 @@ function AuthScreen({ navigation: _navigation }: any) {
     } catch (err: any) {
       haptic.error();
       if (err.code === 'auth/user-not-found') {
-        setError('No account found with this email');
+        setError(authPack('forgotPassword', 'emailNotFound'));
       } else if (err.code === 'auth/wrong-password') {
-        setError('Incorrect password');
+        setError(authPack('common', 'error'));
       } else if (err.code === 'auth/invalid-email') {
-        setError('Invalid email address');
+        setError(authPack('validation', 'emailInvalid'));
       } else if (err.code === 'auth/too-many-requests') {
-        setError('Too many attempts. Try again later');
+        setError(authPack('common', 'error'));
       } else {
-        setError('Sign in failed. Please try again');
+        setError(authPack('common', 'error'));
       }
     }
     setLoading(false);
@@ -3585,19 +3628,19 @@ function AuthScreen({ navigation: _navigation }: any) {
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      setError('Please fill in email and password');
+      setError(authPack('validation', 'allFieldsRequired'));
       return;
     }
     if (!validateEmail(email)) {
-      setError('Please enter a valid email');
+      setError(authPack('validation', 'emailInvalid'));
       return;
     }
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(authPack('validation', 'passwordTooShort'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(authPack('validation', 'passwordsDontMatch'));
       return;
     }
     
@@ -3610,11 +3653,11 @@ function AuthScreen({ navigation: _navigation }: any) {
     } catch (err: any) {
       haptic.error();
       if (err.code === 'auth/email-already-in-use') {
-        setError('An account with this email already exists');
+        setError(authPack('common', 'error'));
       } else if (err.code === 'auth/weak-password') {
-        setError('Password is too weak');
+        setError(authPack('validation', 'passwordTooShort'));
       } else {
-        setError('Sign up failed. Please try again');
+        setError(authPack('common', 'error'));
       }
     }
     setLoading(false);
@@ -3622,11 +3665,11 @@ function AuthScreen({ navigation: _navigation }: any) {
 
   const handleResetPassword = async () => {
     if (!email) {
-      setError('Please enter your email');
+      setError(authPack('validation', 'emailRequired'));
       return;
     }
     if (!validateEmail(email)) {
-      setError('Please enter a valid email');
+      setError(authPack('validation', 'emailInvalid'));
       return;
     }
     
@@ -3635,14 +3678,14 @@ function AuthScreen({ navigation: _navigation }: any) {
     try {
       await resetPassword(email);
       haptic.success();
-      Alert.alert('Email Sent', 'Check your inbox for password reset instructions');
+      Alert.alert(authPack('common', 'success'), authPack('forgotPassword', 'emailSent'));
       setMode('signin');
     } catch (err: any) {
       haptic.error();
       if (err.code === 'auth/user-not-found') {
-        setError('No account found with this email');
+        setError(authPack('forgotPassword', 'emailNotFound'));
       } else {
-        setError('Failed to send reset email');
+        setError(authPack('common', 'error'));
       }
     }
     setLoading(false);
@@ -3657,7 +3700,7 @@ function AuthScreen({ navigation: _navigation }: any) {
     } catch (err: any) {
       if (err.code !== 'ERR_CANCELED') {
         haptic.error();
-        setError('Apple Sign In failed');
+        setError(authPack('common', 'error'));
       }
     }
     setLoading(false);
@@ -3671,10 +3714,10 @@ function AuthScreen({ navigation: _navigation }: any) {
             <View style={styles.authHeader}>
               <Text style={styles.authLogo}>🌸</Text>
               <Text style={[styles.authTitle, { color: themeColors.text.primary }]}>
-                {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
+                {authPack(modeScreen, 'title')}
               </Text>
               <Text style={[styles.authSubtitle, { color: themeColors.text.muted }]}>
-                {mode === 'signin' ? 'Sign in to continue your journey' : mode === 'signup' ? 'Start your intimacy journey' : 'We\'ll send you a reset link'}
+                {authPack(modeScreen, 'subtitle')}
               </Text>
             </View>
 
@@ -3691,7 +3734,7 @@ function AuthScreen({ navigation: _navigation }: any) {
                   style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                   value={name}
                   onChangeText={setName}
-                  placeholder="Enter your name"
+                  placeholder={uiPack('onboarding.name.placeholder')}
                   placeholderTextColor={themeColors.text.muted}
                   autoCapitalize="words"
                 />
@@ -3699,12 +3742,12 @@ function AuthScreen({ navigation: _navigation }: any) {
             )}
 
             <View style={styles.authInputContainer}>
-              <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>Email</Text>
+              <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{authPack(modeScreen, 'email')}</Text>
               <TextInput
                 style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                 value={email}
                 onChangeText={setEmail}
-                placeholder="your@email.com"
+                placeholder={authPack(modeScreen, 'emailPlaceholder')}
                 placeholderTextColor={themeColors.text.muted}
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -3714,13 +3757,13 @@ function AuthScreen({ navigation: _navigation }: any) {
 
             {mode !== 'reset' && (
               <View style={styles.authInputContainer}>
-                <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>Password</Text>
+                <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{authPack(modeScreen, 'password')}</Text>
                 <View style={styles.authPasswordContainer}>
                   <TextInput
                     style={[styles.authInput, styles.authPasswordInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                     value={password}
                     onChangeText={setPassword}
-                    placeholder="••••••••"
+                    placeholder={authPack(modeScreen, 'passwordPlaceholder')}
                     placeholderTextColor={themeColors.text.muted}
                     secureTextEntry={!showPassword}
                   />
@@ -3733,12 +3776,12 @@ function AuthScreen({ navigation: _navigation }: any) {
 
             {mode === 'signup' && (
               <View style={styles.authInputContainer}>
-                <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>Confirm Password</Text>
+                <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{authPack('signup', 'confirmPassword')}</Text>
                 <TextInput
                   style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
-                  placeholder="••••••••"
+                  placeholder={authPack('signup', 'confirmPasswordPlaceholder')}
                   placeholderTextColor={themeColors.text.muted}
                   secureTextEntry={!showPassword}
                 />
@@ -3747,7 +3790,7 @@ function AuthScreen({ navigation: _navigation }: any) {
 
             {mode === 'signin' && (
               <TouchableOpacity onPress={() => { setMode('reset'); setError(''); }} style={styles.authForgotPassword}>
-                <Text style={[styles.authForgotPasswordText, { color: themeColors.primary[400] }]}>Forgot password?</Text>
+                <Text style={[styles.authForgotPasswordText, { color: themeColors.primary[400] }]}>{authPack('login', 'forgotPassword')}</Text>
               </TouchableOpacity>
             )}
 
@@ -3766,7 +3809,7 @@ function AuthScreen({ navigation: _navigation }: any) {
                   <ActivityIndicator color="#FFF" />
                 ) : (
                   <Text style={styles.authButtonText}>
-                    {mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'}
+                    {mode === 'signin' ? authPack('login', 'signIn') : mode === 'signup' ? authPack('signup', 'createAccount') : authPack('forgotPassword', 'sendLink')}
                   </Text>
                 )}
               </LinearGradient>
@@ -3776,12 +3819,12 @@ function AuthScreen({ navigation: _navigation }: any) {
               <>
                 <View style={styles.authDivider}>
                   <View style={[styles.authDividerLine, { backgroundColor: themeColors.card }]} />
-                  <Text style={[styles.authDividerText, { color: themeColors.text.muted }]}>or</Text>
+                  <Text style={[styles.authDividerText, { color: themeColors.text.muted }]}>{authPack('signup', 'orContinueWith')}</Text>
                   <View style={[styles.authDividerLine, { backgroundColor: themeColors.card }]} />
                 </View>
 
                 <TouchableOpacity style={styles.appleButton} onPress={handleAppleSignIn} disabled={loading}>
-                  <Text style={styles.appleButtonText}> Sign in with Apple</Text>
+                  <Text style={styles.appleButtonText}> {authPack('signup', 'apple')}</Text>
                 </TouchableOpacity>
               </>
             )}
@@ -3790,14 +3833,14 @@ function AuthScreen({ navigation: _navigation }: any) {
               {mode === 'reset' ? (
                 <TouchableOpacity onPress={() => { setMode('signin'); setError(''); }}>
                   <Text style={[styles.authSwitchText, { color: themeColors.text.muted }]}>
-                    Back to <Text style={{ color: themeColors.primary[400] }}>Sign In</Text>
+                    {authPack('forgotPassword', 'backToLogin')}
                   </Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(''); }}>
                   <Text style={[styles.authSwitchText, { color: themeColors.text.muted }]}>
-                    {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-                    <Text style={{ color: themeColors.primary[400] }}>{mode === 'signin' ? 'Sign Up' : 'Sign In'}</Text>
+                    {mode === 'signin' ? `${authPack('login', 'noAccount')} ` : `${authPack('welcome', 'alreadyHaveAccount')} `}
+                    <Text style={{ color: themeColors.primary[400] }}>{mode === 'signin' ? authPack('login', 'signUp') : authPack('welcome', 'signIn')}</Text>
                   </Text>
                 </TouchableOpacity>
               )}

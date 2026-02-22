@@ -1,3 +1,6 @@
+import authStrings from '@/i18n/source/auth-strings.json';
+import uiStrings from '@/i18n/source/ui-strings.json';
+
 export type AppLanguage = 'en' | 'es' | 'pt';
 
 export const SUPPORTED_LANGUAGES: Array<{ code: AppLanguage; label: string }> = [
@@ -8,6 +11,35 @@ export const SUPPORTED_LANGUAGES: Array<{ code: AppLanguage; label: string }> = 
 
 type TranslationValue = string;
 type TranslationParams = Record<string, string | number>;
+type ExternalLanguage = 'en' | 'es' | 'pt-BR';
+
+const toExternalLanguage = (language: AppLanguage): ExternalLanguage => {
+  if (language === 'pt') return 'pt-BR';
+  return language;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+};
+
+const getByPath = (source: unknown, path: string): unknown => {
+  const keys = path.split('.').filter(Boolean);
+  let current: unknown = source;
+  for (const key of keys) {
+    if (!isRecord(current) || !(key in current)) return undefined;
+    current = current[key];
+  }
+  return current;
+};
+
+const interpolate = (template: string, params?: TranslationParams): string => {
+  if (!params) return template;
+  let value = template;
+  Object.entries(params).forEach(([paramKey, paramValue]) => {
+    value = value.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(paramValue));
+  });
+  return value;
+};
 
 const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
   en: {
@@ -17,6 +49,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'tabs.profile': 'Profile',
 
     'common.all': 'All',
+    'common.continue': 'Continue',
     'common.done': 'done',
     'common.open': 'Open',
     'common.not_set': 'Not set',
@@ -137,6 +170,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'tabs.profile': 'Perfil',
 
     'common.all': 'Todo',
+    'common.continue': 'Continuar',
     'common.done': 'hecho',
     'common.open': 'Abrir',
     'common.not_set': 'No definido',
@@ -257,6 +291,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'tabs.profile': 'Perfil',
 
     'common.all': 'Todos',
+    'common.continue': 'Continuar',
     'common.done': 'concluido',
     'common.open': 'Abrir',
     'common.not_set': 'Nao definido',
@@ -421,12 +456,41 @@ const TERM_TRANSLATIONS: Record<string, Record<AppLanguage, string>> = {
 export const translateUi = (language: AppLanguage, key: string, params?: TranslationParams): string => {
   const table = UI_TRANSLATIONS[language] || UI_TRANSLATIONS.en;
   const fallback = UI_TRANSLATIONS.en[key];
-  let template = table[key] ?? fallback ?? key;
-  if (!params) return template;
-  Object.entries(params).forEach(([paramKey, value]) => {
-    template = template.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(value));
-  });
-  return template;
+  const template = table[key] ?? fallback ?? key;
+  return interpolate(template, params);
+};
+
+export const translateFromUiPack = (language: AppLanguage, path: string, params?: TranslationParams): string => {
+  const externalLanguage = toExternalLanguage(language);
+  const node = getByPath(uiStrings, path);
+  if (!isRecord(node)) return '';
+  const direct = node[externalLanguage];
+  const fallback = node.en;
+  const template = typeof direct === 'string' ? direct : typeof fallback === 'string' ? fallback : '';
+  return interpolate(template, params);
+};
+
+export const translateFromAuthPack = (
+  language: AppLanguage,
+  screen: string,
+  path: string,
+  params?: TranslationParams
+): string => {
+  const externalLanguage = toExternalLanguage(language);
+  const screenNode = getByPath(authStrings, `screens.${screen}`);
+  if (!isRecord(screenNode)) return '';
+
+  const localizedNode = getByPath(screenNode, externalLanguage);
+  const fallbackNode = getByPath(screenNode, 'en');
+
+  const localizedValue = getByPath(localizedNode, path);
+  const fallbackValue = getByPath(fallbackNode, path);
+  const template = typeof localizedValue === 'string'
+    ? localizedValue
+    : typeof fallbackValue === 'string'
+      ? fallbackValue
+      : '';
+  return interpolate(template, params);
 };
 
 export const translateTerm = (language: AppLanguage, term: string): string => {
