@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback, createContext, useContext } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, createContext, useContext, useRef } from 'react';
 import {
   View,
   Text,
@@ -122,6 +122,48 @@ const LEVEL_MOTIVATOR_LINES: string[] = [
   'From Newcomer to Eternal Flame, one playful step at a time.',
   'You are not just leveling up the app. You are leveling up us.',
 ];
+const SEASONAL_HOME_SPARK_MESSAGES: Record<string, Array<{ headline: string; body: string }>> = {
+  valentines: [
+    { headline: 'Valentine energy, all month long 💕', body: 'Romantic rituals, playful dares, and extra eye contact tonight.' },
+    { headline: 'Love notes are welcome here 🌹', body: 'Keep it sweet, flirty, and a little bold in the best way.' },
+  ],
+  spring: [
+    { headline: 'Spring is your reset button 🌸', body: 'Fresh mood, fresh energy, fresh stories to create together.' },
+    { headline: 'New season, new sparks 🌿', body: 'Try one new thing tonight and let curiosity lead.' },
+  ],
+  summer: [
+    { headline: 'Hot summer nights unlocked ☀️', body: 'Playful challenges, spontaneous vibes, and zero overthinking.' },
+    { headline: 'Bring the heat, keep it fun 🍹', body: 'Adventure mode is on. Pick a dare and go.' },
+  ],
+  fall: [
+    { headline: 'Cozy season, closer connection 🍂', body: 'Slow down, warm up, and keep the playful tension alive.' },
+    { headline: 'Autumn nights, softer lights 🕯️', body: 'Comfort plus chemistry is a very good combo.' },
+  ],
+  winter: [
+    { headline: 'Winter warmth starts here ❄️', body: 'Blankets, body heat, and intentional closeness.' },
+    { headline: 'Cold outside, spark inside 🔥', body: 'Make tonight feel like your favorite secret.' },
+  ],
+  newyear: [
+    { headline: 'New year, same love, bolder play 🎆', body: 'Set one playful intention and make it happen tonight.' },
+    { headline: 'Fresh chapter energy ✨', body: 'Small shared rituals now, big relationship momentum later.' },
+  ],
+};
+const SEASONAL_TONIGHT_TEASERS: Record<string, string[]> = {
+  valentines: ['Romantic and playful with just the right amount of heat.'],
+  spring: ['Fresh-energy date night: soft start, bold finish.'],
+  summer: ['Spontaneous and spicy, with zero pressure.'],
+  fall: ['Cozy, close, and impossible to rush.'],
+  winter: ['Warm up slowly and stay close longer.'],
+  newyear: ['Try one new thing and call it your lucky ritual.'],
+};
+const SEASONAL_HOOK_LINES: Record<string, string[]> = {
+  valentines: ['Turn ordinary nights into love-fest energy.'],
+  spring: ['Fresh beginnings and playful experiments await.'],
+  summer: ['Longer nights, bolder choices, more laughter.'],
+  fall: ['Comfort meets chemistry in every cozy moment.'],
+  winter: ['Body heat and closeness are the whole vibe.'],
+  newyear: ['Fresh starts and daring first moves.'],
+};
 
 // ============================================
 // LAZY FIREBASE INITIALIZATION
@@ -5629,6 +5671,9 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
 // ============================================
 function HomeScreen({ navigation }: any) {
   const store = useStore();
+  const introAnim = useRef(new Animated.Value(0)).current;
+  const suggestionsAnim = useRef(new Animated.Value(0)).current;
+  const actionsAnim = useRef(new Animated.Value(0)).current;
   const [showSpinner, setShowSpinner] = useState(false);
   const [showDateNight, setShowDateNight] = useState(false);
   const [showChallenge, setShowChallenge] = useState(false);
@@ -5662,8 +5707,21 @@ function HomeScreen({ navigation }: any) {
     () => Math.max(0, getDayOfYear(new Date(`${dailyJokeDateKey}T12:00:00`)) - 1),
     [dailyJokeDateKey]
   );
-  const sparkMessage = HOME_SPARK_MESSAGES[homeCopyDayIndex % HOME_SPARK_MESSAGES.length];
-  const tonightTeaser = TONIGHT_SUGGESTION_TEASERS[homeCopyDayIndex % TONIGHT_SUGGESTION_TEASERS.length];
+  const sparkMessage = useMemo(() => {
+    const seasonalMessages = currentSeason ? SEASONAL_HOME_SPARK_MESSAGES[currentSeason.id] : null;
+    const source = seasonalMessages?.length ? seasonalMessages : HOME_SPARK_MESSAGES;
+    return source[homeCopyDayIndex % source.length];
+  }, [currentSeason, homeCopyDayIndex]);
+  const tonightTeaser = useMemo(() => {
+    const seasonalTeasers = currentSeason ? SEASONAL_TONIGHT_TEASERS[currentSeason.id] : null;
+    const source = seasonalTeasers?.length ? seasonalTeasers : TONIGHT_SUGGESTION_TEASERS;
+    return source[homeCopyDayIndex % source.length];
+  }, [currentSeason, homeCopyDayIndex]);
+  const seasonalHook = useMemo(() => {
+    const hooks = currentSeason ? SEASONAL_HOOK_LINES[currentSeason.id] : null;
+    if (!hooks?.length) return null;
+    return hooks[homeCopyDayIndex % hooks.length];
+  }, [currentSeason, homeCopyDayIndex]);
   const levelMotivator = LEVEL_MOTIVATOR_LINES[homeCopyDayIndex % LEVEL_MOTIVATOR_LINES.length];
   const dailyJoke = useMemo(
     () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank),
@@ -5721,6 +5779,21 @@ function HomeScreen({ navigation }: any) {
     setShowDailyPunchline(false);
   }, [dailyJokeDateKey]);
 
+  useEffect(() => {
+    introAnim.setValue(0);
+    suggestionsAnim.setValue(0);
+    actionsAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(introAnim, { toValue: 1, duration: 280, useNativeDriver: true }),
+      Animated.timing(suggestionsAnim, { toValue: 1, duration: 260, useNativeDriver: true }),
+      Animated.timing(actionsAnim, { toValue: 1, duration: 240, useNativeDriver: true }),
+    ]).start();
+  }, [actionsAnim, introAnim, suggestionsAnim]);
+
+  const introTranslateY = introAnim.interpolate({ inputRange: [0, 1], outputRange: [14, 0] });
+  const suggestionsTranslateY = suggestionsAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] });
+  const actionsTranslateY = actionsAnim.interpolate({ inputRange: [0, 1], outputRange: [18, 0] });
+
   const tonightPosition = useMemo(() => {
     if (store.currentMood) {
       const moodPositions = positions.filter((p) => p.mood === store.currentMood);
@@ -5747,100 +5820,106 @@ function HomeScreen({ navigation }: any) {
         </View>
       </View>
 
-      <View style={styles.homeSparkBanner}>
-        <Text style={styles.homeSparkBannerHeadline}>{sparkMessage.headline}</Text>
-        <Text style={styles.homeSparkBannerBody}>{sparkMessage.body}</Text>
-      </View>
+      <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
+        <View style={styles.homeSparkBanner}>
+          <Text style={styles.homeSparkBannerHeadline}>{sparkMessage.headline}</Text>
+          <Text style={styles.homeSparkBannerBody}>{sparkMessage.body}</Text>
+        </View>
 
-      {/* Level Progress Card */}
-      <TouchableOpacity style={styles.levelCard} onPress={() => setShowInsights(true)} activeOpacity={0.8}>
-        <View style={styles.levelHeader}>
-          <Text style={styles.levelEmoji}>{currentLevel.emoji}</Text>
-          <View style={styles.levelInfo}>
-            <Text style={[styles.levelTitle, { color: currentLevel.color }]}>{currentLevel.title}</Text>
-            <Text style={styles.levelSubtitle}>Level {currentLevel.level}</Text>
+        {/* Level Progress Card */}
+        <TouchableOpacity style={styles.levelCard} onPress={() => setShowInsights(true)} activeOpacity={0.8}>
+          <View style={styles.levelHeader}>
+            <Text style={styles.levelEmoji}>{currentLevel.emoji}</Text>
+            <View style={styles.levelInfo}>
+              <Text style={[styles.levelTitle, { color: currentLevel.color }]}>{currentLevel.title}</Text>
+              <Text style={styles.levelSubtitle}>Level {currentLevel.level}</Text>
+            </View>
+            {nextLevel && (
+              <View style={styles.levelNextBadge}>
+                <Text style={styles.levelNextText}>Next: {nextLevel.emoji}</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.levelProgressBar}>
+            <Animated.View style={[styles.levelProgressFill, { width: `${progressToNext}%`, backgroundColor: currentLevel.color }]} />
           </View>
           {nextLevel && (
-            <View style={styles.levelNextBadge}>
-              <Text style={styles.levelNextText}>Next: {nextLevel.emoji}</Text>
+            <Text style={styles.levelProgressText}>{nextLevel.minStars - store.totalStars} stars to {nextLevel.title}</Text>
+          )}
+          <Text style={styles.levelMotivatorText}>{levelMotivator}</Text>
+        </TouchableOpacity>
+
+        {/* Streak Banner */}
+        {store.currentStreak >= 2 && (
+          <View style={styles.streakBanner}>
+            <Text style={styles.streakBannerText}>🔥 {store.currentStreak} week streak! Keep it up!</Text>
+          </View>
+        )}
+
+        {/* Login Streak Banner */}
+        {store.loginStreak >= 3 && (
+          <View style={[styles.streakBanner, { backgroundColor: colors.gold + '20' }]}>
+            <Text style={[styles.streakBannerText, { color: colors.gold }]}>📅 {store.loginStreak} day login streak!</Text>
+          </View>
+        )}
+      </Animated.View>
+
+      <Animated.View style={{ opacity: suggestionsAnim, transform: [{ translateY: suggestionsTranslateY }] }}>
+        {/* Daily Joke Tease */}
+        <View style={styles.dailyJokeCard}>
+          <View style={styles.dailyJokeHeaderRow}>
+            <Text style={styles.dailyJokeTitle}>😏 Daily Tease</Text>
+            <Text style={styles.dailyJokeDate}>{dailyJokeDateKey}</Text>
+          </View>
+          <Text style={styles.dailyJokeSetup}>{dailyJoke.setup}</Text>
+          {!showDailyPunchline ? (
+            <TouchableOpacity
+              style={styles.dailyJokeRevealButton}
+              onPress={() => {
+                setShowDailyPunchline(true);
+                Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
+              }}
+            >
+              <Text style={styles.dailyJokeRevealText}>Reveal punchline</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.dailyJokePunchlineBox}>
+              <Text style={styles.dailyJokePunchlineLabel}>Punchline</Text>
+              <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
             </View>
           )}
         </View>
-        <View style={styles.levelProgressBar}>
-          <Animated.View style={[styles.levelProgressFill, { width: `${progressToNext}%`, backgroundColor: currentLevel.color }]} />
-        </View>
-        {nextLevel && (
-          <Text style={styles.levelProgressText}>{nextLevel.minStars - store.totalStars} stars to {nextLevel.title}</Text>
-        )}
-        <Text style={styles.levelMotivatorText}>{levelMotivator}</Text>
-      </TouchableOpacity>
 
-      {/* Streak Banner */}
-      {store.currentStreak >= 2 && (
-        <View style={styles.streakBanner}>
-          <Text style={styles.streakBannerText}>🔥 {store.currentStreak} week streak! Keep it up!</Text>
-        </View>
-      )}
-
-      {/* Login Streak Banner */}
-      {store.loginStreak >= 3 && (
-        <View style={[styles.streakBanner, { backgroundColor: colors.gold + '20' }]}>
-          <Text style={[styles.streakBannerText, { color: colors.gold }]}>📅 {store.loginStreak} day login streak!</Text>
-        </View>
-      )}
-
-      {/* Daily Joke Tease */}
-      <View style={styles.dailyJokeCard}>
-        <View style={styles.dailyJokeHeaderRow}>
-          <Text style={styles.dailyJokeTitle}>😏 Daily Tease</Text>
-          <Text style={styles.dailyJokeDate}>{dailyJokeDateKey}</Text>
-        </View>
-        <Text style={styles.dailyJokeSetup}>{dailyJoke.setup}</Text>
-        {!showDailyPunchline ? (
-          <TouchableOpacity
-            style={styles.dailyJokeRevealButton}
-            onPress={() => {
-              setShowDailyPunchline(true);
-              Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
-            }}
-          >
-            <Text style={styles.dailyJokeRevealText}>Reveal punchline</Text>
+        {/* Seasonal Card */}
+        {currentSeason && (
+          <TouchableOpacity style={[styles.seasonalCard, { borderColor: currentSeason.color }]} onPress={() => setShowSeasonal(true)} activeOpacity={0.8}>
+            <Text style={styles.seasonalCardEmoji}>{currentSeason.emoji}</Text>
+            <View style={styles.seasonalCardInfo}>
+              <Text style={[styles.seasonalCardTitle, { color: currentSeason.color }]}>{currentSeason.name}</Text>
+              <Text style={styles.seasonalCardSubtitle}>{currentSeason.description}</Text>
+              {seasonalHook ? <Text style={styles.seasonalCardHook}>{seasonalHook}</Text> : null}
+            </View>
+            <Text style={styles.seasonalCardArrow}>→</Text>
           </TouchableOpacity>
-        ) : (
-          <View style={styles.dailyJokePunchlineBox}>
-            <Text style={styles.dailyJokePunchlineLabel}>Punchline</Text>
-            <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
-          </View>
         )}
-      </View>
 
-      {/* Seasonal Card */}
-      {currentSeason && (
-        <TouchableOpacity style={[styles.seasonalCard, { borderColor: currentSeason.color }]} onPress={() => setShowSeasonal(true)} activeOpacity={0.8}>
-          <Text style={styles.seasonalCardEmoji}>{currentSeason.emoji}</Text>
-          <View style={styles.seasonalCardInfo}>
-            <Text style={[styles.seasonalCardTitle, { color: currentSeason.color }]}>{currentSeason.name}</Text>
-            <Text style={styles.seasonalCardSubtitle}>{currentSeason.description}</Text>
+        <TouchableOpacity onPress={() => { haptic.light(); navigation.navigate('PositionDetail', { position: tonightPosition }); }} activeOpacity={0.9}>
+          <View style={styles.tonightCard}>
+            <LinearGradient colors={['#7c3aed', '#db2777']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.tonightGradient}>
+              <Text style={styles.tonightLabel}>Tonight's Suggestion</Text>
+              <Text style={styles.tonightTitle}>{tonightPosition.name}</Text>
+              <Text style={styles.tonightSubtitle}>{tonightPosition.vibe}</Text>
+              <Text style={styles.tonightTeaser}>{tonightTeaser}</Text>
+              {!store.tried.includes(tonightPosition.id) && (
+                <View style={styles.newBadge}><Text style={styles.newBadgeText}>✨ NEW +3 ⭐</Text></View>
+              )}
+            </LinearGradient>
           </View>
-          <Text style={styles.seasonalCardArrow}>→</Text>
         </TouchableOpacity>
-      )}
-
-      <TouchableOpacity onPress={() => { haptic.light(); navigation.navigate('PositionDetail', { position: tonightPosition }); }} activeOpacity={0.9}>
-        <View style={styles.tonightCard}>
-          <LinearGradient colors={['#7c3aed', '#db2777']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.tonightGradient}>
-            <Text style={styles.tonightLabel}>Tonight's Suggestion</Text>
-            <Text style={styles.tonightTitle}>{tonightPosition.name}</Text>
-            <Text style={styles.tonightSubtitle}>{tonightPosition.vibe}</Text>
-            <Text style={styles.tonightTeaser}>{tonightTeaser}</Text>
-            {!store.tried.includes(tonightPosition.id) && (
-              <View style={styles.newBadge}><Text style={styles.newBadgeText}>✨ NEW +3 ⭐</Text></View>
-            )}
-          </LinearGradient>
-        </View>
-      </TouchableOpacity>
+      </Animated.View>
 
       {/* Feature Buttons Row 1 */}
+      <Animated.View style={{ opacity: actionsAnim, transform: [{ translateY: actionsTranslateY }] }}>
       <View style={styles.featureButtonsRow}>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowSpinner(true)}>
           <LinearGradient colors={['#f59e0b', '#ef4444']} style={styles.featureButtonGradient}>
@@ -5914,6 +5993,7 @@ function HomeScreen({ navigation }: any) {
           </LinearGradient>
         </TouchableOpacity>
       </View>
+      </Animated.View>
 
       {/* Weekly Goals Preview */}
       {store.weeklyGoals.length > 0 && (
@@ -8043,6 +8123,7 @@ const styles = StyleSheet.create({
   seasonalCardInfo: { flex: 1 },
   seasonalCardTitle: { fontSize: 18, fontWeight: '700' },
   seasonalCardSubtitle: { fontSize: 13, color: colors.text.muted, marginTop: 2 },
+  seasonalCardHook: { fontSize: 12, color: colors.text.secondary, marginTop: 4, lineHeight: 16 },
   seasonalCardArrow: { fontSize: 20, color: colors.text.muted },
 
   // ============================================

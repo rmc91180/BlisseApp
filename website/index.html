@@ -591,10 +591,15 @@
     <section class="hero">
         <div class="hero-badge">
             <span>✨</span>
-            Playful intimacy for real couples
+            <span id="heroBadgeText">Playful intimacy for real couples</span>
         </div>
-        <h1>Ignite the Spark. <span class="gradient">Keep the Play.</span></h1>
-        <p>Blisse helps you turn everyday moments into unforgettable connection with ideas, games, and rituals that feel fun, warm, and deeply personal.</p>
+        <h1><span id="heroHeadlineLead">Ignite the Spark.</span> <span class="gradient" id="heroHeadlineAccent">Keep the Play.</span></h1>
+        <p id="heroDescription">Blisse helps you turn everyday moments into unforgettable connection with ideas, games, and rituals that feel fun, warm, and deeply personal.</p>
+
+        <div class="cta-buttons">
+            <a id="heroPrimaryCta" class="btn btn-primary" href="mailto:hello@blisse.online?subject=Blisse%20Early%20Access%20Request">Get App Updates</a>
+            <a id="heroSecondaryCta" class="btn btn-secondary" href="#features">See Features</a>
+        </div>
 
         <div class="store-badges">
             <div class="coming-soon-badge">
@@ -615,8 +620,8 @@
     <!-- Features Section -->
     <section class="features" id="features">
         <div class="section-header">
-            <h2>Built to Keep You Curious</h2>
-            <p>Every feature is designed to make closeness easier, playfulness natural, and connection a shared habit.</p>
+            <h2 id="featuresHeading">Built to Keep You Curious</h2>
+            <p id="featuresSubheading">Every feature is designed to make closeness easier, playfulness natural, and connection a shared habit.</p>
         </div>
 
         <div class="features-grid">
@@ -754,6 +759,60 @@
     </footer>
 
     <script>
+        const HERO_VARIANTS = {
+            A: {
+                badge: 'Playful intimacy for real couples',
+                lead: 'Ignite the Spark.',
+                accent: 'Keep the Play.',
+                description: 'Blisse helps you turn everyday moments into unforgettable connection with ideas, games, and rituals that feel fun, warm, and deeply personal.',
+                primaryCta: 'Get App Updates',
+                secondaryCta: 'See Features',
+                featuresHeading: 'Built to Keep You Curious',
+                featuresSubheading: 'Every feature is designed to make closeness easier, playfulness natural, and connection a shared habit.'
+            },
+            B: {
+                badge: 'Less routine. More chemistry.',
+                lead: 'Date Nights,',
+                accent: 'Reimagined.',
+                description: 'From playful prompts to personalized mood picks, Blisse helps couples reconnect fast and keep that spark alive all week.',
+                primaryCta: 'Join Early Access',
+                secondaryCta: 'How It Works',
+                featuresHeading: 'Your Relationship Playground',
+                featuresSubheading: 'Quick rituals, fun challenges, and meaningful prompts designed to keep you emotionally close and physically playful.'
+            }
+        };
+
+        function getLandingVariant() {
+            const storageKey = 'blisse_landing_variant_v1';
+            const forced = new URLSearchParams(window.location.search).get('ab');
+            if (forced === 'A' || forced === 'B') {
+                localStorage.setItem(storageKey, forced);
+                return forced;
+            }
+            const existing = localStorage.getItem(storageKey);
+            if (existing === 'A' || existing === 'B') return existing;
+            const assigned = Math.random() < 0.5 ? 'A' : 'B';
+            localStorage.setItem(storageKey, assigned);
+            return assigned;
+        }
+
+        function applyLandingVariant() {
+            const variant = getLandingVariant();
+            const copy = HERO_VARIANTS[variant] || HERO_VARIANTS.A;
+            const subject = encodeURIComponent(`Blisse Early Access (${variant})`);
+
+            document.getElementById('heroBadgeText').textContent = copy.badge;
+            document.getElementById('heroHeadlineLead').textContent = copy.lead;
+            document.getElementById('heroHeadlineAccent').textContent = copy.accent;
+            document.getElementById('heroDescription').textContent = copy.description;
+            document.getElementById('heroPrimaryCta').textContent = copy.primaryCta;
+            document.getElementById('heroSecondaryCta').textContent = copy.secondaryCta;
+            document.getElementById('featuresHeading').textContent = copy.featuresHeading;
+            document.getElementById('featuresSubheading').textContent = copy.featuresSubheading;
+            document.getElementById('heroPrimaryCta').href = `mailto:hello@blisse.online?subject=${subject}`;
+            document.body.setAttribute('data-ab-variant', variant);
+        }
+
         // Age verification
         function verifyAge() {
             localStorage.setItem('blisse_age_verified', 'true');
@@ -764,6 +823,8 @@
         if (localStorage.getItem('blisse_age_verified') === 'true') {
             document.getElementById('ageGate').classList.add('hidden');
         }
+
+        applyLandingVariant();
     </script>
 </body>
 </html>
