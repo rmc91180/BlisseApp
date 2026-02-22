@@ -27,12 +27,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { positions, moods, categories, Position } from '@/content/positions';
-import { foreplayIdeas, foreplayCategories, ForeplayIdea } from '@/content/foreplay';
-import { oralPlayIdeas, oralCategories, OralPlayIdea } from '@/content/oralplay';
-import { massageTechniques, MassageTechnique } from '@/content/massage';
-import { rolePlayScenarios, RolePlayScenario } from '@/content/roleplay';
+import { positions as basePositions, moods, categories, Position } from '@/content/positions';
+import { foreplayIdeas as baseForeplayIdeas, foreplayCategories, ForeplayIdea } from '@/content/foreplay';
+import { oralPlayIdeas as baseOralPlayIdeas, oralCategories, OralPlayIdea } from '@/content/oralplay';
+import { massageTechniques as baseMassageTechniques, MassageTechnique } from '@/content/massage';
+import { rolePlayScenarios as baseRolePlayScenarios, RolePlayScenario } from '@/content/roleplay';
 import { AppLanguage, SUPPORTED_LANGUAGES, getContentTypeKey, getLanguageLabel, translateFromAuthPack, translateFromUiPack, translateTerm, translateUi } from '@/i18n/translations';
+import { ContentCatalog, getLocalizedContentCatalog } from '@/i18n/localizedContent';
 import * as Linking from 'expo-linking';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
@@ -392,6 +393,53 @@ const CARD_WIDTH = (width - 52) / 2;
 // ============================================
 const massageCategories = ['Relaxation', 'Sensual', 'Therapeutic'];
 const rolePlayCategories = ['Romantic', 'Fantasy', 'Playful', 'Adventurous'];
+
+const BASE_CONTENT_CATALOG: ContentCatalog = {
+  positions: basePositions,
+  foreplay: baseForeplayIdeas,
+  oral: baseOralPlayIdeas,
+  massage: baseMassageTechniques,
+  roleplay: baseRolePlayScenarios,
+};
+
+const getCurrentLanguageSafe = (): AppLanguage => {
+  try {
+    return useStore.getState().language || 'en';
+  } catch (_error) {
+    return 'en';
+  }
+};
+
+const getLocalizedCatalogForCurrentLanguage = (): ContentCatalog => {
+  return getLocalizedContentCatalog(getCurrentLanguageSafe(), BASE_CONTENT_CATALOG);
+};
+
+const createLocalizedArrayProxy = <T,>(resolver: () => T[]): T[] => {
+  return new Proxy([] as unknown as T[], {
+    get(_target, property) {
+      const resolved = resolver();
+      if (property === Symbol.iterator) return resolved[Symbol.iterator].bind(resolved);
+      if (property === 'length') return resolved.length;
+      const value = (resolved as unknown as Record<PropertyKey, unknown>)[property];
+      return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(resolved) : value;
+    },
+    ownKeys() {
+      return Reflect.ownKeys(resolver());
+    },
+    getOwnPropertyDescriptor(_target, property) {
+      const resolved = resolver() as unknown as object;
+      const descriptor = Object.getOwnPropertyDescriptor(resolved, property);
+      if (descriptor) return descriptor;
+      return undefined;
+    },
+  });
+};
+
+const positions: Position[] = createLocalizedArrayProxy(() => getLocalizedCatalogForCurrentLanguage().positions);
+const foreplayIdeas: ForeplayIdea[] = createLocalizedArrayProxy(() => getLocalizedCatalogForCurrentLanguage().foreplay);
+const oralPlayIdeas: OralPlayIdea[] = createLocalizedArrayProxy(() => getLocalizedCatalogForCurrentLanguage().oral);
+const massageTechniques: MassageTechnique[] = createLocalizedArrayProxy(() => getLocalizedCatalogForCurrentLanguage().massage);
+const rolePlayScenarios: RolePlayScenario[] = createLocalizedArrayProxy(() => getLocalizedCatalogForCurrentLanguage().roleplay);
 
 // ============================================
 // SEASONAL CONTENT
@@ -3023,6 +3071,7 @@ const _StarBadge = ({ count }: { count: number }) => (
 
 const PositionCard = ({ position, onPress }: { position: Position; onPress: () => void }) => {
   const store = useStore();
+  const { localizeTerm } = useI18n();
   const isFavorite = store.favorites.includes(position.id);
   const isTried = store.tried.includes(position.id);
   const mood = moods.find((m) => m.id === position.mood);
@@ -3040,11 +3089,11 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
         </View>
       </View>
       <Text style={styles.positionName}>{position.name}</Text>
-      <Text style={styles.positionCategory}>{position.category}</Text>
+      <Text style={styles.positionCategory}>{localizeTerm(position.category)}</Text>
       <Text style={styles.positionVibe} numberOfLines={2}>{position.vibe}</Text>
       <View style={styles.positionFooter}>
         <View style={[styles.difficultyBadge, position.difficulty === 'Beginner' && styles.difficultyBeginner, position.difficulty === 'Intermediate' && styles.difficultyIntermediate, position.difficulty === 'Advanced' && styles.difficultyAdvanced]}>
-          <Text style={styles.difficultyText}>{position.difficulty}</Text>
+          <Text style={styles.difficultyText}>{localizeTerm(position.difficulty)}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -3053,6 +3102,7 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
 
 const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => void }) => {
   const store = useStore();
+  const { localizeTerm } = useI18n();
   const isFavorite = store.favoriteForeplay.includes(item.id);
   const isTried = store.triedForeplay.includes(item.id);
   const mood = moods.find((m) => m.id === item.mood);
@@ -3070,10 +3120,10 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
-      <Text style={styles.positionCategory}>{item.category}</Text>
+      <Text style={styles.positionCategory}>{localizeTerm(item.category)}</Text>
       <Text style={styles.positionVibe} numberOfLines={2}>{item.vibe}</Text>
       <View style={styles.positionFooter}>
-        <View style={styles.durationBadge}><Text style={styles.durationText}>{item.duration}</Text></View>
+        <View style={styles.durationBadge}><Text style={styles.durationText}>{localizeTerm(item.duration)}</Text></View>
       </View>
     </TouchableOpacity>
   );
@@ -3081,9 +3131,11 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
 
 const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => void }) => {
   const store = useStore();
+  const { localizeTerm } = useI18n();
   const isFavorite = store.favoriteOral?.includes(item.id) || false;
   const isTried = store.triedOral?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
+  const giverLabel = item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual');
   return (
     <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8}>
       <View style={styles.cardHeader}>
@@ -3098,10 +3150,10 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
-      <Text style={styles.positionCategory}>{item.category}</Text>
+      <Text style={styles.positionCategory}>{localizeTerm(item.category)}</Text>
       <Text style={styles.positionVibe} numberOfLines={2}>{item.vibe}</Text>
       <View style={styles.positionFooter}>
-        <View style={styles.giverBadge}><Text style={styles.giverText}>{item.giver === 'him' ? '👨→👩' : item.giver === 'her' ? '👩→👨' : '🤝 Mutual'}</Text></View>
+        <View style={styles.giverBadge}><Text style={styles.giverText}>{item.giver === 'him' ? '👨→👩' : item.giver === 'her' ? '👩→👨' : '🤝'} {giverLabel}</Text></View>
       </View>
     </TouchableOpacity>
   );
@@ -3109,6 +3161,7 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
 
 const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () => void }) => {
   const store = useStore();
+  const { localizeTerm } = useI18n();
   const isFavorite = store.favoriteMassage?.includes(item.id) || false;
   const isTried = store.triedMassage?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
@@ -3126,10 +3179,10 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
-      <Text style={styles.positionCategory}>{item.category} • {item.bodyArea}</Text>
+      <Text style={styles.positionCategory}>{localizeTerm(item.category)} • {item.bodyArea}</Text>
       <Text style={styles.positionVibe} numberOfLines={2}>{item.vibe}</Text>
       <View style={styles.positionFooter}>
-        <View style={styles.durationBadge}><Text style={styles.durationText}>⏱ {item.duration}</Text></View>
+        <View style={styles.durationBadge}><Text style={styles.durationText}>⏱ {localizeTerm(item.duration)}</Text></View>
       </View>
     </TouchableOpacity>
   );
@@ -3137,6 +3190,7 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
 
 const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () => void }) => {
   const store = useStore();
+  const { localizeTerm } = useI18n();
   const isFavorite = store.favoriteRoleplay?.includes(item.id) || false;
   const isTried = store.triedRoleplay?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
@@ -3155,10 +3209,10 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
-      <Text style={styles.positionCategory}>{item.category}</Text>
+      <Text style={styles.positionCategory}>{localizeTerm(item.category)}</Text>
       <Text style={styles.positionVibe} numberOfLines={2}>{item.vibe}</Text>
       <View style={styles.positionFooter}>
-        <View style={[styles.intensityBadge, { backgroundColor: intensityColor + '30' }]}><Text style={[styles.intensityText, { color: intensityColor }]}>{item.intensity}</Text></View>
+        <View style={[styles.intensityBadge, { backgroundColor: intensityColor + '30' }]}><Text style={[styles.intensityText, { color: intensityColor }]}>{localizeTerm(item.intensity)}</Text></View>
       </View>
     </TouchableOpacity>
   );
@@ -5769,7 +5823,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
 // ============================================
 function HomeScreen({ navigation }: any) {
   const store = useStore();
-  const { t, localizeTerm } = useI18n();
+  const { language, t, localizeTerm } = useI18n();
   const introAnim = useRef(new Animated.Value(0)).current;
   const suggestionsAnim = useRef(new Animated.Value(0)).current;
   const actionsAnim = useRef(new Animated.Value(0)).current;
@@ -5899,6 +5953,7 @@ function HomeScreen({ navigation }: any) {
   const actionsTranslateY = actionsAnim.interpolate({ inputRange: [0, 1], outputRange: [18, 0] });
 
   const tonightPosition = useMemo(() => {
+    void language;
     if (store.currentMood) {
       const moodPositions = positions.filter((p) => p.mood === store.currentMood);
       const untried = moodPositions.filter((p) => !store.tried.includes(p.id));
@@ -5908,7 +5963,7 @@ function HomeScreen({ navigation }: any) {
     const untried = positions.filter((p) => !store.tried.includes(p.id));
     if (untried.length > 0) return untried[Math.floor(Math.random() * untried.length)];
     return positions[Math.floor(Math.random() * positions.length)];
-  }, [store.currentMood, store.tried]);
+  }, [language, store.currentMood, store.tried]);
 
   return (
     <ScreenWrapper scroll>
@@ -6199,60 +6254,91 @@ function ExploreScreen({ navigation }: any) {
     if (selectedCategory) result = result.filter((p) => p.category === selectedCategory);
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter((p) => p.name.toLowerCase().includes(query) || p.vibe.toLowerCase().includes(query) || p.category.toLowerCase().includes(query) || p.mood.toLowerCase().includes(query));
+      result = result.filter((p) => {
+        const moodLabel = moods.find((m) => m.id === p.mood)?.label || p.mood;
+        return (
+          p.name.toLowerCase().includes(query) ||
+          p.vibe.toLowerCase().includes(query) ||
+          p.category.toLowerCase().includes(query) ||
+          localizeTerm(p.category).toLowerCase().includes(query) ||
+          p.mood.toLowerCase().includes(query) ||
+          localizeTerm(moodLabel).toLowerCase().includes(query)
+        );
+      });
     }
     if (sortBy === 'untried') result = result.filter(p => !store.tried.includes(p.id));
     if (sortBy === 'tried') result = result.filter(p => store.tried.includes(p.id));
     return result;
-  }, [searchQuery, selectedCategory, sortBy, store.tried]);
+  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.tried]);
 
   const filteredForeplay = useMemo(() => {
     let result = foreplayIdeas;
     if (selectedCategory) result = result.filter((f) => f.category === selectedCategory);
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter((f) => f.name.toLowerCase().includes(query) || f.vibe.toLowerCase().includes(query) || f.category.toLowerCase().includes(query));
+      result = result.filter((f) => (
+        f.name.toLowerCase().includes(query) ||
+        f.vibe.toLowerCase().includes(query) ||
+        f.category.toLowerCase().includes(query) ||
+        localizeTerm(f.category).toLowerCase().includes(query)
+      ));
     }
     if (sortBy === 'untried') result = result.filter(f => !store.triedForeplay.includes(f.id));
     if (sortBy === 'tried') result = result.filter(f => store.triedForeplay.includes(f.id));
     return result;
-  }, [searchQuery, selectedCategory, sortBy, store.triedForeplay]);
+  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedForeplay]);
 
   const filteredOral = useMemo(() => {
     let result = oralPlayIdeas;
     if (selectedCategory) result = result.filter((o) => o.category === selectedCategory);
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter((o) => o.name.toLowerCase().includes(query) || o.vibe.toLowerCase().includes(query) || o.category.toLowerCase().includes(query));
+      result = result.filter((o) => (
+        o.name.toLowerCase().includes(query) ||
+        o.vibe.toLowerCase().includes(query) ||
+        o.category.toLowerCase().includes(query) ||
+        localizeTerm(o.category).toLowerCase().includes(query)
+      ));
     }
     if (sortBy === 'untried') result = result.filter(o => !store.triedOral.includes(o.id));
     if (sortBy === 'tried') result = result.filter(o => store.triedOral.includes(o.id));
     return result;
-  }, [searchQuery, selectedCategory, sortBy, store.triedOral]);
+  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedOral]);
 
   const filteredMassage = useMemo(() => {
     let result = massageTechniques;
     if (selectedCategory) result = result.filter((m) => m.category === selectedCategory);
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter((m) => m.name.toLowerCase().includes(query) || m.vibe.toLowerCase().includes(query) || m.category.toLowerCase().includes(query) || m.bodyArea.toLowerCase().includes(query));
+      result = result.filter((m) => (
+        m.name.toLowerCase().includes(query) ||
+        m.vibe.toLowerCase().includes(query) ||
+        m.category.toLowerCase().includes(query) ||
+        localizeTerm(m.category).toLowerCase().includes(query) ||
+        m.bodyArea.toLowerCase().includes(query)
+      ));
     }
     if (sortBy === 'untried') result = result.filter(m => !store.triedMassage.includes(m.id));
     if (sortBy === 'tried') result = result.filter(m => store.triedMassage.includes(m.id));
     return result;
-  }, [searchQuery, selectedCategory, sortBy, store.triedMassage]);
+  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedMassage]);
 
   const filteredRoleplay = useMemo(() => {
     let result = rolePlayScenarios;
     if (selectedCategory) result = result.filter((r) => r.category === selectedCategory);
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter((r) => r.name.toLowerCase().includes(query) || r.vibe.toLowerCase().includes(query) || r.category.toLowerCase().includes(query));
+      result = result.filter((r) => (
+        r.name.toLowerCase().includes(query) ||
+        r.vibe.toLowerCase().includes(query) ||
+        r.category.toLowerCase().includes(query) ||
+        localizeTerm(r.category).toLowerCase().includes(query)
+      ));
     }
     if (sortBy === 'untried') result = result.filter(r => !store.triedRoleplay.includes(r.id));
     if (sortBy === 'tried') result = result.filter(r => store.triedRoleplay.includes(r.id));
     return result;
-  }, [searchQuery, selectedCategory, sortBy, store.triedRoleplay]);
+  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedRoleplay]);
 
   const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => { haptic.light(); setContentType(type); setSelectedCategory(null); };
 
@@ -6347,7 +6433,7 @@ function ExploreScreen({ navigation }: any) {
 
 function FavoritesScreen({ navigation }: any) {
   const store = useStore();
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral'>('positions');
   const [showRecentlyTried, setShowRecentlyTried] = useState(false);
   const favoritePositions = positions.filter((p) => store.favorites.includes(p.id));
@@ -6356,6 +6442,7 @@ function FavoritesScreen({ navigation }: any) {
 
   // Recently tried items (last 10)
   const recentlyTried = useMemo(() => {
+    void language;
     return store.activityLog
       .slice(-10)
       .reverse()
@@ -6366,7 +6453,7 @@ function FavoritesScreen({ navigation }: any) {
         return null;
       })
       .filter(Boolean);
-  }, [store.activityLog]);
+  }, [language, store.activityLog]);
 
   return (
     <ScreenWrapper>
@@ -6611,6 +6698,7 @@ function ProfileScreen({ navigation }: any) {
 // ============================================
 function PositionDetailScreen({ route, navigation }: any) {
   const { position }: { position: Position } = route.params;
+  const { localizeTerm } = useI18n();
   const store = useStore();
   const isFavorite = store.favorites.includes(position.id);
   const isTried = store.tried.includes(position.id);
@@ -6648,10 +6736,10 @@ function PositionDetailScreen({ route, navigation }: any) {
           <View style={styles.detailHeader}>
             <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
               <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
-              <Text style={styles.detailMoodLabel}>{mood?.label}</Text>
+              <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
             </View>
             <Text style={styles.detailTitle}>{position.name}</Text>
-            <Text style={styles.detailCategory}>{position.category} • {position.difficulty}</Text>
+            <Text style={styles.detailCategory}>{localizeTerm(position.category)} • {localizeTerm(position.difficulty)}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
                 <Text style={styles.detailStarHintText}>
@@ -6721,6 +6809,7 @@ function PositionDetailScreen({ route, navigation }: any) {
 
 function ForeplayDetailScreen({ route, navigation }: any) {
   const { item }: { item: ForeplayIdea } = route.params;
+  const { localizeTerm } = useI18n();
   const store = useStore();
   const isFavorite = store.favoriteForeplay.includes(item.id);
   const isTried = store.triedForeplay.includes(item.id);
@@ -6758,10 +6847,10 @@ function ForeplayDetailScreen({ route, navigation }: any) {
           <View style={styles.detailHeader}>
             <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
               <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
-              <Text style={styles.detailMoodLabel}>{mood?.label}</Text>
+              <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
             </View>
             <Text style={styles.detailTitle}>{item.name}</Text>
-            <Text style={styles.detailCategory}>{item.category} • {item.duration}</Text>
+            <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {localizeTerm(item.duration)}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
                 <Text style={styles.detailStarHintText}>✨ Try this for +2 ⭐</Text>
@@ -6827,6 +6916,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
 
 function OralDetailScreen({ route, navigation }: any) {
   const { item }: { item: OralPlayIdea } = route.params;
+  const { localizeTerm } = useI18n();
   const store = useStore();
   const isFavorite = store.favoriteOral?.includes(item.id) || false;
   const isTried = store.triedOral?.includes(item.id) || false;
@@ -6864,10 +6954,10 @@ function OralDetailScreen({ route, navigation }: any) {
           <View style={styles.detailHeader}>
             <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
               <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
-              <Text style={styles.detailMoodLabel}>{mood?.label}</Text>
+              <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
             </View>
             <Text style={styles.detailTitle}>{item.name}</Text>
-            <Text style={styles.detailCategory}>{item.category} • {item.giver === 'him' ? 'He gives' : item.giver === 'her' ? 'She gives' : 'Mutual'}</Text>
+            <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual')}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
                 <Text style={styles.detailStarHintText}>✨ Try this for +2 ⭐</Text>
@@ -6936,6 +7026,7 @@ function OralDetailScreen({ route, navigation }: any) {
 // ============================================
 function MassageDetailScreen({ route, navigation }: any) {
   const { item } = route.params as { item: MassageTechnique };
+  const { localizeTerm } = useI18n();
   const store = useStore();
   const mood = moods.find((m) => m.id === item.mood);
   const isFavorite = store.favoriteMassage.includes(item.id);
@@ -6973,10 +7064,10 @@ function MassageDetailScreen({ route, navigation }: any) {
           <View style={styles.detailHeader}>
             <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
               <Text style={styles.detailMoodEmoji}>💆</Text>
-              <Text style={styles.detailMoodLabel}>{item.category}</Text>
+              <Text style={styles.detailMoodLabel}>{localizeTerm(item.category)}</Text>
             </View>
             <Text style={styles.detailTitle}>{item.name}</Text>
-            <Text style={styles.detailCategory}>{item.bodyArea} • {item.duration}</Text>
+            <Text style={styles.detailCategory}>{item.bodyArea} • {localizeTerm(item.duration)}</Text>
             {!isTried && (
               <View style={styles.detailStarHint}>
                 <Text style={styles.detailStarHintText}>✨ Try this for +3 ⭐</Text>
@@ -7044,6 +7135,7 @@ function MassageDetailScreen({ route, navigation }: any) {
 // ============================================
 function RolePlayDetailScreen({ route, navigation }: any) {
   const { item } = route.params as { item: RolePlayScenario };
+  const { localizeTerm } = useI18n();
   const store = useStore();
   const mood = moods.find((m) => m.id === item.mood);
   const isFavorite = store.favoriteRoleplay.includes(item.id);
@@ -7083,13 +7175,13 @@ function RolePlayDetailScreen({ route, navigation }: any) {
           <View style={styles.detailHeader}>
             <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
               <Text style={styles.detailMoodEmoji}>🎭</Text>
-              <Text style={styles.detailMoodLabel}>{item.category}</Text>
+              <Text style={styles.detailMoodLabel}>{localizeTerm(item.category)}</Text>
             </View>
             <Text style={styles.detailTitle}>{item.name}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-              <Text style={styles.detailCategory}>{item.category} • </Text>
+              <Text style={styles.detailCategory}>{localizeTerm(item.category)} • </Text>
               <View style={[styles.intensityBadge, { backgroundColor: intensityColor + '30' }]}>
-                <Text style={[styles.intensityText, { color: intensityColor }]}>{item.intensity}</Text>
+                <Text style={[styles.intensityText, { color: intensityColor }]}>{localizeTerm(item.intensity)}</Text>
               </View>
             </View>
             {!isTried && (
@@ -7178,12 +7270,14 @@ function SeasonalModal({
   onOpenChallenge?: () => void;
   onOpenSpinner?: () => void;
 }) {
+  const { language } = useI18n();
   const currentSeason = getCurrentSeason();
   const store = useStore();
 
   type SeasonalContentType = 'position' | 'foreplay' | 'oral' | 'roleplay';
 
   const seasonalRecommendations = useMemo(() => {
+    void language;
     const season = currentSeason;
     if (!season) {
       return { positions: [], foreplay: [], oral: [], roleplay: [] };
@@ -7258,6 +7352,7 @@ function SeasonalModal({
       roleplay: build('roleplay', rolePlayScenarios, season.roleplay, 2),
     };
   }, [
+    language,
     currentSeason,
     store.currentMood,
     store.learningPreferences,

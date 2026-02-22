@@ -439,6 +439,8 @@ const TERM_TRANSLATIONS: Record<string, Record<AppLanguage, string>> = {
   Beginner: { en: 'Beginner', es: 'Principiante', pt: 'Iniciante' },
   Intermediate: { en: 'Intermediate', es: 'Intermedio', pt: 'Intermediario' },
   Advanced: { en: 'Advanced', es: 'Avanzado', pt: 'Avancado' },
+  Light: { en: 'Light', es: 'Suave', pt: 'Leve' },
+  Intense: { en: 'Intense', es: 'Intenso', pt: 'Intenso' },
 
   Quick: { en: 'Quick', es: 'Rapido', pt: 'Rapido' },
   Medium: { en: 'Medium', es: 'Medio', pt: 'Medio' },
@@ -451,6 +453,16 @@ const TERM_TRANSLATIONS: Record<string, Record<AppLanguage, string>> = {
   Unified: { en: 'Unified', es: 'Unido', pt: 'Unido' },
   Dynamic: { en: 'Dynamic', es: 'Dinamico', pt: 'Dinamico' },
   Blossoming: { en: 'Blossoming', es: 'Floreciente', pt: 'Florescendo' },
+  passionate: { en: 'passionate', es: 'apasionado', pt: 'apaixonado' },
+  playful: { en: 'playful', es: 'jugueton', pt: 'brincalhao' },
+  flowing: { en: 'flowing', es: 'fluido', pt: 'fluido' },
+  grounded: { en: 'grounded', es: 'conectado', pt: 'estavel' },
+  commanding: { en: 'commanding', es: 'dominante', pt: 'dominante' },
+  unified: { en: 'unified', es: 'unido', pt: 'unido' },
+  dynamic: { en: 'dynamic', es: 'dinamico', pt: 'dinamico' },
+  blossoming: { en: 'blossoming', es: 'floreciente', pt: 'florescendo' },
+  'He gives': { en: 'He gives', es: 'El da', pt: 'Ele conduz' },
+  'She gives': { en: 'She gives', es: 'Ella da', pt: 'Ela conduz' },
 };
 
 export const translateUi = (language: AppLanguage, key: string, params?: TranslationParams): string => {
