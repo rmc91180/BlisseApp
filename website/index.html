@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blisse - Intimate Wellness for Couples</title>
-    <meta name="description" content="Blisse helps couples explore and enhance their intimate connection through curated suggestions, activity tracking, and educational content.">
+    <meta name="description" content="Blisse helps couples keep the spark alive with playful ideas, emotional prompts, and fun rituals designed for real relationships.">
     <meta name="keywords" content="couples app, intimacy, wellness, relationship, couples wellness">
     <meta name="author" content="Blisse">
 
@@ -306,6 +306,53 @@
             font-size: 15px;
         }
 
+        /* About Section */
+        .about-section {
+            padding: 100px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 28px;
+            align-items: stretch;
+        }
+
+        .about-card {
+            background: rgba(45, 27, 61, 0.55);
+            border: 1px solid rgba(168, 85, 247, 0.18);
+            border-radius: 24px;
+            padding: 30px;
+        }
+
+        .about-card h3 {
+            font-size: 28px;
+            margin-bottom: 14px;
+        }
+
+        .about-card p {
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        .about-points {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .about-points li {
+            color: var(--text-secondary);
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
         /* Privacy Section */
         .privacy-section {
             padding: 100px 24px;
@@ -496,6 +543,10 @@
                 font-size: 28px;
             }
 
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
             .footer-content {
                 text-align: center;
             }
@@ -529,6 +580,7 @@
         <a href="/" class="logo">Blisse</a>
         <div class="nav-links">
             <a href="#features">Features</a>
+            <a href="#about">About</a>
             <a href="#privacy">Privacy</a>
             <a href="/privacy">Privacy Policy</a>
             <a href="/terms">Terms</a>
@@ -539,10 +591,10 @@
     <section class="hero">
         <div class="hero-badge">
             <span>✨</span>
-            Intimate Wellness for Couples
+            Playful intimacy for real couples
         </div>
-        <h1>Explore. <span class="gradient">Connect.</span> Grow Together.</h1>
-        <p>Blisse helps couples deepen their intimate connection through curated suggestions, personalized experiences, and a safe space to explore together.</p>
+        <h1>Ignite the Spark. <span class="gradient">Keep the Play.</span></h1>
+        <p>Blisse helps you turn everyday moments into unforgettable connection with ideas, games, and rituals that feel fun, warm, and deeply personal.</p>
 
         <div class="store-badges">
             <div class="coming-soon-badge">
@@ -563,46 +615,70 @@
     <!-- Features Section -->
     <section class="features" id="features">
         <div class="section-header">
-            <h2>Everything You Need</h2>
-            <p>Thoughtfully designed features to help you and your partner explore, connect, and grow together.</p>
+            <h2>Built to Keep You Curious</h2>
+            <p>Every feature is designed to make closeness easier, playfulness natural, and connection a shared habit.</p>
         </div>
 
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">🔥</div>
-                <h3>Curated Suggestions</h3>
-                <p>Discover new positions, foreplay ideas, massage techniques, and more with our expertly curated content library.</p>
+                <div class="feature-icon">🎰</div>
+                <h3>Spin, Surprise, Smile</h3>
+                <p>Quick random picks that turn indecision into laughs, chemistry, and “let’s try this” energy.</p>
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <h3>Mood Matching</h3>
-                <p>Select your mood and get personalized recommendations that match exactly how you're feeling tonight.</p>
+                <div class="feature-icon">🌙</div>
+                <h3>Date Night, Instantly</h3>
+                <p>Curated plans and mood-first prompts that make romance feel effortless on busy days.</p>
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">⭐</div>
-                <h3>Favorites & Notes</h3>
-                <p>Save your favorites and add private notes to remember what works best for you as a couple.</p>
+                <div class="feature-icon">🎲</div>
+                <h3>Truth or Dare for Adults</h3>
+                <p>Questions that deepen trust and dares that keep things playful, bold, and connected.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🎮</div>
-                <h3>Games & Challenges</h3>
-                <p>Spice things up with Truth or Dare, weekly challenges, and fun activities designed for couples.</p>
+                <h3>Games, Challenges, Rituals</h3>
+                <p>Weekly missions and fun activities that build momentum in your relationship, not pressure.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
-                <h3>Progress Tracking</h3>
-                <p>Track your exploration journey together with achievements, levels, and personalized insights.</p>
+                <h3>Your Couple Progress Arc</h3>
+                <p>Earn stars, unlock tiers, and watch your shared growth story unfold over time.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🔐</div>
                 <h3>Private & Secure</h3>
-                <p>Your data stays on your device. PIN lock and biometric protection keep your content private.</p>
+                <p>Privacy-first by design: local data, optional app lock, and anonymous analytics only.</p>
             </div>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="section-header">
+            <h2>About Blisse</h2>
+            <p>We are building the app we wanted for ourselves: less awkward advice, more real connection.</p>
+        </div>
+        <div class="about-grid">
+            <article class="about-card">
+                <h3>From one real couple to another 💞</h3>
+                <p>Blisse began with a simple question: why does keeping the spark alive feel harder than it should?</p>
+                <p>After too many generic date lists and forgettable ideas, we built a playful relationship playground where couples can explore, laugh, and reconnect with intention.</p>
+                <p>No pressure, no perfection. Just practical intimacy tools that make your relationship feel alive, warm, and fun again.</p>
+            </article>
+            <aside class="about-card">
+                <h3>What we care about</h3>
+                <ul class="about-points">
+                    <li>💬 Emotional closeness and better communication</li>
+                    <li>🎉 Playful intimacy without awkwardness</li>
+                    <li>🧭 Personalized paths that adapt to your vibe</li>
+                    <li>🔐 Privacy and trust at the foundation</li>
+                </ul>
+            </aside>
         </div>
     </section>
 

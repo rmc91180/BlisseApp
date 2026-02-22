@@ -86,6 +86,42 @@ const DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY = 'blisse-daily-joke-notification-r
 const DAILY_JOKE_BANK_CACHE_KEY = 'blisse-daily-joke-bank-cache-v1';
 const DAILY_JOKE_BANK_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 const DAILY_JOKE_BANK_DOC_PATH = ['app_config', 'daily_jokes'] as const;
+const HOME_SPARK_MESSAGES: Array<{ headline: string; body: string }> = [
+  {
+    headline: 'Ignite the spark tonight 💕',
+    body: 'Playful touches, honest whispers, and one small adventure at a time.',
+  },
+  {
+    headline: 'Connection looks good on you ✨',
+    body: 'Open Blisse, pick a vibe, and turn ordinary moments into inside jokes.',
+  },
+  {
+    headline: 'Less scrolling, more chemistry 😘',
+    body: 'Choose a mood and let the app nudge both of you into something memorable.',
+  },
+  {
+    headline: 'Your love story, with bonus levels 🌙',
+    body: 'Collect stars, unlock surprises, and keep your bond playful all week.',
+  },
+  {
+    headline: 'Warm hearts. Mischievous smiles. 🔥',
+    body: 'A little intention tonight can feel like a big reset for both of you.',
+  },
+];
+const TONIGHT_SUGGESTION_TEASERS: string[] = [
+  'Ready for a cozy adventure? No rush, just playful intimacy.',
+  'Tonight is for eye contact, laughter, and one bold move.',
+  'Start soft, stay curious, and let chemistry do the heavy lifting.',
+  'Think less pressure, more presence, and a lot more fun.',
+  'Small spark now, unforgettable memory later.',
+];
+const LEVEL_MOTIVATOR_LINES: string[] = [
+  'Every star is a tiny vote for your relationship.',
+  'You are building trust, play, and momentum together.',
+  'Progress is attractive. Keep going, lovebirds.',
+  'From Newcomer to Eternal Flame, one playful step at a time.',
+  'You are not just leveling up the app. You are leveling up us.',
+];
 
 // ============================================
 // LAZY FIREBASE INITIALIZATION
@@ -4858,6 +4894,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
   const store = useStore();
   const { user, logout } = useAuth();
   const [showPinSetup, setShowPinSetup] = useState(false);
+  const [showAboutBlisse, setShowAboutBlisse] = useState(false);
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [pinError, setPinError] = useState('');
@@ -4941,15 +4978,16 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { maxHeight: '90%' }]}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>⚙️ Settings</Text>
-            <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
-          </View>
-          
-          <ScrollView showsVerticalScrollIndicator={false}>
+    <>
+      <Modal visible={visible} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { maxHeight: '90%' }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>⚙️ Settings</Text>
+              <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false}>
             {/* Security Section */}
             <Text style={styles.settingsSectionTitle}>🔒 Privacy & Security</Text>
             
@@ -5017,6 +5055,10 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
               <Text style={styles.settingsItemText}>Experience</Text>
               <Text style={styles.settingsItemValue}>{store.experience || 'Not set'}</Text>
             </View>
+            <TouchableOpacity style={styles.settingsItem} onPress={() => setShowAboutBlisse(true)}>
+              <Text style={styles.settingsItemText}>💞 About Blisse</Text>
+              <Text style={styles.settingsItemValue}>Open</Text>
+            </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.settingsItem, { borderColor: colors.error }]}
@@ -5044,10 +5086,12 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
             }}>
               <Text style={[styles.settingsItemText, { color: colors.error }]}>🗑️ Reset All Data</Text>
             </TouchableOpacity>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+      <AboutBlisseModal visible={showAboutBlisse} onClose={() => setShowAboutBlisse(false)} />
+    </>
   );
 }
 
@@ -5156,6 +5200,54 @@ function PrivacyModal({ visible, onClose }: { visible: boolean; onClose: () => v
 
             <Text style={styles.legalSection}>Contact</Text>
             <Text style={styles.legalText}>Questions? Contact us at: privacy@blisse.online</Text>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+function AboutBlisseModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  return (
+    <Modal visible={visible} animationType="slide" transparent>
+      <View style={styles.modalOverlay}>
+        <View style={[styles.modalContent, { maxHeight: '90%' }]}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>💞 About Blisse</Text>
+            <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
+          </View>
+
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Text style={styles.legalTitle}>Why We Built Blisse</Text>
+            <Text style={styles.legalDate}>Made by a real couple, for real couples</Text>
+
+            <Text style={styles.legalText}>
+              Blisse started from a simple realization: once real life gets busy, connection can drift into autopilot.
+              We wanted a playful way to bring back intention, excitement, and emotional closeness without pressure.
+            </Text>
+
+            <Text style={styles.legalText}>
+              So we built the app we wished we had: a relationship playground with suggestions, games, and rituals
+              that help couples talk more, laugh more, and explore together at their own pace.
+            </Text>
+
+            <Text style={styles.legalSection}>What Blisse helps you do</Text>
+            <Text style={styles.legalText}>
+              • Turn “What should we do tonight?” into easy, fun options{'\n'}
+              • Build trust and chemistry with playful prompts and dares{'\n'}
+              • Keep momentum with weekly goals and shared milestones{'\n'}
+              • Personalize ideas based on your mood and feedback loop
+            </Text>
+
+            <Text style={styles.legalSection}>Our vibe</Text>
+            <Text style={styles.legalText}>
+              No judgment. No performance pressure. Just meaningful connection with a little mischief and a lot of heart.
+            </Text>
+
+            <Text style={styles.legalSection}>Our promise</Text>
+            <Text style={styles.legalText}>
+              We design Blisse to feel emotionally warm, playful, and private by default, so you can focus on each other.
+            </Text>
           </ScrollView>
         </View>
       </View>
@@ -5566,6 +5658,13 @@ function HomeScreen({ navigation }: any) {
 
   // Current seasonal theme
   const currentSeason = getCurrentSeason();
+  const homeCopyDayIndex = useMemo(
+    () => Math.max(0, getDayOfYear(new Date(`${dailyJokeDateKey}T12:00:00`)) - 1),
+    [dailyJokeDateKey]
+  );
+  const sparkMessage = HOME_SPARK_MESSAGES[homeCopyDayIndex % HOME_SPARK_MESSAGES.length];
+  const tonightTeaser = TONIGHT_SUGGESTION_TEASERS[homeCopyDayIndex % TONIGHT_SUGGESTION_TEASERS.length];
+  const levelMotivator = LEVEL_MOTIVATOR_LINES[homeCopyDayIndex % LEVEL_MOTIVATOR_LINES.length];
   const dailyJoke = useMemo(
     () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank),
     [dailyJokeDateKey, dailyJokeBank]
@@ -5648,6 +5747,11 @@ function HomeScreen({ navigation }: any) {
         </View>
       </View>
 
+      <View style={styles.homeSparkBanner}>
+        <Text style={styles.homeSparkBannerHeadline}>{sparkMessage.headline}</Text>
+        <Text style={styles.homeSparkBannerBody}>{sparkMessage.body}</Text>
+      </View>
+
       {/* Level Progress Card */}
       <TouchableOpacity style={styles.levelCard} onPress={() => setShowInsights(true)} activeOpacity={0.8}>
         <View style={styles.levelHeader}>
@@ -5668,6 +5772,7 @@ function HomeScreen({ navigation }: any) {
         {nextLevel && (
           <Text style={styles.levelProgressText}>{nextLevel.minStars - store.totalStars} stars to {nextLevel.title}</Text>
         )}
+        <Text style={styles.levelMotivatorText}>{levelMotivator}</Text>
       </TouchableOpacity>
 
       {/* Streak Banner */}
@@ -5727,6 +5832,7 @@ function HomeScreen({ navigation }: any) {
             <Text style={styles.tonightLabel}>Tonight's Suggestion</Text>
             <Text style={styles.tonightTitle}>{tonightPosition.name}</Text>
             <Text style={styles.tonightSubtitle}>{tonightPosition.vibe}</Text>
+            <Text style={styles.tonightTeaser}>{tonightTeaser}</Text>
             {!store.tried.includes(tonightPosition.id) && (
               <View style={styles.newBadge}><Text style={styles.newBadgeText}>✨ NEW +3 ⭐</Text></View>
             )}
@@ -5740,18 +5846,21 @@ function HomeScreen({ navigation }: any) {
           <LinearGradient colors={['#f59e0b', '#ef4444']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎰</Text>
             <Text style={styles.featureButtonText}>Spin</Text>
+            <Text style={styles.featureButtonSubtext}>Whimsy wheel for bold giggles</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowDateNight(true)}>
           <LinearGradient colors={['#8b5cf6', '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🌙</Text>
             <Text style={styles.featureButtonText}>Date Night</Text>
+            <Text style={styles.featureButtonSubtext}>Curated romance, reloaded</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowTruthOrDare(true)}>
           <LinearGradient colors={['#ef4444', '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎲</Text>
             <Text style={styles.featureButtonText}>Truth/Dare</Text>
+            <Text style={styles.featureButtonSubtext}>Deeper truths, playful dares</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -5762,18 +5871,21 @@ function HomeScreen({ navigation }: any) {
           <LinearGradient colors={['#06b6d4', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎯</Text>
             <Text style={styles.featureButtonText}>Challenge</Text>
+            <Text style={styles.featureButtonSubtext}>Team up and level your love</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowMusic(true)}>
           <LinearGradient colors={['#1DB954', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎵</Text>
             <Text style={styles.featureButtonText}>Music</Text>
+            <Text style={styles.featureButtonSubtext}>Mood tracks for two</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowRecommendations(true)}>
           <LinearGradient colors={['#3b82f6', '#8b5cf6']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>💡</Text>
             <Text style={styles.featureButtonText}>For You</Text>
+            <Text style={styles.featureButtonSubtext}>Personalized sparks for your duo</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -5784,18 +5896,21 @@ function HomeScreen({ navigation }: any) {
           <LinearGradient colors={['#ec4899', '#f43f5e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎭</Text>
             <Text style={styles.featureButtonText}>Moods</Text>
+            <Text style={styles.featureButtonSubtext}>Pick your vibe, set the tone</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowWeeklyGoals(true)}>
           <LinearGradient colors={['#84cc16', '#22c55e']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>📋</Text>
             <Text style={styles.featureButtonText}>Goals</Text>
+            <Text style={styles.featureButtonSubtext}>Quick wins that keep flame alive</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowAchievements(true)}>
           <LinearGradient colors={['#fbbf24', '#f59e0b']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🏆</Text>
             <Text style={styles.featureButtonText}>Trophies</Text>
+            <Text style={styles.featureButtonSubtext}>Milestones worth bragging about</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -7484,6 +7599,9 @@ const styles = StyleSheet.create({
   homeHeader: { paddingTop: 10, marginBottom: 16 },
   homeHeaderTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   greeting: { fontSize: 14, color: colors.text.secondary },
+  homeSparkBanner: { backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.cardLight, padding: 14, marginBottom: 16 },
+  homeSparkBannerHeadline: { color: colors.text.primary, fontSize: 16, fontWeight: '700', marginBottom: 4 },
+  homeSparkBannerBody: { color: colors.text.secondary, fontSize: 13, lineHeight: 18 },
   starCounter: { backgroundColor: colors.gold, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
   starCounterText: { color: '#1a1a1a', fontWeight: '700', fontSize: 14 },
   streakBanner: { backgroundColor: 'rgba(239, 68, 68, 0.2)', borderRadius: 12, padding: 12, marginBottom: 16, alignItems: 'center' },
@@ -7503,13 +7621,15 @@ const styles = StyleSheet.create({
   tonightLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 14, marginBottom: 8 },
   tonightTitle: { color: '#FFF', fontSize: 26, fontWeight: '700', marginBottom: 4 },
   tonightSubtitle: { color: 'rgba(255,255,255,0.9)', fontSize: 14 },
+  tonightTeaser: { color: 'rgba(255,255,255,0.88)', fontSize: 13, marginTop: 10, lineHeight: 18 },
   newBadge: { backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, alignSelf: 'flex-start', marginTop: 12 },
   newBadgeText: { color: '#FFF', fontSize: 12, fontWeight: '600' },
   featureButtonsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
   featureButton: { flex: 1, marginHorizontal: 4, borderRadius: 16, overflow: 'hidden' },
-  featureButtonGradient: { paddingVertical: 16, alignItems: 'center' },
+  featureButtonGradient: { paddingVertical: 14, paddingHorizontal: 8, alignItems: 'center', minHeight: 118 },
   featureButtonEmoji: { fontSize: 24, marginBottom: 4 },
-  featureButtonText: { color: '#FFF', fontSize: 12, fontWeight: '600' },
+  featureButtonText: { color: '#FFF', fontSize: 12, fontWeight: '700', marginBottom: 3 },
+  featureButtonSubtext: { color: 'rgba(255,255,255,0.88)', fontSize: 10, textAlign: 'center', lineHeight: 13 },
   quickStatsRow: { flexDirection: 'row', marginBottom: 16 },
   quickStatCard: { flex: 1, backgroundColor: colors.card, borderRadius: 12, padding: 12, marginHorizontal: 4, alignItems: 'center' },
   quickStatEmoji: { fontSize: 20, marginBottom: 4 },
@@ -7793,6 +7913,7 @@ const styles = StyleSheet.create({
   levelProgressBar: { height: 8, backgroundColor: colors.cardLight, borderRadius: 4, overflow: 'hidden' },
   levelProgressFill: { height: '100%', borderRadius: 4 },
   levelProgressText: { fontSize: 11, color: colors.text.muted, marginTop: 6, textAlign: 'center' },
+  levelMotivatorText: { fontSize: 12, color: colors.text.secondary, marginTop: 8, textAlign: 'center' },
 
   // ============================================
   // WEEKLY GOALS STYLES
