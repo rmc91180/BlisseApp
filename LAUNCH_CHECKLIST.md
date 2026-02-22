@@ -41,12 +41,19 @@ Last updated: February 15, 2026
 5. `BLOCKER-E` Formspree payload could include unintended fields
    - Status: cleared.
    - Fixes: payload sanitizer + required message check.
+6. `BLOCKER-F` Trilingual parity (app/site/legal) incomplete
+   - Status: cleared in codebase.
+   - Fixes:
+     - EN/ES/PT localization coverage wired for app UI, content, and legal modals.
+     - Site language selector added on landing + legal pages with persistent selection.
+     - Terms/Privacy localized and aligned to Israel governing law + Tel Aviv courts.
 
 ## 3) Remaining Manual Go/No-Go Checks (Outside Local Code)
 - [ ] `MANUAL-01` Verify Firebase Console rules/providers for production.
 - [ ] `MANUAL-02` Verify PostHog project settings align with anonymous-only policy.
 - [ ] `MANUAL-03` Verify Formspree form routes to the target Gmail inbox in production.
 - [ ] `MANUAL-04` Run iOS TestFlight and Android internal test on physical devices.
+- [ ] `MANUAL-06` Complete Android EN/ES/PT localization QA matrix (iOS already validated).
 - [ ] `MANUAL-05` Final App Store / Play Store listing compliance review.
 
 ## 4) Current Launch Verdict

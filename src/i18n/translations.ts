@@ -434,8 +434,11 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'common.open': 'Abrir',
     'common.not_set': 'No definido',
     'common.search': 'Buscar',
+    'common.loading': 'Cargando...',
     'common.success': 'Exito',
     'common.error': 'Error',
+    'common.update': 'Actualizar',
+    'common.add': 'Agregar',
 
     'stats.tried': 'Probado',
     'stats.favorites': 'Favoritos',
@@ -807,8 +810,11 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'common.open': 'Abrir',
     'common.not_set': 'Nao definido',
     'common.search': 'Buscar',
+    'common.loading': 'Carregando...',
     'common.success': 'Sucesso',
     'common.error': 'Erro',
+    'common.update': 'Atualizar',
+    'common.add': 'Adicionar',
 
     'stats.tried': 'Tentado',
     'stats.favorites': 'Favoritos',
