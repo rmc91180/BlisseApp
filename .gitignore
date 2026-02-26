@@ -50,6 +50,8 @@ firebase/functions/node_modules/
 *.log
 tmp/
 temp/
+fix_accents.py
+remove_duplicates.py
 
 # Lock files (optional - remove if you want to commit package-lock.json)
 # package-lock.json
