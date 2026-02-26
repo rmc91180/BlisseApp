@@ -11,7 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { getDoc, doc } from 'firebase/firestore';
 import { getFirebaseDb } from '@/services/firebase';
-import { createLocalizedArrayProxy } from '@/i18n/languageGetter';
+import { createLocalizedArrayProxy, getCurrentLanguage } from '@/i18n/languageGetter';
+import type { AppLanguage } from '@/i18n/translations';
 import {
   DAILY_JOKE_SETUPS_ES, DAILY_JOKE_SETUPS_PT,
   DAILY_JOKE_PUNCHLINES_ES, DAILY_JOKE_PUNCHLINES_PT,
@@ -147,6 +148,7 @@ export interface DailyJokeBank {
   setups: string[];
   punchlines: string[];
   version?: string;
+  localized?: Partial<Record<AppLanguage, { setups: string[]; punchlines: string[] }>>;
 }
 
 export interface DailyJokeBankCache {
@@ -208,7 +210,12 @@ const sanitizeJokePartList = (parts: unknown): string[] => {
 
 export const normalizeDailyJokeBank = (raw: unknown): DailyJokeBank | null => {
   if (!raw || typeof raw !== 'object') return null;
-  const candidate = raw as { setups?: unknown; punchlines?: unknown; version?: unknown };
+  const candidate = raw as {
+    setups?: unknown;
+    punchlines?: unknown;
+    version?: unknown;
+    localized?: unknown;
+  };
   const setups = sanitizeJokePartList(candidate.setups);
   const punchlines = sanitizeJokePartList(candidate.punchlines);
   if (setups.length < 10 || punchlines.length < 10) return null;
@@ -220,10 +227,26 @@ export const normalizeDailyJokeBank = (raw: unknown): DailyJokeBank | null => {
     return null;
   }
 
+  const localized: Partial<Record<AppLanguage, { setups: string[]; punchlines: string[] }>> = {};
+  if (candidate.localized && typeof candidate.localized === 'object') {
+    const localizedRaw = candidate.localized as Record<string, unknown>;
+    (['en', 'es', 'pt'] as AppLanguage[]).forEach((language) => {
+      const node = localizedRaw[language];
+      if (!node || typeof node !== 'object') return;
+      const languageNode = node as { setups?: unknown; punchlines?: unknown };
+      const localizedSetups = sanitizeJokePartList(languageNode.setups);
+      const localizedPunchlines = sanitizeJokePartList(languageNode.punchlines);
+      if (localizedSetups.length >= 10 && localizedPunchlines.length >= 10) {
+        localized[language] = { setups: localizedSetups, punchlines: localizedPunchlines };
+      }
+    });
+  }
+
   return {
     setups,
     punchlines,
     version: typeof candidate.version === 'string' ? candidate.version.trim() : undefined,
+    localized,
   };
 };
 
@@ -300,9 +323,41 @@ export const getDailyJokeBank = async (forceRemote = false): Promise<DailyJokeBa
 // JOKE-OF-THE-DAY SELECTION
 // ============================================
 
-export const getDailyJokeForDate = (date: Date, bank?: DailyJokeBank | null): DailyJoke => {
-  const setups = bank?.setups?.length ? bank.setups : DAILY_JOKE_SETUPS;
-  const punchlines = bank?.punchlines?.length ? bank.punchlines : DAILY_JOKE_PUNCHLINES;
+const getLocalizedFallbackSetups = (language: AppLanguage): string[] => {
+  if (language === 'es') return DAILY_JOKE_SETUPS_ES;
+  if (language === 'pt') return DAILY_JOKE_SETUPS_PT;
+  return _DAILY_JOKE_SETUPS_EN;
+};
+
+const getLocalizedFallbackPunchlines = (language: AppLanguage): string[] => {
+  if (language === 'es') return DAILY_JOKE_PUNCHLINES_ES;
+  if (language === 'pt') return DAILY_JOKE_PUNCHLINES_PT;
+  return _DAILY_JOKE_PUNCHLINES_EN;
+};
+
+const getJokeNotificationSuffix = (language: AppLanguage): string => {
+  if (language === 'es') return 'Abre Blisse para ver el remate.';
+  if (language === 'pt') return 'Abra o Blisse para ver a piada completa.';
+  return 'Open Blisse for the punchline.';
+};
+
+export const getDailyJokeForDate = (
+  date: Date,
+  bank?: DailyJokeBank | null,
+  language: AppLanguage = getCurrentLanguage(),
+): DailyJoke => {
+  const localizedRemote = bank?.localized?.[language];
+  const useRemoteDefault = language === 'en' && bank?.setups?.length && bank?.punchlines?.length;
+  const setups = localizedRemote?.setups?.length
+    ? localizedRemote.setups
+    : useRemoteDefault
+      ? bank!.setups
+      : getLocalizedFallbackSetups(language);
+  const punchlines = localizedRemote?.punchlines?.length
+    ? localizedRemote.punchlines
+    : useRemoteDefault
+      ? bank!.punchlines
+      : getLocalizedFallbackPunchlines(language);
   const dayIndex = Math.max(0, getDayOfYear(date) - 1);
   const year = date.getFullYear();
   const setupIndex = dayIndex % setups.length;
@@ -324,6 +379,7 @@ export const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
 
   try {
     const now = new Date();
+    const language = getCurrentLanguage();
     const jokeBank = await getDailyJokeBank();
     const refreshAtRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY);
     if (refreshAtRaw && new Date(refreshAtRaw) > now) {
@@ -359,11 +415,11 @@ export const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
       if (currentCount >= DAILY_JOKE_NOTIFICATION_FREQUENCY_CAP_PER_DAY) continue;
       if (adjustedFireDate <= now) continue;
 
-      const joke = getDailyJokeForDate(adjustedFireDate, jokeBank);
+      const joke = getDailyJokeForDate(adjustedFireDate, jokeBank, language);
       const id = await Notifications.scheduleNotificationAsync({
         content: {
           title: getDailyJokeNotificationTitle(),
-          body: `${joke.setup} Open Blisse for the punchline.`,
+          body: `${joke.setup} ${getJokeNotificationSuffix(language)}`,
           sound: false,
           data: { type: 'daily_joke_tease', jokeId: joke.id, dateKey },
         },

@@ -804,6 +804,8 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
 function WelcomeScreen({ navigation }: any) {
   const { authPack } = useI18n();
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const welcomeTagline = authPack('welcome', 'tagline');
+  const welcomeTeaser = authPack('welcome', 'teaser');
   useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start(); }, [fadeAnim]);
   return (
     <ScreenWrapper>
@@ -816,6 +818,8 @@ function WelcomeScreen({ navigation }: any) {
       <View style={styles.content}>
         <Text style={styles.titleLarge}>Blisse</Text>
         <Text style={styles.subtitle}>{authPack('welcome', 'subtitle')}</Text>
+        {welcomeTagline ? <Text style={styles.welcomeTagline}>{welcomeTagline}</Text> : null}
+        {welcomeTeaser ? <Text style={styles.welcomeTeaser}>{welcomeTeaser}</Text> : null}
       </View>
       <View style={styles.buttons}>
         <PrimaryButton title={authPack('welcome', 'getStarted')} onPress={() => navigation.navigate('NameInput')} />
@@ -1162,6 +1166,7 @@ function AuthScreen({ navigation: _navigation }: any) {
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
   const modeScreen = mode === 'signin' ? 'login' : mode === 'signup' ? 'signup' : 'forgotPassword';
+  const authTeaser = authPack(modeScreen, 'teaser');
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -1293,6 +1298,7 @@ function AuthScreen({ navigation: _navigation }: any) {
               <Text style={[styles.authSubtitle, { color: themeColors.text.muted }]}>
                 {authPack(modeScreen, 'subtitle')}
               </Text>
+              {authTeaser ? <Text style={[styles.authTeaser, { color: themeColors.text.secondary }]}>{authTeaser}</Text> : null}
               <LanguageQuickSwitcher compact />
             </View>
 
@@ -2944,14 +2950,14 @@ function AboutBlisseModal({ visible, onClose }: { visible: boolean; onClose: () 
   const legalContent = useMemo(() => getLegalContent(language), [language]);
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { maxHeight: '90%' }]}>
+      <View style={[styles.modalOverlay, styles.modalOverlayCentered]}>
+        <View style={[styles.modalContent, styles.aboutModalContent]}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>💞 {legalContent.about.title}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
             <Text style={styles.legalTitle}>{legalContent.about.title}</Text>
             <Text style={styles.legalDate}>{legalContent.about.subtitle}</Text>
             {legalContent.about.intro.map((paragraph) => (
@@ -3402,28 +3408,34 @@ function HomeScreen({ navigation }: any) {
     [dailyJokeDateKey]
   );
   const sparkMessage = useMemo(() => {
+    void language;
     const seasonalMessages = currentSeason ? SEASONAL_HOME_SPARK_MESSAGES[currentSeason.id] : null;
     const source = seasonalMessages?.length ? seasonalMessages : HOME_SPARK_MESSAGES;
     return source[homeCopyDayIndex % source.length];
-  }, [currentSeason, homeCopyDayIndex]);
+  }, [currentSeason, homeCopyDayIndex, language]);
   const tonightTeaser = useMemo(() => {
+    void language;
     const seasonalTeasers = currentSeason ? SEASONAL_TONIGHT_TEASERS[currentSeason.id] : null;
     const source = seasonalTeasers?.length ? seasonalTeasers : TONIGHT_SUGGESTION_TEASERS;
     return source[homeCopyDayIndex % source.length];
-  }, [currentSeason, homeCopyDayIndex]);
+  }, [currentSeason, homeCopyDayIndex, language]);
   const seasonalHook = useMemo(() => {
+    void language;
     const hooks = currentSeason ? SEASONAL_HOOK_LINES[currentSeason.id] : null;
     if (!hooks?.length) return null;
     return hooks[homeCopyDayIndex % hooks.length];
-  }, [currentSeason, homeCopyDayIndex]);
+  }, [currentSeason, homeCopyDayIndex, language]);
   const levelMotivator = LEVEL_MOTIVATOR_LINES[homeCopyDayIndex % LEVEL_MOTIVATOR_LINES.length];
   const couplePrompt = useMemo(
-    () => COUPLE_PROMPTS[homeCopyDayIndex % COUPLE_PROMPTS.length],
-    [homeCopyDayIndex]
+    () => {
+      void language;
+      return COUPLE_PROMPTS[homeCopyDayIndex % COUPLE_PROMPTS.length];
+    },
+    [homeCopyDayIndex, language]
   );
   const dailyJoke = useMemo(
-    () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank),
-    [dailyJokeDateKey, dailyJokeBank]
+    () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank, language),
+    [dailyJokeDateKey, dailyJokeBank, language]
   );
   const weeklyRecap = useMemo(() => {
     const now = Date.now();
@@ -3874,6 +3886,16 @@ function ExploreScreen({ navigation }: any) {
   const store = useStore();
   const { language, t, localizeTerm } = useI18n();
   const currentCategories = contentType === 'positions' ? categories : contentType === 'foreplay' ? foreplayCategories : contentType === 'oral' ? oralCategories : contentType === 'massage' ? massageCategories : rolePlayCategories;
+  const contentTypeTabs = useMemo(
+    () => [
+      { type: 'positions' as const, emoji: '💑', label: t('explore.type.positions') },
+      { type: 'foreplay' as const, emoji: '💕', label: t('explore.type.foreplay') },
+      { type: 'oral' as const, emoji: '👄', label: t('explore.type.oral') },
+      { type: 'massage' as const, emoji: '💆', label: t('explore.type.massage') },
+      { type: 'roleplay' as const, emoji: '🎭', label: t('explore.type.roleplay') },
+    ],
+    [t]
+  );
 
   const filteredPositions = useMemo(() => {
     let result = positions;
@@ -3974,21 +3996,21 @@ function ExploreScreen({ navigation }: any) {
       
       {/* Content Type Tabs - Scrollable for 5 options */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.contentTypeScroll} contentContainerStyle={styles.contentTypeScrollContent}>
-        <TouchableOpacity style={[styles.contentTypeTab, contentType === 'positions' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('positions')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'positions' && styles.contentTypeTabTextActive]}>💑 {t('explore.type.positions')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.contentTypeTab, contentType === 'foreplay' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('foreplay')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'foreplay' && styles.contentTypeTabTextActive]}>💕 {t('explore.type.foreplay')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.contentTypeTab, contentType === 'oral' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('oral')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'oral' && styles.contentTypeTabTextActive]}>👄 {t('explore.type.oral')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.contentTypeTab, contentType === 'massage' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('massage')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'massage' && styles.contentTypeTabTextActive]}>💆 {t('explore.type.massage')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.contentTypeTab, contentType === 'roleplay' && styles.contentTypeTabActive]} onPress={() => handleContentTypeChange('roleplay')}>
-          <Text style={[styles.contentTypeTabText, contentType === 'roleplay' && styles.contentTypeTabTextActive]}>🎭 {t('explore.type.roleplay')}</Text>
-        </TouchableOpacity>
+        {contentTypeTabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.type}
+            style={[styles.contentTypeTab, contentType === tab.type && styles.contentTypeTabActive]}
+            onPress={() => handleContentTypeChange(tab.type)}
+          >
+            <Text style={styles.contentTypeTabEmoji}>{tab.emoji}</Text>
+            <Text
+              numberOfLines={1}
+              style={[styles.contentTypeTabText, contentType === tab.type && styles.contentTypeTabTextActive]}
+            >
+              {tab.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
 
       <SearchBar
@@ -5513,6 +5535,8 @@ const styles = StyleSheet.create({
   titleLarge: { fontSize: 48, fontWeight: '700', color: colors.text.primary, textAlign: 'center' },
   title: { fontSize: 28, fontWeight: '700', color: colors.text.primary, marginBottom: 8 },
   subtitle: { fontSize: 16, color: colors.text.secondary, textAlign: 'center', lineHeight: 24 },
+  welcomeTagline: { marginTop: 14, fontSize: 20, lineHeight: 28, color: colors.text.primary, textAlign: 'center', fontWeight: '700' },
+  welcomeTeaser: { marginTop: 10, fontSize: 15, lineHeight: 22, color: colors.text.secondary, textAlign: 'center', maxWidth: 320 },
   buttons: { paddingBottom: 40 },
   primaryButton: { paddingVertical: 16, borderRadius: 30, alignItems: 'center' },
   primaryButtonText: { color: colors.white, fontSize: 18, fontWeight: '600' },
@@ -5724,6 +5748,8 @@ const styles = StyleSheet.create({
   starBadgeText: { color: colors.textDark, fontSize: 12, fontWeight: '700' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: colors.background.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, maxHeight: '85%' },
+  modalOverlayCentered: { justifyContent: 'center', paddingHorizontal: 14 },
+  aboutModalContent: { borderRadius: 24, maxHeight: '82%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   modalTitle: { fontSize: 22, fontWeight: '700', color: colors.text.primary },
   modalClose: { fontSize: 24, color: colors.text.muted, padding: 4 },
@@ -5965,10 +5991,23 @@ const styles = StyleSheet.create({
   // CONTENT TYPE TABS (5 tabs)
   // ============================================
   contentTypeScroll: { marginBottom: 14 },
-  contentTypeScrollContent: { paddingHorizontal: 4, paddingRight: 8 },
-  contentTypeTab: { minWidth: 118, paddingHorizontal: 14, paddingVertical: 11, borderRadius: 20, marginRight: 8, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.cardLight, alignItems: 'center', justifyContent: 'center' },
+  contentTypeScrollContent: { paddingHorizontal: 4, paddingRight: 12 },
+  contentTypeTab: {
+    minWidth: 136,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 18,
+    marginRight: 10,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
   contentTypeTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
-  contentTypeTabText: { fontSize: 13, color: colors.text.secondary, fontWeight: '600' },
+  contentTypeTabEmoji: { fontSize: 15, marginRight: 6 },
+  contentTypeTabText: { fontSize: 15, color: colors.text.primary, fontWeight: '700' },
   contentTypeTabTextActive: { color: colors.white, fontWeight: '600' },
 
   // ============================================
@@ -6164,6 +6203,7 @@ const styles = StyleSheet.create({
   authLogo: { fontSize: 64, marginBottom: 16 },
   authTitle: { fontSize: 28, fontWeight: '700', marginBottom: 8 },
   authSubtitle: { fontSize: 15, textAlign: 'center' },
+  authTeaser: { marginTop: 8, fontSize: 14, lineHeight: 21, textAlign: 'center', maxWidth: 320 },
   authErrorContainer: { backgroundColor: 'rgba(239, 68, 68, 0.15)', padding: 12, borderRadius: 12, marginBottom: 16 },
   authErrorText: { color: colors.error, fontSize: 14, textAlign: 'center' },
   authInputContainer: { marginBottom: 16 },

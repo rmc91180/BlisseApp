@@ -6,6 +6,8 @@
       "en": {
         "title": "Welcome to Blisse",
         "subtitle": "Your journey to deeper intimacy starts here",
+        "tagline": "Playful chemistry. Real connection.",
+        "teaser": "Discover romantic ideas, flirty games, and simple rituals that keep your bond warm every day.",
         "getStarted": "Get Started",
         "alreadyHaveAccount": "Already have an account?",
         "signIn": "Sign In"
@@ -13,6 +15,8 @@
       "es": {
         "title": "Bienvenido a Blisse",
         "subtitle": "Tu viaje hacia una intimidad más profunda comienza aquí",
+        "tagline": "Química juguetona. Conexión real.",
+        "teaser": "Descubre ideas románticas, juegos coquetos y rituales simples para mantener viva su conexión cada día.",
         "getStarted": "Comenzar",
         "alreadyHaveAccount": "¿Ya tienes una cuenta?",
         "signIn": "Iniciar Sesión"
@@ -20,6 +24,8 @@
       "pt-BR": {
         "title": "Bem-vindo ao Blisse",
         "subtitle": "Sua jornada para uma intimidade mais profunda começa aqui",
+        "tagline": "Química divertida. Conexão de verdade.",
+        "teaser": "Descubra ideias românticas, jogos de paquera e rituais simples para manter a conexão de vocês viva todos os dias.",
         "getStarted": "Começar",
         "alreadyHaveAccount": "Já tem uma conta?",
         "signIn": "Entrar"
@@ -29,6 +35,7 @@
       "en": {
         "title": "Create Your Account",
         "subtitle": "Join thousands of couples exploring deeper connection",
+        "teaser": "In under a minute, unlock personalized ideas designed around your mood and preferences.",
         "email": "Email",
         "emailPlaceholder": "your@email.com",
         "password": "Password",
@@ -44,6 +51,7 @@
       "es": {
         "title": "Crea Tu Cuenta",
         "subtitle": "Únete a miles de parejas explorando una conexión más profunda",
+        "teaser": "En menos de un minuto, desbloquea ideas personalizadas según su estado de ánimo y preferencias.",
         "email": "Correo electrónico",
         "emailPlaceholder": "tu@correo.com",
         "password": "Contraseña",
@@ -59,6 +67,7 @@
       "pt-BR": {
         "title": "Crie Sua Conta",
         "subtitle": "Junte-se a milhares de casais explorando uma conexão mais profunda",
+        "teaser": "Em menos de um minuto, desbloqueie ideias personalizadas com base no humor e nas preferências de vocês.",
         "email": "E-mail",
         "emailPlaceholder": "seu@email.com",
         "password": "Senha",
@@ -76,6 +85,7 @@
       "en": {
         "title": "Welcome Back",
         "subtitle": "Sign in to continue your journey",
+        "teaser": "Tonight's spark is waiting. Pick up where you left off and keep the momentum going.",
         "email": "Email",
         "emailPlaceholder": "your@email.com",
         "password": "Password",
@@ -88,6 +98,7 @@
       "es": {
         "title": "Bienvenido de Nuevo",
         "subtitle": "Inicia sesión para continuar tu viaje",
+        "teaser": "La chispa de hoy ya te espera. Retomen donde lo dejaron y mantengan el ritmo.",
         "email": "Correo electrónico",
         "emailPlaceholder": "tu@correo.com",
         "password": "Contraseña",
@@ -100,6 +111,7 @@
       "pt-BR": {
         "title": "Bem-vindo de Volta",
         "subtitle": "Entre para continuar sua jornada",
+        "teaser": "A faísca de hoje já está te esperando. Continuem de onde pararam e mantenham o ritmo.",
         "email": "E-mail",
         "emailPlaceholder": "seu@email.com",
         "password": "Senha",
@@ -433,6 +445,7 @@
       "en": {
         "title": "Reset Password",
         "subtitle": "Enter your email and we'll send you a reset link",
+        "teaser": "We will send a secure reset link so you can get back into Blisse quickly.",
         "email": "Email",
         "emailPlaceholder": "your@email.com",
         "sendLink": "Send Reset Link",
@@ -443,6 +456,7 @@
       "es": {
         "title": "Restablecer Contraseña",
         "subtitle": "Ingresa tu correo y te enviaremos un enlace para restablecerla",
+        "teaser": "Te enviaremos un enlace seguro para que vuelvas a Blisse rápidamente.",
         "email": "Correo electrónico",
         "emailPlaceholder": "tu@correo.com",
         "sendLink": "Enviar Enlace",
@@ -453,6 +467,7 @@
       "pt-BR": {
         "title": "Redefinir Senha",
         "subtitle": "Digite seu e-mail e enviaremos um link para redefinir",
+        "teaser": "Enviaremos um link seguro para você voltar ao Blisse rapidamente.",
         "email": "E-mail",
         "emailPlaceholder": "seu@email.com",
         "sendLink": "Enviar Link",
