@@ -79,7 +79,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     id: 106,
     name: "Mutual Exploration",
     category: "Touch",
-    mood: "unified",
+    mood: "blossoming",
     duration: "Extended",
     vibe: "Learning each other's bodies",
     description: "Take turns showing each other exactly how you like to be touched.",
@@ -91,7 +91,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     id: 107,
     name: "Hand Exploration",
     category: "Touch",
-    mood: "flowing",
+    mood: "blossoming",
     duration: "Quick",
     vibe: "Finding pleasure in hands and arms",
     description: "Focused exploration of hands, arms, and fingers - surprisingly sensual.",
@@ -511,7 +511,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     id: 141,
     name: "Cuddling with Intent",
     category: "Connection",
-    mood: "flowing",
+    mood: "blossoming",
     duration: "Medium",
     vibe: "From innocent to not-so-innocent",
     description: "Start with innocent cuddling and let it naturally evolve.",
@@ -630,6 +630,326 @@ export const foreplayIdeas: ForeplayIdea[] = [
     howTo: "Position yourselves where you can see in a mirror. Watch yourselves during intimacy. Make eye contact through the mirror.",
     tips: ["Very visual", "Can be surprisingly arousing", "Vanity or full-length mirror works", "New perspective on each other"],
     pairsWellWith: ["The Vanity", "Doggy Style", "Visual positions"]
+  },
+
+  // ============================================
+  // TOUCH (continued, +5)
+  // ============================================
+  {
+    id: 151,
+    name: "Lip Tracing",
+    category: "Touch",
+    mood: "passionate",
+    duration: "Quick",
+    vibe: "Mapping the body with your mouth",
+    description: "Use your lips - barely parted - to trace slow lines along your partner's collarbones, jaw, and shoulders without ever fully kissing.",
+    howTo: "Hover your parted lips just above the skin and drag them lightly across collarbones, along the jawline, and over the shoulders. Let your breath do most of the work. Only press into a real kiss when you feel them shiver.",
+    tips: ["Keep lips barely touching the skin", "Let warm breath lead before contact", "Pause at the hollow of the throat", "End with one deliberate, full kiss"],
+    pairsWellWith: ["Neck & Ear Focus", "The Slow Tease", "Spooning"]
+  },
+  {
+    id: 152,
+    name: "The Body Map",
+    category: "Touch",
+    mood: "blossoming",
+    duration: "Extended",
+    vibe: "Charting every hidden pleasure point",
+    description: "Systematically explore your partner's entire body using a single fingertip, noting every spot that earns a response.",
+    howTo: "Starting at the crown of the head, glide one fingertip down the body in a slow, intentional path. When your partner reacts - a gasp, a shift, goosebumps - linger there. Mentally 'map' every responsive zone for future visits.",
+    tips: ["Use only one fingertip for precision", "Announce each new area softly", "Revisit their favorite spots at the end", "Keep a mental tally and share notes afterward"],
+    pairsWellWith: ["Mutual Exploration", "Feather Touch", "The Lotus"]
+  },
+  {
+    id: 153,
+    name: "Warm Hands Journey",
+    category: "Touch",
+    mood: "flowing",
+    duration: "Medium",
+    vibe: "Radiating warmth through touch",
+    description: "Warm your hands under hot water or between blankets, then glide them across your partner's body in long, unbroken strokes.",
+    howTo: "Heat your hands under warm water and dry them. Place both palms flat on your partner's back and sweep slowly outward and down, letting the warmth soak into each area before moving on. Cover the entire body in slow passes.",
+    tips: ["Reheat hands between rounds", "Flat palms transfer the most warmth", "Focus on areas that hold tension", "The temperature contrast with cool air heightens sensation"],
+    pairsWellWith: ["Sensual Massage", "Back Tracing", "Lazy Dog"]
+  },
+  {
+    id: 154,
+    name: "The Countdown Touch",
+    category: "Touch",
+    mood: "commanding",
+    duration: "Medium",
+    vibe: "Structured teasing with a ticking clock",
+    description: "Count down from ten aloud. With each number, deliver a different kind of touch - each one more intimate than the last.",
+    howTo: "Start at ten with a light touch on a neutral area like the shoulder. With every count, move closer to more sensitive zones and increase intensity. By one, you should be exactly where they want you.",
+    tips: ["Announce each number out loud to build tension", "Vary the type of touch - fingertips, lips, nails", "Pause between numbers for suspense", "Let them guess where the next touch lands"],
+    pairsWellWith: ["Blindfolded Touch", "The Slow Tease", "Cowgirl"]
+  },
+  {
+    id: 155,
+    name: "Pressure Play",
+    category: "Touch",
+    mood: "grounded",
+    duration: "Medium",
+    vibe: "Deep, grounding contact",
+    description: "Use firm, sustained pressure with your full palms to press into muscles and hold, creating a sense of being deeply held and grounded.",
+    howTo: "Place both palms flat against your partner's body - shoulders, lower back, thighs. Press in with steady, firm pressure and hold for several breaths before slowly releasing. Move to the next area.",
+    tips: ["Ask about pressure comfort before starting", "Hold each press for at least three breaths", "The release feels as good as the press", "Pair with synchronized breathing for deeper connection"],
+    pairsWellWith: ["Breathwork Together", "Foot Massage", "The Lotus"]
+  },
+
+  // ============================================
+  // SENSATION (continued, +5)
+  // ============================================
+  {
+    id: 156,
+    name: "Hot Towel Wrap",
+    category: "Sensation",
+    mood: "flowing",
+    duration: "Medium",
+    vibe: "Steamy warmth melting into skin",
+    description: "Wrap your partner in a hot, damp towel and slowly unwrap them, kissing each revealed area.",
+    howTo: "Soak a large towel in hot water and wring it out. Drape it over your partner's torso or legs and let the heat soak in. After a minute, slowly peel the towel away, following its path with your lips.",
+    tips: ["Test the temperature on your inner wrist first", "Multiple smaller towels work for different zones", "The unwrapping is the main event", "Follow with cool fingertips for contrast"],
+    pairsWellWith: ["Warm Oil Drizzle", "Sensual Massage", "Slow positions"]
+  },
+  {
+    id: 157,
+    name: "Flavored Kisses",
+    category: "Sensation",
+    mood: "playful",
+    duration: "Quick",
+    vibe: "Taste meets touch",
+    description: "Apply something edible - honey, chocolate, fruit - to your partner's skin and kiss it off slowly.",
+    howTo: "Dab a small amount of honey, melted chocolate, or fruit juice on your partner's neck, collarbone, or stomach. Kiss and lick it away slowly, letting them feel your tongue trace the sweetness.",
+    tips: ["Use body-safe, simple ingredients only", "A little goes a long way", "Avoid anything sticky near sensitive areas", "Strawberries and whipped cream are classic for a reason"],
+    pairsWellWith: ["Living Room Picnic", "Cooking Together (Undressed)", "Playful positions"]
+  },
+  {
+    id: 158,
+    name: "Sound Exploration",
+    category: "Sensation",
+    mood: "dynamic",
+    duration: "Medium",
+    vibe: "Tuning in through hearing",
+    description: "Explore how different sounds - whispers, humming against the skin, soft music - change the experience of touch.",
+    howTo: "Start in silence and touch your partner. Then hum low against their skin. Whisper descriptions of what you are doing. Play different music and see how it shifts the mood of your touch.",
+    tips: ["Hum directly against the neck or chest for vibration", "Alternate between silence and sound", "Low tones tend to feel more sensual", "Let your partner choose a song that sets their mood"],
+    pairsWellWith: ["Music & Movement", "Slow Dancing", "Breath Play (Light)"]
+  },
+  {
+    id: 159,
+    name: "The Cool Breeze",
+    category: "Sensation",
+    mood: "playful",
+    duration: "Quick",
+    vibe: "A shiver-inducing surprise",
+    description: "Use a handheld fan or gentle blowing to send cool air across your partner's skin, especially after warming them up.",
+    howTo: "After kissing or warming an area with your hands, blow a stream of cool air across the wet or warm skin. Use a small fan for a steadier breeze. Focus on the neck, stomach, and inner arms.",
+    tips: ["Works best on slightly damp skin", "Alternate between warm breath and cool air", "A folding fan adds a playful prop element", "Watch for goosebumps as your guide"],
+    pairsWellWith: ["Ice & Heat Play", "Temperature Contrast", "Feather Touch"]
+  },
+  {
+    id: 160,
+    name: "Wax Alternative (Warm Oil)",
+    category: "Sensation",
+    mood: "commanding",
+    duration: "Medium",
+    vibe: "Controlled drips of warmth",
+    description: "Drizzle warm massage oil from a height to mimic the thrill of wax play without any risk of burns.",
+    howTo: "Heat body-safe massage oil until pleasantly warm (always test on your wrist). Hold the bottle or spoon a foot above your partner's body and let the oil drip in slow, deliberate lines across the chest, stomach, and thighs.",
+    tips: ["Always test temperature on your own wrist first", "Control the stream with a spoon for precision", "Tell them where the next drip will land - or do not", "Follow with firm massage strokes to spread the oil"],
+    pairsWellWith: ["Warm Oil Drizzle", "Blindfolded Touch", "Commanding positions"]
+  },
+
+  // ============================================
+  // MENTAL (continued, +5)
+  // ============================================
+  {
+    id: 161,
+    name: "The Bucket List",
+    category: "Mental",
+    mood: "blossoming",
+    duration: "Medium",
+    vibe: "Dreaming up desires together",
+    description: "Each partner writes down five intimate things they have always wanted to try, then you swap lists and discuss.",
+    howTo: "Grab two pieces of paper. Each of you writes five things you have been curious about or want to try together. Swap lists. Read them aloud to each other without judgment and pick one to explore tonight.",
+    tips: ["No judgment - this is a safe space", "Include things that range from sweet to daring", "You don't have to do everything tonight", "Revisit the list on future date nights"],
+    pairsWellWith: ["Reading Erotica Together", "Role Play Lite", "New experiences"]
+  },
+  {
+    id: 162,
+    name: "Fantasy Auction",
+    category: "Mental",
+    mood: "playful",
+    duration: "Medium",
+    vibe: "Bidding for pleasure",
+    description: "Each partner 'auctions' a fantasy or act, and the other bids with compliments, kisses, or dares to win it.",
+    howTo: "Take turns describing something you would like to give or receive. Your partner bids for it by offering something in return - a compliment, a kiss somewhere specific, or a promise. Highest bid wins.",
+    tips: ["Keep the bidding fun, not transactional", "Creative bids are more fun than escalating ones", "Both people should win something", "Laughter is the sign you are doing it right"],
+    pairsWellWith: ["Strip Game", "The Staring Contest", "Playful positions"]
+  },
+  {
+    id: 163,
+    name: "Two-Minute Tease Timer",
+    category: "Mental",
+    mood: "commanding",
+    duration: "Quick",
+    vibe: "Racing the clock to impress",
+    description: "Set a two-minute timer. One partner has exactly that long to make the other as aroused as possible using any means.",
+    howTo: "Set a timer for two minutes. One partner does whatever they can - touch, words, kisses, movement - to drive the other wild before the buzzer. Then switch. The intensity of a time limit changes everything.",
+    tips: ["The ticking clock removes overthinking", "Use every tool: voice, hands, lips, eye contact", "Switching roles keeps both partners engaged", "Extend the timer if two minutes is not enough"],
+    pairsWellWith: ["Delayed Gratification", "The Countdown Touch", "Passionate positions"]
+  },
+  {
+    id: 164,
+    name: "The Playlist Dare",
+    category: "Mental",
+    mood: "dynamic",
+    duration: "Extended",
+    vibe: "Music-driven spontaneity",
+    description: "Create a playlist where each song has an assigned dare. When the song plays, you carry out the dare.",
+    howTo: "Build a playlist of eight to ten songs together. Assign a dare or action to each track - a type of kiss, a massage, a compliment, a piece of clothing removed. Hit shuffle and follow the playlist wherever it leads.",
+    tips: ["Mix tempos to keep things unpredictable", "Include at least one slow, emotional song", "Write dares on cards for a surprise element", "Let the final song be the wildcard - anything goes"],
+    pairsWellWith: ["Music Playlist", "Slow Dancing", "Music & Movement"]
+  },
+  {
+    id: 165,
+    name: "Roleplay Roulette",
+    category: "Mental",
+    mood: "playful",
+    duration: "Extended",
+    vibe: "Letting chance choose your character",
+    description: "Write several mini-scenarios on slips of paper, draw one at random, and commit to playing it out for at least ten minutes.",
+    howTo: "Each partner writes three to five short scenarios on separate slips. Fold them up, mix them together, and draw one at random. Set a timer for ten minutes and stay in character. No breaking the scene.",
+    tips: ["Keep scenarios simple: a setting and two roles is enough", "Include funny ones to ease any nervousness", "A costume piece or prop sells the scene", "If it clicks, keep going past the timer"],
+    pairsWellWith: ["Role Play Lite", "Strip Game", "Hotel Fantasy"]
+  },
+
+  // ============================================
+  // CONNECTION (continued, +5)
+  // ============================================
+  {
+    id: 166,
+    name: "Synchronized Breathing",
+    category: "Connection",
+    mood: "unified",
+    duration: "Quick",
+    vibe: "Two bodies, one rhythm",
+    description: "Lie chest to chest and match each other's inhales and exhales until your breathing becomes one shared rhythm.",
+    howTo: "Lie face to face or with one partner resting on the other's chest. Listen to their breath and begin to match it. Inhale together, exhale together. Stay here for several minutes without speaking.",
+    tips: ["Place a hand on their ribcage to feel the rhythm", "Slow down gradually - do not force a pace", "Close your eyes to deepen the focus", "This pairs beautifully as a transition into intimacy"],
+    pairsWellWith: ["Breathwork Together", "Forehead Touches", "The Lotus"]
+  },
+  {
+    id: 167,
+    name: "The Mirror Exercise",
+    category: "Connection",
+    mood: "playful",
+    duration: "Medium",
+    vibe: "Moving as one reflection",
+    description: "Stand facing each other. One partner moves slowly and the other mirrors every gesture, creating a silent, synchronized dance.",
+    howTo: "Face each other at arm's length. One person leads with slow movements - raising a hand, tilting the head, stepping forward. The other mirrors exactly. After a few minutes, switch leaders. Eventually, let the roles blur.",
+    tips: ["Start with large, simple movements", "Maintain eye contact throughout", "Speed up gradually for a fun challenge", "When you cannot tell who is leading, you have found the sweet spot"],
+    pairsWellWith: ["Eye Gazing", "Slow Dancing", "Face-Off"]
+  },
+  {
+    id: 168,
+    name: "Heartbeat Listening",
+    category: "Connection",
+    mood: "grounded",
+    duration: "Quick",
+    vibe: "Hearing the life inside your partner",
+    description: "Rest your ear against your partner's chest and simply listen to their heartbeat in silence.",
+    howTo: "Have your partner lie on their back. Rest your head on their chest over the heart. Close your eyes. Listen. Feel their breathing rise and fall beneath you. Stay as long as you like.",
+    tips: ["Silence makes this more powerful", "Notice how their heartbeat changes when you touch them", "Trace slow circles on their stomach while you listen", "This can be deeply emotional - let it be"],
+    pairsWellWith: ["Cuddling with Intent", "Forehead Touches", "Spooning"]
+  },
+  {
+    id: 169,
+    name: "Love Language Exchange",
+    category: "Connection",
+    mood: "blossoming",
+    duration: "Medium",
+    vibe: "Speaking their language fluently",
+    description: "Each partner spends ten minutes expressing love exclusively in the other person's primary love language.",
+    howTo: "Identify each other's love language - words, touch, gifts, acts of service, or quality time. Set a timer for ten minutes. Devote that time entirely to expressing love in their language, not yours. Then switch.",
+    tips: ["Ask them what makes them feel most loved if unsure", "Exaggerate a little - go all in", "Notice how differently each round feels", "Discuss afterward which moments landed deepest"],
+    pairsWellWith: ["Compliment Shower", "Body Worship", "The Lotus"]
+  },
+  {
+    id: 170,
+    name: "Partner Yoga",
+    category: "Connection",
+    mood: "dynamic",
+    duration: "Medium",
+    vibe: "Strength and trust through the body",
+    description: "Practice simple two-person yoga poses that require balance, trust, and physical closeness.",
+    howTo: "Look up beginner partner yoga poses. Try three to five together. Support each other's weight. Laugh when you wobble. The physical trust and contact naturally builds intimacy.",
+    tips: ["Start with easy poses - seated back-to-back is great", "Wear minimal clothing for skin contact", "Falling together is part of the fun", "End with a resting pose intertwined"],
+    pairsWellWith: ["Breathwork Together", "Synchronized Breathing", "The Lotus"]
+  },
+
+  // ============================================
+  // SETTING (continued, +5)
+  // ============================================
+  {
+    id: 171,
+    name: "Pillow Fort Date",
+    category: "Setting",
+    mood: "playful",
+    duration: "Extended",
+    vibe: "Childhood magic meets adult intimacy",
+    description: "Build a pillow fort together and climb inside for an intimate hideaway that feels secret and special.",
+    howTo: "Gather every pillow, blanket, and cushion you own. Construct a fort in the living room. String up fairy lights inside. Bring snacks and drinks. Crawl in together and let the enclosed space create its own energy.",
+    tips: ["Fairy lights inside transform the mood", "Make the entrance small so it feels like a private world", "Bring a portable speaker for music", "The silliness of building it together is foreplay in itself"],
+    pairsWellWith: ["Living Room Picnic", "Cuddling with Intent", "Playful positions"]
+  },
+  {
+    id: 172,
+    name: "Rainy Day In",
+    category: "Setting",
+    mood: "grounded",
+    duration: "Extended",
+    vibe: "Cozy seclusion while the world drips outside",
+    description: "Wait for a rainy day, then close the curtains, light candles, and declare the day entirely yours.",
+    howTo: "When the rain arrives, cancel everything. Close the curtains but open a window so you can hear the rain. Make warm drinks. Wrap up in blankets. Let the sound and atmosphere carry you into closeness.",
+    tips: ["The sound of rain is naturally relaxing", "Keep the window cracked for the sound and fresh air", "Hot tea or cocoa adds to the coziness", "There is no agenda - let the day unfold"],
+    pairsWellWith: ["Candlelit Room", "Fresh Sheets", "Spooning"]
+  },
+  {
+    id: 173,
+    name: "Sunrise Session",
+    category: "Setting",
+    mood: "blossoming",
+    duration: "Medium",
+    vibe: "Waking up with the world",
+    description: "Set an alarm before dawn, position yourselves by a window, and let the rising sun light up your morning together.",
+    howTo: "Set an alarm thirty minutes before sunrise. Move to a spot with a good east-facing window or go to the balcony. Wrap in a blanket together and begin slowly as the sky changes color around you.",
+    tips: ["The gradual light shift is incredibly romantic", "Start sleepy and slow - no rush", "Watch the light move across each other's skin", "Morning energy brings a unique tenderness"],
+    pairsWellWith: ["Morning Light", "Forehead Touches", "Slow positions"]
+  },
+  {
+    id: 174,
+    name: "The Balcony",
+    category: "Setting",
+    mood: "passionate",
+    duration: "Medium",
+    vibe: "Open air with a hint of thrill",
+    description: "Step out onto a private balcony or patio at night and let the night air and openness add an element of excitement.",
+    howTo: "Wait until after dark. Step onto your balcony or a private patio space. Let the cool night air hit your skin. The combination of openness, fresh air, and slight vulnerability changes everything.",
+    tips: ["Privacy is essential - be sure you cannot be seen", "A robe you can open is the ideal outfit", "Cool air heightens every warm touch", "Keep a blanket nearby in case it gets cold"],
+    pairsWellWith: ["Outdoor Under Stars", "Standing Ovation", "The Ballet Dancer"]
+  },
+  {
+    id: 175,
+    name: "Firelight & Wine",
+    category: "Setting",
+    mood: "flowing",
+    duration: "Extended",
+    vibe: "Classic warmth and slow indulgence",
+    description: "Build a fire - real or electric - pour wine, and let the flickering warmth set the pace for a slow, indulgent evening.",
+    howTo: "Light a fireplace or set up an electric fire. Arrange blankets and pillows on the floor nearby. Pour two glasses of wine. Lie together in the glow and let the warmth, light, and taste guide you into each other.",
+    tips: ["Keep the fire as the only light source", "A sheepskin rug elevates the experience", "Sip slowly - this is about savoring", "Feed each other small bites between kisses"],
+    pairsWellWith: ["Candlelit Room", "Slow Dancing", "Living Room Picnic"]
   }
 ];
 

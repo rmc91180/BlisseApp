@@ -59,7 +59,7 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     id: 404,
     name: "Love Letter Come to Life",
     category: "Romantic",
-    mood: "unified",
+    mood: "blossoming",
     intensity: "Light",
     vibe: "Words becoming actions",
     description: "Write a love letter describing what you want to do, then act it out.",
@@ -115,7 +115,7 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     id: 408,
     name: "Massage Therapist",
     category: "Fantasy",
-    mood: "flowing",
+    mood: "blossoming",
     intensity: "Medium",
     vibe: "Professional touch becomes personal",
     description: "One plays a massage therapist. The massage becomes... unprofessional.",
@@ -287,6 +287,152 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     howToPlay: "The dominant partner directs all action. The submissive partner follows. This is about trust and clear communication.",
     tips: ["Extensive discussion first", "Safe word essential", "Aftercare is crucial", "Not for everyone - and that's okay"],
     pairsWellWith: ["Whatever the dominant chooses", "Trust", "Communication"]
+  },
+
+  // ============================================
+  // ROMANTIC +2 (IDs 421–422)
+  // ============================================
+  {
+    id: 421,
+    name: "The Slow Dance Night",
+    category: "Romantic",
+    mood: "flowing",
+    intensity: "Light",
+    vibe: "Swaying together until the world fades away",
+    description: "Put on your favorite slow songs, hold each other close, and let the music guide your bodies. No agenda, just presence.",
+    setup: "Clear a small space in your living room. Dim the lights or use candles. Queue up a playlist of slow, romantic songs. One partner extends a hand and asks the other to dance.",
+    howToPlay: "Hold each other close and sway. Whisper in each other's ears. Let your hands explore naturally as the songs play. Stay slow — the restraint builds desire. Let each song bring you closer until dancing is no longer enough.",
+    tips: ["Pick songs that are meaningful to your relationship", "No phones once the music starts", "Let the tempo dictate your pace — slower is better", "Eye contact between songs is powerful"],
+    pairsWellWith: ["The Lotus", "Face-Off", "Spooning"]
+  },
+  {
+    id: 422,
+    name: "Sunset Getaway",
+    category: "Romantic",
+    mood: "passionate",
+    intensity: "Medium",
+    vibe: "Escaping together to a world of your own",
+    description: "Pretend you've just arrived at a private vacation villa. Tonight is the first night of your getaway — no responsibilities, no interruptions.",
+    setup: "Transform your bedroom into a 'resort suite.' Use fresh sheets, tropical scents, maybe a fan for a warm breeze. Have fruit, chocolate, and drinks on the nightstand. Dress in vacation attire.",
+    howToPlay: "Arrive at your 'villa' and explore it together. Unpack slowly. Comment on the view. Pour each other drinks and toast to your trip. Let the vacation mindset dissolve all inhibitions. You have all night and nowhere to be.",
+    tips: ["Really commit to the getaway mindset", "Ambient sounds like ocean waves help set the scene", "Treat each other like it's a special trip", "The 'no schedule' feeling is freeing"],
+    pairsWellWith: ["Standing Ovation", "The Lift", "Lazy Dog"]
+  },
+
+  // ============================================
+  // FANTASY +3 (IDs 423–425)
+  // ============================================
+  {
+    id: 423,
+    name: "The Royalty Treatment",
+    category: "Fantasy",
+    mood: "commanding",
+    intensity: "Medium",
+    vibe: "Royal court indulgence",
+    description: "One partner is royalty; the other is a devoted attendant whose sole purpose is to please the crown.",
+    setup: "The 'royal' lounges on the bed like a throne. Wear something regal — a robe, a crown, jewelry. The attendant dresses to serve. Have grapes, wine, and anything decadent nearby.",
+    howToPlay: "The royal gives gentle commands: 'Feed me a grape. Now fan me. Closer.' The attendant pampers and worships. Requests become more intimate. The royal rewards loyalty generously.",
+    tips: ["The royal should be gracious, not harsh", "Pampering is genuine — use real massage, real treats", "Switch roles on another night for fairness", "A playful sense of entitlement adds fun"],
+    pairsWellWith: ["The Lotus", "Oral play", "Slow positions"]
+  },
+  {
+    id: 424,
+    name: "Personal Trainer",
+    category: "Fantasy",
+    mood: "dynamic",
+    intensity: "Medium",
+    vibe: "Sweaty workout turns steamy",
+    description: "One partner is a personal trainer pushing the other through a workout. The physical exertion and closeness leads somewhere unexpected.",
+    setup: "Wear workout clothes. Clear a space. The 'trainer' has a plan: stretches, bodyweight exercises, hands-on form corrections. Have water and towels handy.",
+    howToPlay: "The trainer guides exercises with lots of hands-on corrections. 'Deeper squat — let me spot you.' Stretching gets intimate. Hands linger longer than professional. The cool-down becomes a warm-up for something else entirely.",
+    tips: ["The physical touch during 'corrections' is the spark", "Both of you will actually get a little warmed up", "Tight workout clothes help the visual", "The trainer's confidence is attractive — own it"],
+    pairsWellWith: ["Standing positions", "The Wheelbarrow", "Against the Wall"]
+  },
+  {
+    id: 425,
+    name: "The Artist's Muse",
+    category: "Fantasy",
+    mood: "blossoming",
+    intensity: "Light",
+    vibe: "Being truly seen and admired",
+    description: "One partner is an artist who needs to sketch or paint the other. The muse poses, the artist studies every detail with devoted attention.",
+    setup: "Get a sketchpad and pencil (skill doesn't matter). Set up soft lighting. The muse wears something beautiful — or drapes a sheet. A chaise lounge or pile of pillows makes the perfect posing spot.",
+    howToPlay: "The artist arranges the muse into poses, studying them intently. 'Turn your shoulder. Look at me. Beautiful.' The attention is intoxicating. The artist eventually puts down the pencil and shows appreciation with more than just words.",
+    tips: ["The quality of the drawing is irrelevant — the attention is the point", "Describe aloud what you see and admire", "Let poses get progressively more revealing", "The muse's vulnerability is powerful"],
+    pairsWellWith: ["The Vanity", "Face-to-face positions", "The Lotus"]
+  },
+
+  // ============================================
+  // PLAYFUL +3 (IDs 426–428)
+  // ============================================
+  {
+    id: 426,
+    name: "The Dare Jar",
+    category: "Playful",
+    mood: "playful",
+    intensity: "Medium",
+    vibe: "Anticipation in every slip of paper",
+    description: "Fill a jar with folded dares written by both of you. Take turns drawing and performing. You never know what's next.",
+    setup: "Beforehand, each partner writes 10–15 dares on slips of paper and folds them into a jar. Dares should range from sweet to spicy. Sit together with drinks and the jar between you.",
+    howToPlay: "Take turns pulling a dare from the jar. Read it aloud, then do it immediately. No skipping, no trading — what you pull, you play. Alternate until the jar is empty or you can't keep your hands off each other.",
+    tips: ["Write dares at different intensity levels for good pacing", "Include some funny ones to keep it light", "The mystery of what's next is half the thrill", "Save a few of the best dares for a second round"],
+    pairsWellWith: ["Any position", "Oral play", "Teasing"]
+  },
+  {
+    id: 427,
+    name: "Costume Night",
+    category: "Playful",
+    mood: "dynamic",
+    intensity: "Light",
+    vibe: "Becoming someone new together",
+    description: "Each partner picks a character or costume and stays in character for the night. No rules except: commit fully.",
+    setup: "Raid your closets or pick up something fun — wigs, hats, uniforms, vintage finds. Get dressed separately and reveal your characters to each other. Set the scene to match the vibe.",
+    howToPlay: "Introduce your characters. Give them names and backstories. How do these two characters meet? What's their chemistry? Let the characters interact, flirt, and connect. The costumes come off when the characters can't resist anymore.",
+    tips: ["The sillier the commitment, the more fun it is", "Stay in character even when you laugh", "Mix and match themes — a cowboy and a pirate is perfectly fine", "Accents are optional but encouraged"],
+    pairsWellWith: ["Spontaneous positions", "Standing positions", "Laughter and connection"]
+  },
+  {
+    id: 428,
+    name: "Two Truths & a Lie (Intimate)",
+    category: "Playful",
+    mood: "blossoming",
+    intensity: "Light",
+    vibe: "Discovering hidden desires through a game",
+    description: "Share two real fantasies and one fake. Your partner guesses the lie. Either way, you both learn something new.",
+    setup: "Get comfortable together — couch, bed, blanket fort. Have drinks. Each round, one partner shares three intimate statements: two true, one made up. The stakes? The guesser's forfeit if they're wrong.",
+    howToPlay: "Take turns sharing. 'I've always wanted to try... / My secret turn-on is... / I once dreamed about...' Your partner guesses which is the lie. Wrong guesses mean a forfeit chosen by the other. Right guesses earn a reward.",
+    tips: ["Make the lie believable for maximum fun", "The truths are the real gift — listen closely", "Forfeits should be fun, not punishing", "You might discover something genuinely surprising"],
+    pairsWellWith: ["Whatever desires surface", "Connection-building", "Any position"]
+  },
+
+  // ============================================
+  // ADVENTUROUS +2 (IDs 429–430)
+  // ============================================
+  {
+    id: 429,
+    name: "Sensation Surprise",
+    category: "Adventurous",
+    mood: "grounded",
+    intensity: "Medium",
+    vibe: "A buffet of unexpected textures and feelings",
+    description: "Gather different textured objects and sensations. One partner is blindfolded while the other trails surprise after surprise across their skin.",
+    setup: "Collect an assortment: feather, silk scarf, ice cube, warm spoon, soft brush, cool chain, fuzzy fabric, fingertips. Lay them out where the blindfolded partner can't see. Have them lie comfortably.",
+    howToPlay: "Blindfold your partner. Without warning, trail different textures across their body. They guess what it is. Alternate between expected and surprising. Mix gentle and firm. Let the unpredictability build arousal.",
+    tips: ["Vary the pace — quick taps then long slow drags", "Warm or cool objects right before using them for extra contrast", "The inner arms, neck, and stomach are wonderfully sensitive", "Silence between sensations builds anticipation"],
+    pairsWellWith: ["Temperature Play", "Blindfolded Surrender", "Spooning"]
+  },
+  {
+    id: 430,
+    name: "The Countdown",
+    category: "Adventurous",
+    mood: "passionate",
+    intensity: "Intense",
+    vibe: "Building tension with a ticking clock",
+    description: "Set a timer. You cannot have full intimacy until it reaches zero. Everything else is allowed — and encouraged.",
+    setup: "Set a visible timer for 20–30 minutes. The rule: absolutely everything is on the table except the final act. Kissing, touching, teasing, oral — all fair game. But you must wait for the countdown.",
+    howToPlay: "Start the timer and start exploring each other. The only rule is you must wait. Tease relentlessly. Get as close to the edge as you dare. Watch the clock together. When it hits zero, there are no more rules.",
+    tips: ["Longer timers mean more intensity at the end", "Taking turns being the teaser keeps it balanced", "Watching the clock together is part of the tension", "If you break early, add penalty time"],
+    pairsWellWith: ["Any position", "Urgent positions", "Against the Wall"]
   }
 ];
 

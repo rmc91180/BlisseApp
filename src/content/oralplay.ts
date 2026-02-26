@@ -67,7 +67,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     id: 205,
     name: "The Butterfly",
     category: "For Her",
-    mood: "flowing",
+    mood: "blossoming",
     giver: "him",
     vibe: "Light, fluttering sensations",
     description: "Using quick, light tongue movements like butterfly wings - delicate and teasing.",
@@ -79,7 +79,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     id: 206,
     name: "The Roadmap",
     category: "For Her",
-    mood: "unified",
+    mood: "blossoming",
     giver: "him",
     vibe: "Following her guidance exactly",
     description: "She provides explicit verbal direction on exactly what feels good - he follows precisely.",
@@ -382,6 +382,198 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     howTo: "In 69 position, both try their best to make the other orgasm first. The one who holds out longest wins. Loser picks next position.",
     tips: ["Keep it fun and playful", "No real losers here", "Good for competitive couples", "Everyone wins, really"],
     pairsWellWith: ["Playful competition", "Fun sex", "Games"]
+  },
+
+  // ============================================
+  // FOR HER — Additional (5 ideas)
+  // ============================================
+  {
+    id: 231,
+    name: "The Pulse Point",
+    category: "For Her",
+    mood: "passionate",
+    giver: "him",
+    vibe: "Finding and following her rhythm",
+    description: "Syncing tongue movements to the subtle pulse of her body, creating a deeply attuned experience that feels like he's reading her from the inside out.",
+    howTo: "Place your lips softly over her most sensitive area and feel for her natural pulse. Match your tongue movements to that rhythm, letting her body set the tempo. As arousal builds, her pulse quickens — follow it faithfully.",
+    tips: ["Rest a hand on her inner thigh to feel her heartbeat there too", "Let her body dictate the speed entirely", "The rhythm will naturally accelerate as she gets closer", "Whisper that you can feel her pulse — it deepens the connection"],
+    pairsWellWith: ["The Slow Worship", "The Lotus", "Deep connection"]
+  },
+  {
+    id: 232,
+    name: "The Hum & Kiss",
+    category: "For Her",
+    mood: "playful",
+    giver: "him",
+    vibe: "Vibrating lips and soft melody",
+    description: "Humming softly against her while alternating with gentle kisses — the vibrations create a tingly, unexpected sensation.",
+    howTo: "Press your lips against her softly and hum a low, steady note. Pause to place light kisses. Alternate between humming and kissing, varying the pitch and location. The vibrations travel through sensitive tissue beautifully.",
+    tips: ["Lower pitches create deeper vibrations", "Smile while humming for wider lip contact", "Move the humming to different spots", "Try humming her favorite song for a playful touch"],
+    pairsWellWith: ["The Butterfly", "Playful moods", "Extended foreplay"]
+  },
+  {
+    id: 233,
+    name: "The Velvet Tongue",
+    category: "For Her",
+    mood: "flowing",
+    giver: "him",
+    vibe: "Impossibly soft and wide strokes",
+    description: "Using the broadest, softest part of the tongue in long, sweeping strokes that cover as much area as possible — pure velvet sensation.",
+    howTo: "Flatten your tongue completely and relax it so it becomes soft and wide. Use long, slow strokes from bottom to top, covering her fully with each pass. Keep your jaw relaxed and let gravity help with gentle pressure.",
+    tips: ["A relaxed tongue is softer than a tense one", "Think of it as painting with the widest brush", "Cover the full area in each pass", "Gradually increase pressure over time rather than starting firm"],
+    pairsWellWith: ["Sensual Massage", "Spooning", "Flowing moods"]
+  },
+  {
+    id: 234,
+    name: "The Waterfall",
+    category: "For Her",
+    mood: "dynamic",
+    giver: "him",
+    vibe: "Cascading sensations that build and flow",
+    description: "A technique that mimics the feeling of warm water flowing over her — rapid, light, downward tongue strokes in cascading waves.",
+    howTo: "Use quick, light, downward tongue flicks in succession, starting from above the clitoris and cascading downward. Repeat in waves. Occasionally pause and let warm breath flow over the area before resuming the cascade.",
+    tips: ["Keep the motion consistently downward like flowing water", "Speed matters more than pressure here", "Warm breath between cascades intensifies the contrast", "She may grip the sheets — that means keep going"],
+    pairsWellWith: ["The Edge Player", "Passionate moments", "Building intensity"]
+  },
+  {
+    id: 235,
+    name: "The Breathwork",
+    category: "For Her",
+    mood: "grounded",
+    giver: "him",
+    vibe: "Using breath as a sensual instrument",
+    description: "Alternating warm breath and cool breath over her most sensitive areas, with minimal tongue contact — teasing through temperature and anticipation.",
+    howTo: "Hover close without making contact. Exhale warm breath slowly over her. Then purse your lips and blow a gentle, cool stream. Alternate warm and cool. Occasionally break the pattern with a single, soft tongue stroke.",
+    tips: ["The anticipation of contact is the real technique", "Warm breath with an open mouth, cool with pursed lips", "One unexpected tongue stroke among the breathing is electric", "Pair with fingertips tracing her thighs for added sensation"],
+    pairsWellWith: ["Tantric connection", "The Butterfly", "Mindful intimacy"]
+  },
+
+  // ============================================
+  // FOR HIM — Additional (5 ideas)
+  // ============================================
+  {
+    id: 236,
+    name: "The Rhythm Rider",
+    category: "For Him",
+    mood: "dynamic",
+    giver: "her",
+    vibe: "Building a rhythm that crescendos",
+    description: "Establishing a deliberate rhythm with mouth and hand that starts slow and steadily builds — like a song approaching its peak.",
+    howTo: "Begin with a slow, steady pace using your mouth. Add a hand at the base matching the rhythm. Every 30 seconds or so, increase the tempo slightly. Build from adagio to allegro over several minutes.",
+    tips: ["Consistency within each tempo is key — no erratic changes", "He'll start moving his hips when the rhythm is right", "Use the hand to maintain rhythm when your mouth needs a break", "The buildup is what makes this technique extraordinary"],
+    pairsWellWith: ["The Finish Line", "Intense sessions", "Building anticipation"]
+  },
+  {
+    id: 237,
+    name: "The Warm Welcome",
+    category: "For Him",
+    mood: "flowing",
+    giver: "her",
+    vibe: "Enveloping warmth and soft intention",
+    description: "Taking him into the warmth of your mouth slowly and holding him there — focusing on warmth, softness, and gentle suction rather than movement.",
+    howTo: "Take him in slowly and simply hold him in your warm mouth without moving. Apply gentle suction. Let him feel the warmth envelope him. After a long pause, begin very slow movements, keeping everything soft and unhurried.",
+    tips: ["The stillness at the start is surprisingly powerful", "Sip warm water beforehand for extra warmth", "Hum softly while holding still for added sensation", "This is about presence, not performance"],
+    pairsWellWith: ["Morning intimacy", "Slow Mo", "Deep connection"]
+  },
+  {
+    id: 238,
+    name: "The Gentle Edge",
+    category: "For Him",
+    mood: "commanding",
+    giver: "her",
+    vibe: "Soft control with powerful results",
+    description: "Using a feather-light touch to maintain him right at the edge — she controls the intensity with masterful precision, keeping him hovering.",
+    howTo: "Build him close to the edge using firmer technique, then switch to the lightest possible touch — just lips barely grazing, tongue tip circling. Keep him hovering at the precipice with minimal contact. The lighter the touch, the more maddening it becomes.",
+    tips: ["The transition from firm to feather-light is the magic moment", "Watch his breathing to gauge how close he is", "Whisper that you decide when — the verbal control adds intensity", "When you finally increase pressure again, the release is powerful"],
+    pairsWellWith: ["Tease & Deny", "Commanding moods", "Extended pleasure"]
+  },
+  {
+    id: 239,
+    name: "The Crown Focus",
+    category: "For Him",
+    mood: "blossoming",
+    giver: "her",
+    vibe: "Devoted attention to the most sensitive area",
+    description: "Concentrating all attention on the head and frenulum — the most nerve-rich areas — with precise, focused technique.",
+    howTo: "Use just your lips and tongue tip on the head, paying special attention to the frenulum on the underside. Small circles, gentle suction, and light flicks focused on this concentrated area. Use a hand on the shaft for supplemental rhythm.",
+    tips: ["The frenulum is often the single most sensitive spot", "Less area, more precision — quality over quantity", "Gentle suction on the tip while tonguing the frenulum is powerful", "He may be more sensitive here than you expect — start softly"],
+    pairsWellWith: ["The Tease", "Focused attention", "Building slowly"]
+  },
+  {
+    id: 240,
+    name: "The Silk Slide",
+    category: "For Him",
+    mood: "playful",
+    giver: "her",
+    vibe: "Smooth, gliding, frictionless motion",
+    description: "Using extra lubrication to create an impossibly smooth, sliding sensation — everything glides effortlessly.",
+    howTo: "Use generous lubrication or let saliva build naturally. Create a continuous, gliding motion with your hand twisting gently while your mouth slides smoothly. The zero-friction feeling is uniquely pleasurable. Keep everything wet and flowing.",
+    tips: ["More lubrication than you think — it transforms the sensation", "The twist-and-slide combination is irresistible", "Keep a glass of water nearby to stay hydrated", "The sound of the glide adds to the experience for him"],
+    pairsWellWith: ["The Twist", "Playful moods", "Sensual exploration"]
+  },
+
+  // ============================================
+  // MUTUAL — Additional (5 ideas)
+  // ============================================
+  {
+    id: 241,
+    name: "The Slow Exchange",
+    category: "Mutual",
+    mood: "flowing",
+    giver: "both",
+    vibe: "Unhurried, turn-based devotion",
+    description: "Taking slow, extended turns pleasuring each other orally — each turn lasting at least ten minutes of uninterrupted focus.",
+    howTo: "One partner lies back and receives for a full ten minutes while the other gives with complete devotion. Then switch. No rushing, no reciprocating during your receiving turn — just soak it in. The giver focuses entirely on their partner's responses.",
+    tips: ["Use a gentle timer so neither person watches the clock", "The receiver should focus only on sensation, not on reciprocating", "Ten minutes of focused attention is deeper than thirty of distracted giving", "Talk afterward about what each of you discovered"],
+    pairsWellWith: ["The Slow Worship", "Deep connection", "Extended sessions"]
+  },
+  {
+    id: 242,
+    name: "The Mirror Game",
+    category: "Mutual",
+    mood: "playful",
+    giver: "both",
+    vibe: "Copying each other's moves in real time",
+    description: "In a 69 position, whatever one partner does, the other mirrors — creating a feedback loop of matched sensations.",
+    howTo: "Get into a comfortable 69 position. One partner leads with a technique — slow licks, gentle suction, focused attention. The other partner mirrors the same movement and pressure on the other. After a few minutes, switch who leads.",
+    tips: ["The leader should use clear, distinct movements that are easy to mirror", "Mirroring creates empathy — you feel what you give", "Switch the lead role frequently to keep it dynamic", "Laughing is allowed and encouraged when mirroring gets tricky"],
+    pairsWellWith: ["Side-by-Side 69", "Playful competition", "Learning each other"]
+  },
+  {
+    id: 243,
+    name: "The Blindfold Trade",
+    category: "Mutual",
+    mood: "commanding",
+    giver: "both",
+    vibe: "Heightened senses through darkness",
+    description: "One partner is blindfolded while receiving oral, amplifying every sensation. Then the blindfold trades to the other partner for their turn.",
+    howTo: "Blindfold one partner and give them oral — without sight, every touch is magnified. After their turn, trade the blindfold. The previously blindfolded partner now gives while the other wears it. Both experience the heightened vulnerability of receiving without seeing.",
+    tips: ["A silk scarf or sleep mask works perfectly", "The blindfolded person should verbalize what they feel — it guides the giver", "Surprise them with unexpected pauses and changes in technique", "The anticipation of not knowing what comes next is half the thrill"],
+    pairsWellWith: ["Sensory play", "Trust building", "The Edge Player"]
+  },
+  {
+    id: 244,
+    name: "The Compass",
+    category: "Mutual",
+    mood: "unified",
+    giver: "both",
+    vibe: "Exploring every direction together",
+    description: "A guided exploration game where each partner directs the other using compass directions — north, south, east, west — to navigate exactly where attention should go.",
+    howTo: "Take turns giving oral while the receiver calls out compass directions: 'north' for higher, 'south' for lower, 'east' and 'west' for lateral movement. Add 'stay' when the spot is perfect. It turns communication into a playful, intuitive game.",
+    tips: ["This gamifies communication without making it clinical", "Add 'deeper' and 'softer' for pressure guidance", "'Stay' is the most important direction — honor it", "Switch roles so both learn to navigate each other's landscape"],
+    pairsWellWith: ["The Roadmap", "Communication", "Mutual Exploration"]
+  },
+  {
+    id: 245,
+    name: "The Duet",
+    category: "Mutual",
+    mood: "passionate",
+    giver: "both",
+    vibe: "Harmonizing pleasure in perfect sync",
+    description: "Both partners pleasure each other simultaneously but focus on matching intensity — when one builds, the other builds. When one slows, both slow. A synchronized dance of shared escalation.",
+    howTo: "In a 69 or side-by-side position, attune to your partner's intensity. As they increase speed or pressure, match it. If they slow down to savor, follow. The goal is to stay perfectly synchronized so you build toward climax together, like two instruments playing the same song.",
+    tips: ["One partner may need to lead initially to establish the pace", "Breathe together — matched breathing helps synchronize", "If one partner is closer, the other slows to let them catch up", "Finishing together is the ultimate goal but not a requirement — enjoy the attempt"],
+    pairsWellWith: ["The 69", "Synchronized Start", "Passionate connection"]
   }
 ];
 

@@ -1,0 +1,15 @@
+appId: ${APP_ID:-com.blisse.app}
+---
+- launchApp
+- assertVisible: "Blisse"
+- extendedWaitUntil:
+    visible: "Explore"
+    timeout: 15000
+- tapOn: "Explore"
+- assertVisible: "Explore"
+- tapOn: "Favorites"
+- assertVisible: "Favorites"
+- tapOn: "Profile"
+- assertVisible: "Profile"
+- tapOn: "Home"
+- assertVisible: "Daily Tease"

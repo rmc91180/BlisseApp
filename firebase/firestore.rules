@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function onlyKeys(data, allowed) {
+      return data.keys().hasOnly(allowed);
+    }
+
+    // Public read-only app config (no user data)
+    match /app_config/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Optional remote feature flags (read-only from clients)
+    match /feature_flags/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // User-scoped state (if/when cloud sync is enabled)
+    // Keep strictly non-PII. Do not store names/emails/messages here.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && onlyKeys(
+          request.resource.data,
+          [
+            'language',
+            'currentMood',
+            'lastActiveAt',
+            'updatedAt',
+            'appVersion',
+            'platform',
+            'pushOptIn',
+            'pushToken'
+          ]
+        )
+        && (!('language' in request.resource.data) || request.resource.data.language is string)
+        && (!('currentMood' in request.resource.data) || request.resource.data.currentMood is string)
+        && (!('lastActiveAt' in request.resource.data) || request.resource.data.lastActiveAt is timestamp)
+        && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp)
+        && (!('appVersion' in request.resource.data) || request.resource.data.appVersion is string)
+        && (!('platform' in request.resource.data) || request.resource.data.platform is string)
+        && (!('pushOptIn' in request.resource.data) || request.resource.data.pushOptIn is bool)
+        && (!('pushToken' in request.resource.data) || request.resource.data.pushToken is string);
+      allow delete: if false;
+    }
+
+    // Server-written aggregate analytics only. Client access denied.
+    match /analytics_daily/{docId} {
+      allow read, write: if false;
+    }
+
+    // Server-written idempotency and abuse controls only.
+    match /idempotency_keys/{docId} {
+      allow read, write: if false;
+    }
+
+    match /rate_limits/{docId} {
+      allow read, write: if false;
+    }
+
+    // Dead-letter/error logs for failed backend jobs.
+    match /notification_failures/{docId} {
+      allow read, write: if false;
+    }
+
+    // Deny-by-default for everything else.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

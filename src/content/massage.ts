@@ -98,7 +98,7 @@ export const massageTechniques: MassageTechnique[] = [
     id: 307,
     name: "Arm & Hand Heaven",
     category: "Relaxation",
-    mood: "flowing",
+    mood: "blossoming",
     duration: "Quick",
     bodyArea: "Arms & Hands",
     vibe: "Often forgotten, always appreciated",
@@ -154,7 +154,7 @@ export const massageTechniques: MassageTechnique[] = [
     id: 311,
     name: "Chest & Stomach Circles",
     category: "Sensual",
-    mood: "unified",
+    mood: "blossoming",
     duration: "Medium",
     bodyArea: "Chest & Stomach",
     vibe: "Intimate front-body attention",
@@ -283,6 +283,148 @@ export const massageTechniques: MassageTechnique[] = [
     howTo: "Identify the sore areas. Use medium pressure with long strokes. Work the surrounding muscles too. Include gentle stretching.",
     tips: ["Good after workouts", "Don't massage injured areas", "Focus on the muscles around soreness", "Hydrate after"],
     pairsWellWith: ["Athletic recovery", "After exercise", "Therapeutic care"]
+  },
+
+  // ============================================
+  // RELAXATION +3 (IDs 321–323)
+  // ============================================
+  {
+    id: 321,
+    name: "Neck & Décolletage Flow",
+    category: "Relaxation",
+    mood: "flowing",
+    duration: "Medium",
+    bodyArea: "Shoulders & Neck",
+    vibe: "Graceful unwinding from jaw to collarbone",
+    description: "A flowing sequence that traces from the base of the skull down through the neck and across the décolletage, releasing tension held in the throat and upper chest.",
+    howTo: "Begin at the base of the skull with gentle circular motions. Glide thumbs down either side of the neck. Fan outward across the collarbones with open palms. Repeat the flow several times, gradually increasing pressure.",
+    tips: ["Keep strokes symmetrical on both sides", "Avoid pressing on the front of the throat", "Warm oil makes the glide smoother", "Pause at the collarbones and let your hands rest there"],
+    pairsWellWith: ["Face & Jaw Release", "Shoulder Surrender", "Deep connection"]
+  },
+  {
+    id: 322,
+    name: "Hip Opener",
+    category: "Relaxation",
+    mood: "grounded",
+    duration: "Extended",
+    bodyArea: "Hip Flexors",
+    vibe: "Unlocking deep-seated tightness",
+    description: "A slow, intentional massage that targets the hip flexors and surrounding muscles, releasing tension from sitting and daily stress.",
+    howTo: "Have your partner lie on their back with knees bent. Use palm pressure along the front of the hip crease. Work the outer hip with kneading strokes. Gently rotate their bent leg to loosen the joint while massaging the surrounding muscles.",
+    tips: ["Go slowly — hip flexors can be very tender", "Communicate constantly about depth", "Combine with gentle passive stretching", "Breathe together to encourage release"],
+    pairsWellWith: ["Stretching Assistance", "Lower Back Love", "Leg & Foot Revival"]
+  },
+  {
+    id: 323,
+    name: "Belly Breathing Massage",
+    category: "Relaxation",
+    mood: "unified",
+    duration: "Quick",
+    bodyArea: "Abdomen",
+    vibe: "Calming the core, quieting the mind",
+    description: "A gentle abdominal massage synchronized with your partner's breathing that calms the nervous system and fosters deep trust.",
+    howTo: "Place warm hands on their belly. Feel their breath rise and fall. Begin slow clockwise circles in rhythm with their exhale. Keep pressure feather-light and gradually widen the circles to include the sides of the torso.",
+    tips: ["Never press deeply on the abdomen", "Match their breathing rhythm exactly", "Clockwise follows the direction of digestion", "This is deeply vulnerable — maintain a calm presence"],
+    pairsWellWith: ["Scalp Serenity", "Face & Jaw Release", "Mindful connection"]
+  },
+
+  // ============================================
+  // SENSUAL +4 (IDs 324–327)
+  // ============================================
+  {
+    id: 324,
+    name: "The Whisper Touch",
+    category: "Sensual",
+    mood: "passionate",
+    duration: "Quick",
+    bodyArea: "Full Body",
+    vibe: "So light it makes them hold their breath",
+    description: "An almost imperceptible touch that heightens every nerve ending. Your fingertips barely graze the skin, creating electric anticipation.",
+    howTo: "Use only the very tips of your fingers — barely making contact. Drift across the inner arm, along the collarbone, down the side of the torso. Move unpredictably. Pause and let them feel the warmth of your hand hovering just above the skin.",
+    tips: ["The less you touch, the more they feel", "Hover just above the skin between traces", "Breath on the skin amplifies the effect", "Watch for shivers — that means it's working"],
+    pairsWellWith: ["The Feather Trace", "Blindfolded touch", "Building anticipation"]
+  },
+  {
+    id: 325,
+    name: "Spine Tingler",
+    category: "Sensual",
+    mood: "commanding",
+    duration: "Medium",
+    bodyArea: "Back",
+    vibe: "A shiver from tailbone to nape",
+    description: "A deliberately slow massage that follows the spine's length, combining firm palm pressure with feather-light fingernail traces to create waves of sensation.",
+    howTo: "Start at the base of the spine with both palms. Glide upward with steady pressure along each side of the vertebrae. At the nape, switch to the lightest fingernail trace and drift back down. Alternate between firm and barely-there with each pass.",
+    tips: ["Never press directly on the spine", "The contrast between firm and light is everything", "Slow down even more than you think you should", "Let your breath fall on their neck at the top of each stroke"],
+    pairsWellWith: ["Fingertip Raindrops", "The Tease Trail", "Rear entry positions"]
+  },
+  {
+    id: 326,
+    name: "Warm Stone Fantasy",
+    category: "Sensual",
+    mood: "flowing",
+    duration: "Extended",
+    bodyArea: "Full Body",
+    vibe: "Melting heat meets intimate touch",
+    description: "Using warmed smooth stones or heated oil compresses placed along the body, followed by slow sensual strokes that blend warmth with connection.",
+    howTo: "Warm smooth stones in hot water or heat oil compresses. Place them along the back, behind the knees, and on the palms. While the heat seeps in, use oiled hands to massage the exposed areas. Remove stones one by one and massage the warmed skin beneath.",
+    tips: ["Always test stone temperature on your own wrist first", "River stones from a craft store work perfectly", "The removal-and-massage reveal is the most sensual moment", "Dim lighting and candles complete the atmosphere"],
+    pairsWellWith: ["The Oil Drizzle", "Hot Stone Simulation", "Extended foreplay"]
+  },
+  {
+    id: 327,
+    name: "The Silk Stroke",
+    category: "Sensual",
+    mood: "playful",
+    duration: "Medium",
+    bodyArea: "Inner Thighs",
+    vibe: "Teasing texture on sensitive skin",
+    description: "Using a silk scarf or satin fabric dragged slowly across the inner thighs and torso to create a unique, teasing sensation that skin-to-skin touch alone cannot replicate.",
+    howTo: "Drape a silk scarf across your partner's body. Pull it slowly across the inner thighs, over the hips, and along the stomach. Alternate between the fabric and your bare hand so they feel the contrast. Bunch the fabric and use it to knead gently.",
+    tips: ["Real silk or satin works best — avoid synthetics", "The transition from fabric to bare skin is electric", "Try draping it over your hand as you massage", "Combine with a blindfold for intensified sensation"],
+    pairsWellWith: ["Inner Thigh Focus", "The Feather Trace", "Sensation play"]
+  },
+
+  // ============================================
+  // THERAPEUTIC +3 (IDs 328–330)
+  // ============================================
+  {
+    id: 328,
+    name: "Tension Headache Release",
+    category: "Therapeutic",
+    mood: "grounded",
+    duration: "Quick",
+    bodyArea: "Head & Scalp",
+    vibe: "Targeted relief when it matters most",
+    description: "A focused technique that targets the specific pressure points around the skull, temples, and base of the neck that contribute to tension headaches.",
+    howTo: "Start with sustained pressure on the temples using the pads of your thumbs. Move to the ridge at the base of the skull and press firmly for 30 seconds on each side. Use circular motions across the forehead. Finish with gentle traction — cradling the head and pulling lightly toward you.",
+    tips: ["Dim the lights — bright light worsens headaches", "Firm, steady pressure works better than rubbing", "The suboccipital muscles at the skull base are key", "Peppermint oil on the temples can enhance relief"],
+    pairsWellWith: ["Scalp Serenity", "Face & Jaw Release", "Shoulder Surrender"]
+  },
+  {
+    id: 329,
+    name: "IT Band Release",
+    category: "Therapeutic",
+    mood: "dynamic",
+    duration: "Medium",
+    bodyArea: "Legs & Feet",
+    vibe: "Unlocking the runner's nemesis",
+    description: "A firm massage along the outer thigh targeting the iliotibial band, a notoriously tight area for anyone who sits, runs, or cycles.",
+    howTo: "Have your partner lie on their side. Use your forearm or elbow to apply slow, steady pressure along the outer thigh from hip to knee. Work in short sections, holding on tender spots for 10 to 15 seconds. Follow with broad palm strokes to flush the area.",
+    tips: ["This can be intense — start lighter than you think", "Have them breathe through tender spots", "Rolling a warm towel under the leg adds comfort", "Always stroke toward the heart when finishing"],
+    pairsWellWith: ["Leg & Foot Revival", "Stretching Assistance", "Circulation Boost"]
+  },
+  {
+    id: 330,
+    name: "Neck Reset",
+    category: "Therapeutic",
+    mood: "unified",
+    duration: "Medium",
+    bodyArea: "Shoulders & Neck",
+    vibe: "Undoing a day spent at a screen",
+    description: "A structured therapeutic sequence for the neck that combines compression, gentle stretching, and focused muscle work to counteract forward-head posture and screen fatigue.",
+    howTo: "Sit behind your partner. Cup the base of their skull and apply gentle upward traction. Use thumbs to work the muscles along each side of the cervical spine. Gently tilt their head to each side, massaging the stretched side. Finish with slow circles on the upper trapezius.",
+    tips: ["Support the head fully — never let it drop", "Avoid rotating the neck forcefully", "The levator scapulae muscle at the side of the neck is often the tightest", "Warm towel on the shoulders beforehand works wonders"],
+    pairsWellWith: ["Shoulder Surrender", "Tension Headache Release", "Pressure Point Release"]
   }
 ];
 

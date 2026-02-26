@@ -1,0 +1,6 @@
+{
+  "showSeasonalCard": true,
+  "enableDailyJokes": true,
+  "enableWeeklyRecap": true,
+  "enableReactivationReminder": true
+}

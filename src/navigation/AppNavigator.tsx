@@ -1,141 +1,157 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect, useState, type ComponentType } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
-import { RootStackParamList, MainTabParamList } from '@/types/navigation';
-import { usePreferencesStore } from '@/store/usePreferencesStore';
-import { colors } from '@/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useI18n } from '@/hooks/useI18n';
+import { useStore } from '@/store/useStore';
+import { useThemeStore, getThemeColors, colors } from '@/store/useThemeStore';
+import { useAuth } from '@/services/auth';
 
-// Import screens
-import WelcomeScreen from '@/screens/onboarding/WelcomeScreen';
+type ScreenComponent = ComponentType<any>;
 
-// Placeholder component for screens we haven't built yet
-const PlaceholderScreen = ({ route }: { route: { name: string } }) => (
-  <View style={styles.placeholder}>
-    <Text style={styles.placeholderText}>{route.name}</Text>
-    <Text style={styles.placeholderSubtext}>Coming soon...</Text>
-  </View>
-);
+export interface AppNavigatorScreens {
+  AuthScreen: ScreenComponent;
+  HomeScreen: ScreenComponent;
+  ExploreScreen: ScreenComponent;
+  FavoritesScreen: ScreenComponent;
+  ProfileScreen: ScreenComponent;
+  PositionDetailScreen: ScreenComponent;
+  ForeplayDetailScreen: ScreenComponent;
+  OralDetailScreen: ScreenComponent;
+  MassageDetailScreen: ScreenComponent;
+  RolePlayDetailScreen: ScreenComponent;
+  WelcomeScreen: ScreenComponent;
+  NameInputScreen: ScreenComponent;
+  RelationshipTypeScreen: ScreenComponent;
+  PreferencesScreen: ScreenComponent;
+  ExperienceLevelScreen: ScreenComponent;
+  LegalScreen: ScreenComponent;
+  SignInScreen: ScreenComponent;
+}
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<MainTabParamList>();
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-// Main Tab Navigator (Home, Explore, Favorites, Profile)
-function MainTabs() {
+function MainTabs({ screens }: { screens: AppNavigatorScreens }) {
+  const { t } = useI18n();
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
           backgroundColor: colors.background.primary,
-          borderTopColor: colors.background.secondary,
+          borderTopColor: colors.card,
           borderTopWidth: 1,
-          paddingTop: 8,
-          paddingBottom: 8,
-          height: 60,
+          height: 85,
+          paddingBottom: 25,
+          paddingTop: 10,
         },
-        tabBarActiveTintColor: colors.primary[500],
-        tabBarInactiveTintColor: colors.neutral[500],
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-        },
+        tabBarActiveTintColor: colors.primary[400],
+        tabBarInactiveTintColor: colors.text.muted,
       }}
     >
       <Tab.Screen
         name="Home"
-        component={PlaceholderScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: () => <Text style={{ fontSize: 24 }}>🏠</Text>,
-        }}
+        component={screens.HomeScreen}
+        options={{ tabBarLabel: t('tabs.home'), tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} /> }}
       />
       <Tab.Screen
         name="Explore"
-        component={PlaceholderScreen}
-        options={{
-          tabBarLabel: 'Explore',
-          tabBarIcon: () => <Text style={{ fontSize: 24 }}>🔍</Text>,
-        }}
+        component={screens.ExploreScreen}
+        options={{ tabBarLabel: t('tabs.explore'), tabBarIcon: ({ color, size }) => <Ionicons name="compass-outline" size={size} color={color} /> }}
       />
       <Tab.Screen
         name="Favorites"
-        component={PlaceholderScreen}
-        options={{
-          tabBarLabel: 'Favorites',
-          tabBarIcon: () => <Text style={{ fontSize: 24 }}>❤️</Text>,
-        }}
+        component={screens.FavoritesScreen}
+        options={{ tabBarLabel: t('tabs.favorites'), tabBarIcon: ({ color, size }) => <Ionicons name="heart-outline" size={size} color={color} /> }}
       />
       <Tab.Screen
         name="Profile"
-        component={PlaceholderScreen}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: () => <Text style={{ fontSize: 24 }}>👤</Text>,
-        }}
+        component={screens.ProfileScreen}
+        options={{ tabBarLabel: t('tabs.profile'), tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} /> }}
       />
     </Tab.Navigator>
   );
 }
 
-// Root Navigator
-export default function AppNavigator() {
-  const { hasCompletedOnboarding } = usePreferencesStore();
-
+function OnboardingStack({ screens }: { screens: AppNavigatorScreens }) {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: colors.background.primary },
-          animation: 'slide_from_right',
-        }}
-      >
-        {!hasCompletedOnboarding ? (
-          <>
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="NameInput" component={PlaceholderScreen} />
-            <Stack.Screen name="RelationshipType" component={PlaceholderScreen} />
-            <Stack.Screen name="Preferences" component={PlaceholderScreen} />
-            <Stack.Screen name="ExperienceLevel" component={PlaceholderScreen} />
-            <Stack.Screen name="MoodSelection" component={PlaceholderScreen} />
-            <Stack.Screen name="Legal" component={PlaceholderScreen} />
-            <Stack.Screen name="CreateAccount" component={PlaceholderScreen} />
-            <Stack.Screen name="SignIn" component={PlaceholderScreen} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="MainTabs" component={MainTabs} />
-            <Stack.Screen name="PositionDetail" component={PlaceholderScreen} />
-            <Stack.Screen name="ForeplayDetail" component={PlaceholderScreen} />
-            <Stack.Screen name="CategoryList" component={PlaceholderScreen} />
-            <Stack.Screen name="MoodList" component={PlaceholderScreen} />
-            <Stack.Screen name="SessionBuilder" component={PlaceholderScreen} />
-            <Stack.Screen name="Journey" component={PlaceholderScreen} />
-            <Stack.Screen name="Settings" component={PlaceholderScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Welcome" component={screens.WelcomeScreen} />
+      <Stack.Screen name="NameInput" component={screens.NameInputScreen} />
+      <Stack.Screen name="RelationshipType" component={screens.RelationshipTypeScreen} />
+      <Stack.Screen name="Preferences" component={screens.PreferencesScreen} />
+      <Stack.Screen name="ExperienceLevel" component={screens.ExperienceLevelScreen} />
+      <Stack.Screen name="Legal" component={screens.LegalScreen} />
+      <Stack.Screen name="SignIn" component={screens.SignInScreen} />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  placeholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background.primary,
-  },
-  placeholderText: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  placeholderSubtext: {
-    fontSize: 16,
-    color: colors.text.secondary,
-  },
-});
+export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) {
+  const { t } = useI18n();
+  const store = useStore();
+  const { user, loading: authLoading, initError } = useAuth();
+  const [isReady, setIsReady] = useState(false);
+  const themeStore = useThemeStore();
+  const themeColors = getThemeColors(themeStore.currentTheme);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isReady || authLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 48, marginBottom: 16 }}>🌸</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 28, fontWeight: '700' }}>Blisse</Text>
+        <Text style={{ color: themeColors.text.secondary, fontSize: 14, marginTop: 8 }}>{t('common.loading')}</Text>
+        <ActivityIndicator color={themeColors.primary[500]} style={{ marginTop: 20 }} />
+      </View>
+    );
+  }
+
+  if (initError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
+        <Text style={{ fontSize: 44, marginBottom: 16 }}>⚠️</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700', textAlign: 'center', marginBottom: 10 }}>{t('app.auth_unavailable')}</Text>
+        <Text style={{ color: themeColors.text.secondary, fontSize: 14, textAlign: 'center' }}>{initError}</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Auth" component={screens.AuthScreen} />
+      </Stack.Navigator>
+    );
+  }
+
+  if (!store.hasCompletedOnboarding) {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Onboarding">
+          {() => <OnboardingStack screens={screens} />}
+        </Stack.Screen>
+      </Stack.Navigator>
+    );
+  }
+
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MainTabs">
+        {() => <MainTabs screens={screens} />}
+      </Stack.Screen>
+      <Stack.Screen name="PositionDetail" component={screens.PositionDetailScreen} />
+      <Stack.Screen name="ForeplayDetail" component={screens.ForeplayDetailScreen} />
+      <Stack.Screen name="OralDetail" component={screens.OralDetailScreen} />
+      <Stack.Screen name="MassageDetail" component={screens.MassageDetailScreen} />
+      <Stack.Screen name="RolePlayDetail" component={screens.RolePlayDetailScreen} />
+    </Stack.Navigator>
+  );
+}
+
