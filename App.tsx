@@ -1167,6 +1167,7 @@ function AuthScreen({ navigation: _navigation }: any) {
   const themeColors = getThemeColors(themeStore.currentTheme);
   const modeScreen = mode === 'signin' ? 'login' : mode === 'signup' ? 'signup' : 'forgotPassword';
   const authTeaser = authPack(modeScreen, 'teaser');
+  const authPersonalNote = authPack(modeScreen, 'personalNote');
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -1299,6 +1300,7 @@ function AuthScreen({ navigation: _navigation }: any) {
                 {authPack(modeScreen, 'subtitle')}
               </Text>
               {authTeaser ? <Text style={[styles.authTeaser, { color: themeColors.text.secondary }]}>{authTeaser}</Text> : null}
+              {authPersonalNote ? <Text style={[styles.authPersonalNote, { color: themeColors.primary[400] }]}>{authPersonalNote}</Text> : null}
               <LanguageQuickSwitcher compact />
             </View>
 
@@ -2160,7 +2162,7 @@ function DailyBonusModal({ visible, onClose: _onClose, onClaim }: { visible: boo
 // LEVEL UP MODAL
 // ============================================
 function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClose: () => void; newLevel: Level | null }) {
-  const { t } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const [showConfetti, setShowConfetti] = useState(false);
   
   useEffect(() => {
@@ -2182,7 +2184,7 @@ function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClos
         <View style={styles.levelUpContent}>
           <Text style={styles.levelUpEmoji}>{newLevel.emoji}</Text>
           <Text style={styles.levelUpTitle}>{t('level_up.title')}</Text>
-          <Text style={[styles.levelUpNewLevel, { color: newLevel.color }]}>{newLevel.title}</Text>
+          <Text style={[styles.levelUpNewLevel, { color: newLevel.color }]}>{localizeTerm(newLevel.title)}</Text>
           <Text style={styles.levelUpSubtitle}>{t('level_up.subtitle', { level: newLevel.level })}</Text>
           <TouchableOpacity style={styles.celebrationButton} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('level_up.button')}>
             <Text style={styles.celebrationButtonText}>{t('level_up.button')}</Text>
@@ -3772,7 +3774,7 @@ function HomeScreen({ navigation }: any) {
         <View style={styles.levelHeader}>
           <Text style={styles.levelEmoji}>{currentLevel.emoji}</Text>
           <View style={styles.levelInfo}>
-            <Text style={[styles.levelTitle, { color: currentLevel.color }]}>{currentLevel.title}</Text>
+            <Text style={[styles.levelTitle, { color: currentLevel.color }]}>{localizeTerm(currentLevel.title)}</Text>
             <Text style={styles.levelSubtitle}>{t('home.level', { level: currentLevel.level })}</Text>
           </View>
           {nextLevel && (
@@ -3785,7 +3787,7 @@ function HomeScreen({ navigation }: any) {
           <Animated.View style={[styles.levelProgressFill, { width: `${progressToNext}%`, backgroundColor: currentLevel.color }]} />
         </View>
         {nextLevel && (
-          <Text style={styles.levelProgressText}>{t('home.stars_to_level', { count: nextLevel.minStars - store.totalStars, title: nextLevel.title })}</Text>
+          <Text style={styles.levelProgressText}>{t('home.stars_to_level', { count: nextLevel.minStars - store.totalStars, title: localizeTerm(nextLevel.title) })}</Text>
         )}
         <Text style={styles.levelMotivatorText}>{levelMotivator}</Text>
       </TouchableOpacity>
@@ -3888,11 +3890,11 @@ function ExploreScreen({ navigation }: any) {
   const currentCategories = contentType === 'positions' ? categories : contentType === 'foreplay' ? foreplayCategories : contentType === 'oral' ? oralCategories : contentType === 'massage' ? massageCategories : rolePlayCategories;
   const contentTypeTabs = useMemo(
     () => [
-      { type: 'positions' as const, emoji: '💑', label: t('explore.type.positions') },
-      { type: 'foreplay' as const, emoji: '💕', label: t('explore.type.foreplay') },
-      { type: 'oral' as const, emoji: '👄', label: t('explore.type.oral') },
-      { type: 'massage' as const, emoji: '💆', label: t('explore.type.massage') },
-      { type: 'roleplay' as const, emoji: '🎭', label: t('explore.type.roleplay') },
+      { type: 'positions' as const, label: t('explore.type.positions') },
+      { type: 'foreplay' as const, label: t('explore.type.foreplay') },
+      { type: 'oral' as const, label: t('explore.type.oral') },
+      { type: 'massage' as const, label: t('explore.type.massage') },
+      { type: 'roleplay' as const, label: t('explore.type.roleplay') },
     ],
     [t]
   );
@@ -4002,9 +4004,9 @@ function ExploreScreen({ navigation }: any) {
             style={[styles.contentTypeTab, contentType === tab.type && styles.contentTypeTabActive]}
             onPress={() => handleContentTypeChange(tab.type)}
           >
-            <Text style={styles.contentTypeTabEmoji}>{tab.emoji}</Text>
             <Text
-              numberOfLines={1}
+              allowFontScaling={false}
+              adjustsFontSizeToFit={false}
               style={[styles.contentTypeTabText, contentType === tab.type && styles.contentTypeTabTextActive]}
             >
               {tab.label}
@@ -4181,7 +4183,7 @@ function FavoritesScreen({ navigation }: any) {
 
 function ProfileScreen({ navigation }: any) {
   const store = useStore();
-  const { t } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const { user, logout } = useAuth();
   const [showAchievements, setShowAchievements] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
@@ -4225,7 +4227,7 @@ function ProfileScreen({ navigation }: any) {
         <View style={[styles.avatar, { borderColor: currentLevel.color }]}><Text style={styles.avatarText}>{store.name?.charAt(0)?.toUpperCase() || user?.displayName?.charAt(0)?.toUpperCase() || '?'}</Text></View>
         <Text style={styles.profileName}>{store.name || user?.displayName || t('profile.friend')}</Text>
         <Text style={[styles.profileEmail, { color: themeColors.text.muted }]}>{user?.email}</Text>
-        <Text style={[styles.profileLevel, { color: currentLevel.color }]}>{currentLevel.emoji} {currentLevel.title}</Text>
+        <Text style={[styles.profileLevel, { color: currentLevel.color }]}>{currentLevel.emoji} {localizeTerm(currentLevel.title)}</Text>
         <View style={styles.profileStarBadge}>
           <Text style={styles.profileStarText}>⭐ {t('profile.stars_earned', { count: store.totalStars })}</Text>
         </View>
@@ -5991,23 +5993,21 @@ const styles = StyleSheet.create({
   // CONTENT TYPE TABS (5 tabs)
   // ============================================
   contentTypeScroll: { marginBottom: 14 },
-  contentTypeScrollContent: { paddingHorizontal: 4, paddingRight: 12 },
+  contentTypeScrollContent: { paddingHorizontal: 4, paddingRight: 20 },
   contentTypeTab: {
-    minWidth: 136,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    minWidth: 160,
+    paddingHorizontal: 18,
+    paddingVertical: 13,
     borderRadius: 18,
     marginRight: 10,
-    backgroundColor: colors.card,
+    backgroundColor: colors.cardLight,
     borderWidth: 1,
-    borderColor: colors.cardLight,
+    borderColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
   },
   contentTypeTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
-  contentTypeTabEmoji: { fontSize: 15, marginRight: 6 },
-  contentTypeTabText: { fontSize: 15, color: colors.text.primary, fontWeight: '700' },
+  contentTypeTabText: { fontSize: 16, color: colors.white, fontWeight: '700', letterSpacing: 0.2 },
   contentTypeTabTextActive: { color: colors.white, fontWeight: '600' },
 
   // ============================================
@@ -6204,6 +6204,7 @@ const styles = StyleSheet.create({
   authTitle: { fontSize: 28, fontWeight: '700', marginBottom: 8 },
   authSubtitle: { fontSize: 15, textAlign: 'center' },
   authTeaser: { marginTop: 8, fontSize: 14, lineHeight: 21, textAlign: 'center', maxWidth: 320 },
+  authPersonalNote: { marginTop: 10, fontSize: 13, lineHeight: 19, textAlign: 'center', maxWidth: 320, fontWeight: '600' },
   authErrorContainer: { backgroundColor: 'rgba(239, 68, 68, 0.15)', padding: 12, borderRadius: 12, marginBottom: 16 },
   authErrorText: { color: colors.error, fontSize: 14, textAlign: 'center' },
   authInputContainer: { marginBottom: 16 },

@@ -1312,6 +1312,15 @@ const TERM_TRANSLATIONS: Record<string, Record<AppLanguage, string>> = {
   blossoming: { en: 'blossoming', es: 'floreciente', pt: 'florescendo' },
   'He gives': { en: 'He gives', es: 'El da', pt: 'Ele conduz' },
   'She gives': { en: 'She gives', es: 'Ella da', pt: 'Ela conduz' },
+  Newcomer: { en: 'Newcomer', es: 'Principiante', pt: 'Iniciante' },
+  Explorer: { en: 'Explorer', es: 'Explorador', pt: 'Explorador' },
+  Adventurer: { en: 'Adventurer', es: 'Aventurero', pt: 'Aventureiro' },
+  Enthusiast: { en: 'Enthusiast', es: 'Entusiasta', pt: 'Entusiasta' },
+  Connoisseur: { en: 'Connoisseur', es: 'Conocedor', pt: 'Conhecedor' },
+  Expert: { en: 'Expert', es: 'Experto', pt: 'Especialista' },
+  Master: { en: 'Master', es: 'Maestro', pt: 'Mestre' },
+  Legend: { en: 'Legend', es: 'Leyenda', pt: 'Lenda' },
+  'Passion Master': { en: 'Passion Master', es: 'Maestro de la pasión', pt: 'Mestre da paixão' },
 };
 
 export const translateUi = (language: AppLanguage, key: string, params?: TranslationParams): string => {

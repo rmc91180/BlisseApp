@@ -147,23 +147,28 @@ const EN_CONTENT: LegalLocaleContent = {
   },
   about: {
     title: 'Why We Built Blisse',
-    subtitle: 'Made by a real couple, for real couples',
+    subtitle: 'From Tammy & Mark, married 20 years, to couples everywhere',
     intro: [
-      'Blisse started from a simple realization: once real life gets busy, connection can drift into autopilot.',
-      'We wanted a playful way to bring back intention, excitement, and emotional closeness without pressure.',
+      'We are Tammy and Mark. After 20 years of marriage, we learned that love stays strong when you keep being intentional, playful, and curious with each other.',
+      'Blisse started as our own private experiment to improve communication, flirt more, and make date-night energy easier to create in real life.',
+      'When it started helping us reconnect in small daily moments, we decided to share it with other couples too.',
     ],
     sections: [
       {
-        heading: 'What Blisse helps you do',
-        body: '- Turn "What should we do tonight?" into easy, fun options\n- Build trust and chemistry with playful prompts and dares\n- Keep momentum with weekly goals and shared milestones\n- Personalize ideas based on your mood and feedback loop',
+        heading: 'What Blisse helps couples do',
+        body: '- Turn "What should we do tonight?" into simple, playful options\n- Strengthen communication with low-pressure prompts, games, and shared rituals\n- Keep momentum with weekly goals, streaks, and meaningful milestones\n- Personalize ideas based on your mood and feedback loop',
       },
       {
-        heading: 'Our vibe',
-        body: 'No judgment. No performance pressure. Just meaningful connection with a little mischief and a lot of heart.',
+        heading: 'Our story and vibe',
+        body: 'No judgment. No performance pressure. Just warm connection, a little mischief, and a lot of heart. We designed Blisse to feel like a supportive, playful companion for real couples with real schedules.',
+      },
+      {
+        heading: 'Community and feedback',
+        body: 'We are building a community of fun-loving couples. Your ideas, feedback, and stories directly shape what we build next, and we read every submission.',
       },
       {
         heading: 'Our promise',
-        body: 'We design Blisse to feel emotionally warm, playful, and private by default, so you can focus on each other.',
+        body: 'Blisse is private by default and emotionally safe by design, so you can focus on each other and keep your connection alive over time.',
       },
     ],
   },
@@ -291,23 +296,28 @@ const ES_CONTENT: LegalLocaleContent = {
   },
   about: {
     title: 'Por qué creamos Blisse',
-    subtitle: 'Hecha por una pareja real, para parejas reales',
+    subtitle: 'De Tammy y Mark, casados hace 20 años, para parejas reales',
     intro: [
-      'Blisse nació de una idea simple: cuando la vida se acelera, la conexión puede entrar en piloto automático.',
-      'Queriamos una forma divertida de recuperar intención, emoción y cercanía sin presión.',
+      'Somos Tammy y Mark. Después de 20 años de matrimonio, aprendimos que la conexión crece cuando hay intención, juego y curiosidad.',
+      'Blisse empezó como nuestro propio experimento para mejorar la comunicación, coquetear más y recuperar esa energía especial en lo cotidiano.',
+      'Cuando vimos que nos ayudaba de verdad, decidimos compartirlo con otras parejas.',
     ],
     sections: [
       {
-        heading: 'Lo que Blisse te ayuda a hacer',
-        body: '- Convertir "que hacemos hoy?" en opciones fáciles\n- Fortalecer confianza y quimica con retos y juegos\n- Mantener constancia con metas semanales\n- Personalizar ideas segun su estado de animo y sus comentarios',
+        heading: 'Lo que Blisse ayuda a hacer',
+        body: '- Convertir "¿qué hacemos hoy?" en opciones simples y divertidas\n- Fortalecer la comunicación con juegos, retos y rituales sin presión\n- Mantener el impulso con metas semanales, rachas y logros compartidos\n- Personalizar sugerencias según el estado de ánimo y el feedback de ustedes',
       },
       {
-        heading: 'Nuestro estilo',
-        body: 'Sin juicios ni presión. Conexión real con un poco de picardía y mucho corazón.',
+        heading: 'Nuestra historia y estilo',
+        body: 'Sin juicios ni presión de rendimiento. Solo conexión real, un poco de picardía y mucho corazón. Diseñamos Blisse para parejas reales con vidas reales.',
+      },
+      {
+        heading: 'Comunidad y feedback',
+        body: 'Estamos construyendo una comunidad de parejas que aman divertirse juntas. Sus ideas, comentarios y sugerencias influyen directamente en lo que construimos después.',
       },
       {
         heading: 'Nuestra promesa',
-        body: 'Diseñamos Blisse para que se sienta cálida, divertida y privada por defecto.',
+        body: 'Blisse es privada por defecto y emocionalmente segura desde el diseño, para que puedan enfocarse en ustedes y mantener viva la conexión.',
       },
     ],
   },
@@ -435,23 +445,28 @@ const PT_CONTENT: LegalLocaleContent = {
   },
   about: {
     title: 'Por que criamos o Blisse',
-    subtitle: 'Feito por um casal real, para casais reais',
+    subtitle: 'De Tammy e Mark, casados há 20 anos, para casais reais',
     intro: [
-      'Blisse nasceu de uma percepção simples: quando a vida fica corrida, a conexão pode entrar no piloto automático.',
-      'Queriamos uma forma divertida de recuperar intenção, entusiasmo e proximidade emocional sem pressão.',
+      'Somos Tammy e Mark. Depois de 20 anos de casamento, aprendemos que a conexão cresce quando existe intenção, leveza e curiosidade.',
+      'O Blisse começou como nosso próprio experimento para melhorar a comunicação, flertar mais e trazer de volta aquela energia gostosa do início.',
+      'Quando vimos que isso estava ajudando de verdade no dia a dia, decidimos compartilhar com outros casais.',
     ],
     sections: [
       {
         heading: 'Como o Blisse ajuda vocês',
-        body: '- Transformar "o que fazemos hoje?" em opções simples\n- Fortalecer confiança e química com jogos e desafios\n- Manter constancia com metas semanais\n- Personalizar ideias com base no ambiente e nos comentários de vocês',
+        body: '- Transformar "o que fazemos hoje?" em opções simples e divertidas\n- Fortalecer a comunicação com jogos, desafios e rituais sem pressão\n- Manter o ritmo com metas semanais, sequências e marcos compartilhados\n- Personalizar ideias com base no humor e no feedback de vocês',
       },
       {
-        heading: 'Nosso estilo',
-        body: 'Sem julgamento e sem pressão de desempenho. Apenas conexão significativa com um toque de brincadeira.',
+        heading: 'Nossa história e nossa vibe',
+        body: 'Sem julgamentos e sem pressão de desempenho. Só conexão verdadeira, um toque de brincadeira e muito carinho. Criamos o Blisse para casais reais com rotinas reais.',
+      },
+      {
+        heading: 'Comunidade e feedback',
+        body: 'Estamos construindo uma comunidade de casais que gostam de se divertir juntos. Suas ideias, feedbacks e sugestões influenciam diretamente o que vamos criar depois.',
       },
       {
         heading: 'Nossa promessa',
-        body: 'Criamos o Blisse para ser acolhedor, divertido e privado por padrão, para vocês focarem um no outro.',
+        body: 'O Blisse é privado por padrão e emocionalmente seguro por design, para que vocês foquem um no outro e mantenham a conexão viva com o tempo.',
       },
     ],
   },
