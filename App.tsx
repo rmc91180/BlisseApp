@@ -3996,24 +3996,27 @@ function ExploreScreen({ navigation }: any) {
     <ScreenWrapper>
       <View style={styles.exploreHeader}><Text style={styles.title}>{t('explore.title')}</Text></View>
       
-      {/* Content Type Tabs - Scrollable for 5 options */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.contentTypeScroll} contentContainerStyle={styles.contentTypeScrollContent}>
+      {/* Content Type Tabs */}
+      <View style={styles.contentTypeGrid}>
         {contentTypeTabs.map((tab) => (
           <TouchableOpacity
             key={tab.type}
-            style={[styles.contentTypeTab, contentType === tab.type && styles.contentTypeTabActive]}
+            style={[styles.contentTypeGridTab, contentType === tab.type && styles.contentTypeGridTabActive]}
             onPress={() => handleContentTypeChange(tab.type)}
+            activeOpacity={0.85}
           >
             <Text
               allowFontScaling={false}
-              adjustsFontSizeToFit={false}
-              style={[styles.contentTypeTabText, contentType === tab.type && styles.contentTypeTabTextActive]}
+              maxFontSizeMultiplier={1}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={[styles.contentTypeGridTabText, contentType === tab.type && styles.contentTypeGridTabTextActive]}
             >
               {tab.label}
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
 
       <SearchBar
         value={searchQuery}
@@ -5992,23 +5995,22 @@ const styles = StyleSheet.create({
   // ============================================
   // CONTENT TYPE TABS (5 tabs)
   // ============================================
-  contentTypeScroll: { marginBottom: 14 },
-  contentTypeScrollContent: { paddingHorizontal: 4, paddingRight: 20 },
-  contentTypeTab: {
-    minWidth: 160,
-    paddingHorizontal: 18,
-    paddingVertical: 13,
-    borderRadius: 18,
-    marginRight: 10,
+  contentTypeGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 14 },
+  contentTypeGridTab: {
+    width: '32%',
+    minHeight: 48,
+    paddingHorizontal: 8,
+    borderRadius: 14,
+    marginBottom: 8,
     backgroundColor: colors.cardLight,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  contentTypeTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
-  contentTypeTabText: { fontSize: 16, color: colors.white, fontWeight: '700', letterSpacing: 0.2 },
-  contentTypeTabTextActive: { color: colors.white, fontWeight: '600' },
+  contentTypeGridTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
+  contentTypeGridTabText: { fontSize: 15, lineHeight: 18, color: colors.white, fontWeight: '700', textAlign: 'center' },
+  contentTypeGridTabTextActive: { color: colors.white },
 
   // ============================================
   // INTENSITY BADGE (for roleplay cards)
