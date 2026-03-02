@@ -3997,25 +3997,27 @@ function ExploreScreen({ navigation }: any) {
       <View style={styles.exploreHeader}><Text style={styles.title}>{t('explore.title')}</Text></View>
       
       {/* Content Type Tabs */}
-      <View style={styles.contentTypeGrid}>
-        {contentTypeTabs.map((tab) => (
-          <TouchableOpacity
-            key={tab.type}
-            style={[styles.contentTypeGridTab, contentType === tab.type && styles.contentTypeGridTabActive]}
-            onPress={() => handleContentTypeChange(tab.type)}
-            activeOpacity={0.85}
-          >
-            <Text
-              allowFontScaling={false}
-              maxFontSizeMultiplier={1}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={[styles.contentTypeGridTabText, contentType === tab.type && styles.contentTypeGridTabTextActive]}
+      <View style={styles.contentTypeSliderWrapper}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.contentTypeSliderContent}>
+          {contentTypeTabs.map((tab) => (
+            <TouchableOpacity
+              key={tab.type}
+              style={[styles.contentTypeSliderTab, contentType === tab.type && styles.contentTypeSliderTabActive]}
+              onPress={() => handleContentTypeChange(tab.type)}
+              activeOpacity={0.85}
             >
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                allowFontScaling={false}
+                maxFontSizeMultiplier={1}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={[styles.contentTypeSliderTabText, contentType === tab.type && styles.contentTypeSliderTabTextActive]}
+              >
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       <SearchBar
@@ -5995,22 +5997,23 @@ const styles = StyleSheet.create({
   // ============================================
   // CONTENT TYPE TABS (5 tabs)
   // ============================================
-  contentTypeGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 14 },
-  contentTypeGridTab: {
-    width: '32%',
-    minHeight: 48,
-    paddingHorizontal: 8,
+  contentTypeSliderWrapper: { marginBottom: 14 },
+  contentTypeSliderContent: { paddingRight: 20 },
+  contentTypeSliderTab: {
+    minWidth: 132,
+    minHeight: 52,
+    paddingHorizontal: 20,
     borderRadius: 14,
-    marginBottom: 8,
+    marginRight: 10,
     backgroundColor: colors.cardLight,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  contentTypeGridTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
-  contentTypeGridTabText: { fontSize: 15, lineHeight: 18, color: colors.white, fontWeight: '700', textAlign: 'center' },
-  contentTypeGridTabTextActive: { color: colors.white },
+  contentTypeSliderTabActive: { backgroundColor: colors.primary[500], borderColor: colors.primary[400] },
+  contentTypeSliderTabText: { fontSize: 15, lineHeight: 19, color: colors.white, fontWeight: '700', textAlign: 'center' },
+  contentTypeSliderTabTextActive: { color: colors.white },
 
   // ============================================
   // INTENSITY BADGE (for roleplay cards)
