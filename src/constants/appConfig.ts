@@ -93,6 +93,9 @@ export const REACTIVATION_NOTIFICATION_SCHEDULED_FOR_KEY = 'blisse-reactivation-
 export const REACTIVATION_DAYS_INACTIVE = 3;
 export const REACTIVATION_NOTIFICATION_HOUR = 18;
 export const REACTIVATION_NOTIFICATION_MINUTE = 15;
+export const STREAK_NOTIFICATION_ID_KEY = 'blisse-streak-notification-id-v1';
+export const STREAK_NOTIFICATION_HOUR = 20;
+export const STREAK_NOTIFICATION_MINUTE = 15;
 // ============================================
 // LOCALIZED CONTENT CONSTANTS (Proxy-based: auto-resolve to current language)
 // ============================================

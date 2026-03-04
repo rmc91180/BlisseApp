@@ -68,6 +68,7 @@ import {
   getDateKey, getDayOfYear, getDailyJokeBank,
 } from '@/services/dailyJokes';
 import { scheduleReactivationReminder, clearReactivationReminder } from '@/services/reactivationNotifications';
+import { scheduleDailyStreakReminder, clearDailyStreakReminder } from '@/services/streakNotifications';
 import { useStore } from '@/store/useStore';
 import { useThemeStore, THEMES, FONT_SIZES, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
@@ -2726,9 +2727,47 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
     return false;
   }, [t]);
 
+  const clearAllReminderNotifications = useCallback(async () => {
+    await Promise.all([
+      clearDailyJokeTeaserNotifications(),
+      clearDailyStreakReminder(),
+      clearReactivationReminder(),
+    ]);
+    await Notifications.cancelAllScheduledNotificationsAsync().catch(() => undefined);
+  }, []);
+
+  const handleToggleGlobalNotifications = useCallback(async () => {
+    const nextEnabled = !store.notificationsEnabled;
+    store.setNotificationsEnabled(nextEnabled);
+
+    if (!nextEnabled) {
+      await clearAllReminderNotifications();
+      return;
+    }
+
+    const hasPermission = await ensureNotificationPermission();
+    if (!hasPermission) {
+      store.setNotificationsEnabled(false);
+      return;
+    }
+
+    await Promise.all([
+      ensureDailyJokeTeaserNotifications({
+        enabled: store.dailyJokeNotificationsEnabled,
+        forceRefresh: true,
+      }),
+      scheduleDailyStreakReminder({ enabled: store.dailyStreakNotificationsEnabled }),
+      scheduleReactivationReminder({ enabled: store.reactivationNotificationsEnabled }),
+    ]);
+  }, [clearAllReminderNotifications, ensureNotificationPermission, store]);
+
   const handleToggleDailyJokeNotifications = useCallback(async () => {
     const nextEnabled = !store.dailyJokeNotificationsEnabled;
     store.setDailyJokeNotificationsEnabled(nextEnabled);
+
+    if (!store.notificationsEnabled) {
+      return;
+    }
 
     if (nextEnabled) {
       const hasPermission = await ensureNotificationPermission();
@@ -2742,9 +2781,33 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
     }
   }, [ensureNotificationPermission, store]);
 
+  const handleToggleDailyStreakNotifications = useCallback(async () => {
+    const nextEnabled = !store.dailyStreakNotificationsEnabled;
+    store.setDailyStreakNotificationsEnabled(nextEnabled);
+
+    if (!store.notificationsEnabled) {
+      return;
+    }
+
+    if (nextEnabled) {
+      const hasPermission = await ensureNotificationPermission();
+      if (!hasPermission) {
+        store.setDailyStreakNotificationsEnabled(false);
+        return;
+      }
+      await scheduleDailyStreakReminder({ enabled: true });
+    } else {
+      await clearDailyStreakReminder();
+    }
+  }, [ensureNotificationPermission, store]);
+
   const handleToggleReactivationNotifications = useCallback(async () => {
     const nextEnabled = !store.reactivationNotificationsEnabled;
     store.setReactivationNotificationsEnabled(nextEnabled);
+
+    if (!store.notificationsEnabled) {
+      return;
+    }
 
     if (nextEnabled) {
       const hasPermission = await ensureNotificationPermission();
@@ -2942,16 +3005,28 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
 
             {/* Notifications Section */}
             <Text style={styles.settingsSectionTitle}>🔔 {t('settings.section.notifications')}</Text>
+            <TouchableOpacity style={styles.settingsItem} onPress={() => { void handleToggleGlobalNotifications(); }}>
+              <Text style={styles.settingsItemText}>{t('settings.notifications.master')}</Text>
+              <Text style={styles.settingsItemValue}>
+                {store.notificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.settingsItem} onPress={() => { void handleToggleDailyJokeNotifications(); }}>
               <Text style={styles.settingsItemText}>{t('settings.notifications.daily_tease')}</Text>
               <Text style={styles.settingsItemValue}>
-                {store.dailyJokeNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
+                {store.notificationsEnabled && store.dailyJokeNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.settingsItem} onPress={() => { void handleToggleDailyStreakNotifications(); }}>
+              <Text style={styles.settingsItemText}>{t('settings.notifications.daily_streak')}</Text>
+              <Text style={styles.settingsItemValue}>
+                {store.notificationsEnabled && store.dailyStreakNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.settingsItem} onPress={() => { void handleToggleReactivationNotifications(); }}>
               <Text style={styles.settingsItemText}>{t('settings.notifications.reactivation')}</Text>
               <Text style={styles.settingsItemValue}>
-                {store.reactivationNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
+                {store.notificationsEnabled && store.reactivationNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
               </Text>
             </TouchableOpacity>
             <View style={styles.settingsItem}>
@@ -5480,7 +5555,7 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
         setIsUnlocked(false);
         if (featureFlags.enableReactivationReminder && useStore.getState().hasAgreedToTerms) {
           void scheduleReactivationReminder({
-            enabled: useStore.getState().reactivationNotificationsEnabled,
+            enabled: useStore.getState().notificationsEnabled && useStore.getState().reactivationNotificationsEnabled,
           });
         }
         return;
@@ -5490,7 +5565,13 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
 
       if (useStore.getState().hasAgreedToTerms) {
         void ensureDailyJokeTeaserNotifications({
-          enabled: featureFlags.enableDailyJokes && useStore.getState().dailyJokeNotificationsEnabled,
+          enabled:
+            useStore.getState().notificationsEnabled &&
+            featureFlags.enableDailyJokes &&
+            useStore.getState().dailyJokeNotificationsEnabled,
+        });
+        void scheduleDailyStreakReminder({
+          enabled: useStore.getState().notificationsEnabled && useStore.getState().dailyStreakNotificationsEnabled,
         });
         if (isOnline) {
           void flushQueuedFormspreeMessages();
@@ -5507,9 +5588,19 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
   useEffect(() => {
     if (!isReady || !store.hasAgreedToTerms) return;
     void ensureDailyJokeTeaserNotifications({
-      enabled: featureFlags.enableDailyJokes && store.dailyJokeNotificationsEnabled,
+      enabled: store.notificationsEnabled && featureFlags.enableDailyJokes && store.dailyJokeNotificationsEnabled,
     });
-  }, [isReady, store.hasAgreedToTerms, store.dailyJokeNotificationsEnabled, featureFlags.enableDailyJokes]);
+    void scheduleDailyStreakReminder({
+      enabled: store.notificationsEnabled && store.dailyStreakNotificationsEnabled,
+    });
+  }, [
+    isReady,
+    store.hasAgreedToTerms,
+    store.notificationsEnabled,
+    store.dailyJokeNotificationsEnabled,
+    store.dailyStreakNotificationsEnabled,
+    featureFlags.enableDailyJokes,
+  ]);
 
   useEffect(() => {
     const wasOnline = lastOnlineStateRef.current;

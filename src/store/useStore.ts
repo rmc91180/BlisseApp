@@ -68,7 +68,9 @@ export interface UserState {
   pinCode: string | null;
   useBiometrics: boolean;
   language: AppLanguage;
+  notificationsEnabled: boolean;
   dailyJokeNotificationsEnabled: boolean;
+  dailyStreakNotificationsEnabled: boolean;
   reactivationNotificationsEnabled: boolean;
   hasAgreedToTerms: boolean;
   agreedToTermsDate: string | null;
@@ -111,7 +113,9 @@ export interface UserState {
   setPinCode: (pin: string | null) => void;
   setUseBiometrics: (use: boolean) => void;
   setLanguage: (language: AppLanguage) => void;
+  setNotificationsEnabled: (enabled: boolean) => void;
   setDailyJokeNotificationsEnabled: (enabled: boolean) => void;
+  setDailyStreakNotificationsEnabled: (enabled: boolean) => void;
   setReactivationNotificationsEnabled: (enabled: boolean) => void;
   agreeToTerms: () => void;
   resetOnboarding: () => void;
@@ -166,7 +170,9 @@ export const useStore = create<UserState>()(
       pinCode: null,
       useBiometrics: false,
       language: 'en',
+      notificationsEnabled: true,
       dailyJokeNotificationsEnabled: true,
+      dailyStreakNotificationsEnabled: true,
       reactivationNotificationsEnabled: true,
       hasAgreedToTerms: false,
       agreedToTermsDate: null,
@@ -538,7 +544,9 @@ export const useStore = create<UserState>()(
       },
       setUseBiometrics: (use) => set({ useBiometrics: use }),
       setLanguage: (language) => set({ language }),
+      setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
       setDailyJokeNotificationsEnabled: (enabled) => set({ dailyJokeNotificationsEnabled: enabled }),
+      setDailyStreakNotificationsEnabled: (enabled) => set({ dailyStreakNotificationsEnabled: enabled }),
       setReactivationNotificationsEnabled: (enabled) => set({ reactivationNotificationsEnabled: enabled }),
       agreeToTerms: () => set({ hasAgreedToTerms: true, agreedToTermsDate: new Date().toISOString() }),
 
