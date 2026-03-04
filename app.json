@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.blisse.app",
-      "buildNumber": "12",
+      "buildNumber": "13",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "Use Face ID to unlock Blisse and keep your content private",
