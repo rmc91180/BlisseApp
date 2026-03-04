@@ -11,6 +11,7 @@ import {
   sendPasswordResetEmail,
   OAuthProvider,
   signInWithCredential,
+  fetchSignInMethodsForEmail,
   type User as FirebaseUser,
 } from 'firebase/auth';
 import * as AppleAuthentication from 'expo-apple-authentication';
@@ -121,15 +122,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
+      if (!credential.identityToken) {
+        throw new Error('Apple Sign-In did not return an identity token');
+      }
 
       const provider = new OAuthProvider('apple.com');
       const oAuthCredential = provider.credential({
-        idToken: credential.identityToken!,
+        idToken: credential.identityToken,
       });
 
       await signInWithCredential(auth, oAuthCredential);
     } catch (error: any) {
-      if (error.code !== 'ERR_CANCELED') {
+      if (error.code !== 'ERR_CANCELED' && error.code !== 'ERR_REQUEST_CANCELED') {
         throw error;
       }
     }
@@ -144,6 +148,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resetPassword = async (email: string) => {
     const auth = getFirebaseAuth();
     if (!auth) throw new Error('Auth not initialized');
+    // Use enumeration-safe existence check before issuing the reset request.
+    const methods = await fetchSignInMethodsForEmail(auth, email);
+    if (!methods || methods.length === 0) {
+      const notFoundError = new Error('auth/user-not-found');
+      (notFoundError as Error & { code?: string }).code = 'auth/user-not-found';
+      throw notFoundError;
+    }
     await sendPasswordResetEmail(auth, email);
   };
 

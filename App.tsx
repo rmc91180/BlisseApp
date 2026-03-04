@@ -73,6 +73,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
+import { SubscriptionProvider } from '@/services/subscription';
 import type {
   SeasonalGameAction, SeasonalGameOption, TruthOrDareItem,
   Level,
@@ -1173,12 +1174,16 @@ function AuthScreen({ navigation: _navigation }: any) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
+  const normalizeEmail = (value: string) => value.trim().toLowerCase();
+  const hasNumber = (value: string) => /\d/.test(value);
+
   const handleSignIn = async () => {
-    if (!email || !password) {
+    const normalizedEmail = normalizeEmail(email);
+    if (!normalizedEmail || !password) {
       setError(authPack('validation', 'allFieldsRequired'));
       return;
     }
-    if (!validateEmail(email)) {
+    if (!validateEmail(normalizedEmail)) {
       setError(authPack('validation', 'emailInvalid'));
       return;
     }
@@ -1186,19 +1191,19 @@ function AuthScreen({ navigation: _navigation }: any) {
     setLoading(true);
     setError('');
     try {
-      await signIn(email, password);
+      await signIn(normalizedEmail, password);
       haptic.success();
       // Navigation handled by auth state change
     } catch (err: any) {
       haptic.error();
-      if (err.code === 'auth/user-not-found') {
-        setError(authPack('forgotPassword', 'emailNotFound'));
-      } else if (err.code === 'auth/wrong-password') {
-        setError(authPack('common', 'error'));
-      } else if (err.code === 'auth/invalid-email') {
+      if (err.code === 'auth/invalid-email') {
         setError(authPack('validation', 'emailInvalid'));
+      } else if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        setError(authPack('login', 'invalidCredentials'));
       } else if (err.code === 'auth/too-many-requests') {
-        setError(authPack('common', 'error'));
+        setError(authPack('common', 'tooManyRequests'));
+      } else if (err.code === 'auth/network-request-failed') {
+        setError(authPack('common', 'networkError'));
       } else {
         setError(authPack('common', 'error'));
       }
@@ -1207,16 +1212,21 @@ function AuthScreen({ navigation: _navigation }: any) {
   };
 
   const handleSignUp = async () => {
-    if (!email || !password) {
+    const normalizedEmail = normalizeEmail(email);
+    if (!normalizedEmail || !password || !confirmPassword || !name.trim()) {
       setError(authPack('validation', 'allFieldsRequired'));
       return;
     }
-    if (!validateEmail(email)) {
+    if (!validateEmail(normalizedEmail)) {
       setError(authPack('validation', 'emailInvalid'));
       return;
     }
-    if (password.length < 6) {
+    if (password.length < 8) {
       setError(authPack('validation', 'passwordTooShort'));
+      return;
+    }
+    if (!hasNumber(password)) {
+      setError(authPack('validation', 'passwordNeedsNumber'));
       return;
     }
     if (password !== confirmPassword) {
@@ -1227,15 +1237,17 @@ function AuthScreen({ navigation: _navigation }: any) {
     setLoading(true);
     setError('');
     try {
-      await signUp(email, password, name.trim());
+      await signUp(normalizedEmail, password, name.trim());
       haptic.success();
       // Navigation handled by auth state change
     } catch (err: any) {
       haptic.error();
       if (err.code === 'auth/email-already-in-use') {
-        setError(authPack('common', 'error'));
+        setError(authPack('signup', 'emailAlreadyInUse'));
       } else if (err.code === 'auth/weak-password') {
         setError(authPack('validation', 'passwordTooShort'));
+      } else if (err.code === 'auth/network-request-failed') {
+        setError(authPack('common', 'networkError'));
       } else {
         setError(authPack('common', 'error'));
       }
@@ -1244,11 +1256,12 @@ function AuthScreen({ navigation: _navigation }: any) {
   };
 
   const handleResetPassword = async () => {
-    if (!email) {
+    const normalizedEmail = normalizeEmail(email);
+    if (!normalizedEmail) {
       setError(authPack('validation', 'emailRequired'));
       return;
     }
-    if (!validateEmail(email)) {
+    if (!validateEmail(normalizedEmail)) {
       setError(authPack('validation', 'emailInvalid'));
       return;
     }
@@ -1256,7 +1269,7 @@ function AuthScreen({ navigation: _navigation }: any) {
     setLoading(true);
     setError('');
     try {
-      await resetPassword(email);
+      await resetPassword(normalizedEmail);
       haptic.success();
       Alert.alert(authPack('common', 'success'), authPack('forgotPassword', 'emailSent'));
       setMode('signin');
@@ -1264,6 +1277,8 @@ function AuthScreen({ navigation: _navigation }: any) {
       haptic.error();
       if (err.code === 'auth/user-not-found') {
         setError(authPack('forgotPassword', 'emailNotFound'));
+      } else if (err.code === 'auth/network-request-failed') {
+        setError(authPack('common', 'networkError'));
       } else {
         setError(authPack('common', 'error'));
       }
@@ -1278,7 +1293,7 @@ function AuthScreen({ navigation: _navigation }: any) {
       await signInWithApple();
       haptic.success();
     } catch (err: any) {
-      if (err.code !== 'ERR_CANCELED') {
+      if (err.code !== 'ERR_CANCELED' && err.code !== 'ERR_REQUEST_CANCELED') {
         haptic.error();
         setError(authPack('common', 'error'));
       }
@@ -5492,13 +5507,15 @@ export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        {posthogConfig.apiKey ? (
-          <PostHogProvider apiKey={posthogConfig.apiKey} options={posthogConfig.options} autocapture={false}>
-            <AppContent enableAnalytics />
-          </PostHogProvider>
-        ) : (
-          <AppContent />
-        )}
+        <SubscriptionProvider>
+          {posthogConfig.apiKey ? (
+            <PostHogProvider apiKey={posthogConfig.apiKey} options={posthogConfig.options} autocapture={false}>
+              <AppContent enableAnalytics />
+            </PostHogProvider>
+          ) : (
+            <AppContent />
+          )}
+        </SubscriptionProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

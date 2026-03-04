@@ -44,6 +44,7 @@
         "confirmPasswordPlaceholder": "Re-enter your password",
         "passwordRequirements": "At least 8 characters with a number",
         "createAccount": "Create Account",
+        "emailAlreadyInUse": "An account with this email already exists",
         "orContinueWith": "Or continue with",
         "google": "Continue with Google",
         "apple": "Continue with Apple"
@@ -60,6 +61,7 @@
         "confirmPasswordPlaceholder": "Vuelve a ingresar tu contraseña",
         "passwordRequirements": "Al menos 8 caracteres con un número",
         "createAccount": "Crear Cuenta",
+        "emailAlreadyInUse": "Ya existe una cuenta con este correo",
         "orContinueWith": "O continúa con",
         "google": "Continuar con Google",
         "apple": "Continuar con Apple"
@@ -76,6 +78,7 @@
         "confirmPasswordPlaceholder": "Digite sua senha novamente",
         "passwordRequirements": "Pelo menos 8 caracteres com um número",
         "createAccount": "Criar Conta",
+        "emailAlreadyInUse": "Já existe uma conta com este e-mail",
         "orContinueWith": "Ou continue com",
         "google": "Continuar com Google",
         "apple": "Continuar com Apple"
@@ -92,6 +95,7 @@
         "password": "Password",
         "passwordPlaceholder": "Enter your password",
         "forgotPassword": "Forgot password?",
+        "invalidCredentials": "Incorrect email or password",
         "signIn": "Sign In",
         "noAccount": "Don't have an account?",
         "signUp": "Sign Up"
@@ -106,6 +110,7 @@
         "password": "Contraseña",
         "passwordPlaceholder": "Ingresa tu contraseña",
         "forgotPassword": "¿Olvidaste tu contraseña?",
+        "invalidCredentials": "Correo o contraseña incorrectos",
         "signIn": "Iniciar Sesión",
         "noAccount": "¿No tienes una cuenta?",
         "signUp": "Regístrate"
@@ -120,6 +125,7 @@
         "password": "Senha",
         "passwordPlaceholder": "Digite sua senha",
         "forgotPassword": "Esqueceu a senha?",
+        "invalidCredentials": "E-mail ou senha incorretos",
         "signIn": "Entrar",
         "noAccount": "Não tem uma conta?",
         "signUp": "Cadastre-se"
@@ -517,6 +523,8 @@
         "save": "Save",
         "loading": "Loading...",
         "error": "Something went wrong. Please try again.",
+        "networkError": "Network error. Check your connection and try again.",
+        "tooManyRequests": "Too many attempts. Please wait a bit and try again.",
         "success": "Success!",
         "stepOf": "Step {current} of {total}"
       },
@@ -528,6 +536,8 @@
         "save": "Guardar",
         "loading": "Cargando...",
         "error": "Algo salió mal. Por favor intenta de nuevo.",
+        "networkError": "Error de red. Revisa tu conexión e inténtalo de nuevo.",
+        "tooManyRequests": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
         "success": "¡Éxito!",
         "stepOf": "Paso {current} de {total}"
       },
@@ -539,6 +549,8 @@
         "save": "Salvar",
         "loading": "Carregando...",
         "error": "Algo deu errado. Por favor, tente novamente.",
+        "networkError": "Erro de rede. Verifique sua conexão e tente novamente.",
+        "tooManyRequests": "Muitas tentativas. Aguarde um pouco e tente novamente.",
         "success": "Sucesso!",
         "stepOf": "Passo {current} de {total}"
       }
