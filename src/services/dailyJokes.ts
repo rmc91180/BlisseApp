@@ -156,6 +156,11 @@ export interface DailyJokeBankCache {
   bank: DailyJokeBank;
 }
 
+interface DailyJokeNotificationOptions {
+  enabled?: boolean;
+  forceRefresh?: boolean;
+}
+
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
@@ -248,6 +253,30 @@ export const normalizeDailyJokeBank = (raw: unknown): DailyJokeBank | null => {
     version: typeof candidate.version === 'string' ? candidate.version.trim() : undefined,
     localized,
   };
+};
+
+const parseStoredIds = (raw: string | null): string[] => {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0);
+  } catch {
+    return [];
+  }
+};
+
+const extractTypeFromNotificationData = (data: unknown): string | null => {
+  if (!data || typeof data !== 'object') return null;
+  const maybeType = (data as { type?: unknown }).type;
+  return typeof maybeType === 'string' ? maybeType : null;
+};
+
+const getScheduledDailyJokeNotificationIds = async (): Promise<string[]> => {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  return scheduled
+    .filter((request) => extractTypeFromNotificationData(request.content.data) === 'daily_joke_tease')
+    .map((request) => request.identifier);
 };
 
 // ============================================
@@ -374,15 +403,45 @@ export const getDailyJokeForDate = (
 // DAILY JOKE TEASER NOTIFICATIONS
 // ============================================
 
-export const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
+export const clearDailyJokeTeaserNotifications = async (): Promise<void> => {
+  if (Platform.OS === 'web') return;
+
+  const existingIdsRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_IDS_KEY);
+  const existingIds = parseStoredIds(existingIdsRaw);
+  const pendingDailyIds = await getScheduledDailyJokeNotificationIds();
+  const idsToCancel = Array.from(new Set([...existingIds, ...pendingDailyIds]));
+
+  if (idsToCancel.length > 0) {
+    await Promise.all(
+      idsToCancel.map((id) => Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined))
+    );
+  }
+
+  await AsyncStorage.multiRemove([
+    DAILY_JOKE_NOTIFICATION_IDS_KEY,
+    DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY,
+  ]);
+};
+
+export const ensureDailyJokeTeaserNotifications = async (
+  options: DailyJokeNotificationOptions = {}
+): Promise<void> => {
   if (Platform.OS === 'web') return;
 
   try {
+    const { enabled = true, forceRefresh = false } = options;
+    if (!enabled) {
+      await clearDailyJokeTeaserNotifications();
+      return;
+    }
+
     const now = new Date();
     const language = getCurrentLanguage();
     const jokeBank = await getDailyJokeBank();
     const refreshAtRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY);
-    if (refreshAtRaw && new Date(refreshAtRaw) > now) {
+    const pendingDailyIds = await getScheduledDailyJokeNotificationIds();
+    const hasFutureDailyTeasers = pendingDailyIds.length > 0;
+    if (!forceRefresh && refreshAtRaw && new Date(refreshAtRaw) > now && hasFutureDailyTeasers) {
       return;
     }
 
@@ -397,9 +456,12 @@ export const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
     }
 
     const existingIdsRaw = await AsyncStorage.getItem(DAILY_JOKE_NOTIFICATION_IDS_KEY);
-    if (existingIdsRaw) {
-      const existingIds: string[] = JSON.parse(existingIdsRaw);
-      await Promise.all(existingIds.map((id) => Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined)));
+    const existingIds = parseStoredIds(existingIdsRaw);
+    const idsToCancel = Array.from(new Set([...existingIds, ...pendingDailyIds]));
+    if (idsToCancel.length > 0) {
+      await Promise.all(
+        idsToCancel.map((id) => Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined))
+      );
     }
 
     const scheduledIds: string[] = [];
@@ -423,7 +485,10 @@ export const ensureDailyJokeTeaserNotifications = async (): Promise<void> => {
           sound: false,
           data: { type: 'daily_joke_tease', jokeId: joke.id, dateKey },
         },
-        trigger: adjustedFireDate as any,
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: adjustedFireDate,
+        },
       });
       scheduledIds.push(id);
       scheduledCountByDate.set(dateKey, currentCount + 1);

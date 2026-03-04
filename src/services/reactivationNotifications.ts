@@ -13,6 +13,9 @@ import {
 
 const REACTIVATION_TITLE = 'We miss your spark ✨';
 const REACTIVATION_BODY = 'Open Blisse for today\'s tease, tailored ideas, and a quick connection win.';
+interface ReactivationReminderOptions {
+  enabled?: boolean;
+}
 
 const isWithinQuietHours = (hour: number): boolean => {
   if (DAILY_JOKE_QUIET_HOURS_START < DAILY_JOKE_QUIET_HOURS_END) {
@@ -38,8 +41,13 @@ export const clearReactivationReminder = async (): Promise<void> => {
   await AsyncStorage.multiRemove([REACTIVATION_NOTIFICATION_ID_KEY, REACTIVATION_NOTIFICATION_SCHEDULED_FOR_KEY]);
 };
 
-export const scheduleReactivationReminder = async (): Promise<void> => {
+export const scheduleReactivationReminder = async (options: ReactivationReminderOptions = {}): Promise<void> => {
   if (Platform.OS === 'web') return;
+  const { enabled = true } = options;
+  if (!enabled) {
+    await clearReactivationReminder();
+    return;
+  }
 
   const permission = await Notifications.getPermissionsAsync();
   let finalStatus = permission.status;
@@ -63,7 +71,10 @@ export const scheduleReactivationReminder = async (): Promise<void> => {
       sound: false,
       data: { type: 'reactivation_reminder' },
     },
-    trigger: adjustedDate as never,
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: adjustedDate,
+    },
   });
 
   await AsyncStorage.multiSet([

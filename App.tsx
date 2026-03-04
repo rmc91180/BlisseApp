@@ -24,6 +24,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Linking from 'expo-linking';
+import * as Notifications from 'expo-notifications';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { deleteUser } from 'firebase/auth';
 import { PostHogProvider, usePostHog, type PostHogOptions } from 'posthog-react-native';
@@ -63,7 +64,7 @@ import {
 } from '@/services/analytics';
 import { sendAggregateAnalyticsEvent } from '@/services/backendEvents';
 import {
-  ensureDailyJokeTeaserNotifications, getDailyJokeForDate,
+  ensureDailyJokeTeaserNotifications, clearDailyJokeTeaserNotifications, getDailyJokeForDate,
   getDateKey, getDayOfYear, getDailyJokeBank,
 } from '@/services/dailyJokes';
 import { scheduleReactivationReminder, clearReactivationReminder } from '@/services/reactivationNotifications';
@@ -84,6 +85,16 @@ import type { DailyJokeBank } from '@/services/dailyJokes';
 
 // Wire up the localized content language getter to the store
 setLanguageGetter(() => useStore.getState().language);
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const { width } = Dimensions.get('window');
 const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
@@ -2672,6 +2683,86 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [pinError, setPinError] = useState('');
+  const [notificationPermissionStatus, setNotificationPermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>('undetermined');
+
+  const refreshNotificationPermissionStatus = useCallback(async () => {
+    const permissions = await Notifications.getPermissionsAsync();
+    if (permissions.status === 'granted') {
+      setNotificationPermissionStatus('granted');
+      return;
+    }
+    if (permissions.status === 'denied') {
+      setNotificationPermissionStatus('denied');
+      return;
+    }
+    setNotificationPermissionStatus('undetermined');
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+    void refreshNotificationPermissionStatus();
+  }, [visible, refreshNotificationPermissionStatus]);
+
+  const ensureNotificationPermission = useCallback(async (): Promise<boolean> => {
+    let permissions = await Notifications.getPermissionsAsync();
+    if (permissions.status !== 'granted') {
+      permissions = await Notifications.requestPermissionsAsync();
+    }
+
+    if (permissions.status === 'granted') {
+      setNotificationPermissionStatus('granted');
+      return true;
+    }
+
+    setNotificationPermissionStatus(permissions.status === 'denied' ? 'denied' : 'undetermined');
+    Alert.alert(
+      t('settings.notifications.permission_required_title'),
+      t('settings.notifications.permission_required_body'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('settings.notifications.open_settings'), onPress: () => { void Linking.openSettings(); } },
+      ]
+    );
+    return false;
+  }, [t]);
+
+  const handleToggleDailyJokeNotifications = useCallback(async () => {
+    const nextEnabled = !store.dailyJokeNotificationsEnabled;
+    store.setDailyJokeNotificationsEnabled(nextEnabled);
+
+    if (nextEnabled) {
+      const hasPermission = await ensureNotificationPermission();
+      if (!hasPermission) {
+        store.setDailyJokeNotificationsEnabled(false);
+        return;
+      }
+      await ensureDailyJokeTeaserNotifications({ enabled: true, forceRefresh: true });
+    } else {
+      await clearDailyJokeTeaserNotifications();
+    }
+  }, [ensureNotificationPermission, store]);
+
+  const handleToggleReactivationNotifications = useCallback(async () => {
+    const nextEnabled = !store.reactivationNotificationsEnabled;
+    store.setReactivationNotificationsEnabled(nextEnabled);
+
+    if (nextEnabled) {
+      const hasPermission = await ensureNotificationPermission();
+      if (!hasPermission) {
+        store.setReactivationNotificationsEnabled(false);
+        return;
+      }
+      await scheduleReactivationReminder({ enabled: true });
+    } else {
+      await clearReactivationReminder();
+    }
+  }, [ensureNotificationPermission, store]);
+
+  const notificationPermissionValue = useMemo(() => {
+    if (notificationPermissionStatus === 'granted') return t('settings.notifications.permission_granted');
+    if (notificationPermissionStatus === 'denied') return t('settings.notifications.permission_denied');
+    return t('settings.notifications.permission_not_determined');
+  }, [notificationPermissionStatus, t]);
 
   const handleSetPin = () => {
     if (newPin.length !== 4) {
@@ -2848,6 +2939,31 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                 ))}
               </View>
             )}
+
+            {/* Notifications Section */}
+            <Text style={styles.settingsSectionTitle}>🔔 {t('settings.section.notifications')}</Text>
+            <TouchableOpacity style={styles.settingsItem} onPress={() => { void handleToggleDailyJokeNotifications(); }}>
+              <Text style={styles.settingsItemText}>{t('settings.notifications.daily_tease')}</Text>
+              <Text style={styles.settingsItemValue}>
+                {store.dailyJokeNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.settingsItem} onPress={() => { void handleToggleReactivationNotifications(); }}>
+              <Text style={styles.settingsItemText}>{t('settings.notifications.reactivation')}</Text>
+              <Text style={styles.settingsItemValue}>
+                {store.reactivationNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.settingsItem}>
+              <Text style={styles.settingsItemText}>{t('settings.notifications.permission_status')}</Text>
+              <Text style={styles.settingsItemValue}>{notificationPermissionValue}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.settingsItem}
+              onPress={() => { void Linking.openSettings(); }}
+            >
+              <Text style={styles.settingsItemText}>{t('settings.notifications.open_settings')}</Text>
+            </TouchableOpacity>
 
             {/* Appearance Section */}
             <Text style={styles.settingsSectionTitle}>🎨 {t('settings.section.appearance')}</Text>
@@ -5363,7 +5479,9 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
       if (nextState !== 'active') {
         setIsUnlocked(false);
         if (featureFlags.enableReactivationReminder && useStore.getState().hasAgreedToTerms) {
-          void scheduleReactivationReminder();
+          void scheduleReactivationReminder({
+            enabled: useStore.getState().reactivationNotificationsEnabled,
+          });
         }
         return;
       }
@@ -5371,9 +5489,9 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
       void clearReactivationReminder();
 
       if (useStore.getState().hasAgreedToTerms) {
-        if (featureFlags.enableDailyJokes) {
-          void ensureDailyJokeTeaserNotifications();
-        }
+        void ensureDailyJokeTeaserNotifications({
+          enabled: featureFlags.enableDailyJokes && useStore.getState().dailyJokeNotificationsEnabled,
+        });
         if (isOnline) {
           void flushQueuedFormspreeMessages();
         }
@@ -5388,10 +5506,10 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
 
   useEffect(() => {
     if (!isReady || !store.hasAgreedToTerms) return;
-    if (featureFlags.enableDailyJokes) {
-      void ensureDailyJokeTeaserNotifications();
-    }
-  }, [isReady, store.hasAgreedToTerms, featureFlags.enableDailyJokes]);
+    void ensureDailyJokeTeaserNotifications({
+      enabled: featureFlags.enableDailyJokes && store.dailyJokeNotificationsEnabled,
+    });
+  }, [isReady, store.hasAgreedToTerms, store.dailyJokeNotificationsEnabled, featureFlags.enableDailyJokes]);
 
   useEffect(() => {
     const wasOnline = lastOnlineStateRef.current;

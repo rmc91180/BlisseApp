@@ -68,6 +68,8 @@ export interface UserState {
   pinCode: string | null;
   useBiometrics: boolean;
   language: AppLanguage;
+  dailyJokeNotificationsEnabled: boolean;
+  reactivationNotificationsEnabled: boolean;
   hasAgreedToTerms: boolean;
   agreedToTermsDate: string | null;
   // Smart Learning
@@ -109,6 +111,8 @@ export interface UserState {
   setPinCode: (pin: string | null) => void;
   setUseBiometrics: (use: boolean) => void;
   setLanguage: (language: AppLanguage) => void;
+  setDailyJokeNotificationsEnabled: (enabled: boolean) => void;
+  setReactivationNotificationsEnabled: (enabled: boolean) => void;
   agreeToTerms: () => void;
   resetOnboarding: () => void;
   // Smart Learning Actions
@@ -162,6 +166,8 @@ export const useStore = create<UserState>()(
       pinCode: null,
       useBiometrics: false,
       language: 'en',
+      dailyJokeNotificationsEnabled: true,
+      reactivationNotificationsEnabled: true,
       hasAgreedToTerms: false,
       agreedToTermsDate: null,
       // Smart Learning
@@ -532,6 +538,8 @@ export const useStore = create<UserState>()(
       },
       setUseBiometrics: (use) => set({ useBiometrics: use }),
       setLanguage: (language) => set({ language }),
+      setDailyJokeNotificationsEnabled: (enabled) => set({ dailyJokeNotificationsEnabled: enabled }),
+      setReactivationNotificationsEnabled: (enabled) => set({ reactivationNotificationsEnabled: enabled }),
       agreeToTerms: () => set({ hasAgreedToTerms: true, agreedToTermsDate: new Date().toISOString() }),
 
       resetOnboarding: () => {
