@@ -61,6 +61,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'common.loading': 'Loading...',
     'common.success': 'Success',
     'common.error': 'Error',
+    'common.tryAgain': 'Try Again',
     'common.update': 'Update',
     'common.add': 'Add',
 
@@ -477,6 +478,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'common.loading': 'Cargando...',
     'common.success': 'Éxito',
     'common.error': 'Error',
+    'common.tryAgain': 'Volver a intentar',
     'common.update': 'Actualizar',
     'common.add': 'Agregar',
 
@@ -893,6 +895,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'common.loading': 'Carregando...',
     'common.success': 'Sucesso',
     'common.error': 'Erro',
+    'common.tryAgain': 'Tentar novamente',
     'common.update': 'Atualizar',
     'common.add': 'Adicionar',
 

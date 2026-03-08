@@ -148,9 +148,24 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       const info = await Purchases.getCustomerInfo();
       setCustomerInfo(info);
       setConfigError(null);
+      setActionError(null);
     } catch (error) {
       console.error('RevenueCat initialization failed:', error);
-      setConfigError('Billing service is currently unavailable. Please try again.');
+      const code = String((error as { code?: string })?.code || '').toLowerCase();
+      const message = String((error as { message?: string })?.message || '').toLowerCase();
+      const missingConfiguration =
+        code.includes('revenuecat_missing_api_key') || message.includes('revenuecat_missing_api_key');
+
+      if (missingConfiguration) {
+        setConfigError('Billing is required but RevenueCat is not configured for this build.');
+      } else {
+        // Transient StoreKit / network / offerings issues should not dead-end auth flow.
+        // Show retryable error in paywall instead of rendering a hard blocker screen.
+        setConfigError(null);
+        setActionError('Billing service is currently unavailable. Please try again.');
+      }
+      setOfferings([]);
+      setCustomerInfo(null);
     } finally {
       setReady(true);
       setLoading(false);
