@@ -21,7 +21,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
@@ -86,6 +86,8 @@ import type { DailyJokeBank } from '@/services/dailyJokes';
 
 // Wire up the localized content language getter to the store
 setLanguageGetter(() => useStore.getState().language);
+
+const navigationRef = createNavigationContainerRef<any>();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -3569,7 +3571,15 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
 // ============================================
 // MAIN APP SCREENS
 // ============================================
-function HomeScreen({ navigation }: any) {
+function HomeScreen({
+  navigation,
+  pendingDailyJokeDateKey,
+  onConsumePendingDailyJokeNotification,
+}: {
+  navigation: any;
+  pendingDailyJokeDateKey?: string | null;
+  onConsumePendingDailyJokeNotification?: () => void;
+}) {
   const store = useStore();
   const featureFlags = useFeatureFlags();
   const { language, t, localizeTerm } = useI18n();
@@ -3729,6 +3739,31 @@ function HomeScreen({ navigation }: any) {
   useEffect(() => {
     setShowDailyPunchline(false);
   }, [dailyJokeDateKey]);
+
+  useEffect(() => {
+    if (!pendingDailyJokeDateKey) return;
+
+    const targetDateKey = /^\d{4}-\d{2}-\d{2}$/.test(pendingDailyJokeDateKey)
+      ? pendingDailyJokeDateKey
+      : getDateKey(new Date());
+    const jokeFromNotification = getDailyJokeForDate(
+      new Date(`${targetDateKey}T12:00:00`),
+      dailyJokeBank,
+      language
+    );
+
+    setDailyJokeDateKey(targetDateKey);
+    setShowDailyPunchline(true);
+    Alert.alert(`😏 ${t('home.punchline')}`, jokeFromNotification.punchline);
+    Analytics.trackFeatureUsed('daily_joke_notification_punchline_opened');
+    onConsumePendingDailyJokeNotification?.();
+  }, [
+    pendingDailyJokeDateKey,
+    dailyJokeBank,
+    language,
+    onConsumePendingDailyJokeNotification,
+    t,
+  ]);
 
   // Detect level-up when stars change
   useEffect(() => {
@@ -5523,7 +5558,48 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
   const [isReady, setIsReady] = useState(false);
   const [isQueueSyncing, setIsQueueSyncing] = useState(false);
   const [showOnlineRecovered, setShowOnlineRecovered] = useState(false);
+  const [pendingDailyJokeDateKey, setPendingDailyJokeDateKey] = useState<string | null>(null);
   const lastOnlineStateRef = useRef(true);
+  const lastHandledNotificationIdRef = useRef<string | null>(null);
+
+  const handleNotificationResponse = useCallback((response: Notifications.NotificationResponse | null) => {
+    if (!response) return;
+
+    const requestId = response.notification.request.identifier;
+    if (lastHandledNotificationIdRef.current === requestId) return;
+    lastHandledNotificationIdRef.current = requestId;
+
+    const data = response.notification.request.content.data;
+    const payload = data && typeof data === 'object' ? (data as Record<string, unknown>) : null;
+    if (payload?.type !== 'daily_joke_tease') return;
+
+    const notificationDateKey = typeof payload.dateKey === 'string' && payload.dateKey.length > 0
+      ? payload.dateKey
+      : getDateKey(new Date());
+
+    setPendingDailyJokeDateKey(notificationDateKey);
+    Analytics.trackFeatureUsed('daily_joke_notification_opened');
+
+    if (navigationRef.isReady()) {
+      navigationRef.navigate('MainTabs', { screen: 'Home' });
+    }
+  }, []);
+
+  useEffect(() => {
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      handleNotificationResponse(response);
+    });
+
+    void Notifications.getLastNotificationResponseAsync()
+      .then((lastResponse) => {
+        handleNotificationResponse(lastResponse);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      responseSubscription.remove();
+    };
+  }, [handleNotificationResponse]);
 
   useEffect(() => {
     let isMounted = true;
@@ -5662,11 +5738,17 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
           )}
         />
         {enableAnalytics ? <AnalyticsFlusher /> : null}
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <RootAppNavigator
             screens={{
               AuthScreen,
-              HomeScreen,
+              HomeScreen: (props: any) => (
+                <HomeScreen
+                  {...props}
+                  pendingDailyJokeDateKey={pendingDailyJokeDateKey}
+                  onConsumePendingDailyJokeNotification={() => setPendingDailyJokeDateKey(null)}
+                />
+              ),
               ExploreScreen,
               FavoritesScreen,
               ProfileScreen,

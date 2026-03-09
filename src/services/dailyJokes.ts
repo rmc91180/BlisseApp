@@ -161,6 +161,8 @@ interface DailyJokeNotificationOptions {
   forceRefresh?: boolean;
 }
 
+let dailyJokeSchedulingPromise: Promise<void> | null = null;
+
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
@@ -365,9 +367,9 @@ const getLocalizedFallbackPunchlines = (language: AppLanguage): string[] => {
 };
 
 const getJokeNotificationSuffix = (language: AppLanguage): string => {
-  if (language === 'es') return 'Abre Blisse para ver el remate.';
-  if (language === 'pt') return 'Abra o Blisse para ver a piada completa.';
-  return 'Open Blisse for the punchline.';
+  if (language === 'es') return 'Toca para ver el remate.';
+  if (language === 'pt') return 'Toque para ver o desfecho.';
+  return 'Tap to reveal the punchline.';
 };
 
 export const getDailyJokeForDate = (
@@ -428,7 +430,12 @@ export const ensureDailyJokeTeaserNotifications = async (
 ): Promise<void> => {
   if (Platform.OS === 'web') return;
 
-  try {
+  if (dailyJokeSchedulingPromise) {
+    await dailyJokeSchedulingPromise;
+    return;
+  }
+
+  dailyJokeSchedulingPromise = (async () => {
     const { enabled = true, forceRefresh = false } = options;
     if (!enabled) {
       await clearDailyJokeTeaserNotifications();
@@ -499,7 +506,13 @@ export const ensureDailyJokeTeaserNotifications = async (
 
     await AsyncStorage.setItem(DAILY_JOKE_NOTIFICATION_IDS_KEY, JSON.stringify(scheduledIds));
     await AsyncStorage.setItem(DAILY_JOKE_NOTIFICATION_REFRESH_AT_KEY, refreshAt.toISOString());
-  } catch (error) {
+  })().catch((error) => {
     console.warn('Daily joke notification scheduling failed:', error);
+  });
+
+  try {
+    await dailyJokeSchedulingPromise;
+  } finally {
+    dailyJokeSchedulingPromise = null;
   }
 };
