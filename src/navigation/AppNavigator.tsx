@@ -35,6 +35,33 @@ export interface AppNavigatorScreens {
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, language: 'en' | 'es' | 'pt'): string => {
+  const unit = periodUnit.toUpperCase();
+  const plural = periodNumberOfUnits > 1;
+
+  if (language === 'es') {
+    if (unit === 'DAY') return `${periodNumberOfUnits} ${plural ? 'días' : 'día'}`;
+    if (unit === 'WEEK') return `${periodNumberOfUnits} ${plural ? 'semanas' : 'semana'}`;
+    if (unit === 'MONTH') return `${periodNumberOfUnits} ${plural ? 'meses' : 'mes'}`;
+    if (unit === 'YEAR') return `${periodNumberOfUnits} ${plural ? 'años' : 'año'}`;
+    return `${periodNumberOfUnits}`;
+  }
+
+  if (language === 'pt') {
+    if (unit === 'DAY') return `${periodNumberOfUnits} ${plural ? 'dias' : 'dia'}`;
+    if (unit === 'WEEK') return `${periodNumberOfUnits} ${plural ? 'semanas' : 'semana'}`;
+    if (unit === 'MONTH') return `${periodNumberOfUnits} ${plural ? 'meses' : 'mês'}`;
+    if (unit === 'YEAR') return `${periodNumberOfUnits} ${plural ? 'anos' : 'ano'}`;
+    return `${periodNumberOfUnits}`;
+  }
+
+  if (unit === 'DAY') return `${periodNumberOfUnits} day${plural ? 's' : ''}`;
+  if (unit === 'WEEK') return `${periodNumberOfUnits} week${plural ? 's' : ''}`;
+  if (unit === 'MONTH') return `${periodNumberOfUnits} month${plural ? 's' : ''}`;
+  if (unit === 'YEAR') return `${periodNumberOfUnits} year${plural ? 's' : ''}`;
+  return `${periodNumberOfUnits}`;
+};
+
 function SubscriptionPaywallScreen() {
   const language = useStore((state) => state.language);
   const themeStore = useThemeStore();
@@ -54,6 +81,9 @@ function SubscriptionPaywallScreen() {
       subtitle: 'Start your premium access to all experiences, games, and personalized recommendations.',
       restore: 'Restore Purchases',
       retry: 'Retry',
+      freeTrialBadge: 'Free trial available',
+      freeTrialThen: 'Then {price}',
+      introOfferBadge: 'Intro offer available',
       noPlans: 'Plans are loading. Please wait a moment or retry.',
       legal: 'Subscriptions renew automatically unless canceled in App Store settings.',
       purchaseError: 'Purchase failed',
@@ -66,6 +96,9 @@ function SubscriptionPaywallScreen() {
       subtitle: 'Activa el acceso premium a todas las experiencias, juegos y recomendaciones personalizadas.',
       restore: 'Restaurar compras',
       retry: 'Reintentar',
+      freeTrialBadge: 'Prueba gratis disponible',
+      freeTrialThen: 'Luego {price}',
+      introOfferBadge: 'Oferta de introducción disponible',
       noPlans: 'Estamos cargando los planes. Espera un momento o vuelve a intentar.',
       legal: 'Las suscripciones se renuevan automáticamente hasta que las canceles en App Store.',
       purchaseError: 'No se pudo completar la compra',
@@ -78,6 +111,9 @@ function SubscriptionPaywallScreen() {
       subtitle: 'Ative o acesso premium para todas as experiências, jogos e recomendações personalizadas.',
       restore: 'Restaurar compras',
       retry: 'Tentar novamente',
+      freeTrialBadge: 'Teste grátis disponível',
+      freeTrialThen: 'Depois {price}',
+      introOfferBadge: 'Oferta de introdução disponível',
       noPlans: 'Estamos carregando os planos. Aguarde um momento ou tente novamente.',
       legal: 'As assinaturas renovam automaticamente até serem canceladas na App Store.',
       purchaseError: 'Não foi possível concluir a compra',
@@ -128,6 +164,15 @@ function SubscriptionPaywallScreen() {
         </View>
       ) : (
         offerings.map((pkg) => (
+          (() => {
+            const intro = pkg.product.introPrice;
+            const hasIntro = Boolean(intro);
+            const hasFreeTrial = Boolean(intro && intro.price === 0);
+            const introDuration = intro
+              ? formatIntroPeriod(intro.periodNumberOfUnits, intro.periodUnit, language)
+              : null;
+
+            return (
           <TouchableOpacity
             key={pkg.identifier}
             onPress={() => void onPurchase(pkg)}
@@ -144,8 +189,19 @@ function SubscriptionPaywallScreen() {
           >
             <Text style={{ color: themeColors.text.primary, fontSize: 17, fontWeight: '700' }}>{pkg.product.title}</Text>
             <Text style={{ color: themeColors.text.secondary, fontSize: 13, marginTop: 4 }}>{pkg.product.description}</Text>
+            {hasFreeTrial && introDuration ? (
+              <Text style={{ color: themeColors.success, fontSize: 13, marginTop: 8, fontWeight: '700' }}>
+                {`${i18n.freeTrialBadge} - ${introDuration}. ${i18n.freeTrialThen.replace('{price}', pkg.product.priceString)}`}
+              </Text>
+            ) : hasIntro && intro ? (
+              <Text style={{ color: themeColors.success, fontSize: 13, marginTop: 8, fontWeight: '700' }}>
+                {`${i18n.introOfferBadge}: ${intro.priceString}`}
+              </Text>
+            ) : null}
             <Text style={{ color: themeColors.primary[400], fontSize: 16, fontWeight: '700', marginTop: 10 }}>{pkg.product.priceString}</Text>
           </TouchableOpacity>
+            );
+          })()
         ))
       )}
 
