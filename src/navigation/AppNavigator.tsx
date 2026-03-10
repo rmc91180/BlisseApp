@@ -281,6 +281,11 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
   const { t } = useI18n();
   const store = useStore();
   const { user, loading: authLoading, initError } = useAuth();
+  const reviewerBypassEmail = (process.env.EXPO_PUBLIC_REVIEW_BYPASS_EMAIL || '').trim().toLowerCase();
+  const isReviewerBypassUser =
+    Boolean(reviewerBypassEmail) &&
+    Boolean(user?.email) &&
+    user!.email!.trim().toLowerCase() === reviewerBypassEmail;
   const {
     enabled: billingEnabled,
     required: billingRequired,
@@ -338,7 +343,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     );
   }
 
-  if (billingRequired && !billingReady) {
+  if (billingRequired && !billingReady && !isReviewerBypassUser) {
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 44, marginBottom: 12 }}>💳</Text>
@@ -348,7 +353,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     );
   }
 
-  if (billingRequired && billingConfigError) {
+  if (billingRequired && billingConfigError && !isReviewerBypassUser) {
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
         <Text style={{ fontSize: 44, marginBottom: 12 }}>⚠️</Text>
@@ -368,7 +373,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     );
   }
 
-  if (billingEnabled && !billingLoading && !hasActiveEntitlement) {
+  if (billingEnabled && !billingLoading && !hasActiveEntitlement && !isReviewerBypassUser) {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Paywall" component={SubscriptionPaywallScreen} />
