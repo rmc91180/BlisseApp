@@ -1,0 +1,662 @@
+{
+  "generatedAt": "2026-03-12T15:24:58.752Z",
+  "source": {
+    "english": "src\\services\\dailyJokes.ts",
+    "translations": "src\\i18n\\translatedJokes.ts"
+  },
+  "counts": {
+    "enSetups": 40,
+    "enPunchlines": 43,
+    "esSetups": 40,
+    "esPunchlines": 43,
+    "ptSetups": 40,
+    "ptPunchlines": 43
+  },
+  "jokes": [
+    {
+      "index": 1,
+      "en": {
+        "setup": "Why did the naughty grin refuse to clock out?",
+        "punchline": "Because this vibe deserves overtime… and the best bonuses come after hours."
+      },
+      "es": {
+        "setup": "¿Por qué la sonrisa pícara se negó a fichar salida?",
+        "punchline": "Porque esta vibra merece tiempo extra… y los mejores bonos llegan después de horario."
+      },
+      "pt": {
+        "setup": "Por que o sorriso safadinho se recusou a bater o ponto?",
+        "punchline": "Porque essa vibe merece hora extra… e os melhores bônus vêm depois do expediente."
+      }
+    },
+    {
+      "index": 2,
+      "en": {
+        "setup": "What's the best way to start a rematch?",
+        "punchline": "You're about to remember this scent… and forget every excuse you ever had."
+      },
+      "es": {
+        "setup": "¿Cuál es la mejor forma de iniciar la revancha?",
+        "punchline": "Estás a punto de recordar este aroma… y olvidar cualquier excusa que hayas tenido."
+      },
+      "pt": {
+        "setup": "Qual é o melhor jeito de começar a revanche?",
+        "punchline": "Você vai lembrar desse perfume… e esquecer qualquer desculpa que já teve."
+      }
+    },
+    {
+      "index": 3,
+      "en": {
+        "setup": "Why did the dim lights suddenly get brighter?",
+        "punchline": "They heard tonight's playlist was about to drop the beat… and our clothes right after."
+      },
+      "es": {
+        "setup": "¿Por qué las luces tenues se iluminaron de repente?",
+        "punchline": "Escucharon que la playlist de esta noche iba a soltar el ritmo… y nuestra ropa justo después."
+      },
+      "pt": {
+        "setup": "Por que as luzes baixas ficaram mais brilhantes de repente?",
+        "punchline": "Elas ouviram que a playlist de hoje vai soltar o beat… e nossas roupas logo depois."
+      }
+    },
+    {
+      "index": 4,
+      "en": {
+        "setup": "Why did the blush spread faster than planned?",
+        "punchline": "Because tonight is about rhythm, not rushing… but the cheeks didn't get the memo."
+      },
+      "es": {
+        "setup": "¿Por qué el rubor se extendió más rápido de lo planeado?",
+        "punchline": "Porque esta noche es sobre ritmo, no prisa… pero las mejillas no recibieron el memorándum."
+      },
+      "pt": {
+        "setup": "Por que o rubor se espalhou mais rápido que o planejado?",
+        "punchline": "Porque hoje é sobre ritmo, não pressa… mas as bochechas não receberam o memorando."
+      }
+    },
+    {
+      "index": 5,
+      "en": {
+        "setup": "What's tonight's quickest way to feel unstoppable?",
+        "punchline": "One well-timed plot twist that turned out ridiculously cute."
+      },
+      "es": {
+        "setup": "¿Cuál es la forma más rápida de sentirse imparable esta noche?",
+        "punchline": "Un giro de trama perfectamente sincronizado que resultó ridículamente tierno."
+      },
+      "pt": {
+        "setup": "Qual é o jeito mais rápido de se sentir imbatível hoje?",
+        "punchline": "Uma reviravolta bem cronometrada que acabou ridiculamente fofa."
+      }
+    },
+    {
+      "index": 6,
+      "en": {
+        "setup": "What did the little challenge card whisper?",
+        "punchline": "\"Meet me halfway… and let's lose track of time together.\""
+      },
+      "es": {
+        "setup": "¿Qué susurró la cartita de desafío?",
+        "punchline": "\"Encuéntrame a mitad de camino… y perdamos la noción del tiempo juntos.\""
+      },
+      "pt": {
+        "setup": "O que a cartinha de desafio sussurrou?",
+        "punchline": "\"Me encontra no meio do caminho… e vamos perder a noção do tempo juntos.\""
+      }
+    },
+    {
+      "index": 7,
+      "en": {
+        "setup": "Why did the silk tie decide tonight was non-negotiable?",
+        "punchline": "It still has unfinished business with your lower lip."
+      },
+      "es": {
+        "setup": "¿Por qué la corbata de seda decidió que esta noche era innegociable?",
+        "punchline": "Todavía tiene asuntos pendientes con tu labio inferior."
+      },
+      "pt": {
+        "setup": "Por que a gravata de seda decidiu que hoje era inegociável?",
+        "punchline": "Ainda tem assuntos pendentes com seu lábio inferior."
+      }
+    },
+    {
+      "index": 8,
+      "en": {
+        "setup": "What did the 2 a.m. notification really mean?",
+        "punchline": "Things are officially catching fire… and we're out of marshmallows."
+      },
+      "es": {
+        "setup": "¿Qué quiso decir realmente la notificación de las 2 a.m.?",
+        "punchline": "Las cosas oficialmente están prendiendo fuego… y ya no quedan malvaviscos."
+      },
+      "pt": {
+        "setup": "O que a notificação das 2 da manhã realmente quis dizer?",
+        "punchline": "As coisas oficialmente estão pegando fogo… e acabaram os marshmallows."
+      }
+    },
+    {
+      "index": 9,
+      "en": {
+        "setup": "Why did the single candle look so smug?",
+        "punchline": "\"Bring your best look… because I already brought mine.\""
+      },
+      "es": {
+        "setup": "¿Por qué la vela solitaria se veía tan presumida?",
+        "punchline": "\"Trae tu mejor look… porque yo ya traje el mío.\""
+      },
+      "pt": {
+        "setup": "Por que a vela solitária parecia tão convencida?",
+        "punchline": "\"Traz seu melhor look… porque eu já trouxe o meu.\""
+      }
+    },
+    {
+      "index": 10,
+      "en": {
+        "setup": "What did one satin sheet say to the other at 11:45 pm?",
+        "punchline": "\"Anticipation has been doing push-ups all week for this.\""
+      },
+      "es": {
+        "setup": "¿Qué le dijo una sábana de satén a la otra a las 11:45 pm?",
+        "punchline": "\"La anticipación ha estado haciendo flexiones toda la semana para esto.\""
+      },
+      "pt": {
+        "setup": "O que um lençol de cetim disse pro outro às 23:45?",
+        "punchline": "\"A expectativa tá fazendo abdominal a semana inteira pra isso.\""
+      }
+    },
+    {
+      "index": 11,
+      "en": {
+        "setup": "What's the most flirtatious way to burn 300 calories?",
+        "punchline": "I'm not being dramatic… I'm just very efficient."
+      },
+      "es": {
+        "setup": "¿Cuál es la forma más coqueta de quemar 300 calorías?",
+        "punchline": "No estoy siendo dramática… solo soy muy eficiente."
+      },
+      "pt": {
+        "setup": "Qual é o jeito mais sedutor de queimar 300 calorias?",
+        "punchline": "Não tô sendo dramática… só sou muito eficiente."
+      }
+    },
+    {
+      "index": 12,
+      "en": {
+        "setup": "Why did the full-length mirror demand better lighting?",
+        "punchline": "It knew cozy was only one tiny step away from spicy."
+      },
+      "es": {
+        "setup": "¿Por qué el espejo de cuerpo entero exigió mejor iluminación?",
+        "punchline": "Sabía que lo acogedor estaba a solo un pasito de lo picante."
+      },
+      "pt": {
+        "setup": "Por que o espelho de corpo inteiro exigiu luz melhor?",
+        "punchline": "Sabia que o aconchego tava a um passinho do apimentado."
+      }
+    },
+    {
+      "index": 13,
+      "en": {
+        "setup": "What did the red rose say right before sunset?",
+        "punchline": "One killer compliment + one very bold first move."
+      },
+      "es": {
+        "setup": "¿Qué dijo la rosa roja justo antes del atardecer?",
+        "punchline": "Un cumplido mortal + un primer movimiento muy atrevido."
+      },
+      "pt": {
+        "setup": "O que a rosa vermelha disse bem antes do pôr do sol?",
+        "punchline": "Um elogio matador + uma jogada inicial bem ousada."
+      }
+    },
+    {
+      "index": 14,
+      "en": {
+        "setup": "Why did the zipper suddenly find everything hilarious?",
+        "punchline": "\"Come closer… the petals are just the trailer.\""
+      },
+      "es": {
+        "setup": "¿Por qué la cremallera de repente encontró todo gracioso?",
+        "punchline": "\"Acércate… los pétalos son solo el tráiler.\""
+      },
+      "pt": {
+        "setup": "Por que o zíper de repente achou tudo hilário?",
+        "punchline": "\"Chega mais… as pétalas são só o trailer.\""
+      }
+    },
+    {
+      "index": 15,
+      "en": {
+        "setup": "What's a couple's favorite form of cardio that needs no gym?",
+        "punchline": "It heard someone opened the flirt tab five minutes ago."
+      },
+      "es": {
+        "setup": "¿Cuál es la forma favorita de cardio de una pareja que no necesita gimnasio?",
+        "punchline": "Escuchó que alguien abrió la pestaña de coqueteo hace cinco minutos."
+      },
+      "pt": {
+        "setup": "Qual é a forma favorita de cardio de um casal que não precisa de academia?",
+        "punchline": "Ouviu que alguém abriu a aba de paquera há cinco minutos."
+      }
+    },
+    {
+      "index": 16,
+      "en": {
+        "setup": "Why did both pillows file for overtime pay?",
+        "punchline": "Winner gets bragging rights… and an extra-long victory kiss."
+      },
+      "es": {
+        "setup": "¿Por qué ambas almohadas pidieron pago de horas extra?",
+        "punchline": "El ganador se lleva los derechos de presumir… y un beso de victoria bien largo."
+      },
+      "pt": {
+        "setup": "Por que os dois travesseiros pediram hora extra?",
+        "punchline": "O vencedor leva o direito de se gabar… e um beijo de vitória bem demorado."
+      }
+    },
+    {
+      "index": 17,
+      "en": {
+        "setup": "What did the lace slip say when the clock struck midnight?",
+        "punchline": "\"Stick with me… tonight just got a lot smoother.\""
+      },
+      "es": {
+        "setup": "¿Qué dijo el slip de encaje cuando el reloj dio medianoche?",
+        "punchline": "\"Quédate conmigo… esta noche acaba de ponerse mucho más suave.\""
+      },
+      "pt": {
+        "setup": "O que a calcinha de renda disse quando o relógio bateu meia-noite?",
+        "punchline": "\"Fica comigo… hoje acabou de ficar bem mais suave.\""
+      }
+    },
+    {
+      "index": 18,
+      "en": {
+        "setup": "What's the fastest legal way to raise core body temperature?",
+        "punchline": "Blankets + body heat = certified happy chaos."
+      },
+      "es": {
+        "setup": "¿Cuál es la forma legal más rápida de subir la temperatura corporal?",
+        "punchline": "Cobijas + calor corporal = caos feliz certificado."
+      },
+      "pt": {
+        "setup": "Qual é a forma legal mais rápida de subir a temperatura corporal?",
+        "punchline": "Cobertores + calor corporal = caos feliz certificado."
+      }
+    },
+    {
+      "index": 19,
+      "en": {
+        "setup": "Why did moonlight apply for permanent resident status?",
+        "punchline": "Because flirting turned out to be the ultimate foreplay."
+      },
+      "es": {
+        "setup": "¿Por qué la luz de luna solicitó residencia permanente?",
+        "punchline": "Porque coquetear resultó ser el mejor juego previo."
+      },
+      "pt": {
+        "setup": "Por que o luar pediu residência permanente?",
+        "punchline": "Porque flertar acabou sendo a melhor preliminar."
+      }
+    },
+    {
+      "index": 20,
+      "en": {
+        "setup": "What did the sneaky wink send at exactly 9:14 pm?",
+        "punchline": "Tension? What tension? It disappears on skin contact."
+      },
+      "es": {
+        "setup": "¿Qué envió el guiño travieso exactamente a las 9:14 pm?",
+        "punchline": "¿Tensión? ¿Qué tensión? Desaparece al contacto con la piel."
+      },
+      "pt": {
+        "setup": "O que a piscadela safada enviou exatamente às 21:14?",
+        "punchline": "Tensão? Que tensão? Some ao contato com a pele."
+      }
+    },
+    {
+      "index": 21,
+      "en": {
+        "setup": "Why did the living-room couch start feeling seriously neglected?",
+        "punchline": "Because a smile + a kiss = no further questions needed."
+      },
+      "es": {
+        "setup": "¿Por qué el sofá de la sala empezó a sentirse seriamente ignorado?",
+        "punchline": "Porque una sonrisa + un beso = no hacen falta más preguntas."
+      },
+      "pt": {
+        "setup": "Por que o sofá da sala começou a se sentir seriamente ignorado?",
+        "punchline": "Porque um sorriso + um beijo = sem precisar de mais perguntas."
+      }
+    },
+    {
+      "index": 22,
+      "en": {
+        "setup": "What's the one invisible ingredient that turns good chemistry nuclear?",
+        "punchline": "The first round was just the warm-up lap."
+      },
+      "es": {
+        "setup": "¿Cuál es el ingrediente invisible que vuelve nuclear una buena química?",
+        "punchline": "La primera ronda solo fue la vuelta de calentamiento."
+      },
+      "pt": {
+        "setup": "Qual é o ingrediente invisível que transforma boa química em nuclear?",
+        "punchline": "A primeira rodada foi só a volta de aquecimento."
+      }
+    },
+    {
+      "index": 23,
+      "en": {
+        "setup": "Why did the favorite lipstick re-apply twice in three minutes?",
+        "punchline": "Every outfit tonight has a dangerously short runtime."
+      },
+      "es": {
+        "setup": "¿Por qué el labial favorito se reaplicó dos veces en tres minutos?",
+        "punchline": "Cada outfit de esta noche tiene una duración peligrosamente corta."
+      },
+      "pt": {
+        "setup": "Por que o batom favorito reaplicou duas vezes em três minutos?",
+        "punchline": "Todo look de hoje tem uma duração perigosamente curta."
+      }
+    },
+    {
+      "index": 24,
+      "en": {
+        "setup": "What did that long, slow, dangerous glance actually promise?",
+        "punchline": "Partner squats… with bonus giggles included."
+      },
+      "es": {
+        "setup": "¿Qué prometió realmente esa mirada larga, lenta y peligrosa?",
+        "punchline": "Sentadillas en pareja… con risas de bonificación incluidas."
+      },
+      "pt": {
+        "setup": "O que aquele olhar longo, lento e perigoso realmente prometeu?",
+        "punchline": "Agachamentos em dupla… com risadinhas de bônus inclusas."
+      }
+    },
+    {
+      "index": 25,
+      "en": {
+        "setup": "Why did the champagne cork pop 40 minutes early?",
+        "punchline": "The mood was already too good to keep waiting."
+      },
+      "es": {
+        "setup": "¿Por qué el corcho del champán saltó 40 minutos antes?",
+        "punchline": "El ambiente ya estaba demasiado bueno para seguir esperando."
+      },
+      "pt": {
+        "setup": "Por que a rolha do champanhe estourou 40 minutos antes?",
+        "punchline": "O clima já tava bom demais pra esperar mais."
+      }
+    },
+    {
+      "index": 26,
+      "en": {
+        "setup": "What's the only homework assignment neither person ever complains about?",
+        "punchline": "Two songs in and the to-do list officially no longer exists."
+      },
+      "es": {
+        "setup": "¿Cuál es la única tarea que ninguna de las dos personas se queja de hacer?",
+        "punchline": "Dos canciones y la lista de pendientes oficialmente dejó de existir."
+      },
+      "pt": {
+        "setup": "Qual é a única lição de casa que nenhuma das duas pessoas reclama?",
+        "punchline": "Duas músicas e a lista de tarefas oficialmente deixou de existir."
+      }
+    },
+    {
+      "index": 27,
+      "en": {
+        "setup": "Why did the neck kiss receive instant standing ovation?",
+        "punchline": "Confidence… served with a generous side of playful chaos."
+      },
+      "es": {
+        "setup": "¿Por qué el beso en el cuello recibió ovación de pie instantánea?",
+        "punchline": "Confianza… servida con una generosa porción de caos juguetón."
+      },
+      "pt": {
+        "setup": "Por que o beijo no pescoço recebeu aplauso de pé instantâneo?",
+        "punchline": "Confiança… servida com uma generosa porção de caos brincalhão."
+      }
+    },
+    {
+      "index": 28,
+      "en": {
+        "setup": "What did the slowest slow-dance of the night quietly swear?",
+        "punchline": "No one is agreeing to stop after just one round."
+      },
+      "es": {
+        "setup": "¿Qué juró en voz baja el baile más lento de la noche?",
+        "punchline": "Nadie está de acuerdo en parar después de una sola ronda."
+      },
+      "pt": {
+        "setup": "O que a dança mais lenta da noite jurou baixinho?",
+        "punchline": "Ninguém tá concordando em parar depois de só uma rodada."
+      }
+    },
+    {
+      "index": 29,
+      "en": {
+        "setup": "Why did that one blanket declare tonight official destiny?",
+        "punchline": "Because the punchline is you wearing exactly that look."
+      },
+      "es": {
+        "setup": "¿Por qué esa manta declaró que esta noche es el destino oficial?",
+        "punchline": "Porque el remate eres tú con exactamente ese look."
+      },
+      "pt": {
+        "setup": "Por que aquele cobertor declarou que hoje é o destino oficial?",
+        "punchline": "Porque o punchline é você com exatamente esse look."
+      }
+    },
+    {
+      "index": 30,
+      "en": {
+        "setup": "What's the most mischievous way adults say 'hello' after 10 pm?",
+        "punchline": "One whispered line + one dangerously daring smile."
+      },
+      "es": {
+        "setup": "¿Cuál es la forma más traviesa en que los adultos dicen 'hola' después de las 10 pm?",
+        "punchline": "Una línea susurrada + una sonrisa peligrosamente atrevida."
+      },
+      "pt": {
+        "setup": "Qual é o jeito mais travesso dos adultos dizerem 'oi' depois das 22h?",
+        "punchline": "Uma frase sussurrada + um sorriso perigosamente ousado."
+      }
+    },
+    {
+      "index": 31,
+      "en": {
+        "setup": "What did the signature perfume announce as it entered the room?",
+        "punchline": "Truth, dare, or kiss — pick any, we're doing all three anyway."
+      },
+      "es": {
+        "setup": "¿Qué anunció el perfume característico al entrar en la habitación?",
+        "punchline": "Verdad, reto o beso — elige cualquiera, igual vamos a hacer los tres."
+      },
+      "pt": {
+        "setup": "O que o perfume assinatura anunciou ao entrar no quarto?",
+        "punchline": "Verdade, desafio ou beijo — escolhe qualquer um, vamos fazer os três mesmo assim."
+      }
+    },
+    {
+      "index": 32,
+      "en": {
+        "setup": "Why did the ten-second countdown feel more like foreplay?",
+        "punchline": "Longer kisses, shorter excuses — new official ratio."
+      },
+      "es": {
+        "setup": "¿Por qué la cuenta regresiva de diez segundos se sintió más como preliminares?",
+        "punchline": "Besos más largos, excusas más cortas — nueva proporción oficial."
+      },
+      "pt": {
+        "setup": "Por que a contagem regressiva de dez segundos pareceu mais preliminar?",
+        "punchline": "Beijos mais longos, desculpas mais curtas — nova proporção oficial."
+      }
+    },
+    {
+      "index": 33,
+      "en": {
+        "setup": "What's the warmest possible winter indoor sport for two?",
+        "punchline": "The audience demanded an encore performance."
+      },
+      "es": {
+        "setup": "¿Cuál es el deporte indoor de invierno más cálido posible para dos?",
+        "punchline": "El público exigió una función de encore."
+      },
+      "pt": {
+        "setup": "Qual é o esporte indoor de inverno mais quente possível pra dois?",
+        "punchline": "A plateia exigiu um bis da apresentação."
+      }
+    },
+    {
+      "index": 34,
+      "en": {
+        "setup": "Why did the date-night kitchen timer file for divorce?",
+        "punchline": "It was clearly trying to say: save room for dessert round two."
+      },
+      "es": {
+        "setup": "¿Por qué el temporizador de la cocina de la cita pidió el divorcio?",
+        "punchline": "Claramente intentaba decir: guarda espacio para el postre ronda dos."
+      },
+      "pt": {
+        "setup": "Por que o timer da cozinha da noite de encontro pediu divórcio?",
+        "punchline": "Claramente queria dizer: guarda espaço pro dessert round dois."
+      }
+    },
+    {
+      "index": 35,
+      "en": {
+        "setup": "What did the after-dinner look actually say?",
+        "punchline": "It wanted to be fully appreciated before it inevitably gets smudged."
+      },
+      "es": {
+        "setup": "¿Qué significó realmente la mirada después de cenar?",
+        "punchline": "Quería ser plenamente apreciada antes de que inevitablemente se emborrone."
+      },
+      "pt": {
+        "setup": "O que o olhar depois do jantar realmente quis dizer?",
+        "punchline": "Queria ser bem apreciado antes de inevitavelmente borrar."
+      }
+    },
+    {
+      "index": 36,
+      "en": {
+        "setup": "Why did the first kiss immediately text for a sequel?",
+        "punchline": "Same heartbeat, same delicious kind of trouble."
+      },
+      "es": {
+        "setup": "¿Por qué el primer beso pidió segunda ronda por mensaje?",
+        "punchline": "Mismo latido, mismo tipo delicioso de travesura."
+      },
+      "pt": {
+        "setup": "Por que o primeiro beijo já pediu bis por mensagem?",
+        "punchline": "Mesmo batimento, mesmo tipo delicioso de encrenca."
+      }
+    },
+    {
+      "index": 37,
+      "en": {
+        "setup": "Why did the candle look extra smug tonight?",
+        "punchline": "Tonight's forecast: 100% chance of sparks, no umbrella needed."
+      },
+      "es": {
+        "setup": "¿Por qué la vela se veía extra presumida esta noche?",
+        "punchline": "Pronóstico para esta noche: 100% de probabilidad de chispas, sin paraguas necesario."
+      },
+      "pt": {
+        "setup": "Por que a vela parecia extra convencida hoje?",
+        "punchline": "Previsão pra hoje: 100% de chance de faíscas, sem guarda-chuva necessário."
+      }
+    },
+    {
+      "index": 38,
+      "en": {
+        "setup": "What did one silk sheet whisper to the other?",
+        "punchline": "This vibe officially deserves overtime pay."
+      },
+      "es": {
+        "setup": "¿Qué le susurró una sábana de seda a la otra?",
+        "punchline": "Esta vibra oficialmente merece pago de horas extra."
+      },
+      "pt": {
+        "setup": "O que um lençol de seda sussurrou pro outro?",
+        "punchline": "Essa vibe oficialmente merece hora extra."
+      }
+    },
+    {
+      "index": 39,
+      "en": {
+        "setup": "Why was the bedroom playlist smirking before play?",
+        "punchline": "You're about to remember this exact perfume… forever."
+      },
+      "es": {
+        "setup": "¿Por qué la playlist del dormitorio estaba sonriendo antes de reproducir?",
+        "punchline": "Estás a punto de recordar este perfume exacto… para siempre."
+      },
+      "pt": {
+        "setup": "Por que a playlist do quarto tava sorrindo antes de tocar?",
+        "punchline": "Você vai lembrar desse perfume exato… pra sempre."
+      }
+    },
+    {
+      "index": 40,
+      "en": {
+        "setup": "What's secretly the sexiest way to torch calories?",
+        "punchline": "It tied the whole evening to your favorite smile."
+      },
+      "es": {
+        "setup": "¿Cuál es secretamente la forma más sexy de quemar calorías?",
+        "punchline": "Ató toda la noche a tu sonrisa favorita."
+      },
+      "pt": {
+        "setup": "Qual é secretamente o jeito mais sexy de queimar calorias?",
+        "punchline": "Amarrou a noite inteira no seu sorriso favorito."
+      }
+    },
+    {
+      "index": 41,
+      "en": {
+        "setup": "",
+        "punchline": "It knew cuddling could easily upgrade to full-contact sport."
+      },
+      "es": {
+        "setup": "",
+        "punchline": "Sabía que los abrazos podían fácilmente convertirse en deporte de contacto total."
+      },
+      "pt": {
+        "setup": "",
+        "punchline": "Sabia que o chamego podia facilmente virar esporte de contato total."
+      }
+    },
+    {
+      "index": 42,
+      "en": {
+        "setup": "",
+        "punchline": "Tonight runs on rhythm… zero rush allowed."
+      },
+      "es": {
+        "setup": "",
+        "punchline": "Esta noche funciona con ritmo… cero prisa permitida."
+      },
+      "pt": {
+        "setup": "",
+        "punchline": "Hoje roda no ritmo… zero pressa permitida."
+      }
+    },
+    {
+      "index": 43,
+      "en": {
+        "setup": "",
+        "punchline": "Because the plot twist ended up being unfairly adorable."
+      },
+      "es": {
+        "setup": "",
+        "punchline": "Porque el giro de trama terminó siendo injustamente adorable."
+      },
+      "pt": {
+        "setup": "",
+        "punchline": "Porque a reviravolta acabou sendo injustamente fofa."
+      }
+    }
+  ]
+}
