@@ -17,14 +17,14 @@ export const foreplayIdeas: ForeplayIdea[] = [
   // ============================================
   {
     id: 101,
-    name: "Sensual Massage",
+    name: "The Slow Melt",
     category: "Touch",
     mood: "flowing",
     duration: "Extended",
-    vibe: "Relaxing tension into arousal",
-    description: "A full-body massage that gradually transitions from relaxing to sensual, awakening the body slowly.",
+    vibe: "Relaxation that slowly turns irresistible",
+    description: "A full-body massage that moves from calm to charged, warming connection before anything else even begins.",
     howTo: "Start with shoulders and back using warm oil. Work slowly down the body, gradually including more sensitive areas. Focus on what makes your partner respond.",
-    tips: ["Warm the oil in your hands first", "Ask about pressure preferences", "Pay attention to breathing changes", "Don't rush to erogenous zones"],
+    tips: ["Warm the oil in your hands first", "Ask about pressure preferences", "Pay attention to breathing changes", "Let anticipation build before the obvious hotspots"],
     pairsWellWith: ["Spooning", "Lazy Dog", "The Lotus"]
   },
   {
@@ -41,15 +41,15 @@ export const foreplayIdeas: ForeplayIdea[] = [
   },
   {
     id: 103,
-    name: "The Slow Tease",
+    name: "The Delicious Delay",
     category: "Touch",
     mood: "commanding",
     duration: "Extended",
-    vibe: "Building desire through denial",
-    description: "Deliberately slow, teasing touches that approach but don't quite reach where your partner wants.",
+    vibe: "Building desire through playful delay",
+    description: "Deliberately slow touches that approach the best spots, then drift away just long enough to make both of you grin.",
     howTo: "Touch everywhere except where they most want. Get close, then move away. Let them express desire. Make them wait. Finally give in when tension peaks.",
     tips: ["Watch their body language", "Verbal teasing adds to it", "Have them tell you what they want", "The payoff is worth the wait"],
-    pairsWellWith: ["Cowgirl", "The Anvil", "Any position"]
+    pairsWellWith: ["Cowgirl", "Legs-Up Heaven", "Any position"]
   },
   {
     id: 104,
@@ -281,7 +281,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     description: "Using scented oils or candles to create an aromatic atmosphere.",
     howTo: "Light scented candles or use essential oils. Let the scent fill the room. Combine with massage. Focus on how scent enhances sensation.",
     tips: ["Choose scents you both enjoy", "Don't overwhelm the senses", "Lavender relaxes, jasmine arouses", "Some oils shouldn't be used on skin"],
-    pairsWellWith: ["Sensual Massage", "Spooning", "Slow positions"]
+    pairsWellWith: ["The Slow Melt", "Spooning", "Slow positions"]
   },
 
   // ============================================
@@ -645,7 +645,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     description: "Use your lips - barely parted - to trace slow lines along your partner's collarbones, jaw, and shoulders without ever fully kissing.",
     howTo: "Hover your parted lips just above the skin and drag them lightly across collarbones, along the jawline, and over the shoulders. Let your breath do most of the work. Only press into a real kiss when you feel them shiver.",
     tips: ["Keep lips barely touching the skin", "Let warm breath lead before contact", "Pause at the hollow of the throat", "End with one deliberate, full kiss"],
-    pairsWellWith: ["Neck & Ear Focus", "The Slow Tease", "Spooning"]
+    pairsWellWith: ["Neck & Ear Focus", "The Delicious Delay", "Spooning"]
   },
   {
     id: 152,
@@ -669,7 +669,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     description: "Warm your hands under hot water or between blankets, then glide them across your partner's body in long, unbroken strokes.",
     howTo: "Heat your hands under warm water and dry them. Place both palms flat on your partner's back and sweep slowly outward and down, letting the warmth soak into each area before moving on. Cover the entire body in slow passes.",
     tips: ["Reheat hands between rounds", "Flat palms transfer the most warmth", "Focus on areas that hold tension", "The temperature contrast with cool air heightens sensation"],
-    pairsWellWith: ["Sensual Massage", "Back Tracing", "Lazy Dog"]
+    pairsWellWith: ["The Slow Melt", "Back Tracing", "Lazy Dog"]
   },
   {
     id: 154,
@@ -681,7 +681,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     description: "Count down from ten aloud. With each number, deliver a different kind of touch - each one more intimate than the last.",
     howTo: "Start at ten with a light touch on a neutral area like the shoulder. With every count, move closer to more sensitive zones and increase intensity. By one, you should be exactly where they want you.",
     tips: ["Announce each number out loud to build tension", "Vary the type of touch - fingertips, lips, nails", "Pause between numbers for suspense", "Let them guess where the next touch lands"],
-    pairsWellWith: ["Blindfolded Touch", "The Slow Tease", "Cowgirl"]
+    pairsWellWith: ["Blindfolded Touch", "The Delicious Delay", "Cowgirl"]
   },
   {
     id: 155,
@@ -709,7 +709,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     description: "Wrap your partner in a hot, damp towel and slowly unwrap them, kissing each revealed area.",
     howTo: "Soak a large towel in hot water and wring it out. Drape it over your partner's torso or legs and let the heat soak in. After a minute, slowly peel the towel away, following its path with your lips.",
     tips: ["Test the temperature on your inner wrist first", "Multiple smaller towels work for different zones", "The unwrapping is the main event", "Follow with cool fingertips for contrast"],
-    pairsWellWith: ["Warm Oil Drizzle", "Sensual Massage", "Slow positions"]
+    pairsWellWith: ["Warm Oil Drizzle", "The Slow Melt", "Slow positions"]
   },
   {
     id: 157,

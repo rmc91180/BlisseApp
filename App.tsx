@@ -817,11 +817,17 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
 // ONBOARDING SCREENS
 // ============================================
 function WelcomeScreen({ navigation }: any) {
-  const { authPack } = useI18n();
+  const { authPack, language } = useI18n();
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const [showTeaserPunchline, setShowTeaserPunchline] = useState(false);
   const welcomeTagline = authPack('welcome', 'tagline');
   const welcomeTeaser = authPack('welcome', 'teaser');
+  const welcomeJoke = useMemo(
+    () => getDailyJokeForDate(new Date(), null, language),
+    [language]
+  );
   useEffect(() => { Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start(); }, [fadeAnim]);
+  useEffect(() => { setShowTeaserPunchline(false); }, [language]);
   return (
     <ScreenWrapper>
       <Animated.View style={[styles.logoContainer, { opacity: fadeAnim }]}>
@@ -835,6 +841,24 @@ function WelcomeScreen({ navigation }: any) {
         <Text style={styles.subtitle}>{authPack('welcome', 'subtitle')}</Text>
         {welcomeTagline ? <Text style={styles.welcomeTagline}>{welcomeTagline}</Text> : null}
         {welcomeTeaser ? <Text style={styles.welcomeTeaser}>{welcomeTeaser}</Text> : null}
+        <View style={styles.welcomeJokeCard}>
+          <Text style={styles.welcomeJokeLabel}>{authPack('welcome', 'teaserCardTitle')}</Text>
+          <Text style={styles.welcomeJokeSetup}>{welcomeJoke.setup}</Text>
+          {showTeaserPunchline ? (
+            <Text style={styles.welcomeJokePunchline}>{welcomeJoke.punchline}</Text>
+          ) : (
+            <Text style={styles.welcomeJokeHint}>{authPack('welcome', 'teaserCardHint')}</Text>
+          )}
+          <TouchableOpacity
+            style={styles.welcomeJokeAction}
+            onPress={() => setShowTeaserPunchline((prev) => !prev)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Text style={styles.welcomeJokeActionText}>
+              {showTeaserPunchline ? authPack('welcome', 'teaserHide') : authPack('welcome', 'teaserReveal')}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.buttons}>
         <PrimaryButton title={authPack('welcome', 'getStarted')} onPress={() => navigation.navigate('NameInput')} />
@@ -3754,7 +3778,10 @@ function HomeScreen({
 
     setDailyJokeDateKey(targetDateKey);
     setShowDailyPunchline(true);
-    Alert.alert(`😏 ${t('home.punchline')}`, jokeFromNotification.punchline);
+    Alert.alert(
+      `😏 ${t('home.daily_tease')}`,
+      `${jokeFromNotification.setup}\n\n${jokeFromNotification.punchline}`
+    );
     Analytics.trackFeatureUsed('daily_joke_notification_punchline_opened');
     onConsumePendingDailyJokeNotification?.();
   }, [
@@ -5852,6 +5879,13 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 16, color: colors.text.secondary, textAlign: 'center', lineHeight: 24 },
   welcomeTagline: { marginTop: 14, fontSize: 20, lineHeight: 28, color: colors.text.primary, textAlign: 'center', fontWeight: '700' },
   welcomeTeaser: { marginTop: 10, fontSize: 15, lineHeight: 22, color: colors.text.secondary, textAlign: 'center', maxWidth: 320 },
+  welcomeJokeCard: { marginTop: 16, width: '100%', maxWidth: 340, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.cardLight, borderRadius: 16, padding: 14 },
+  welcomeJokeLabel: { color: colors.primary[400], fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.7, marginBottom: 6 },
+  welcomeJokeSetup: { color: colors.text.primary, fontSize: 15, lineHeight: 22, fontWeight: '600' },
+  welcomeJokeHint: { marginTop: 8, color: colors.text.secondary, fontSize: 13, lineHeight: 19 },
+  welcomeJokePunchline: { marginTop: 10, color: colors.text.secondary, fontSize: 14, lineHeight: 20 },
+  welcomeJokeAction: { marginTop: 10, alignSelf: 'flex-start', backgroundColor: colors.primary[500] + '25', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 7 },
+  welcomeJokeActionText: { color: colors.primary[400], fontSize: 13, fontWeight: '700' },
   buttons: { paddingBottom: 40 },
   primaryButton: { paddingVertical: 16, borderRadius: 30, alignItems: 'center' },
   primaryButtonText: { color: colors.white, fontSize: 18, fontWeight: '600' },

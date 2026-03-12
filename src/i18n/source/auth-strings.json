@@ -5,30 +5,42 @@
     "welcome": {
       "en": {
         "title": "Welcome to Blisse",
-        "subtitle": "Your journey to deeper intimacy starts here",
-        "tagline": "Playful chemistry. Real connection.",
-        "teaser": "Discover romantic ideas, flirty games, and simple rituals that keep your bond warm every day.",
+        "subtitle": "Where tonight's best story begins",
+        "tagline": "Made by Tammy & Mark, for couples who still flirt.",
+        "teaser": "Playful ideas, flirty games, and daily sparks to keep connection warm even on busy days.",
         "getStarted": "Get Started",
-        "alreadyHaveAccount": "Already have an account?",
-        "signIn": "Sign In"
+        "alreadyHaveAccount": "I already have my partner here.",
+        "signIn": "Sign In",
+        "teaserCardTitle": "Today's flirty teaser",
+        "teaserCardHint": "Start with a smile before you even sign in.",
+        "teaserReveal": "Tap for the punchline",
+        "teaserHide": "Hide punchline"
       },
       "es": {
         "title": "Bienvenido a Blisse",
-        "subtitle": "Tu viaje hacia una intimidad más profunda comienza aquí",
-        "tagline": "Química juguetona. Conexión real.",
-        "teaser": "Descubre ideas románticas, juegos coquetos y rituales simples para mantener viva su conexión cada día.",
+        "subtitle": "Donde empieza la mejor historia de esta noche",
+        "tagline": "Creado por Tammy y Mark, para parejas que siguen coqueteando.",
+        "teaser": "Ideas juguetonas, juegos coquetos y chispas diarias para mantener viva la conexión, incluso con días ocupados.",
         "getStarted": "Comenzar",
-        "alreadyHaveAccount": "¿Ya tienes una cuenta?",
-        "signIn": "Iniciar Sesión"
+        "alreadyHaveAccount": "Ya estamos aquí en pareja.",
+        "signIn": "Iniciar sesión",
+        "teaserCardTitle": "Coqueteo de hoy",
+        "teaserCardHint": "Empiecen con una sonrisa, incluso antes de entrar.",
+        "teaserReveal": "Tocar para ver el remate",
+        "teaserHide": "Ocultar remate"
       },
       "pt-BR": {
         "title": "Bem-vindo ao Blisse",
-        "subtitle": "Sua jornada para uma intimidade mais profunda começa aqui",
-        "tagline": "Química divertida. Conexão de verdade.",
-        "teaser": "Descubra ideias românticas, jogos de paquera e rituais simples para manter a conexão de vocês viva todos os dias.",
+        "subtitle": "Onde a melhor história de hoje à noite começa",
+        "tagline": "Criado por Tammy e Mark, para casais que ainda flertam.",
+        "teaser": "Ideias divertidas, jogos de paquera e faíscas diárias para manter a conexão acesa, mesmo na correria.",
         "getStarted": "Começar",
-        "alreadyHaveAccount": "Já tem uma conta?",
-        "signIn": "Entrar"
+        "alreadyHaveAccount": "Meu par já está aqui.",
+        "signIn": "Entrar",
+        "teaserCardTitle": "Provocação de hoje",
+        "teaserCardHint": "Comecem com um sorriso, antes mesmo de entrar.",
+        "teaserReveal": "Toque para ver o desfecho",
+        "teaserHide": "Ocultar desfecho"
       }
     },
     "signup": {

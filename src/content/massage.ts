@@ -18,28 +18,28 @@ export const massageTechniques: MassageTechnique[] = [
   // ============================================
   {
     id: 301,
-    name: "Full Body Melt",
+    name: "The Full-Body Surrender",
     category: "Relaxation",
     mood: "flowing",
     duration: "Extended",
     bodyArea: "Full Body",
-    vibe: "Complete relaxation from head to toe",
-    description: "A comprehensive full-body massage that releases tension everywhere, transitioning from therapeutic to sensual.",
+    vibe: "Head-to-toe melt with a playful finish",
+    description: "A comprehensive full-body massage that releases tension everywhere, then smoothly shifts from therapeutic to sensual.",
     howTo: "Start with shoulders and upper back. Work down each arm. Move to lower back and glutes. Down each leg to feet. Flip and do front. Use long, flowing strokes.",
-    tips: ["Warm the oil first", "Use consistent pressure", "Cover every inch", "Take at least 30 minutes"],
+    tips: ["Warm the oil first (bonus points if they watch you do it slowly)", "Use consistent pressure", "Cover every inch", "Take at least 30 minutes"],
     pairsWellWith: ["Spooning", "Lazy Dog", "The Lotus"]
   },
   {
     id: 302,
-    name: "Shoulder Surrender",
+    name: "Shoulder Melting Magic",
     category: "Relaxation",
     mood: "grounded",
     duration: "Medium",
     bodyArea: "Shoulders & Neck",
     vibe: "Releasing stored stress",
-    description: "Deep focus on shoulders and neck where most people carry tension.",
+    description: "Deep focus on shoulders and neck where most people store stress, with slow touch that invites full-body exhale.",
     howTo: "Have them lie face down. Use thumbs to work the muscles between shoulder blades. Knead the trapezius muscles. Work up the neck carefully. Use circular motions.",
-    tips: ["Find the knots and work them gently", "Ask about pressure", "Include the base of the skull", "Don't press directly on spine"],
+    tips: ["Find the knots and work them gently", "Ask about pressure", "Include the base of the skull", "Steal a kiss between shoulder passes"],
     pairsWellWith: ["Neck & Ear Focus", "Spooning", "Intimate connection"]
   },
   {
@@ -113,15 +113,15 @@ export const massageTechniques: MassageTechnique[] = [
   // ============================================
   {
     id: 308,
-    name: "The Tease Trail",
+    name: "The Almost-There Trail",
     category: "Sensual",
     mood: "passionate",
     duration: "Medium",
     bodyArea: "Full Body",
     vibe: "Building arousal through touch",
-    description: "A massage that deliberately teases, approaching sensitive areas without fully engaging them.",
+    description: "A massage that deliberately teases by hovering near sensitive zones, building anticipation before each reveal.",
     howTo: "Start normally but let fingers trail closer and closer to erogenous zones. Get close, then move away. Build anticipation. Make them want more.",
-    tips: ["The tease is the point", "Get close but don't give in", "Watch their breathing", "Let them ask for more"],
+    tips: ["The tease is the point", "Get close but don't give in", "Watch their breathing", "Pause at the edge and smile before giving in"],
     pairsWellWith: ["Any position after", "Extended foreplay", "Building desire"]
   },
   {
@@ -299,7 +299,7 @@ export const massageTechniques: MassageTechnique[] = [
     description: "A flowing sequence that traces from the base of the skull down through the neck and across the décolletage, releasing tension held in the throat and upper chest.",
     howTo: "Begin at the base of the skull with gentle circular motions. Glide thumbs down either side of the neck. Fan outward across the collarbones with open palms. Repeat the flow several times, gradually increasing pressure.",
     tips: ["Keep strokes symmetrical on both sides", "Avoid pressing on the front of the throat", "Warm oil makes the glide smoother", "Pause at the collarbones and let your hands rest there"],
-    pairsWellWith: ["Face & Jaw Release", "Shoulder Surrender", "Deep connection"]
+    pairsWellWith: ["Face & Jaw Release", "Shoulder Melting Magic", "Deep connection"]
   },
   {
     id: 322,
@@ -355,7 +355,7 @@ export const massageTechniques: MassageTechnique[] = [
     description: "A deliberately slow massage that follows the spine's length, combining firm palm pressure with feather-light fingernail traces to create waves of sensation.",
     howTo: "Start at the base of the spine with both palms. Glide upward with steady pressure along each side of the vertebrae. At the nape, switch to the lightest fingernail trace and drift back down. Alternate between firm and barely-there with each pass.",
     tips: ["Never press directly on the spine", "The contrast between firm and light is everything", "Slow down even more than you think you should", "Let your breath fall on their neck at the top of each stroke"],
-    pairsWellWith: ["Fingertip Raindrops", "The Tease Trail", "Rear entry positions"]
+    pairsWellWith: ["Fingertip Raindrops", "The Almost-There Trail", "Rear entry positions"]
   },
   {
     id: 326,
@@ -398,7 +398,7 @@ export const massageTechniques: MassageTechnique[] = [
     description: "A focused technique that targets the specific pressure points around the skull, temples, and base of the neck that contribute to tension headaches.",
     howTo: "Start with sustained pressure on the temples using the pads of your thumbs. Move to the ridge at the base of the skull and press firmly for 30 seconds on each side. Use circular motions across the forehead. Finish with gentle traction — cradling the head and pulling lightly toward you.",
     tips: ["Dim the lights — bright light worsens headaches", "Firm, steady pressure works better than rubbing", "The suboccipital muscles at the skull base are key", "Peppermint oil on the temples can enhance relief"],
-    pairsWellWith: ["Scalp Serenity", "Face & Jaw Release", "Shoulder Surrender"]
+    pairsWellWith: ["Scalp Serenity", "Face & Jaw Release", "Shoulder Melting Magic"]
   },
   {
     id: 329,
@@ -424,7 +424,7 @@ export const massageTechniques: MassageTechnique[] = [
     description: "A structured therapeutic sequence for the neck that combines compression, gentle stretching, and focused muscle work to counteract forward-head posture and screen fatigue.",
     howTo: "Sit behind your partner. Cup the base of their skull and apply gentle upward traction. Use thumbs to work the muscles along each side of the cervical spine. Gently tilt their head to each side, massaging the stretched side. Finish with slow circles on the upper trapezius.",
     tips: ["Support the head fully — never let it drop", "Avoid rotating the neck forcefully", "The levator scapulae muscle at the side of the neck is often the tightest", "Warm towel on the shoulders beforehand works wonders"],
-    pairsWellWith: ["Shoulder Surrender", "Tension Headache Release", "Pressure Point Release"]
+    pairsWellWith: ["Shoulder Melting Magic", "Tension Headache Release", "Pressure Point Release"]
   }
 ];
 

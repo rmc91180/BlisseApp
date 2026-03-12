@@ -17,36 +17,36 @@ export const oralPlayIdeas: OralPlayIdea[] = [
   // ============================================
   {
     id: 201,
-    name: "The Slow Worship",
+    name: "The Slow, Delicious Worship",
     category: "For Her",
     mood: "flowing",
     giver: "him",
     vibe: "Taking all the time in the world",
-    description: "Extremely slow, deliberate oral attention that builds arousal gradually over an extended period.",
+    description: "Extremely slow, deliberate oral attention that builds arousal in waves and keeps both of you locked in.",
     howTo: "Start with kisses on inner thighs. Take at least 5 minutes before reaching the most sensitive areas. Use flat, slow tongue movements. No rushing.",
     tips: ["Set aside at least 20 minutes", "Tease the surrounding areas first", "Vary pressure but keep it slow", "Let her guide you with sounds"],
-    pairsWellWith: ["Sensual Massage", "Cowgirl", "The Lotus"]
+    pairsWellWith: ["The Slow Melt", "Cowgirl", "The Lotus"]
   },
   {
     id: 202,
-    name: "The Figure Eight",
+    name: "The Magic 8",
     category: "For Her",
     mood: "passionate",
     giver: "him",
-    vibe: "A technique that hits all the spots",
-    description: "Using the tongue to trace figure-eight patterns, covering multiple sensitive areas rhythmically.",
+    vibe: "A pattern that hits all the right places",
+    description: "Using figure-eight tongue patterns to keep pressure and rhythm steady while covering multiple sensitive zones.",
     howTo: "With a flat tongue, trace a figure-eight pattern that covers the clitoris and surrounding areas. Maintain consistent pressure and rhythm.",
     tips: ["Start slow and build speed", "Keep the motion fluid", "Pay attention to her response", "Add gentle suction at the top of each 8"],
     pairsWellWith: ["Missionary", "Face-Off", "The Seashell"]
   },
   {
     id: 203,
-    name: "The Throne",
+    name: "Queen on Her Throne",
     category: "For Her",
     mood: "commanding",
     giver: "him",
     vibe: "She sits, he worships",
-    description: "She sits on the edge of a chair or bed while he kneels to pleasure her - a position of power.",
+    description: "She sits on the edge of a chair or bed while he kneels to please her, with full control in her hands.",
     howTo: "She sits comfortably on a chair or bed edge. He kneels between her legs. She can lean back, grab his hair, or direct his movements.",
     tips: ["Use pillows for his knees", "She can use hands to guide", "The chair height matters", "She sets the pace and pressure"],
     pairsWellWith: ["The Chairman", "Cowgirl", "Commanding moods"]
@@ -221,7 +221,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     description: "Deep oral that focuses on taking him as far as comfortable.",
     howTo: "Relax your throat and take him deeper than usual. Use your hand for the base if needed. Control your breathing. Only go as deep as comfortable.",
     tips: ["Breathe through your nose", "Your comfort is paramount", "Use hand for extra length", "He should never push - you control depth"],
-    pairsWellWith: ["Missionary", "The Anvil", "Intense moments"]
+    pairsWellWith: ["Missionary", "Legs-Up Heaven", "Intense moments"]
   },
   {
     id: 218,
@@ -397,7 +397,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     description: "Syncing tongue movements to the subtle pulse of her body, creating a deeply attuned experience that feels like he's reading her from the inside out.",
     howTo: "Place your lips softly over her most sensitive area and feel for her natural pulse. Match your tongue movements to that rhythm, letting her body set the tempo. As arousal builds, her pulse quickens — follow it faithfully.",
     tips: ["Rest a hand on her inner thigh to feel her heartbeat there too", "Let her body dictate the speed entirely", "The rhythm will naturally accelerate as she gets closer", "Whisper that you can feel her pulse — it deepens the connection"],
-    pairsWellWith: ["The Slow Worship", "The Lotus", "Deep connection"]
+    pairsWellWith: ["The Slow, Delicious Worship", "The Lotus", "Deep connection"]
   },
   {
     id: 232,
@@ -421,7 +421,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     description: "Using the broadest, softest part of the tongue in long, sweeping strokes that cover as much area as possible — pure velvet sensation.",
     howTo: "Flatten your tongue completely and relax it so it becomes soft and wide. Use long, slow strokes from bottom to top, covering her fully with each pass. Keep your jaw relaxed and let gravity help with gentle pressure.",
     tips: ["A relaxed tongue is softer than a tense one", "Think of it as painting with the widest brush", "Cover the full area in each pass", "Gradually increase pressure over time rather than starting firm"],
-    pairsWellWith: ["Sensual Massage", "Spooning", "Flowing moods"]
+    pairsWellWith: ["The Slow Melt", "Spooning", "Flowing moods"]
   },
   {
     id: 234,
@@ -525,7 +525,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     description: "Taking slow, extended turns pleasuring each other orally — each turn lasting at least ten minutes of uninterrupted focus.",
     howTo: "One partner lies back and receives for a full ten minutes while the other gives with complete devotion. Then switch. No rushing, no reciprocating during your receiving turn — just soak it in. The giver focuses entirely on their partner's responses.",
     tips: ["Use a gentle timer so neither person watches the clock", "The receiver should focus only on sensation, not on reciprocating", "Ten minutes of focused attention is deeper than thirty of distracted giving", "Talk afterward about what each of you discovered"],
-    pairsWellWith: ["The Slow Worship", "Deep connection", "Extended sessions"]
+    pairsWellWith: ["The Slow, Delicious Worship", "Deep connection", "Extended sessions"]
   },
   {
     id: 242,
