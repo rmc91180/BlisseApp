@@ -230,6 +230,7 @@ function ConfettiCelebration({ visible, onComplete }: { visible: boolean; onComp
 
 // Pulse Heart Animation Component
 function _PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; onPress: () => void; size?: number; color?: string }) {
+  const { t } = useI18n();
   const scaleAnim = useState(new Animated.Value(1))[0];
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
@@ -256,7 +257,7 @@ function _PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; o
   };
   
   return (
-    <TouchableOpacity onPress={handlePress} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={filled ? 'Remove from favorites' : 'Add to favorites'} accessibilityState={{ selected: filled }}>
+    <TouchableOpacity onPress={handlePress} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={filled ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: filled }}>
       <Animated.Text style={{ fontSize: size, transform: [{ scale: scaleAnim }] }}>
         {filled ? '❤️' : '🤍'}
       </Animated.Text>
@@ -463,7 +464,7 @@ const sounds = {
 // STAR CELEBRATION MODAL
 // ============================================
 function StarCelebrationModal({ visible, onClose, stars, achievements }: { visible: boolean; onClose: () => void; stars: number; achievements: string[] }) {
-  const { t } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const scaleAnim = useState(new Animated.Value(0))[0];
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -502,8 +503,8 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
                 <View key={achievement!.id} style={styles.achievementEarnedItem}>
                   <Text style={styles.achievementEarnedEmoji}>{achievement!.emoji}</Text>
                   <View>
-                    <Text style={styles.achievementEarnedName}>{achievement!.name}</Text>
-                    <Text style={styles.achievementEarnedDesc}>{achievement!.description}</Text>
+                    <Text style={styles.achievementEarnedName}>{localizeTerm(achievement!.name)}</Text>
+                    <Text style={styles.achievementEarnedDesc}>{localizeTerm(achievement!.description)}</Text>
                   </View>
                 </View>
               ))}
@@ -653,7 +654,7 @@ const SearchBar = ({ value, onChangeText, onClear, placeholder }: { value: strin
     <View style={styles.searchContainer}>
       <Text style={styles.searchIcon}>🔍</Text>
       <TextInput style={styles.searchInput} value={value} onChangeText={onChangeText} placeholder={placeholder || `${t('common.search')}...`} placeholderTextColor={colors.text.muted} accessibilityLabel={placeholder || t('common.search')} accessibilityRole="search" />
-      {value.length > 0 && <TouchableOpacity onPress={onClear} style={styles.clearButton} accessibilityRole="button" accessibilityLabel={t('common.clear') || 'Clear search'}><Text style={styles.clearButtonText}>✕</Text></TouchableOpacity>}
+      {value.length > 0 && <TouchableOpacity onPress={onClear} style={styles.clearButton} accessibilityRole="button" accessibilityLabel={t('common.clear')}><Text style={styles.clearButtonText}>✕</Text></TouchableOpacity>}
     </View>
   );
 };
@@ -666,7 +667,7 @@ const _StarBadge = ({ count }: { count: number }) => (
 
 const PositionCard = ({ position, onPress }: { position: Position; onPress: () => void }) => {
   const store = useStore();
-  const { localizeTerm } = useI18n();
+  const { localizeTerm, t } = useI18n();
   const isFavorite = store.favorites.includes(position.id);
   const isTried = store.tried.includes(position.id);
   const mood = moods.find((m) => m.id === position.mood);
@@ -677,8 +678,8 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
         </View>
         <View style={styles.cardHeaderRight}>
-          {isTried && <Text style={styles.triedBadge} accessibilityLabel="Tried">✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleFavorite(position.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'} accessibilityState={{ selected: isFavorite }}>
+          {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
+          <TouchableOpacity onPress={() => { haptic.light(); store.toggleFavorite(position.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
             <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
         </View>
@@ -697,7 +698,7 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
 
 const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => void }) => {
   const store = useStore();
-  const { localizeTerm } = useI18n();
+  const { localizeTerm, t } = useI18n();
   const isFavorite = store.favoriteForeplay.includes(item.id);
   const isTried = store.triedForeplay.includes(item.id);
   const mood = moods.find((m) => m.id === item.mood);
@@ -708,8 +709,8 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
         </View>
         <View style={styles.cardHeaderRight}>
-          {isTried && <Text style={styles.triedBadge} accessibilityLabel="Tried">✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'} accessibilityState={{ selected: isFavorite }}>
+          {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
+          <TouchableOpacity onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
             <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
         </View>
@@ -726,20 +727,20 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
 
 const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => void }) => {
   const store = useStore();
-  const { localizeTerm } = useI18n();
+  const { localizeTerm, t } = useI18n();
   const isFavorite = store.favoriteOral?.includes(item.id) || false;
   const isTried = store.triedOral?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
   const giverLabel = item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual');
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
         </View>
         <View style={styles.cardHeaderRight}>
-          {isTried && <Text style={styles.triedBadge}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
+          <TouchableOpacity onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
             <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
         </View>
@@ -756,19 +757,19 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
 
 const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () => void }) => {
   const store = useStore();
-  const { localizeTerm } = useI18n();
+  const { localizeTerm, t } = useI18n();
   const isFavorite = store.favoriteMassage?.includes(item.id) || false;
   const isTried = store.triedMassage?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>💆</Text>
         </View>
         <View style={styles.cardHeaderRight}>
-          {isTried && <Text style={styles.triedBadge}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
+          <TouchableOpacity onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
             <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
         </View>
@@ -785,20 +786,20 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
 
 const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () => void }) => {
   const store = useStore();
-  const { localizeTerm } = useI18n();
+  const { localizeTerm, t } = useI18n();
   const isFavorite = store.favoriteRoleplay?.includes(item.id) || false;
   const isTried = store.triedRoleplay?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
   const intensityColor = item.intensity === 'Light' ? colors.success : item.intensity === 'Medium' ? colors.warning : colors.error;
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>🎭</Text>
         </View>
         <View style={styles.cardHeaderRight}>
-          {isTried && <Text style={styles.triedBadge}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
+          <TouchableOpacity onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
             <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
           </TouchableOpacity>
         </View>
@@ -1867,7 +1868,7 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
 }
 
 function AchievementsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
-  const { t } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   
   const groupedAchievements = {
@@ -1890,7 +1891,13 @@ function AchievementsModal({ visible, onClose }: { visible: boolean; onClose: ()
             {Object.entries(groupedAchievements).map(([category, achievements]) => (
               <View key={category} style={styles.achievementCategory}>
                 <Text style={styles.achievementCategoryTitle}>
-                  {category === 'milestone' ? '🎯 Milestones' : category === 'adventure' ? '🎪 Adventure' : category === 'consistency' ? '🔥 Consistency' : '🗺️ Exploration'}
+                  {category === 'milestone'
+                    ? `🎯 ${t('achievements.category.milestone')}`
+                    : category === 'adventure'
+                      ? `🎪 ${t('achievements.category.adventure')}`
+                      : category === 'consistency'
+                        ? `🔥 ${t('achievements.category.consistency')}`
+                        : `🗺️ ${t('achievements.category.exploration')}`}
                 </Text>
                 {achievements.map((achievement) => {
                   const isEarned = store.earnedAchievements.includes(achievement.id);
@@ -1900,8 +1907,8 @@ function AchievementsModal({ visible, onClose }: { visible: boolean; onClose: ()
                         {isEarned ? achievement.emoji : '🔒'}
                       </Text>
                       <View style={styles.achievementInfo}>
-                        <Text style={[styles.achievementName, !isEarned && styles.achievementNameLocked]}>{achievement.name}</Text>
-                        <Text style={[styles.achievementDesc, !isEarned && styles.achievementDescLocked]}>{achievement.description}</Text>
+                        <Text style={[styles.achievementName, !isEarned && styles.achievementNameLocked]}>{localizeTerm(achievement.name)}</Text>
+                        <Text style={[styles.achievementDesc, !isEarned && styles.achievementDescLocked]}>{localizeTerm(achievement.description)}</Text>
                       </View>
                       {isEarned && <Text style={styles.achievementCheck}>✓</Text>}
                     </View>
@@ -2134,7 +2141,7 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
               <View key={goal.id} style={[styles.goalCard, goal.completed && styles.goalCardCompleted]}>
                 <Text style={styles.goalEmoji}>{goal.completed ? '✅' : goal.emoji}</Text>
                 <View style={styles.goalInfo}>
-                  <Text style={styles.goalDescription}>{goal.description}</Text>
+                  <Text style={styles.goalDescription}>{t(goal.description)}</Text>
                   <View style={styles.goalProgressRow}>
                     <View style={styles.goalMiniProgress}>
                       <View style={[styles.goalMiniProgressFill, { width: `${Math.min(100, (goal.current / goal.target) * 100)}%` }]} />
@@ -2314,7 +2321,7 @@ function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { vis
 // RECOMMENDATIONS MODAL
 // ============================================
 function RecommendationsModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
-  const { t } = useI18n();
+  const { t, localizeTerm } = useI18n();
   const store = useStore();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
@@ -2408,12 +2415,12 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
               <View style={styles.prefTagsRow}>
                 {prefSummary.categories.slice(0, 3).map((cat, i) => (
                   <View key={`cat-${i}`} style={[styles.prefTag, { backgroundColor: themeColors.primary[500] + '30' }]}>
-                    <Text style={[styles.prefTagText, { color: themeColors.primary[400] }]}>{cat}</Text>
+                    <Text style={[styles.prefTagText, { color: themeColors.primary[400] }]}>{localizeTerm(cat)}</Text>
                   </View>
                 ))}
                 {prefSummary.moods.slice(0, 2).map((mood, i) => (
                   <View key={`mood-${i}`} style={[styles.prefTag, { backgroundColor: themeColors.cardLight }]}>
-                    <Text style={[styles.prefTagText, { color: themeColors.text.secondary }]}>{mood}</Text>
+                    <Text style={[styles.prefTagText, { color: themeColors.text.secondary }]}>{localizeTerm(mood)}</Text>
                   </View>
                 ))}
               </View>
@@ -2435,7 +2442,7 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
                   >
                     <View style={styles.recCardContent}>
                       <Text style={[styles.recItemName, { color: themeColors.text.primary }]}>{rec.item.name}</Text>
-                      <Text style={[styles.recItemReason, { color: themeColors.primary[400] }]}>{rec.reason}</Text>
+                      <Text style={[styles.recItemReason, { color: themeColors.primary[400] }]}>{localizeTerm(rec.reason)}</Text>
                     </View>
                     <View style={styles.recScoreBadge}>
                       <Text style={styles.recScoreText}>{Math.round(rec.score)}%</Text>
@@ -4554,7 +4561,7 @@ function ProfileScreen({ navigation }: any) {
               return achievement ? (
                 <View key={id} style={styles.recentAchievementItem}>
                   <Text style={styles.recentAchievementEmoji}>{achievement.emoji}</Text>
-                  <Text style={styles.recentAchievementName}>{achievement.name}</Text>
+                  <Text style={styles.recentAchievementName}>{localizeTerm(achievement.name)}</Text>
                 </View>
               ) : null;
             })}
