@@ -7,92 +7,92 @@
 
 export const HOME_SPARK_MESSAGES_ES: Array<{ headline: string; body: string }> = [
   {
-    headline: 'Enciende la chispa esta noche 💕',
-    body: 'Caricias juguetonas, susurros sinceros y una pequeña aventura a la vez.',
+    headline: 'Misión de hoy: hacer que se sonrojen 😈',
+    body: 'Elijan una idea juguetona y síganla hasta el final.',
   },
   {
-    headline: 'La conexión te sienta bien ✨',
-    body: 'Abre Blisse, elige un mood y convierte momentos simples en recuerdos cómplices.',
+    headline: 'Menos pensar, más química ✨',
+    body: 'Abre Blisse, elige un mood y deja que el ritmo haga lo suyo.',
   },
   {
-    headline: 'Menos scroll, más química 😘',
-    body: 'Elige un mood y deja que la app los guíe a algo inolvidable.',
+    headline: 'Energía de cita en menos de 2 minutos 😘',
+    body: 'Un prompt, un reto y un beso pueden cambiar toda la noche.',
   },
   {
-    headline: 'Tu historia de amor, con niveles extra 🌙',
-    body: 'Colecciona estrellas, desbloquea sorpresas y mantén la chispa toda la semana.',
+    headline: 'Tu historia de amor desbloqueó niveles extra 🌙',
+    body: 'Coleccionen estrellas, cuiden la racha y mantengan la diversión con intención.',
   },
   {
-    headline: 'Corazones cálidos. Sonrisas traviesas. 🔥',
-    body: 'Un poco de intención esta noche puede sentirse como un gran reinicio para ambos.',
+    headline: 'Corazones cálidos. Travesuras suaves. 🔥',
+    body: 'Pequeños momentos intencionales ahora, recuerdos inolvidables después.',
   },
 ];
 
 export const HOME_SPARK_MESSAGES_PT: Array<{ headline: string; body: string }> = [
   {
-    headline: 'Acenda a chama hoje à noite 💕',
-    body: 'Toques divertidos, sussurros sinceros e uma pequena aventura de cada vez.',
+    headline: 'Missão de hoje: fazer vocês corarem 😈',
+    body: 'Escolham uma ideia divertida e sigam até o fim.',
   },
   {
-    headline: 'Conexão combina com você ✨',
-    body: 'Abra o Blisse, escolha um vibe e transforme momentos comuns em segredos de vocês.',
+    headline: 'Menos pensar, mais química ✨',
+    body: 'Abra o Blisse, escolha um mood e deixe o clima conduzir.',
   },
   {
-    headline: 'Menos rolagem, mais química 😘',
-    body: 'Escolha um mood e deixe o app guiar vocês dois para algo inesquecível.',
+    headline: 'Clima de date em menos de 2 minutos 😘',
+    body: 'Uma ideia, um desafio e um beijo podem virar a noite.',
   },
   {
-    headline: 'Sua história de amor, com fases bônus 🌙',
-    body: 'Colecione estrelas, desbloqueie surpresas e mantenham a cumplicidade a semana toda.',
+    headline: 'A história de vocês acabou de ganhar níveis bônus 🌙',
+    body: 'Colecionem estrelas, mantenham a sequência e curtam com intenção.',
   },
   {
-    headline: 'Corações quentes. Sorrisos travessos. 🔥',
-    body: 'Um pouco de intenção hoje à noite pode ser o recomeço que vocês dois precisam.',
+    headline: 'Corações quentes. Travessura na medida. 🔥',
+    body: 'Pequenos momentos intencionais agora, memórias inesquecíveis depois.',
   },
 ];
 
 // ===== TONIGHT SUGGESTION TEASERS =====
 
 export const TONIGHT_SUGGESTION_TEASERS_ES: string[] = [
-  'Listos para una aventura acogedora? Sin prisa, solo intimidad divertida.',
-  'Esta noche es para mirarse a los ojos, reírse y dar un paso atrevido.',
-  'Empiecen suave, sigan curiosos, y dejen que la química haga lo suyo.',
-  'Menos presión, más presencia y mucha más diversión.',
+  '¿Listos para una aventura acogedora? Empiecen suave y sigan curiosos.',
+  'Esta noche es para mirarse, reír y dar un paso atrevido.',
+  'Sin presión. Solo presencia, juego y buena química.',
+  'Elijan una idea y háganla su pequeño secreto.',
   'Una chispa ahora, un recuerdo inolvidable después.',
 ];
 
 export const TONIGHT_SUGGESTION_TEASERS_PT: string[] = [
-  'Prontos para uma aventura aconchegante? Sem pressa, só intimidade divertida.',
-  'Hoje é para olhar nos olhos, rir e dar um passo ousado.',
-  'Comecem devagar, continuem curiosos e deixem a química fazer o resto.',
-  'Menos cobrança, mais presença e muito mais diversão.',
+  'Prontos para uma aventura aconchegante? Comecem leve e sigam curiosos.',
+  'Hoje é noite de olhar nos olhos, rir e dar um passo ousado.',
+  'Sem pressão. Só presença, brincadeira e boa química.',
+  'Escolham uma ideia e tratem como segredo favorito.',
   'Uma faísca agora, uma memória inesquecível depois.',
 ];
 
 // ===== LEVEL MOTIVATOR LINES =====
 
 export const LEVEL_MOTIVATOR_LINES_ES: string[] = [
-  'Cada estrella es un pequeño voto por su relación.',
-  'Están construyendo confianza, diversión y ritmo juntos.',
+  'Cada estrella hace que el próximo reto se sienta mejor.',
+  'Están construyendo confianza, juego y ritmo juntos.',
   'El progreso es atractivo. Sigan así, enamorados.',
-  'De Novatos a Llama Eterna, un paso divertido a la vez.',
-  'No solo están subiendo de nivel en la app. Están subiendo de nivel como pareja.',
+  'De Nuevas Chispas a Llama Eterna, un paso juguetón a la vez.',
+  'No solo suben de nivel en la app. También como pareja.',
 ];
 
 export const LEVEL_MOTIVATOR_LINES_PT: string[] = [
-  'Cada estrela é um pequeno voto pelo relacionamento de vocês.',
-  'Vocês estão construindo confiança, diversão e sintonia juntos.',
+  'Cada estrela deixa o próximo desafio ainda melhor.',
+  'Vocês estão construindo confiança, jogo e sintonia juntos.',
   'Progresso é atraente. Continuem assim, pombinhos.',
-  'De Novatos a Chama Eterna, um passo divertido de cada vez.',
-  'Vocês não estão só subindo de nível no app. Estão subindo de nível juntos.',
+  'De Novas Faíscas até Chama Eterna, um passo de cada vez.',
+  'Vocês não estão só subindo no app. Estão subindo juntos.',
 ];
 
 // ===== SEASONAL HOME SPARK MESSAGES =====
 
 export const SEASONAL_HOME_SPARK_MESSAGES_ES: Record<string, Array<{ headline: string; body: string }>> = {
   valentines: [
-    { headline: 'Energía de San Valentín, todo el mes 💕', body: 'Rituales románticos, retos divertidos y contacto visual extra esta noche.' },
-    { headline: 'Aquí las cartas de amor son bienvenidas 🌹', body: 'Que sea dulce, coqueto y un poquito atrevido de la mejor manera.' },
+    { headline: 'Energía de San Valentín, todo el mes 💕', body: 'Más mirada, más besos y un toque de travesura esta noche.' },
+    { headline: 'Aquí las cartas de amor son bienvenidas 🌹', body: 'Que sea dulce, coqueto y un poco más atrevido de lo normal.' },
   ],
   spring: [
     { headline: 'La primavera es tu botón de reinicio 🌸', body: 'Nuevo ánimo, nueva energía, nuevas historias para crear juntos.' },
@@ -107,7 +107,7 @@ export const SEASONAL_HOME_SPARK_MESSAGES_ES: Record<string, Array<{ headline: s
     { headline: 'Noches de otoño, luces más suaves 🕯️', body: 'Comodidad más química es una combinación imbatible.' },
   ],
   winter: [
-    { headline: 'El calorcito invernal empieza aquí ❄️', body: 'Cobijas, calor corporal y cercanía intencional.' },
+    { headline: 'El calorcito invernal empieza aquí ❄️', body: 'Cobijas, calor corporal y cero excusas.' },
     { headline: 'Frío afuera, chispa adentro 🔥', body: 'Haz que esta noche se sienta como tu secreto favorito.' },
   ],
   newyear: [
@@ -118,8 +118,8 @@ export const SEASONAL_HOME_SPARK_MESSAGES_ES: Record<string, Array<{ headline: s
 
 export const SEASONAL_HOME_SPARK_MESSAGES_PT: Record<string, Array<{ headline: string; body: string }>> = {
   valentines: [
-    { headline: 'Energia de Dia dos Namorados o mês inteiro 💕', body: 'Rituais românticos, desafios divertidos e contato visual extra hoje à noite.' },
-    { headline: 'Bilhetinhos de amor são bem-vindos aqui 🌹', body: 'Mantenham doce, sedutor e um pouquinho ousado da melhor forma.' },
+    { headline: 'Energia de Dia dos Namorados o mês inteiro 💕', body: 'Mais olho no olho, mais beijos e travessura na medida hoje à noite.' },
+    { headline: 'Bilhetinhos de amor são bem-vindos aqui 🌹', body: 'Mantenham doce, sedutor e um pouco mais ousado que o normal.' },
   ],
   spring: [
     { headline: 'A primavera é o botão de reinício de vocês 🌸', body: 'Novo ânimo, nova energia, novas histórias para criarem juntos.' },
@@ -134,7 +134,7 @@ export const SEASONAL_HOME_SPARK_MESSAGES_PT: Record<string, Array<{ headline: s
     { headline: 'Noites de outono, luzes mais suaves 🕯️', body: 'Conforto mais química é uma combinação perfeita.' },
   ],
   winter: [
-    { headline: 'O aconchego do inverno começa aqui ❄️', body: 'Cobertores, calor corporal e proximidade intencional.' },
+    { headline: 'O aconchego do inverno começa aqui ❄️', body: 'Cobertor, calor corporal e zero desculpas.' },
     { headline: 'Frio lá fora, faísca aqui dentro 🔥', body: 'Façam dessa noite o segredo favorito de vocês.' },
   ],
   newyear: [
@@ -166,49 +166,49 @@ export const SEASONAL_TONIGHT_TEASERS_PT: Record<string, string[]> = {
 // ===== SEASONAL HOOK LINES =====
 
 export const SEASONAL_HOOK_LINES_ES: Record<string, string[]> = {
-  valentines: ['Transforma noches normales en energía de festival del amor.'],
+  valentines: ['Modo San Valentín: más miradas, más besos, más juego.'],
   spring: ['Nuevos comienzos y experimentos divertidos los esperan.'],
   summer: ['Noches más largas, decisiones más atrevidas, más risas.'],
   fall: ['Comodidad y química se encuentran en cada momento acogedor.'],
-  winter: ['Calor corporal y cercanía son toda la vibra.'],
+  winter: ['Cobija + calor corporal + intención juguetona = plan perfecto.'],
   newyear: ['Comienzos frescos y primeros pasos atrevidos.'],
 };
 
 export const SEASONAL_HOOK_LINES_PT: Record<string, string[]> = {
-  valentines: ['Transforme noites comuns em energia de festa do amor.'],
+  valentines: ['Clima de Dia dos Namorados: mais olhar, mais beijo, mais brincadeira.'],
   spring: ['Novos começos e experiências divertidas esperam por vocês.'],
   summer: ['Noites mais longas, escolhas mais ousadas, mais risadas.'],
   fall: ['Conforto e química se encontram em cada momento aconchegante.'],
-  winter: ['Calor corporal e proximidade são toda a vibe.'],
+  winter: ['Cobertor + calor corporal + intenção divertida = noite perfeita.'],
   newyear: ['Recomeços e primeiros passos ousados.'],
 };
 
 // ===== COUPLE CONNECTION PROMPTS =====
 
 export const COUPLE_PROMPTS_ES = [
-  { emoji: '\u{1F4AC}', text: '\u00BFQu\u00E9 los hizo sonre\u00EDr hoy? Preg\u00FAntense mutuamente' },
-  { emoji: '\u{1F495}', text: 'Compartan algo que aprecian de su pareja' },
-  { emoji: '\u{1FAC2}', text: 'T\u00F3mense de las manos 30 segundos y respiren juntos' },
-  { emoji: '\u{1F48C}', text: 'Escr\u00EDbanse una nota de amor de una l\u00EDnea' },
-  { emoji: '\u{1F440}', text: 'M\u00EDrense a los ojos durante 10 segundos' },
-  { emoji: '\u{1F3B5}', text: 'Pongan "su canci\u00F3n" y bailen juntos' },
-  { emoji: '\u{1F48B}', text: 'Dale a tu pareja un beso inesperado en la frente' },
-  { emoji: '\u{1F31F}', text: 'Compartan su recuerdo favorito juntos' },
-  { emoji: '\u{1F917}', text: 'Un abrazo de 20 segundos \u2014 sin celulares, solo presencia' },
-  { emoji: '\u{1F525}', text: 'Sus\u00FArrale algo irresistible que amas de tu pareja' },
+  { emoji: '\u{1F4AC}', text: 'Pregunten: ¿cuándo te sentiste más deseado esta semana?' },
+  { emoji: '\u{1F48B}', text: 'Un beso lento y juguetón. Sin prisa.' },
+  { emoji: '\u{1F4A5}', text: 'Compartan una idea atrevida para esta noche.' },
+  { emoji: '\u{1F3B5}', text: 'Pongan su canción y bailen un minuto completo.' },
+  { emoji: '\u{1F525}', text: 'Susurra una cosa irresistible de tu pareja.' },
+  { emoji: '\u{1F917}', text: 'Reto de abrazo 20 segundos. Sin celular.' },
+  { emoji: '\u{1F4CC}', text: 'Califiquen anoche del 1 al 10 y súbanlo hoy.' },
+  { emoji: '\u{1F440}', text: 'Contacto visual 15 segundos, luego sigan el momento.' },
+  { emoji: '\u{1F48C}', text: 'Escribe una nota corta de “nos vemos luego”.' },
+  { emoji: '\u{1F31F}', text: 'Compartan su recuerdo más travieso y tierno.' },
 ];
 
 export const COUPLE_PROMPTS_PT = [
-  { emoji: '\u{1F4AC}', text: 'O que fez voc\u00EAs sorrirem hoje? Perguntem um ao outro' },
-  { emoji: '\u{1F495}', text: 'Compartilhem algo que apreciam no parceiro(a)' },
-  { emoji: '\u{1FAC2}', text: 'Deem as m\u00E3os por 30 segundos e respirem juntos' },
-  { emoji: '\u{1F48C}', text: 'Escrevam um bilhetinho de amor de uma linha' },
-  { emoji: '\u{1F440}', text: 'Olhem nos olhos um do outro por 10 segundos' },
-  { emoji: '\u{1F3B5}', text: 'Coloquem "a m\u00FAsica de voc\u00EAs" e dancem juntos' },
-  { emoji: '\u{1F48B}', text: 'D\u00EA um beijo inesperado na testa do seu amor' },
-  { emoji: '\u{1F31F}', text: 'Compartilhem a mem\u00F3ria favorita de voc\u00EAs' },
-  { emoji: '\u{1F917}', text: 'Um abra\u00E7o de 20 segundos \u2014 sem celular, s\u00F3 presen\u00E7a' },
-  { emoji: '\u{1F525}', text: 'Sussurre algo irresist\u00EDvel que ama no(a) parceiro(a)' },
+  { emoji: '\u{1F4AC}', text: 'Perguntem: quando você se sentiu mais desejado nesta semana?' },
+  { emoji: '\u{1F48B}', text: 'Um beijo lento e provocante. Sem pressa.' },
+  { emoji: '\u{1F4A5}', text: 'Compartilhem uma ideia ousada para hoje à noite.' },
+  { emoji: '\u{1F3B5}', text: 'Toquem a música de vocês e dancem por 1 minuto.' },
+  { emoji: '\u{1F525}', text: 'Sussurre uma coisa irresistível sobre seu amor.' },
+  { emoji: '\u{1F917}', text: 'Desafio do abraço: 20 segundos, sem celular.' },
+  { emoji: '\u{1F4CC}', text: 'Dê uma nota para ontem e tentem superar hoje.' },
+  { emoji: '\u{1F440}', text: 'Contato visual por 15 segundos e sigam o clima.' },
+  { emoji: '\u{1F48C}', text: 'Escreva um bilhete curto de “te encontro depois”.' },
+  { emoji: '\u{1F31F}', text: 'Compartilhem a lembrança mais travessa e carinhosa.' },
 ];
 
 // ===== NOTIFICATION TITLE =====

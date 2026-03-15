@@ -49,16 +49,16 @@ export const FORMSPREE_MIN_MESSAGE_LENGTH = 6;
 
 // Rotating couple connection prompts for the Home screen
 const _COUPLE_PROMPTS_EN = [
-  { emoji: '\u{1F4AC}', text: 'Ask each other: what made you smile today?' },
-  { emoji: '\u{1F495}', text: 'Share something you appreciate about your partner' },
-  { emoji: '\u{1FAC2}', text: 'Hold hands for 30 seconds and just breathe together' },
-  { emoji: '\u{1F48C}', text: 'Write a one-line love note for your partner' },
-  { emoji: '\u{1F440}', text: 'Gaze into each other\'s eyes for 10 seconds' },
-  { emoji: '\u{1F3B5}', text: 'Play "your song" and dance together' },
-  { emoji: '\u{1F48B}', text: 'Give your partner an unexpected forehead kiss' },
-  { emoji: '\u{1F31F}', text: 'Share your favorite memory together' },
-  { emoji: '\u{1F917}', text: 'Give a 20-second hug \u2014 no phones, just presence' },
-  { emoji: '\u{1F525}', text: 'Whisper something you find irresistible about them' },
+  { emoji: '\u{1F4AC}', text: 'Ask: what made you feel most wanted this week?' },
+  { emoji: '\u{1F48B}', text: 'Give one slow, teasing kiss. No rushing.' },
+  { emoji: '\u{1F4A5}', text: 'Tell your partner one fantasy-friendly idea for tonight.' },
+  { emoji: '\u{1F3B5}', text: 'Play "your song" and dance for one full minute.' },
+  { emoji: '\u{1F525}', text: 'Whisper one thing you find irresistible about them.' },
+  { emoji: '\u{1F917}', text: '20-second hug challenge. Phones down, eyes up.' },
+  { emoji: '\u{1F4CC}', text: 'Rate last night 1-10, then beat that score tonight.' },
+  { emoji: '\u{1F440}', text: 'Hold eye contact for 15 seconds, then follow the vibe.' },
+  { emoji: '\u{1F48C}', text: 'Write a one-line "meet me later" note.' },
+  { emoji: '\u{1F31F}', text: 'Share your favorite naughty-but-sweet memory together.' },
 ];
 
 export const ANALYTICS_STRING_LIMIT = 80;
@@ -101,21 +101,21 @@ export const STREAK_NOTIFICATION_MINUTE = 15;
 // ============================================
 
 const _HOME_SPARK_MESSAGES_EN: Array<{ headline: string; body: string }> = [
-  { headline: 'Ignite the spark tonight \u{1F495}', body: 'Playful touches, honest whispers, and one small adventure at a time.' },
-  { headline: 'Connection looks good on you \u2728', body: 'Open Blisse, pick a vibe, and turn ordinary moments into inside jokes.' },
-  { headline: 'Less scrolling, more chemistry \u{1F618}', body: 'Choose a mood and let the app nudge both of you into something memorable.' },
-  { headline: 'Your love story, with bonus levels \u{1F319}', body: 'Collect stars, unlock surprises, and keep your bond playful all week.' },
-  { headline: 'Warm hearts. Mischievous smiles. \u{1F525}', body: 'A little intention tonight can feel like a big reset for both of you.' },
+  { headline: 'Tonight\'s mission: make each other blush \u{1F608}', body: 'Pick one playful idea and follow it all the way through.' },
+  { headline: 'Less overthinking, more chemistry \u2728', body: 'Open Blisse, choose your mood, and let momentum do the rest.' },
+  { headline: 'Date-night energy in under 2 minutes \u{1F618}', body: 'One prompt, one dare, one kiss can flip the whole night.' },
+  { headline: 'Your love story just unlocked bonus levels \u{1F319}', body: 'Collect stars, stack streaks, and keep things fun on purpose.' },
+  { headline: 'Warm hearts. Playful trouble. \u{1F525}', body: 'Tiny intentional moments now, unforgettable memories later.' },
 ];
 export const HOME_SPARK_MESSAGES = createLocalizedArrayProxy<{ headline: string; body: string }>({
   en: _HOME_SPARK_MESSAGES_EN, es: HOME_SPARK_MESSAGES_ES, pt: HOME_SPARK_MESSAGES_PT,
 });
 
 const _TONIGHT_SUGGESTION_TEASERS_EN: string[] = [
-  'Ready for a cozy adventure? No rush, just playful intimacy.',
+  'Ready for a cozy adventure? Start soft and stay curious.',
   'Tonight is for eye contact, laughter, and one bold move.',
-  'Start soft, stay curious, and let chemistry do the heavy lifting.',
-  'Think less pressure, more presence, and a lot more fun.',
+  'No pressure. Just presence, play, and good chemistry.',
+  'Pick one idea and commit to it like it\'s your favorite secret.',
   'Small spark now, unforgettable memory later.',
 ];
 export const TONIGHT_SUGGESTION_TEASERS = createLocalizedArrayProxy<string>({
@@ -123,10 +123,10 @@ export const TONIGHT_SUGGESTION_TEASERS = createLocalizedArrayProxy<string>({
 });
 
 const _LEVEL_MOTIVATOR_LINES_EN: string[] = [
-  'Every star is a tiny vote for your relationship.',
-  'You are building trust, play, and momentum together.',
+  'Every star makes the next dare a little better.',
+  'You two are building trust, play, and momentum together.',
   'Progress is attractive. Keep going, lovebirds.',
-  'From Newcomer to Eternal Flame, one playful step at a time.',
+  'From New Sparks to Eternal Flame, one playful step at a time.',
   'You are not just leveling up the app. You are leveling up us.',
 ];
 export const LEVEL_MOTIVATOR_LINES = createLocalizedArrayProxy<string>({
@@ -135,8 +135,8 @@ export const LEVEL_MOTIVATOR_LINES = createLocalizedArrayProxy<string>({
 
 const _SEASONAL_HOME_SPARK_MESSAGES_EN: Record<string, Array<{ headline: string; body: string }>> = {
   valentines: [
-    { headline: 'Valentine energy, all month long \u{1F495}', body: 'Romantic rituals, playful dares, and extra eye contact tonight.' },
-    { headline: 'Love notes are welcome here \u{1F339}', body: 'Keep it sweet, flirty, and a little bold in the best way.' },
+    { headline: 'Valentine energy, all month long \u{1F495}', body: 'Extra eye contact, extra kisses, extra playful trouble tonight.' },
+    { headline: 'Love notes are welcome here \u{1F339}', body: 'Keep it sweet, flirty, and a little bolder than usual.' },
   ],
   spring: [
     { headline: 'Spring is your reset button \u{1F338}', body: 'Fresh mood, fresh energy, fresh stories to create together.' },
@@ -151,7 +151,7 @@ const _SEASONAL_HOME_SPARK_MESSAGES_EN: Record<string, Array<{ headline: string;
     { headline: 'Autumn nights, softer lights \u{1F56F}\uFE0F', body: 'Comfort plus chemistry is a very good combo.' },
   ],
   winter: [
-    { headline: 'Winter warmth starts here \u2744\uFE0F', body: 'Blankets, body heat, and intentional closeness.' },
+    { headline: 'Winter warmth starts here \u2744\uFE0F', body: 'Blankets, body heat, and zero excuses.' },
     { headline: 'Cold outside, spark inside \u{1F525}', body: 'Make tonight feel like your favorite secret.' },
   ],
   newyear: [
@@ -176,11 +176,11 @@ export const SEASONAL_TONIGHT_TEASERS = createLocalizedRecordProxy<Record<string
 });
 
 const _SEASONAL_HOOK_LINES_EN: Record<string, string[]> = {
-  valentines: ['Turn ordinary nights into love-fest energy.'],
+  valentines: ['Valentine vibe: extra eye contact, extra kisses, extra trouble.'],
   spring: ['Fresh beginnings and playful experiments await.'],
   summer: ['Longer nights, bolder choices, more laughter.'],
   fall: ['Comfort meets chemistry in every cozy moment.'],
-  winter: ['Body heat and closeness are the whole vibe.'],
+  winter: ['Blankets + body heat + playful intent = winter perfection.'],
   newyear: ['Fresh starts and daring first moves.'],
 };
 export const SEASONAL_HOOK_LINES = createLocalizedRecordProxy<Record<string, string[]>>({

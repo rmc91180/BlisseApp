@@ -421,7 +421,12 @@ export const useStore = create<UserState>()(
       checkAndAwardAchievements: () => {
         const state = get();
         const newlyEarned: string[] = [];
-        const totalTried = state.tried.length + state.triedForeplay.length + state.triedOral.length;
+        const totalTried =
+          state.tried.length +
+          state.triedForeplay.length +
+          state.triedOral.length +
+          state.triedMassage.length +
+          state.triedRoleplay.length;
 
         const checkAndAdd = (id: string, condition: boolean) => {
           if (condition && !state.earnedAchievements.includes(id)) {
@@ -465,6 +470,27 @@ export const useStore = create<UserState>()(
 
         // Date night achievement
         checkAndAdd('date_night_5', state.dateNightsCompleted >= 5);
+
+        // Favorites achievement
+        const totalFavorites =
+          state.favorites.length +
+          state.favoriteForeplay.length +
+          state.favoriteOral.length +
+          state.favoriteMassage.length +
+          state.favoriteRoleplay.length;
+        checkAndAdd('favorites_10', totalFavorites >= 10);
+
+        // Long consistency streak
+        checkAndAdd('week_streak_12', state.currentStreak >= 12);
+
+        // At least one try in each content type
+        const hasAllContentTypesTried =
+          state.tried.length > 0 &&
+          state.triedForeplay.length > 0 &&
+          state.triedOral.length > 0 &&
+          state.triedMassage.length > 0 &&
+          state.triedRoleplay.length > 0;
+        checkAndAdd('all_content_types', hasAllContentTypesTried);
 
         if (newlyEarned.length > 0) {
           set({ earnedAchievements: [...state.earnedAchievements, ...newlyEarned] });

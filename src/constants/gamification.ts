@@ -12,15 +12,15 @@ import type {
 // ============================================
 
 export const LEVELS: Level[] = [
-  { level: 1, title: 'Newcomer', emoji: '🌱', minStars: 0, maxStars: 24, color: '#84cc16' },
-  { level: 2, title: 'Explorer', emoji: '🧭', minStars: 25, maxStars: 74, color: '#22c55e' },
-  { level: 3, title: 'Adventurer', emoji: '🗺️', minStars: 75, maxStars: 149, color: '#14b8a6' },
-  { level: 4, title: 'Enthusiast', emoji: '💫', minStars: 150, maxStars: 299, color: '#06b6d4' },
-  { level: 5, title: 'Connoisseur', emoji: '🎯', minStars: 300, maxStars: 499, color: '#3b82f6' },
-  { level: 6, title: 'Expert', emoji: '🔥', minStars: 500, maxStars: 749, color: '#8b5cf6' },
-  { level: 7, title: 'Master', emoji: '👑', minStars: 750, maxStars: 999, color: '#a855f7' },
-  { level: 8, title: 'Legend', emoji: '🏆', minStars: 1000, maxStars: 1499, color: '#ec4899' },
-  { level: 9, title: 'Passion Master', emoji: '💎', minStars: 1500, maxStars: 9999, color: '#f43f5e' },
+  { level: 1, title: 'New Sparks', emoji: '🌱', minStars: 0, maxStars: 24, color: '#84cc16' },
+  { level: 2, title: 'Secret Explorers', emoji: '🧭', minStars: 25, maxStars: 74, color: '#22c55e' },
+  { level: 3, title: 'Playful Troublemakers', emoji: '🗺️', minStars: 75, maxStars: 149, color: '#14b8a6' },
+  { level: 4, title: 'Chemistry Builders', emoji: '💫', minStars: 150, maxStars: 299, color: '#06b6d4' },
+  { level: 5, title: 'Heat Curators', emoji: '🎯', minStars: 300, maxStars: 499, color: '#3b82f6' },
+  { level: 6, title: 'Dare Strategists', emoji: '🔥', minStars: 500, maxStars: 749, color: '#8b5cf6' },
+  { level: 7, title: 'Masters of Mischief', emoji: '👑', minStars: 750, maxStars: 999, color: '#a855f7' },
+  { level: 8, title: 'Legendary Lovers', emoji: '🏆', minStars: 1000, maxStars: 1499, color: '#ec4899' },
+  { level: 9, title: 'Eternal Flame Keepers', emoji: '💎', minStars: 1500, maxStars: 9999, color: '#f43f5e' },
 ];
 
 export const getLevel = (stars: number): Level => {
@@ -38,9 +38,9 @@ export const getNextLevel = (stars: number): Level | null => {
 
 export const generateWeeklyGoals = (userLevel: number): WeeklyGoal[] => {
   const baseGoals: WeeklyGoal[] = [
-    { id: 'try_new', type: 'try_new', target: 2 + Math.floor(userLevel / 3), current: 0, description: 'Try new things', emoji: '✨', reward: 5, completed: false },
-    { id: 'earn_stars', type: 'earn_stars', target: 10 + (userLevel * 2), current: 0, description: 'Earn stars', emoji: '⭐', reward: 3, completed: false },
-    { id: 'complete_challenge', type: 'complete_challenge', target: 1, current: 0, description: 'Complete a challenge', emoji: '🎯', reward: 5, completed: false },
+    { id: 'try_new', type: 'try_new', target: 2 + Math.floor(userLevel / 3), current: 0, description: 'weekly_goals.goal.try_new', emoji: '✨', reward: 5, completed: false },
+    { id: 'earn_stars', type: 'earn_stars', target: 10 + (userLevel * 2), current: 0, description: 'weekly_goals.goal.earn_stars', emoji: '⭐', reward: 3, completed: false },
+    { id: 'complete_challenge', type: 'complete_challenge', target: 1, current: 0, description: 'weekly_goals.goal.complete_challenge', emoji: '🎯', reward: 5, completed: false },
   ];
   return baseGoals;
 };
@@ -338,24 +338,24 @@ export const SmartLearning = {
     const reasons: string[] = [];
 
     if (!isTried) {
-      reasons.push("Something new to try");
+      reasons.push('Fresh spark for tonight');
     }
 
     if (item.category && prefs.categoryScores[item.category] > 65) {
-      reasons.push(`You enjoy ${item.category.toLowerCase()}`);
+      reasons.push('Fits your favorite vibe');
     }
 
     if (item.mood && prefs.moodScores[item.mood] > 65) {
-      reasons.push(`Matches your preferred mood`);
+      reasons.push('Matches your current mood');
     }
 
     if (item.difficulty === 'Beginner' && prefs.difficultyScores['Beginner'] > 60) {
-      reasons.push("Easy and comfortable");
+      reasons.push('Easy win to warm up');
     } else if (item.difficulty === 'Advanced' && prefs.difficultyScores['Advanced'] > 60) {
-      reasons.push("Ready for a challenge");
+      reasons.push("You're ready for a bolder move");
     }
 
-    return reasons.length > 0 ? reasons[0] : "Recommended for you";
+    return reasons.length > 0 ? reasons[0] : 'Picked for your chemistry';
   },
 
   // Get top preferences for display
@@ -383,21 +383,24 @@ export const SmartLearning = {
 // ============================================
 
 export const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_try', name: 'First Steps', description: 'Try your first position', emoji: '🌱', category: 'milestone' },
-  { id: 'tried_5', name: 'Getting Started', description: 'Try 5 different things', emoji: '🌿', category: 'milestone' },
-  { id: 'tried_10', name: 'Explorer', description: 'Try 10 different things', emoji: '🗺️', category: 'milestone' },
-  { id: 'tried_25', name: 'Adventurer', description: 'Try 25 different things', emoji: '⛰️', category: 'milestone' },
-  { id: 'tried_50', name: 'Master Explorer', description: 'Try 50 different things', emoji: '🏆', category: 'milestone' },
-  { id: 'tried_100', name: 'Legend', description: 'Try 100 different things', emoji: '👑', category: 'milestone' },
+  { id: 'first_try', name: 'First Spark', description: 'Try your first couple idea', emoji: '🌱', category: 'milestone' },
+  { id: 'tried_5', name: 'Chemistry Starter', description: 'Try 5 different ideas together', emoji: '🌿', category: 'milestone' },
+  { id: 'tried_10', name: 'Curious Hearts', description: 'Try 10 different ideas together', emoji: '🗺️', category: 'milestone' },
+  { id: 'tried_25', name: 'Playful Momentum', description: 'Try 25 different ideas together', emoji: '⛰️', category: 'milestone' },
+  { id: 'tried_50', name: 'Heat Builder', description: 'Try 50 different ideas together', emoji: '🏆', category: 'milestone' },
+  { id: 'tried_100', name: 'Legendary Chemistry', description: 'Try 100 different ideas together', emoji: '👑', category: 'milestone' },
   { id: 'first_challenge', name: 'Challenge Accepted', description: 'Complete your first challenge', emoji: '🎯', category: 'adventure' },
-  { id: 'challenges_5', name: 'Challenger', description: 'Complete 5 challenges', emoji: '💪', category: 'adventure' },
-  { id: 'challenges_10', name: 'Challenge Master', description: 'Complete 10 challenges', emoji: '🔥', category: 'adventure' },
-  { id: 'week_streak_2', name: 'Warming Up', description: '2 week intimacy streak', emoji: '🌡️', category: 'consistency' },
-  { id: 'week_streak_4', name: 'On Fire', description: '4 week intimacy streak', emoji: '🔥', category: 'consistency' },
-  { id: 'all_moods', name: 'Mood Master', description: 'Try positions in all moods', emoji: '🎭', category: 'exploration' },
-  { id: 'all_categories', name: 'Well Rounded', description: 'Try all position categories', emoji: '⭕', category: 'exploration' },
-  { id: 'advanced_5', name: 'Dare Devil', description: 'Try 5 advanced positions', emoji: '🎪', category: 'adventure' },
-  { id: 'notes_10', name: 'Journaler', description: 'Write 10 personal notes', emoji: '📝', category: 'exploration' },
-  { id: 'monthly_star', name: 'Star Collector', description: 'Earn 10 stars in one month', emoji: '⭐', category: 'milestone' },
-  { id: 'date_night_5', name: 'Date Night Pro', description: 'Complete 5 date nights', emoji: '🌙', category: 'consistency' },
+  { id: 'challenges_5', name: 'Bold Pair', description: 'Complete 5 challenges', emoji: '💪', category: 'adventure' },
+  { id: 'challenges_10', name: 'Dare Duo', description: 'Complete 10 challenges', emoji: '🔥', category: 'adventure' },
+  { id: 'week_streak_2', name: 'Two-Week Glow', description: 'Keep a 2 week streak', emoji: '🌡️', category: 'consistency' },
+  { id: 'week_streak_4', name: 'Firekeeper', description: 'Keep a 4 week streak', emoji: '🔥', category: 'consistency' },
+  { id: 'all_moods', name: 'Mood Shifter', description: 'Try positions in all moods', emoji: '🎭', category: 'exploration' },
+  { id: 'all_categories', name: 'Full Menu', description: 'Try all position categories', emoji: '⭕', category: 'exploration' },
+  { id: 'advanced_5', name: 'Edge Explorer', description: 'Try 5 advanced positions', emoji: '🎪', category: 'adventure' },
+  { id: 'notes_10', name: 'Memory Keeper', description: 'Write 10 personal notes', emoji: '📝', category: 'exploration' },
+  { id: 'monthly_star', name: 'Star Stacker', description: 'Earn 10 stars in one month', emoji: '⭐', category: 'milestone' },
+  { id: 'date_night_5', name: 'Date Night Ritual', description: 'Complete 5 date nights', emoji: '🌙', category: 'consistency' },
+  { id: 'favorites_10', name: 'Favorite Collector', description: 'Save 10 favorites across the app', emoji: '💘', category: 'exploration' },
+  { id: 'week_streak_12', name: 'Long-Game Heat', description: 'Keep a 12 week streak', emoji: '❤️‍🔥', category: 'consistency' },
+  { id: 'all_content_types', name: 'Whole-Vibe Player', description: 'Try at least one idea in every content type', emoji: '🎼', category: 'adventure' },
 ];
