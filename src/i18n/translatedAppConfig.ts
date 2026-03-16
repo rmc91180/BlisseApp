@@ -12,7 +12,7 @@ export const HOME_SPARK_MESSAGES_ES: Array<{ headline: string; body: string }> =
   },
   {
     headline: 'Menos pensar, más química ✨',
-    body: 'Abre Blisse, elige un mood y deja que el ritmo haga lo suyo.',
+    body: 'Abre Blisse, elige el ambiente y deja que el ritmo haga lo suyo.',
   },
   {
     headline: 'Energía de cita en menos de 2 minutos 😘',
@@ -35,10 +35,10 @@ export const HOME_SPARK_MESSAGES_PT: Array<{ headline: string; body: string }> =
   },
   {
     headline: 'Menos pensar, mais química ✨',
-    body: 'Abra o Blisse, escolha um mood e deixe o clima conduzir.',
+    body: 'Abra o Blisse, escolha o clima e deixe a noite conduzir.',
   },
   {
-    headline: 'Clima de date em menos de 2 minutos 😘',
+    headline: 'Clima de encontro em menos de 2 minutos 😘',
     body: 'Uma ideia, um desafio e um beijo podem virar a noite.',
   },
   {
@@ -138,7 +138,7 @@ export const SEASONAL_HOME_SPARK_MESSAGES_PT: Record<string, Array<{ headline: s
     { headline: 'Frio lá fora, faísca aqui dentro 🔥', body: 'Façam dessa noite o segredo favorito de vocês.' },
   ],
   newyear: [
-    { headline: 'Ano novo, mesmo amor, jogo mais ousado 🎆', body: 'Definam uma intenção divertida e realizem ela hoje à noite.' },
+    { headline: 'Ano novo, mesmo amor, jogo mais ousado 🎆', body: 'Definam uma intenção divertida e coloquem isso em prática hoje à noite.' },
     { headline: 'Energia de capítulo novo ✨', body: 'Pequenos rituais compartilhados agora, grande impulso no relacionamento depois.' },
   ],
 };

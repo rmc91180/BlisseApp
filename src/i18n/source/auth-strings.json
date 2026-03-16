@@ -13,8 +13,8 @@
         "signIn": "Sign In",
         "teaserCardTitle": "Today's flirty teaser",
         "teaserCardHint": "Start with a smile before you even sign in.",
-        "teaserReveal": "Tap for the punchline",
-        "teaserHide": "Hide punchline"
+        "teaserReveal": "Tap to reveal the answer",
+        "teaserHide": "Hide answer"
       },
       "es": {
         "title": "Bienvenido a Blisse",
@@ -26,8 +26,8 @@
         "signIn": "Iniciar sesión",
         "teaserCardTitle": "Coqueteo de hoy",
         "teaserCardHint": "Empiecen con una sonrisa, incluso antes de entrar.",
-        "teaserReveal": "Tocar para ver el remate",
-        "teaserHide": "Ocultar remate"
+        "teaserReveal": "Toca para ver la respuesta",
+        "teaserHide": "Ocultar respuesta"
       },
       "pt-BR": {
         "title": "Bem-vindo ao Blisse",
@@ -39,8 +39,8 @@
         "signIn": "Entrar",
         "teaserCardTitle": "Provocação de hoje",
         "teaserCardHint": "Comecem com um sorriso, antes mesmo de entrar.",
-        "teaserReveal": "Toque para ver o desfecho",
-        "teaserHide": "Ocultar desfecho"
+        "teaserReveal": "Toque para ver a resposta",
+        "teaserHide": "Ocultar resposta"
       }
     },
     "signup": {

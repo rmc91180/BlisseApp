@@ -3908,7 +3908,6 @@ function HomeScreen({
               </TouchableOpacity>
             ) : (
               <View style={styles.dailyJokePunchlineBox}>
-                <Text style={styles.dailyJokePunchlineLabel}>{t('home.punchline')}</Text>
                 <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
               </View>
             )}

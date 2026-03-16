@@ -211,10 +211,10 @@ const ES_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '7. Privacidad',
-        body: 'Tu privacidad es importante. Revisa nuestra política de privacidad para conocer como tratamos tu información.',
+        body: 'Tu privacidad es importante. Revisa nuestra política de privacidad para conocer cómo tratamos tu información.',
       },
       {
-        heading: '8. Limitacion de responsabilidad',
+        heading: '8. Limitación de responsabilidad',
         body: 'LA APP SE PROPORCIONA "TAL CUAL" SIN GARANTÍAS. EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY, BLISSE NO SERÁ RESPONSABLE POR DAÑOS INDIRECTOS, INCIDENTALES, ESPECIALES, CONSECUENTES O PUNITIVOS.',
       },
       {
@@ -274,7 +274,7 @@ const ES_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Tus derechos (GDPR/CCPA)',
-        body: 'Tienes control total sobre tus datos locales:\n- acceso: ver datos en la App\n- eliminación: Ajustes -> Reiniciar datos\n- portabilidad: datos solo en tu dispositivo',
+        body: 'Tienes control total sobre tus datos locales:\n- acceso: ver tus datos en la App\n- eliminación: Ajustes -> Restablecer datos\n- portabilidad: tus datos existen solo en tu dispositivo',
       },
       {
         heading: 'Seguridad',
@@ -305,14 +305,14 @@ const ES_CONTENT: LegalLocaleContent = {
     sections: [
       {
         heading: 'Lo que Blisse ayuda a hacer',
-        body: '- Convertir "¿qué hacemos hoy?" en opciones simples y divertidas\n- Fortalecer la comunicación con juegos, retos y rituales sin presión\n- Mantener el impulso con metas semanales, rachas y logros compartidos\n- Personalizar sugerencias según el estado de ánimo y el feedback de ustedes',
+        body: '- Convertir "¿qué hacemos hoy?" en opciones simples y divertidas\n- Fortalecer la comunicación con juegos, retos y rituales sin presión\n- Mantener el impulso con metas semanales, rachas y logros compartidos\n- Personalizar sugerencias según su estado de ánimo y sus señales de preferencia',
       },
       {
         heading: 'Nuestra historia y estilo',
         body: 'Sin juicios ni presión de rendimiento. Solo conexión real, un poco de picardía y mucho corazón. Diseñamos Blisse para parejas reales con vidas reales.',
       },
       {
-        heading: 'Comunidad y feedback',
+        heading: 'Comunidad y comentarios',
         body: 'Estamos construyendo una comunidad de parejas que aman divertirse juntas. Sus ideas, comentarios y sugerencias influyen directamente en lo que construimos después.',
       },
       {
@@ -324,14 +324,14 @@ const ES_CONTENT: LegalLocaleContent = {
   common: {
     scrollHint: 'Desliza para leer todo',
     readAll: 'Lee todo primero',
-    readAgree: 'He leido y acepto',
+    readAgree: 'He leído y acepto',
   },
 };
 
 const PT_CONTENT: LegalLocaleContent = {
   terms: {
     title: 'Termos de serviço',
-    lastUpdated: 'Última atualização: fevereiro 2026',
+    lastUpdated: 'Última atualização: fevereiro de 2026',
     intro: 'Leia estes termos com atenção antes de usar o Blisse.',
     sections: [
       {
@@ -340,7 +340,7 @@ const PT_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '2. Elegibilidade',
-        body: 'Você deve ter pelo menos 18 anos para usar este App. Ao usar o Blisse, você declara que tem capacidade legal para aceitar este acordo. O App contem conteúdo adulto para adultos com consentimento.',
+        body: 'Você deve ter pelo menos 18 anos para usar este app. Ao usar o Blisse, você declara que tem capacidade legal para aceitar este acordo. O app contém conteúdo adulto destinado apenas a adultos em relações consensuais.',
       },
       {
         heading: '3. Descrição do serviço',
@@ -348,7 +348,7 @@ const PT_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '4. Conduta e consentimento',
-        body: 'Você concorda em usar o App de forma responsável e ética. Todas as atividades exigem consentimento entusiastico e continuo de todas as partes.',
+        body: 'Você concorda em usar o app de forma responsável e ética. Todas as atividades exigem consentimento entusiástico e contínuo de todas as partes envolvidas.',
       },
       {
         heading: '5. Aviso de saúde e segurança',
@@ -363,20 +363,20 @@ const PT_CONTENT: LegalLocaleContent = {
         body: 'Sua privacidade é importante. Consulte nossa Política de Privacidade para entender como tratamos seus dados.',
       },
       {
-        heading: '8. Limitacao de responsabilidade',
-        body: 'O APP E FORNECIDO "COMO ESTÁ", SEM GARANTIAS. NA MAIOR EXTENSÃO PERMITIDA POR LEI, A BLISSE NÃO SERÁ RESPONSÁVEL POR DANOS INDIRETOS, INCIDENTAIS, ESPECIAIS, CONSEQUENCIAIS OU PUNITIVOS.',
+        heading: '8. Limitação de responsabilidade',
+        body: 'O APP É FORNECIDO "COMO ESTÁ", SEM GARANTIAS DE QUALQUER TIPO. NA MAIOR EXTENSÃO PERMITIDA POR LEI, A BLISSE NÃO SERÁ RESPONSÁVEL POR DANOS INDIRETOS, INCIDENTAIS, ESPECIAIS, CONSEQUENCIAIS OU PUNITIVOS.',
       },
       {
         heading: '9. Indenização',
-        body: 'Você concorda em indenizar e isentar a Blisse e sua equipe de reclamações, danos ou despesas decorrentes do uso do App ou violacao destes termos.',
+        body: 'Você concorda em indenizar e isentar a Blisse e sua equipe de reclamações, danos ou despesas decorrentes do uso do app ou da violação destes termos.',
       },
       {
         heading: '10. Alterações e encerramento',
-        body: 'Podemos alterar estes termos a qualquer momento. O uso continuo do App implica aceitação das alterações.',
+        body: 'Podemos alterar estes termos a qualquer momento. O uso contínuo do app implica aceitação das alterações.',
       },
       {
         heading: '11. Lei aplicável e jurisdição',
-        body: 'Estes termos sao regidos pelas leis do Estado de Israel. Qualquer disputa sera submetida a jurisdição exclusiva dos tribunais competentes de Tel Aviv, Israel.',
+        body: 'Estes termos são regidos pelas leis do Estado de Israel. Qualquer disputa será submetida à jurisdição exclusiva dos tribunais competentes de Tel Aviv, Israel.',
       },
       {
         heading: '12. Contato',
@@ -386,7 +386,7 @@ const PT_CONTENT: LegalLocaleContent = {
   },
   privacy: {
     title: 'Política de privacidade',
-    lastUpdated: 'Ultima atualizacao: fevereiro 2026',
+    lastUpdated: 'Última atualização: fevereiro de 2026',
     intro: 'Sua privacidade é nossa maior prioridade. O Blisse foi criado para proteger suas informações.',
     sections: [
       {
@@ -395,47 +395,47 @@ const PT_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Dados armazenados localmente no seu dispositivo',
-        body: 'Preferências, favoritos, notas, histórico e configurações ficam no seu dispositivo. Autenticação é processada pelo Firebase, e mensagens de contato ou ideias sao enviadas somente quando você envia.',
+        body: 'Preferências, favoritos, notas, histórico e configurações ficam armazenados no seu dispositivo. A autenticação é processada pelo Firebase, e mensagens de contato ou ideias são enviadas apenas quando você decide enviá-las.',
       },
       {
-        heading: 'Servicos de autenticacao',
-        body: 'Login e feito por Apple Sign-In e Firebase Authentication (Google). Não armazenamos senhas nem credenciais.',
+        heading: 'Serviços de autenticação',
+        body: 'O login é feito por Apple Sign-In e Firebase Authentication (Google). Não armazenamos senhas nem credenciais.',
       },
       {
-        heading: 'Analítica anónima',
-        body: 'Usamos PostHog para analítica anônima e agregada:\n- recursos mais usados\n- padroes gerais de uso\n- métricas de desempenho\n\nDesativamos perfis de pessoa e enviamos apenas metadados saneados.',
+        heading: 'Análise anônima',
+        body: 'Usamos o PostHog para análise anônima e agregada:\n- recursos mais usados\n- padrões gerais de uso\n- métricas de desempenho\n\nDesativamos perfis individuais e enviamos apenas metadados sanitizados.',
       },
       {
         heading: 'Informações que NUNCA coletamos',
-        body: '- dados biométricos\n- fotos, contatos ou arquivos pessoais\n- localizacao precisa\n- notas ou mensagens de texto livre na analitica\n- venda de informações pessoais',
+        body: '- dados biométricos\n- fotos, contatos ou arquivos pessoais\n- localização precisa\n- notas ou mensagens de texto livre nos fluxos de análise\n- venda de informações pessoais',
       },
       {
-        heading: 'Servicos de terceiros',
+        heading: 'Serviços de terceiros',
         body: 'O App usa:\n- Firebase Authentication (Google)\n- Apple Sign-In\n- PostHog\n- Formspree\n\nCada serviço possui sua própria política de privacidade.',
       },
       {
         heading: 'Retenção de dados',
-        body: 'Seus dados locais permanecem ate que você os apague em Configurações ou desinstale o App. Dados anônimos podem ser mantidos por ate 24 meses.',
+        body: 'Seus dados locais permanecem até que você os apague em Configurações ou desinstale o app. Dados anônimos podem ser mantidos por até 24 meses.',
       },
       {
         heading: 'Privacidade infantil',
-        body: 'Blisse e estritamente para adultos com 18 anos ou mais. Nao coletamos intencionalmente dados de menores.',
+        body: 'O Blisse é estritamente para adultos com 18 anos ou mais. Não coletamos intencionalmente dados de menores.',
       },
       {
         heading: 'Seus direitos (GDPR/CCPA)',
-        body: 'Você controla totalmente seus dados locais:\n- acesso: visualizar dados no App\n- exclusão: Configurações -> Resetar dados\n- portabilidade: dados somente no seu dispositivo',
+        body: 'Você controla totalmente seus dados locais:\n- acesso: visualizar seus dados no app\n- exclusão: Configurações -> Redefinir dados\n- portabilidade: seus dados existem apenas no seu dispositivo',
       },
       {
-        heading: 'Seguranca',
+        heading: 'Segurança',
         body: 'Aplicamos práticas padrão de segurança. O PIN opcional usa armazenamento seguro, e biometria é gerenciada pelo dispositivo.',
       },
       {
         heading: 'Alterações nesta política',
-        body: 'Podemos atualizar esta politica periodicamente. O uso continuo do App implica aceitacao das alteracoes.',
+        body: 'Podemos atualizar esta política periodicamente. O uso contínuo do app implica aceitação das alterações.',
       },
       {
-        heading: 'Lei aplicavel e jurisdicao',
-        body: 'Esta politica e regida pelas leis do Estado de Israel. Qualquer disputa sera submetida a jurisdicao exclusiva dos tribunais competentes de Tel Aviv, Israel.',
+        heading: 'Lei aplicável e jurisdição',
+        body: 'Esta política é regida pelas leis do Estado de Israel. Qualquer disputa será submetida à jurisdição exclusiva dos tribunais competentes de Tel Aviv, Israel.',
       },
       {
         heading: 'Contato',
@@ -454,15 +454,15 @@ const PT_CONTENT: LegalLocaleContent = {
     sections: [
       {
         heading: 'Como o Blisse ajuda vocês',
-        body: '- Transformar "o que fazemos hoje?" em opções simples e divertidas\n- Fortalecer a comunicação com jogos, desafios e rituais sem pressão\n- Manter o ritmo com metas semanais, sequências e marcos compartilhados\n- Personalizar ideias com base no humor e no feedback de vocês',
+        body: '- Transformar "o que fazemos hoje?" em opções simples e divertidas\n- Fortalecer a comunicação com jogos, desafios e rituais sem pressão\n- Manter o ritmo com metas semanais, sequências e marcos compartilhados\n- Personalizar ideias com base no clima e nas preferências de vocês',
       },
       {
         heading: 'Nossa história e nossa vibe',
         body: 'Sem julgamentos e sem pressão de desempenho. Só conexão verdadeira, um toque de brincadeira e muito carinho. Criamos o Blisse para casais reais com rotinas reais.',
       },
       {
-        heading: 'Comunidade e feedback',
-        body: 'Estamos construindo uma comunidade de casais que gostam de se divertir juntos. Suas ideias, feedbacks e sugestões influenciam diretamente o que vamos criar depois.',
+        heading: 'Comunidade e sugestões',
+        body: 'Estamos construindo uma comunidade de casais que gostam de se divertir juntos. Suas ideias, comentários e sugestões influenciam diretamente o que vamos criar depois.',
       },
       {
         heading: 'Nossa promessa',
