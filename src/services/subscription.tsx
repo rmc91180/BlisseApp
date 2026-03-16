@@ -26,7 +26,7 @@ export interface SubscriptionContextType {
   actionError: string | null;
   refresh: () => Promise<void>;
   purchase: (pkg: PurchasesPackage) => Promise<void>;
-  restore: () => Promise<void>;
+  restore: () => Promise<boolean>;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | null>(null);
@@ -223,7 +223,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     [enabled]
   );
 
-  const restore = useCallback(async () => {
+  const restore = useCallback(async (): Promise<boolean> => {
     if (!enabled) {
       throw new Error('billing_not_enabled');
     }
@@ -234,7 +234,9 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setCustomerInfo(info);
       if (!hasActiveEntitlement(info)) {
         setActionError('No active subscription was found to restore.');
+        return false;
       }
+      return true;
     } catch (error) {
       setActionError('Restore failed. Please try again.');
       throw error;

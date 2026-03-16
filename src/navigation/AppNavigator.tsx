@@ -90,6 +90,8 @@ function SubscriptionPaywallScreen() {
       restoreSuccess: 'Restore complete',
       restoreFound: 'Your subscription was restored.',
       restoreMissing: 'No active subscription found.',
+      checkingSubscription: 'Checking subscription...',
+      billingUnavailableTitle: 'Billing unavailable',
     },
     es: {
       title: 'Desbloquea Blisse',
@@ -105,6 +107,8 @@ function SubscriptionPaywallScreen() {
       restoreSuccess: 'Restauración completada',
       restoreFound: 'Tu suscripción fue restaurada.',
       restoreMissing: 'No encontramos una suscripción activa.',
+      checkingSubscription: 'Comprobando la suscripción...',
+      billingUnavailableTitle: 'Facturación no disponible',
     },
     pt: {
       title: 'Desbloqueie o Blisse',
@@ -120,6 +124,8 @@ function SubscriptionPaywallScreen() {
       restoreSuccess: 'Restauração concluída',
       restoreFound: 'Sua assinatura foi restaurada.',
       restoreMissing: 'Não encontramos assinatura ativa.',
+      checkingSubscription: 'Verificando assinatura...',
+      billingUnavailableTitle: 'Cobrança indisponível',
     },
   } as const;
 
@@ -135,8 +141,12 @@ function SubscriptionPaywallScreen() {
 
   const onRestore = async () => {
     try {
-      await restore();
-      Alert.alert(i18n.restoreSuccess, i18n.restoreFound);
+      const restored = await restore();
+      if (restored) {
+        Alert.alert(i18n.restoreSuccess, i18n.restoreFound);
+        return;
+      }
+      Alert.alert(i18n.restoreSuccess, i18n.restoreMissing);
     } catch {
       Alert.alert(i18n.purchaseError);
     }
@@ -347,7 +357,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 44, marginBottom: 12 }}>💳</Text>
-        <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700' }}>Checking subscription...</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700' }}>{t('app.checking_subscription')}</Text>
         <ActivityIndicator color={themeColors.primary[500]} style={{ marginTop: 16 }} />
       </View>
     );
@@ -358,7 +368,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
         <Text style={{ fontSize: 44, marginBottom: 12 }}>⚠️</Text>
         <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700', textAlign: 'center', marginBottom: 8 }}>
-          Billing unavailable
+          {t('app.billing_unavailable')}
         </Text>
         <Text style={{ color: themeColors.text.secondary, fontSize: 14, textAlign: 'center', marginBottom: 16 }}>
           {billingConfigError}
