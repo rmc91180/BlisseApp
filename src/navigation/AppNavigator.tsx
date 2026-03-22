@@ -35,6 +35,23 @@ export interface AppNavigatorScreens {
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const parseIso8601Period = (period: string | null): { count: number; unit: 'day' | 'week' | 'month' | 'year' } | null => {
+  if (!period) return null;
+  const match = /^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/i.exec(period);
+  if (!match) return null;
+
+  const year = Number(match[1] || 0);
+  const month = Number(match[2] || 0);
+  const week = Number(match[3] || 0);
+  const day = Number(match[4] || 0);
+
+  if (year) return { count: year, unit: 'year' };
+  if (month) return { count: month, unit: 'month' };
+  if (week) return { count: week, unit: 'week' };
+  if (day) return { count: day, unit: 'day' };
+  return null;
+};
+
 const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, language: 'en' | 'es' | 'pt'): string => {
   const unit = periodUnit.toUpperCase();
   const plural = periodNumberOfUnits > 1;
@@ -62,6 +79,107 @@ const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, lang
   return `${periodNumberOfUnits}`;
 };
 
+const formatBillingPeriod = (
+  count: number,
+  unit: 'day' | 'week' | 'month' | 'year',
+  language: 'en' | 'es' | 'pt',
+  style: 'per' | 'every' = 'per'
+): string => {
+  const plural = count > 1;
+
+  if (language === 'es') {
+    const label =
+      unit === 'day' ? (plural ? 'días' : 'día')
+      : unit === 'week' ? (plural ? 'semanas' : 'semana')
+      : unit === 'month' ? (plural ? 'meses' : 'mes')
+      : (plural ? 'años' : 'año');
+
+    if (style === 'per' && count === 1) {
+      return unit === 'day' ? 'por día'
+        : unit === 'week' ? 'por semana'
+        : unit === 'month' ? 'por mes'
+        : 'por año';
+    }
+    return `cada ${count} ${label}`;
+  }
+
+  if (language === 'pt') {
+    const label =
+      unit === 'day' ? (plural ? 'dias' : 'dia')
+      : unit === 'week' ? (plural ? 'semanas' : 'semana')
+      : unit === 'month' ? (plural ? 'meses' : 'mês')
+      : (plural ? 'anos' : 'ano');
+
+    if (style === 'per' && count === 1) {
+      return unit === 'day' ? 'por dia'
+        : unit === 'week' ? 'por semana'
+        : unit === 'month' ? 'por mês'
+        : 'por ano';
+    }
+    return `a cada ${count} ${label}`;
+  }
+
+  const label =
+    unit === 'day' ? `day${plural ? 's' : ''}`
+    : unit === 'week' ? `week${plural ? 's' : ''}`
+    : unit === 'month' ? `month${plural ? 's' : ''}`
+    : `year${plural ? 's' : ''}`;
+
+  if (style === 'per' && count === 1) {
+    return unit === 'day' ? 'per day'
+      : unit === 'week' ? 'per week'
+      : unit === 'month' ? 'per month'
+      : 'per year';
+  }
+  return `every ${count} ${label}`;
+};
+
+const getPlanName = (pkg: PurchasesPackage, language: 'en' | 'es' | 'pt'): string => {
+  const packageType = String(pkg.packageType || '').toUpperCase();
+
+  const map = {
+    en: {
+      MONTHLY: 'Monthly',
+      ANNUAL: 'Annual',
+      WEEKLY: 'Weekly',
+      LIFETIME: 'Lifetime',
+      SIX_MONTH: '6 Months',
+      THREE_MONTH: '3 Months',
+      TWO_MONTH: '2 Months',
+    },
+    es: {
+      MONTHLY: 'Mensual',
+      ANNUAL: 'Anual',
+      WEEKLY: 'Semanal',
+      LIFETIME: 'De por vida',
+      SIX_MONTH: '6 meses',
+      THREE_MONTH: '3 meses',
+      TWO_MONTH: '2 meses',
+    },
+    pt: {
+      MONTHLY: 'Mensal',
+      ANNUAL: 'Anual',
+      WEEKLY: 'Semanal',
+      LIFETIME: 'Vitalício',
+      SIX_MONTH: '6 meses',
+      THREE_MONTH: '3 meses',
+      TWO_MONTH: '2 meses',
+    },
+  } as const;
+
+  const localized = map[language] ?? map.en;
+  if (packageType in localized) {
+    return localized[packageType as keyof typeof localized];
+  }
+
+  const subscriptionPeriod = parseIso8601Period(pkg.product.subscriptionPeriod);
+  if (subscriptionPeriod) {
+    return formatBillingPeriod(subscriptionPeriod.count, subscriptionPeriod.unit, language, 'every');
+  }
+
+  return pkg.product.title;
+};
+
 function SubscriptionPaywallScreen() {
   const language = useStore((state) => state.language);
   const themeStore = useThemeStore();
@@ -86,6 +204,9 @@ function SubscriptionPaywallScreen() {
       introOfferBadge: 'Intro offer available',
       noPlans: 'Plans are loading. Please wait a moment or retry.',
       legal: 'Subscriptions renew automatically unless canceled in App Store settings.',
+      fullAccess: 'Full premium access for couples',
+      billedEvery: 'Billed {period}',
+      billedOnce: 'One-time purchase',
       purchaseError: 'Purchase failed',
       restoreSuccess: 'Restore complete',
       restoreFound: 'Your subscription was restored.',
@@ -103,6 +224,9 @@ function SubscriptionPaywallScreen() {
       introOfferBadge: 'Oferta de introducción disponible',
       noPlans: 'Estamos cargando los planes. Espera un momento o vuelve a intentar.',
       legal: 'Las suscripciones se renuevan automáticamente hasta que las canceles en App Store.',
+      fullAccess: 'Acceso premium completo para parejas',
+      billedEvery: 'Cobro {period}',
+      billedOnce: 'Pago único',
       purchaseError: 'No se pudo completar la compra',
       restoreSuccess: 'Restauración completada',
       restoreFound: 'Tu suscripción fue restaurada.',
@@ -120,6 +244,9 @@ function SubscriptionPaywallScreen() {
       introOfferBadge: 'Oferta de introdução disponível',
       noPlans: 'Estamos carregando os planos. Aguarde um momento ou tente novamente.',
       legal: 'As assinaturas renovam automaticamente até serem canceladas na App Store.',
+      fullAccess: 'Acesso premium completo para casais',
+      billedEvery: 'Cobrança {period}',
+      billedOnce: 'Pagamento único',
       purchaseError: 'Não foi possível concluir a compra',
       restoreSuccess: 'Restauração concluída',
       restoreFound: 'Sua assinatura foi restaurada.',
@@ -181,6 +308,14 @@ function SubscriptionPaywallScreen() {
             const introDuration = intro
               ? formatIntroPeriod(intro.periodNumberOfUnits, intro.periodUnit, language)
               : null;
+            const billingPeriod = parseIso8601Period(pkg.product.subscriptionPeriod);
+            const planName = getPlanName(pkg, language);
+            const billingCaption = billingPeriod
+              ? i18n.billedEvery.replace('{period}', formatBillingPeriod(billingPeriod.count, billingPeriod.unit, language))
+              : i18n.billedOnce;
+            const renewalPrice = billingPeriod
+              ? `${pkg.product.priceString} ${formatBillingPeriod(billingPeriod.count, billingPeriod.unit, language)}`
+              : pkg.product.priceString;
 
             return (
           <TouchableOpacity
@@ -197,18 +332,19 @@ function SubscriptionPaywallScreen() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            <Text style={{ color: themeColors.text.primary, fontSize: 17, fontWeight: '700' }}>{pkg.product.title}</Text>
-            <Text style={{ color: themeColors.text.secondary, fontSize: 13, marginTop: 4 }}>{pkg.product.description}</Text>
+            <Text style={{ color: themeColors.text.primary, fontSize: 19, fontWeight: '700' }}>{planName}</Text>
+            <Text style={{ color: themeColors.text.secondary, fontSize: 13, marginTop: 4 }}>{i18n.fullAccess}</Text>
+            <Text style={{ color: themeColors.text.muted, fontSize: 12, marginTop: 6 }}>{billingCaption}</Text>
             {hasFreeTrial && introDuration ? (
               <Text style={{ color: themeColors.success, fontSize: 13, marginTop: 8, fontWeight: '700' }}>
-                {`${i18n.freeTrialBadge} - ${introDuration}. ${i18n.freeTrialThen.replace('{price}', pkg.product.priceString)}`}
+                {`${i18n.freeTrialBadge} - ${introDuration}. ${i18n.freeTrialThen.replace('{price}', renewalPrice)}`}
               </Text>
             ) : hasIntro && intro ? (
               <Text style={{ color: themeColors.success, fontSize: 13, marginTop: 8, fontWeight: '700' }}>
                 {`${i18n.introOfferBadge}: ${intro.priceString}`}
               </Text>
             ) : null}
-            <Text style={{ color: themeColors.primary[400], fontSize: 16, fontWeight: '700', marginTop: 10 }}>{pkg.product.priceString}</Text>
+            <Text style={{ color: themeColors.primary[400], fontSize: 16, fontWeight: '700', marginTop: 10 }}>{renewalPrice}</Text>
           </TouchableOpacity>
             );
           })()
