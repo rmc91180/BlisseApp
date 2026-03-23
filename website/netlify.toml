@@ -12,6 +12,11 @@
   to = "/terms.html"
   status = 200
 
+[[redirects]]
+  from = "/delete-account"
+  to = "/delete-account.html"
+  status = 200
+
 # Custom headers for security
 [[headers]]
   for = "/*"

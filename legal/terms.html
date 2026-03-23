@@ -82,7 +82,7 @@
 
         <div class="footer">
             <p id="footerCopyright">© 2026 Blisse. All rights reserved.</p>
-            <p><a id="footerTerms" href="/terms">Terms of Service</a> · <a id="footerPrivacy" href="/privacy">Privacy Policy</a></p>
+            <p><a id="footerTerms" href="/terms">Terms of Service</a> · <a id="footerPrivacy" href="/privacy">Privacy Policy</a> · <a id="footerDelete" href="/delete-account">Delete Account</a></p>
         </div>
     </div>
 
@@ -109,6 +109,7 @@
                 footerTerms: 'Terms of Service',
                 footerPrivacy: 'Privacy Policy',
                 footerCopyright: '© 2026 Blisse. All rights reserved.',
+                footerDelete: 'Delete Account',
             },
             es: {
                 title: 'Términos de servicio',
@@ -131,6 +132,7 @@
                 footerTerms: 'Términos de servicio',
                 footerPrivacy: 'Política de privacidad',
                 footerCopyright: '© 2026 Blisse. Todos los derechos reservados.',
+                footerDelete: 'Eliminar cuenta',
             },
             pt: {
                 title: 'Termos de serviço',
@@ -153,6 +155,7 @@
                 footerTerms: 'Termos de serviço',
                 footerPrivacy: 'Política de privacidade',
                 footerCopyright: '© 2026 Blisse. Todos os direitos reservados.',
+                footerDelete: 'Excluir conta',
             },
         };
 
@@ -179,6 +182,7 @@
             document.getElementById('footerTerms').textContent = copy.footerTerms;
             document.getElementById('footerPrivacy').textContent = copy.footerPrivacy;
             document.getElementById('footerCopyright').textContent = copy.footerCopyright;
+            document.getElementById('footerDelete').textContent = copy.footerDelete;
 
             const sections = document.getElementById('docSections');
             sections.innerHTML = '';
@@ -198,6 +202,7 @@
             document.getElementById('homeLink').href = `/?lang=${lang}`;
             document.getElementById('footerTerms').href = `/terms?lang=${lang}`;
             document.getElementById('footerPrivacy').href = `/privacy?lang=${lang}`;
+            document.getElementById('footerDelete').href = `/delete-account?lang=${lang}`;
         }
 
         document.getElementById('languageSelect').addEventListener('change', (event) => {
