@@ -6923,6 +6923,74 @@
         "Foco em pescoço e orelha",
         "Depois do jantar"
       ]
+    },
+    "182": {
+      "name": "Flerte no espelho",
+      "vibe": "Ver vocês dois e transformar isso em brincadeira",
+      "description": "Fiquem diante de um espelho e flirtem com a cena: um olhar, um sorriso, uma mão na cintura, um beijo lento que os dois podem ver acontecer.",
+      "howTo": "Fiquem bem próximos diante do espelho, com uma pessoa só um pouco atrás da outra. Comecem com contato visual no reflexo e somem elogios, toques na cintura ou no abdômen e beijos lentos sem parar de se olhar.",
+      "tips": [
+        "O reflexo faz gestos pequenos parecerem maiores",
+        "Digam em voz alta o que gostam de ver",
+        "Mãos na cintura funcionam muito bem aqui",
+        "A ideia é ser brincalhão, não ensaiado"
+      ],
+      "pairsWellWith": [
+        "A pausa no corredor",
+        "Banho de elogios",
+        "A troca de olhares"
+      ]
+    },
+    "183": {
+      "name": "Beijo em contagem regressiva",
+      "vibe": "Um pouco de estrutura para muita tensão",
+      "description": "Contem de cinco até um e deixem cada beijo mais demorado, mais cheio e um pouco mais carregado do que o anterior.",
+      "howTo": "Fiquem um de frente para o outro com espaço suficiente só para provocar. Digam o número em voz alta antes de cada beijo: cinco, quatro, três, dois, um. A cada número, deixem o beijo durar mais e permitam que as mãos avancem um pouco.",
+      "tips": [
+        "Faça o primeiro beijo ser quase breve demais",
+        "A contagem ajuda a desacelerar",
+        "Sussurrar o número pode ser ainda mais forte",
+        "Perfeito para transformar um momento casual em impulso"
+      ],
+      "pairsWellWith": [
+        "A pausa no corredor",
+        "Foco em pescoço e orelha",
+        "A demora deliciosa"
+      ]
+    },
+    "184": {
+      "name": "Mãos guiadas",
+      "vibe": "Ensinar pelo toque, não pela teoria",
+      "description": "Uma pessoa coloca as mãos sobre as da outra e guia com suavidade a pressão, o ritmo e o caminho que mais agradam.",
+      "howTo": "Sentem-se ou deitem-se bem perto. Quem recebe coloca as mãos sobre as de quem toca e as conduz devagar pela cintura, coxas, peito, pescoço ou por onde o momento pedir. Depois troquem de papel.",
+      "tips": [
+        "Guiem com carinho, não com crítica",
+        "Pequenos ajustes costumam bastar",
+        "Troquem antes que a timidez apareça",
+        "É ótimo para construir confiança e clareza"
+      ],
+      "pairsWellWith": [
+        "Me mostra mais devagar",
+        "Exploração mútua",
+        "O mapa"
+      ]
+    },
+    "185": {
+      "name": "Caminho até o quarto",
+      "vibe": "Um convite brincalhão para algo especial",
+      "description": "Monte um pequeno percurso até o quarto com bilhetes, velas, flores ou pistas simples para que a noite pareça realmente separada do resto do dia.",
+      "howTo": "Antes de a outra pessoa chegar ou enquanto estiver distraída, prepare um trajeto curto: um bilhete na mesa, uma vela no corredor, música no quarto, talvez uma peça de roupa ou um petisco favorito no final. Deixe o caminho fazer o convite por você.",
+      "tips": [
+        "Não precisa de muito: três pistas já bastam",
+        "Use detalhes pessoais, não genéricos",
+        "A iluminação importa mais do que a decoração",
+        "A surpresa deve parecer acolhedora, não montada"
+      ],
+      "pairsWellWith": [
+        "Sala à luz de velas",
+        "Depois do jantar",
+        "Flerte no espelho"
+      ]
     }
   },
   "oral": {
@@ -7777,20 +7845,20 @@
       ]
     },
     "251": {
-      "name": "O 69 lateral",
-      "vibe": "Mútuo sem acrobacia",
-      "description": "Uma variação mais suave do 69 com os dois de lado, deixando o prazer mútuo mais relaxado e sustentável.",
-      "howTo": "Os dois se deitam de lado em direções opostas, formando um 69 lateral. Usem travesseiros sob cabeça, ombros ou quadris até a posição parecer fácil de manter sem esforço.",
+      "name": "A troca com travesseiros",
+      "vibe": "Revezamento com apoio sem quebrar o clima",
+      "description": "Um formato mútuo em que uma pessoa se recosta nos travesseiros enquanto a outra oferece prazer, e depois vocês trocam de lugar sem deixar a tensão cair.",
+      "howTo": "Montem um apoio confortável de travesseiros junto à cabeceira da cama ou à parede. Uma pessoa se recosta e a outra se acomoda para tocar e agradar. Depois de alguns minutos, troquem de posição com suavidade, mantendo mãos, beijos e contato para que a energia continue alta.",
       "tips": [
-        "Conforto vem primeiro - ajustem com travesseiros à vontade",
-        "É mais calmo do que um 69 empilhado",
-        "Ótimo para sessões mútuas longas e sem pressa",
-        "Alternem quem conduz o ritmo se ajudar"
+        "Preparar bem os travesseiros muda tudo",
+        "Quanto mais suave a troca, melhor ela funciona",
+        "Ótimo quando vocês querem atenção mútua sem pressa",
+        "Falar baixinho entre os turnos deixa tudo mais íntimo"
       ],
       "pairsWellWith": [
+        "Troca lenta",
         "Jogo do espelho",
-        "O dueto",
-        "Troca lenta"
+        "Conexão profunda"
       ]
     },
     "252": {
@@ -7825,6 +7893,40 @@
         "O mapa",
         "Clima de espelho no banheiro",
         "Conexão espontânea"
+      ]
+    },
+    "254": {
+      "name": "Vapor do chuveiro",
+      "vibe": "Água morna, apoio suave e clima sem pressa",
+      "description": "Uma proposta no chuveiro que usa o vapor, a água morna e uma postura relaxada para deixar o oral mais envolvente e sensorial.",
+      "howTo": "Mantenham a água morna, sem muita pressão. Deixe que ela se apoie na parede ou levante um pé se isso trouxer conforto. Ele só se ajoelha se a posição for segura; caso contrário, mantenham parte do corpo erguida e deixem o calor ditar um ritmo tranquilo.",
+      "tips": [
+        "Segurança em primeiro lugar: usem um tapete antiderrapante",
+        "O vapor ajuda o corpo a relaxar rapidamente",
+        "No chuveiro, sessões mais curtas costumam funcionar melhor",
+        "Ter toalhas por perto facilita a transição"
+      ],
+      "pairsWellWith": [
+        "A bancada em pé",
+        "Flerte no chuveiro",
+        "Subida lenta"
+      ]
+    },
+    "255": {
+      "name": "O sinal sentado",
+      "vibe": "Conforto sentado com orientação natural",
+      "description": "Ele se senta com conforto enquanto ela fica perto o bastante para ler cada reação e deixar que a orientação dele pareça natural, não técnica.",
+      "howTo": "Sente-o na beirada da cama, do sofá ou em uma cadeira firme, com os pés apoiados. Ela se aproxima o suficiente para que ele possa orientar com toques leves, pressão ou uma mão no ombro sem quebrar o ritmo.",
+      "tips": [
+        "Sentado é mais fácil de ler",
+        "Uma orientação leve costuma ser suficiente",
+        "Ótimo para descobrir rápido o que funciona",
+        "Aproveitem as pausas para se procurar com o olhar"
+      ],
+      "pairsWellWith": [
+        "A cadeira inclinada",
+        "A torção",
+        "Aprender juntos"
       ]
     }
   },

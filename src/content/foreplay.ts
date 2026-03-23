@@ -1026,6 +1026,54 @@ export const foreplayIdeas: ForeplayIdea[] = [
     howTo: "Catch your partner in a doorway, hallway, or while passing by. Pull them in for a slow kiss, a hand at the waist, or a lingering touch at the neck. Hold the pause just a little longer than expected, then decide whether to keep moving or let it lead somewhere else.",
     tips: ["The surprise is part of the spark", "Keep it intentional, not rushed", "A hand at the lower back changes everything", "Great when you want to create momentum out of nowhere"],
     pairsWellWith: ["The Delicious Delay", "Neck & Ear Focus", "After-Dinner Drift"]
+  },
+  {
+    id: 182,
+    name: "Mirror Flirt",
+    category: "Connection",
+    mood: "playful",
+    duration: "Quick",
+    vibe: "Catching each other's eye and turning it into a game",
+    description: "Stand together in front of a mirror and flirt with what you see: a look, a smile, a hand at the waist, a slow kiss you both watch happen.",
+    howTo: "Stand close in front of a mirror with one partner slightly behind the other. Start with eye contact in the reflection, then layer in compliments, touches at the hips or stomach, and slow kisses while you keep looking at each other.",
+    tips: ["The reflection makes small gestures feel bigger", "Talk about what you like seeing", "Hands on the waist work especially well here", "Keep it playful, not performative"],
+    pairsWellWith: ["The Hallway Pause", "Compliment Shower", "The Eye Lock"]
+  },
+  {
+    id: 183,
+    name: "Countdown Kiss",
+    category: "Touch",
+    mood: "passionate",
+    duration: "Quick",
+    vibe: "A little structure that builds a lot of tension",
+    description: "Count down from five and make each kiss slower, fuller, and a touch more charged than the one before it.",
+    howTo: "Start facing each other with just enough space to tease. Say the number out loud before each kiss: five, four, three, two, one. With every number, let the kiss linger longer and let your hands wander a little further.",
+    tips: ["Keep the first kiss almost too brief", "Use the countdown to slow yourselves down", "A whispered number can be hotter than a loud one", "Perfect for turning a casual moment into momentum"],
+    pairsWellWith: ["The Hallway Pause", "Neck & Ear Focus", "The Delicious Delay"]
+  },
+  {
+    id: 184,
+    name: "Guided Hands",
+    category: "Connection",
+    mood: "blossoming",
+    duration: "Medium",
+    vibe: "Teaching each other through touch instead of explanation",
+    description: "One partner places their hands over the other's and quietly guides the exact pressure, pace, and pathway that feels best.",
+    howTo: "Sit or lie close together. The receiving partner places their hands over the giver's and guides them slowly - across the waist, inner thighs, chest, neck, or wherever the moment leads. After a few minutes, switch roles.",
+    tips: ["Guide warmly, not critically", "Small adjustments are enough", "Switch before anyone feels self-conscious", "Wonderful for building trust and clarity"],
+    pairsWellWith: ["Show Me Slower", "Mutual Exploration", "The Roadmap"]
+  },
+  {
+    id: 185,
+    name: "Bedroom Trail",
+    category: "Setting",
+    mood: "blossoming",
+    duration: "Medium",
+    vibe: "A playful trail that says something special is about to happen",
+    description: "Create a simple path into the bedroom using notes, candles, flowers, or small clues so the evening feels intentionally set apart.",
+    howTo: "Before your partner arrives or while they are occupied, create a short trail: a note on the table, a candle in the hall, music in the bedroom, maybe one item of clothing or a favorite snack at the end. Let the trail do the inviting for you.",
+    tips: ["Keep it simple - three clues are enough", "Use things that feel personal, not generic", "Lighting matters more than decoration", "The reveal should feel warm, not staged"],
+    pairsWellWith: ["Candlelit Room", "After-Dinner Drift", "Mirror Flirt"]
   }
 ];
 

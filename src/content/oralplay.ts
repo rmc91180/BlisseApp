@@ -641,15 +641,15 @@ export const oralPlayIdeas: OralPlayIdea[] = [
   },
   {
     id: 251,
-    name: "The Side-by-Side 69 Lounge",
+    name: "The Cushion Trade",
     category: "Mutual",
     mood: "flowing",
     giver: "both",
-    vibe: "Mutual without the acrobatics",
-    description: "A gentler 69 variation with both partners on their sides, making mutual pleasure feel more relaxed and sustainable.",
-    howTo: "Both partners lie on their sides facing opposite directions, stacking into a side-lying 69. Use pillows under heads, shoulders, or hips until the setup feels easy enough to hold without strain.",
-    tips: ["Comfort first - adjust with pillows liberally", "This is calmer than a stacked 69", "Great for long, unhurried mutual play", "Switch who leads the rhythm if helpful"],
-    pairsWellWith: ["The Mirror Game", "The Duet", "Slow Exchange"]
+    vibe: "Supported turn-taking without breaking the mood",
+    description: "A mutual setup where one partner reclines into pillows while the other gives, then both trade places without fully resetting the scene.",
+    howTo: "Create a comfortable pillow nest against a headboard or wall. One partner reclines while the other settles in to give. After a few minutes, switch roles smoothly, keeping hands, kisses, and contact going so the mood never drops.",
+    tips: ["Set the pillows before you start", "The smoother the switch, the hotter the trade", "Great when you want mutual attention without rushing", "Talking softly between turns keeps it intimate"],
+    pairsWellWith: ["The Slow Exchange", "The Mirror Game", "Deep connection"]
   },
   {
     id: 252,
@@ -674,6 +674,30 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     howTo: "Have her lean back lightly against a stable surface at a comfortable height. He kneels or crouches in front of her and lets the support surface keep her relaxed while he explores at an easy pace.",
     tips: ["Choose a surface height that feels natural", "Her weight should stay supported", "One hand on the counter helps balance", "Works especially well for playful, spontaneous moments"],
     pairsWellWith: ["The Roadmap", "Bathroom mirror energy", "Spontaneous connection"]
+  },
+  {
+    id: 254,
+    name: "The Shower Steam",
+    category: "For Her",
+    mood: "flowing",
+    giver: "him",
+    vibe: "Warm water, soft support, and slow buildup",
+    description: "A shower setup that uses steam, warm water, and a relaxed stance to turn oral into something soothing and deeply sensual.",
+    howTo: "Keep the water warm but not too strong. Let her lean against the wall or rest one foot on a ledge if that feels better. He kneels only if the setup is safe and comfortable; otherwise stay partly upright and use the shower’s warmth to keep everything unrushed.",
+    tips: ["Safety first - use a non-slip mat", "Steam helps bodies relax quickly", "Shorter sessions work best in the shower", "Towels ready nearby keep the transition easy"],
+    pairsWellWith: ["The Standing Counter", "Shower flirting", "Slow buildup"]
+  },
+  {
+    id: 255,
+    name: "The Seated Signal",
+    category: "For Him",
+    mood: "blossoming",
+    giver: "her",
+    vibe: "Seated comfort with easy guidance",
+    description: "He sits back comfortably while she stays close enough to read every reaction and let his guidance feel natural, not clinical.",
+    howTo: "Seat him on the edge of the bed, couch, or a stable chair with his feet planted. She settles in close and keeps one hand free so he can guide with taps, pressure, or a hand on her shoulder without breaking the rhythm.",
+    tips: ["A seated receiver is easier to read", "Light guidance is usually enough", "This is great for learning what works quickly", "Keep eye contact in the pauses"],
+    pairsWellWith: ["The Chair Lean", "The Twist", "Learning together"]
   }
 ];
 
