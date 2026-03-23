@@ -574,6 +574,106 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     howTo: "In a 69 or side-by-side position, attune to your partner's intensity. As they increase speed or pressure, match it. If they slow down to savor, follow. The goal is to stay perfectly synchronized so you build toward climax together, like two instruments playing the same song.",
     tips: ["One partner may need to lead initially to establish the pace", "Breathe together — matched breathing helps synchronize", "If one partner is closer, the other slows to let them catch up", "Finishing together is the ultimate goal but not a requirement — enjoy the attempt"],
     pairsWellWith: ["The 69", "Synchronized Start", "Passionate connection"]
+  },
+
+  // ============================================
+  // SETUP EXPANSION (8 ideas)
+  // ============================================
+  {
+    id: 246,
+    name: "The Edge of the Bed",
+    category: "For Him",
+    mood: "grounded",
+    giver: "her",
+    vibe: "Classic support and easy access",
+    description: "A simple, effective setup where he lies back near the edge of the bed while she kneels or stands comfortably in front of him.",
+    howTo: "Have him lie close to the edge of the bed with his hips near the mattress line. She positions herself in front - kneeling, sitting on a cushion, or standing if the height works. Use the bed height to make everything feel supported and relaxed.",
+    tips: ["Adjust height with pillows or cushions", "This setup is great for taking your time", "He can relax his shoulders and simply receive", "Very easy to pause, reset, and start again smoothly"],
+    pairsWellWith: ["The Warm Welcome", "Morning Glory", "Slow buildup"]
+  },
+  {
+    id: 247,
+    name: "The Pillow Throne",
+    category: "For Her",
+    mood: "blossoming",
+    giver: "him",
+    vibe: "Soft support and full attention",
+    description: "She reclines against pillows while he settles in close, creating a supported setup that feels indulgent and attentive.",
+    howTo: "Stack pillows behind her back and shoulders so she can recline comfortably with legs open in a relaxed way. He positions himself between her legs and lets the support do the work, keeping the pace unhurried and attentive.",
+    tips: ["The more supported she feels, the easier it is to relax", "Use pillows under knees if that helps", "Great for long, slow sessions", "Check in about comfort and angle early"],
+    pairsWellWith: ["Queen on Her Throne", "The Slow, Delicious Worship", "Extended foreplay"]
+  },
+  {
+    id: 248,
+    name: "The Side Lounge",
+    category: "For Him",
+    mood: "flowing",
+    giver: "her",
+    vibe: "Low-effort side-lying pleasure",
+    description: "A side-lying oral setup that feels relaxed, intimate, and easy to stay in for longer stretches.",
+    howTo: "Have him lie on his side while she settles beside him or slightly lower, using pillows to support neck and shoulders as needed. Let the angle stay easy and comfortable rather than trying to force a dramatic line.",
+    tips: ["Pillows make this one much easier", "Great for sleepy or affectionate energy", "Slow pacing suits this setup best", "Touch along the hips and thighs keeps it connected"],
+    pairsWellWith: ["The Slow Exchange", "Lazy evenings", "Aftercare energy"]
+  },
+  {
+    id: 249,
+    name: "The Rear Tease",
+    category: "For Her",
+    mood: "passionate",
+    giver: "him",
+    vibe: "A different angle from behind",
+    description: "An oral setup approached from behind that creates a noticeably different angle and a more surprising pattern of sensation.",
+    howTo: "She positions on hands and knees, or lowers onto forearms if that feels better. He approaches from behind and uses the angle to explore more slowly than usual at first, letting her settle into the sensation.",
+    tips: ["Start slower than you think", "Pillows under knees or chest help a lot", "Ask what angle feels best", "A hand at the hip or lower back can add grounding"],
+    pairsWellWith: ["The Peach", "Rear-entry buildup", "Mirror play"]
+  },
+  {
+    id: 250,
+    name: "The Chair Lean",
+    category: "For Him",
+    mood: "playful",
+    giver: "her",
+    vibe: "Seated, relaxed, and easy to hold eye contact",
+    description: "He sits in a sturdy chair while she kneels or sits close in front, turning the setup into something both casual and charged.",
+    howTo: "Sit him in a stable chair with both feet planted. She kneels, sits on a cushion, or leans in from between his legs. Because he is upright, it is easy to keep touching, talking, and making eye contact throughout.",
+    tips: ["A stable chair matters", "Cushions help with knee comfort", "Eye contact changes the whole mood", "Use his thighs for support and balance"],
+    pairsWellWith: ["The Looker", "Chair-based intimacy", "Playful teasing"]
+  },
+  {
+    id: 251,
+    name: "The Side-by-Side 69 Lounge",
+    category: "Mutual",
+    mood: "flowing",
+    giver: "both",
+    vibe: "Mutual without the acrobatics",
+    description: "A gentler 69 variation with both partners on their sides, making mutual pleasure feel more relaxed and sustainable.",
+    howTo: "Both partners lie on their sides facing opposite directions, stacking into a side-lying 69. Use pillows under heads, shoulders, or hips until the setup feels easy enough to hold without strain.",
+    tips: ["Comfort first - adjust with pillows liberally", "This is calmer than a stacked 69", "Great for long, unhurried mutual play", "Switch who leads the rhythm if helpful"],
+    pairsWellWith: ["The Mirror Game", "The Duet", "Slow Exchange"]
+  },
+  {
+    id: 252,
+    name: "The Stacked 69",
+    category: "Mutual",
+    mood: "dynamic",
+    giver: "both",
+    vibe: "Classic mutual intensity with full focus",
+    description: "A more traditional 69 setup that feels immersive and intense when both partners want simultaneous pleasure and strong feedback.",
+    howTo: "Set up in a classic stacked 69 with one partner above the other. Make sure the person underneath can breathe and stay comfortable, then find a rhythm that allows both of you to stay present rather than rushing.",
+    tips: ["Comfort and breathing come first", "Use hands and reposition often", "Short resets are normal", "Best when both partners want a more intense mutual experience"],
+    pairsWellWith: ["The Race", "The Duet", "Playful competition"]
+  },
+  {
+    id: 253,
+    name: "The Standing Counter",
+    category: "For Her",
+    mood: "dynamic",
+    giver: "him",
+    vibe: "Standing support with a playful edge",
+    description: "She leans against a counter, dresser, or sink while he kneels or crouches in front, creating a standing setup that feels spontaneous but supported.",
+    howTo: "Have her lean back lightly against a stable surface at a comfortable height. He kneels or crouches in front of her and lets the support surface keep her relaxed while he explores at an easy pace.",
+    tips: ["Choose a surface height that feels natural", "Her weight should stay supported", "One hand on the counter helps balance", "Works especially well for playful, spontaneous moments"],
+    pairsWellWith: ["The Roadmap", "Bathroom mirror energy", "Spontaneous connection"]
   }
 ];
 

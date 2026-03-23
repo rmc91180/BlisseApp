@@ -950,6 +950,82 @@ export const foreplayIdeas: ForeplayIdea[] = [
     howTo: "Light a fireplace or set up an electric fire. Arrange blankets and pillows on the floor nearby. Pour two glasses of wine. Lie together in the glow and let the warmth, light, and taste guide you into each other.",
     tips: ["Keep the fire as the only light source", "A sheepskin rug elevates the experience", "Sip slowly - this is about savoring", "Feed each other small bites between kisses"],
     pairsWellWith: ["Candlelit Room", "Slow Dancing", "Living Room Picnic"]
+  },
+
+  // ============================================
+  // CURATED EXPANSION (6 ideas)
+  // ============================================
+  {
+    id: 176,
+    name: "Couch Cocoon",
+    category: "Setting",
+    mood: "grounded",
+    duration: "Extended",
+    vibe: "Blankets, soft light, and nowhere else to be",
+    description: "Turn the couch into a little private nest with blankets, pillows, and warm light, then let closeness build without any pressure to rush.",
+    howTo: "Pile soft blankets and pillows onto the couch. Dim the lights, put something low and warm on the speakers, and settle in under the same blanket. Start with cuddling, tracing, kissing, or simply resting together until the mood grows on its own.",
+    tips: ["Warm socks and low lighting make this even better", "The point is coziness first, escalation second", "Perfect for nights when the bed feels too formal", "Let the shared blanket keep you physically close"],
+    pairsWellWith: ["Living Room Picnic", "Cuddling with Intent", "Lazy Evening"]
+  },
+  {
+    id: 177,
+    name: "After-Dinner Drift",
+    category: "Setting",
+    mood: "flowing",
+    duration: "Medium",
+    vibe: "From dinner conversation into something softer",
+    description: "Instead of ending the evening after dinner, let it melt into a slower, more intimate stretch of time with gentle touch and conversation.",
+    howTo: "Stay at the table or move to the couch with drinks or tea. Sit closer than usual. Touch hands, knees, shoulders, or the back of the neck while you keep talking. Let the shift from conversation to flirtation happen gradually.",
+    tips: ["This works best when you do not force a mood change", "Touch should start light and almost casual", "Lingering eye contact changes the tone quickly", "Ideal for date nights at home"],
+    pairsWellWith: ["Slow Dancing", "Compliment Shower", "Couch Cocoon"]
+  },
+  {
+    id: 178,
+    name: "The Quiet Challenge",
+    category: "Mental",
+    mood: "playful",
+    duration: "Quick",
+    vibe: "No talking, just attention",
+    description: "Set a short timer and see how much you can communicate with touch, eye contact, and expression alone - no words allowed.",
+    howTo: "Set a timer for three to five minutes. During that time, you cannot speak. Use only touch, kisses, body language, and eye contact to guide each other and build the mood.",
+    tips: ["The silence makes every reaction feel bigger", "A grin counts as communication", "Eye contact does a lot of work here", "A short timer keeps it playful instead of awkward"],
+    pairsWellWith: ["The Staring Contest", "The Mirror Exercise", "Anticipation Texts"]
+  },
+  {
+    id: 179,
+    name: "Show Me Slower",
+    category: "Connection",
+    mood: "blossoming",
+    duration: "Medium",
+    vibe: "Teaching each other through pace",
+    description: "One partner guides the other toward the exact slower pace that feels best, turning feedback into something intimate instead of clinical.",
+    howTo: "Choose one kind of touch or kiss. The receiving partner gives only gentle pace guidance: slower, stay, softer, more. The giving partner adjusts in real time. Then switch roles and repeat.",
+    tips: ["Keep the guidance short and warm", "This is about learning, not correcting", "Going slower than you think usually helps", "A single repeated touch works better than constant variety"],
+    pairsWellWith: ["Mutual Exploration", "The Roadmap", "Synchronized Breathing"]
+  },
+  {
+    id: 180,
+    name: "Favorite Touch Replay",
+    category: "Connection",
+    mood: "unified",
+    duration: "Medium",
+    vibe: "Going back to what worked beautifully",
+    description: "Each partner recreates one touch, kiss, or move the other person loved recently, turning memory into anticipation.",
+    howTo: "Take turns naming one specific thing your partner did that stayed with you - a kiss, a stroke, a whisper, a look. Recreate it slowly and deliberately, then ask if they want it exactly the same or even better this time.",
+    tips: ["Specific memories make this more powerful", "This is great for learning what really landed", "Repeat before improvising", "Praise the replay generously when it hits"],
+    pairsWellWith: ["Compliment Shower", "Memory Lane", "Show Me Slower"]
+  },
+  {
+    id: 181,
+    name: "The Hallway Pause",
+    category: "Touch",
+    mood: "passionate",
+    duration: "Quick",
+    vibe: "A stop-in-your-tracks moment that turns charged fast",
+    description: "A brief, deliberate pause in a doorway or hallway where one of you stops the other just long enough to shift the whole energy of the evening.",
+    howTo: "Catch your partner in a doorway, hallway, or while passing by. Pull them in for a slow kiss, a hand at the waist, or a lingering touch at the neck. Hold the pause just a little longer than expected, then decide whether to keep moving or let it lead somewhere else.",
+    tips: ["The surprise is part of the spark", "Keep it intentional, not rushed", "A hand at the lower back changes everything", "Great when you want to create momentum out of nowhere"],
+    pairsWellWith: ["The Delicious Delay", "Neck & Ear Focus", "After-Dinner Drift"]
   }
 ];
 
