@@ -4157,10 +4157,34 @@ function HomeScreen({
 function ExploreScreen({ navigation }: any) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedStarterPack, setSelectedStarterPack] = useState<string | null>(null);
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'>('positions');
   const [sortBy, setSortBy] = useState<'all' | 'untried' | 'tried'>('all');
   const store = useStore();
   const { language, t, localizeTerm } = useI18n();
+
+  const normalizeSearchText = useCallback((value: string) => (
+    value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim()
+  ), []);
+
+  const buildSearchBlob = useCallback((parts: Array<string | string[] | null | undefined>) => (
+    normalizeSearchText(
+      parts
+        .flatMap((part) => Array.isArray(part) ? part : [part ?? ''])
+        .filter((part): part is string => Boolean(part))
+        .join(' ')
+    )
+  ), [normalizeSearchText]);
+
+  const normalizedQuery = useMemo(
+    () => normalizeSearchText(searchQuery),
+    [normalizeSearchText, searchQuery]
+  );
+
   const currentCategories = contentType === 'positions' ? categories : contentType === 'foreplay' ? foreplayCategories : contentType === 'oral' ? oralCategories : contentType === 'massage' ? massageCategories : rolePlayCategories;
   const contentTypeTabs = useMemo(
     () => [
@@ -4172,99 +4196,276 @@ function ExploreScreen({ navigation }: any) {
     ],
     [t]
   );
+  const starterPackConfig = useMemo(() => ({
+    positions: [
+      {
+        id: 'cozy-night-in',
+        icon: '🛋️',
+        title: t('explore.collections.positions.cozy.title'),
+        subtitle: t('explore.collections.positions.cozy.subtitle'),
+        itemNames: ['The Cradle', 'Spooning', 'The Lazy Spoon', 'The Sleepy Missionary'],
+      },
+      {
+        id: 'face-to-face',
+        icon: '💞',
+        title: t('explore.collections.positions.face_to_face.title'),
+        subtitle: t('explore.collections.positions.face_to_face.subtitle'),
+        itemNames: ['Missionary', 'The Lotus', 'Face to Face Float', 'The Full Embrace'],
+      },
+      {
+        id: 'quick-spark',
+        icon: '⚡',
+        title: t('explore.collections.positions.quick_spark.title'),
+        subtitle: t('explore.collections.positions.quick_spark.subtitle'),
+        itemNames: ['The Morning Rush', 'The Lazy Spoon', 'The Cradle', 'Spooning'],
+      },
+    ],
+    foreplay: [
+      {
+        id: 'ten-minute-spark',
+        icon: '💋',
+        title: t('explore.collections.foreplay.ten_minute_spark.title'),
+        subtitle: t('explore.collections.foreplay.ten_minute_spark.subtitle'),
+        itemNames: ['Neck & Ear Focus', 'Countdown Kiss', 'Inner Thigh Teasing', 'The Hallway Pause'],
+      },
+      {
+        id: 'cozy-reconnect',
+        icon: '🕯️',
+        title: t('explore.collections.foreplay.cozy_reconnect.title'),
+        subtitle: t('explore.collections.foreplay.cozy_reconnect.subtitle'),
+        itemNames: ['Couch Cocoon', 'Cuddling with Intent', 'Undressing Ritual', 'Pillow Fort Date'],
+      },
+      {
+        id: 'guided-intimacy',
+        icon: '🤝',
+        title: t('explore.collections.foreplay.guided_intimacy.title'),
+        subtitle: t('explore.collections.foreplay.guided_intimacy.subtitle'),
+        itemNames: ['Mutual Exploration', 'Guided Hands', 'Show Me Slower', 'Mirror Flirt'],
+      },
+    ],
+    oral: [
+      {
+        id: 'gentle-starters',
+        icon: '🌙',
+        title: t('explore.collections.oral.gentle_starters.title'),
+        subtitle: t('explore.collections.oral.gentle_starters.subtitle'),
+        itemNames: ['The Edge of the Bed', 'The Seated Signal', 'The Warm Welcome', 'The Hum & Kiss'],
+      },
+      {
+        id: 'mutual-flow',
+        icon: '🔄',
+        title: t('explore.collections.oral.mutual_flow.title'),
+        subtitle: t('explore.collections.oral.mutual_flow.subtitle'),
+        itemNames: ['The Slow Exchange', 'The Cushion Trade', 'The Stacked 69', 'The Duet'],
+      },
+      {
+        id: 'playful-variety',
+        icon: '🎲',
+        title: t('explore.collections.oral.playful_variety.title'),
+        subtitle: t('explore.collections.oral.playful_variety.subtitle'),
+        itemNames: ['The Mirror Game', 'The Blindfold Trade', 'The Shower Steam', 'The Chair Lean'],
+      },
+    ],
+    massage: [
+      {
+        id: 'melt-the-stress',
+        icon: '🧖',
+        title: t('explore.collections.massage.melt_the_stress.title'),
+        subtitle: t('explore.collections.massage.melt_the_stress.subtitle'),
+        itemNames: ['The Full-Body Surrender', 'Shoulder Melting Magic', 'Lower Back Love', 'Neck Reset'],
+      },
+      {
+        id: 'slow-build',
+        icon: '✨',
+        title: t('explore.collections.massage.slow_build.title'),
+        subtitle: t('explore.collections.massage.slow_build.subtitle'),
+        itemNames: ['The Almost-There Trail', 'The Oil Drizzle', 'Neck & Décolletage Flow', 'The Whisper Touch'],
+      },
+      {
+        id: 'quick-reset',
+        icon: '🌿',
+        title: t('explore.collections.massage.quick_reset.title'),
+        subtitle: t('explore.collections.massage.quick_reset.subtitle'),
+        itemNames: ['Scalp Serenity', 'Face & Jaw Release', 'Arm & Hand Heaven', 'Tension Headache Release'],
+      },
+    ],
+    roleplay: [
+      {
+        id: 'easy-to-start',
+        icon: '🎭',
+        title: t('explore.collections.roleplay.easy_to_start.title'),
+        subtitle: t('explore.collections.roleplay.easy_to_start.subtitle'),
+        itemNames: ['First Date Redux', 'Strangers at a Bar', 'Anniversary Surprise', 'The Dare Jar'],
+      },
+      {
+        id: 'playful-tonight',
+        icon: '🎲',
+        title: t('explore.collections.roleplay.playful_tonight.title'),
+        subtitle: t('explore.collections.roleplay.playful_tonight.subtitle'),
+        itemNames: ['Dice Decisions', 'Spin the Bottle (Two Player)', 'Costume Night', 'Two Truths & a Lie (Intimate)'],
+      },
+      {
+        id: 'escapist-fantasy',
+        icon: '🌆',
+        title: t('explore.collections.roleplay.escapist_fantasy.title'),
+        subtitle: t('explore.collections.roleplay.escapist_fantasy.subtitle'),
+        itemNames: ['The Photographer', 'Room Service', 'The Royalty Treatment', 'Sunset Getaway'],
+      },
+    ],
+  }), [t]);
+  const currentStarterPacks = starterPackConfig[contentType];
+  const activeStarterPack = currentStarterPacks.find((pack) => pack.id === selectedStarterPack) ?? null;
+  const starterPackMatches = useCallback(
+    <T extends { name: string }>(items: T[]) => {
+      if (!activeStarterPack) return items;
+      return items.filter((item) => activeStarterPack.itemNames.includes(item.name));
+    },
+    [activeStarterPack]
+  );
 
   const filteredPositions = useMemo(() => {
-    let result = positions;
+    let result = starterPackMatches(positions);
     if (selectedCategory) result = result.filter((p) => p.category === selectedCategory);
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (normalizedQuery) {
       result = result.filter((p) => {
         const moodLabel = moods.find((m) => m.id === p.mood)?.label || p.mood;
-        return (
-          p.name.toLowerCase().includes(query) ||
-          p.vibe.toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query) ||
-          localizeTerm(p.category).toLowerCase().includes(query) ||
-          p.mood.toLowerCase().includes(query) ||
-          localizeTerm(moodLabel).toLowerCase().includes(query)
-        );
+        const searchable = buildSearchBlob([
+          p.name,
+          p.vibe,
+          p.category,
+          localizeTerm(p.category),
+          p.mood,
+          moodLabel,
+          localizeTerm(moodLabel),
+          p.difficulty,
+          localizeTerm(p.difficulty),
+          p.description,
+          p.howTo,
+          p.whyItWorks,
+          p.tips,
+          p.pairsWellWith,
+          p.goodFor,
+        ]);
+        return searchable.includes(normalizedQuery);
       });
     }
     if (sortBy === 'untried') result = result.filter(p => !store.tried.includes(p.id));
     if (sortBy === 'tried') result = result.filter(p => store.tried.includes(p.id));
     return result;
-  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.tried]);
+  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.tried]);
 
   const filteredForeplay = useMemo(() => {
-    let result = foreplayIdeas;
+    let result = starterPackMatches(foreplayIdeas);
     if (selectedCategory) result = result.filter((f) => f.category === selectedCategory);
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (normalizedQuery) {
       result = result.filter((f) => (
-        f.name.toLowerCase().includes(query) ||
-        f.vibe.toLowerCase().includes(query) ||
-        f.category.toLowerCase().includes(query) ||
-        localizeTerm(f.category).toLowerCase().includes(query)
+        buildSearchBlob([
+          f.name,
+          f.vibe,
+          f.category,
+          localizeTerm(f.category),
+          f.mood,
+          localizeTerm(f.mood),
+          f.duration,
+          localizeTerm(f.duration),
+          f.description,
+          f.howTo,
+          f.tips,
+          f.pairsWellWith,
+        ]).includes(normalizedQuery)
       ));
     }
     if (sortBy === 'untried') result = result.filter(f => !store.triedForeplay.includes(f.id));
     if (sortBy === 'tried') result = result.filter(f => store.triedForeplay.includes(f.id));
     return result;
-  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedForeplay]);
+  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedForeplay]);
 
   const filteredOral = useMemo(() => {
-    let result = oralPlayIdeas;
+    let result = starterPackMatches(oralPlayIdeas);
     if (selectedCategory) result = result.filter((o) => o.category === selectedCategory);
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (normalizedQuery) {
       result = result.filter((o) => (
-        o.name.toLowerCase().includes(query) ||
-        o.vibe.toLowerCase().includes(query) ||
-        o.category.toLowerCase().includes(query) ||
-        localizeTerm(o.category).toLowerCase().includes(query)
+        buildSearchBlob([
+          o.name,
+          o.vibe,
+          o.category,
+          localizeTerm(o.category),
+          o.mood,
+          localizeTerm(o.mood),
+          o.description,
+          o.howTo,
+          o.tips,
+          o.pairsWellWith,
+          o.giver,
+          o.giver === 'him' ? localizeTerm('He gives') : o.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual'),
+        ]).includes(normalizedQuery)
       ));
     }
     if (sortBy === 'untried') result = result.filter(o => !store.triedOral.includes(o.id));
     if (sortBy === 'tried') result = result.filter(o => store.triedOral.includes(o.id));
     return result;
-  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedOral]);
+  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedOral]);
 
   const filteredMassage = useMemo(() => {
-    let result = massageTechniques;
+    let result = starterPackMatches(massageTechniques);
     if (selectedCategory) result = result.filter((m) => m.category === selectedCategory);
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (normalizedQuery) {
       result = result.filter((m) => (
-        m.name.toLowerCase().includes(query) ||
-        m.vibe.toLowerCase().includes(query) ||
-        m.category.toLowerCase().includes(query) ||
-        localizeTerm(m.category).toLowerCase().includes(query) ||
-        m.bodyArea.toLowerCase().includes(query)
+        buildSearchBlob([
+          m.name,
+          m.vibe,
+          m.category,
+          localizeTerm(m.category),
+          m.mood,
+          localizeTerm(m.mood),
+          m.duration,
+          localizeTerm(m.duration),
+          m.bodyArea,
+          m.description,
+          m.howTo,
+          m.tips,
+          m.pairsWellWith,
+        ]).includes(normalizedQuery)
       ));
     }
     if (sortBy === 'untried') result = result.filter(m => !store.triedMassage.includes(m.id));
     if (sortBy === 'tried') result = result.filter(m => store.triedMassage.includes(m.id));
     return result;
-  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedMassage]);
+  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedMassage]);
 
   const filteredRoleplay = useMemo(() => {
-    let result = rolePlayScenarios;
+    let result = starterPackMatches(rolePlayScenarios);
     if (selectedCategory) result = result.filter((r) => r.category === selectedCategory);
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (normalizedQuery) {
       result = result.filter((r) => (
-        r.name.toLowerCase().includes(query) ||
-        r.vibe.toLowerCase().includes(query) ||
-        r.category.toLowerCase().includes(query) ||
-        localizeTerm(r.category).toLowerCase().includes(query)
+        buildSearchBlob([
+          r.name,
+          r.vibe,
+          r.category,
+          localizeTerm(r.category),
+          r.mood,
+          localizeTerm(r.mood),
+          r.intensity,
+          localizeTerm(r.intensity),
+          r.description,
+          r.setup,
+          r.howToPlay,
+          r.tips,
+          r.pairsWellWith,
+        ]).includes(normalizedQuery)
       ));
     }
     if (sortBy === 'untried') result = result.filter(r => !store.triedRoleplay.includes(r.id));
     if (sortBy === 'tried') result = result.filter(r => store.triedRoleplay.includes(r.id));
     return result;
-  }, [localizeTerm, searchQuery, selectedCategory, sortBy, store.triedRoleplay]);
+  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedRoleplay]);
 
-  const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => { haptic.light(); setContentType(type); setSelectedCategory(null); };
+  const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => {
+    haptic.light();
+    setContentType(type);
+    setSelectedCategory(null);
+    setSelectedStarterPack(null);
+  };
 
   return (
     <ScreenWrapper>
@@ -4302,6 +4503,43 @@ function ExploreScreen({ navigation }: any) {
           type: translateUi(language, getContentTypeKey(contentType)).toLowerCase(),
         })}
       />
+
+      <View style={styles.collectionSection}>
+        <View style={styles.collectionHeader}>
+          <Text style={styles.collectionTitle}>{t('explore.collections.title')}</Text>
+          {selectedStarterPack ? (
+            <TouchableOpacity
+              onPress={() => {
+                haptic.light();
+                setSelectedStarterPack(null);
+              }}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            >
+              <Text style={styles.collectionClearText}>{t('common.clear')}</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.collectionScrollContent}>
+          {currentStarterPacks.map((pack) => {
+            const isActive = selectedStarterPack === pack.id;
+            return (
+              <TouchableOpacity
+                key={pack.id}
+                style={[styles.collectionCard, isActive && styles.collectionCardActive]}
+                onPress={() => {
+                  haptic.light();
+                  setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
+                }}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.collectionEmoji}>{pack.icon}</Text>
+                <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
+                <Text style={[styles.collectionCardSubtitle, isActive && styles.collectionCardSubtitleActive]}>{pack.subtitle}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
       
       {/* Sort Options */}
       <View style={styles.sortContainer}>
@@ -5984,6 +6222,18 @@ const styles = StyleSheet.create({
   clearButton: { padding: 4 },
   clearButtonText: { color: colors.text.muted, fontSize: 16 },
   exploreHeader: { paddingTop: 10, marginBottom: 16 },
+  collectionSection: { marginBottom: 14 },
+  collectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  collectionTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary },
+  collectionClearText: { fontSize: 13, fontWeight: '600', color: colors.primary[400] },
+  collectionScrollContent: { paddingRight: 20 },
+  collectionCard: { width: 188, minHeight: 118, backgroundColor: colors.card, borderRadius: 18, padding: 14, marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
+  collectionCardActive: { backgroundColor: 'rgba(168, 85, 247, 0.22)', borderColor: 'rgba(196, 128, 255, 0.7)' },
+  collectionEmoji: { fontSize: 20, marginBottom: 10 },
+  collectionCardTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary, marginBottom: 6 },
+  collectionCardTitleActive: { color: colors.white },
+  collectionCardSubtitle: { fontSize: 12, lineHeight: 18, color: colors.text.muted },
+  collectionCardSubtitleActive: { color: 'rgba(255,255,255,0.88)' },
   tripleToggleContainer: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: 12, padding: 4, marginBottom: 12 },
   tripleToggleButton: { flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
   tripleToggleButtonActive: { backgroundColor: colors.primary[500] },

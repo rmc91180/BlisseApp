@@ -698,6 +698,30 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     howTo: "Seat him on the edge of the bed, couch, or a stable chair with his feet planted. She settles in close and keeps one hand free so he can guide with taps, pressure, or a hand on her shoulder without breaking the rhythm.",
     tips: ["A seated receiver is easier to read", "Light guidance is usually enough", "This is great for learning what works quickly", "Keep eye contact in the pauses"],
     pairsWellWith: ["The Chair Lean", "The Twist", "Learning together"]
+  },
+  {
+    id: 256,
+    name: "The Bedside Switch",
+    category: "Mutual",
+    mood: "unified",
+    giver: "both",
+    vibe: "Taking turns without leaving the comfort of the bed",
+    description: "A mutual setup built around easy switching, soft support, and staying close the whole time.",
+    howTo: "Set yourselves up with pillows against the headboard or along the side of the bed. One partner reclines while the other gives, then switch places without fully breaking contact. Keep kisses, hands, and quiet feedback going between turns.",
+    tips: ["Use pillows so the switch feels easy instead of clumsy", "Let each turn last long enough to settle into a rhythm", "Staying close between turns keeps the mood from dropping", "Ideal when you both want attention without rushing into 69"],
+    pairsWellWith: ["The Cushion Trade", "The Slow Exchange", "Couch Cocoon"]
+  },
+  {
+    id: 257,
+    name: "The Reclined Invitation",
+    category: "For Him",
+    mood: "flowing",
+    giver: "her",
+    vibe: "Relaxed support with a slower, lingering pace",
+    description: "He reclines into pillows while she takes her time from a comfortable angle, keeping the whole moment soft and unhurried.",
+    howTo: "Prop him up with pillows so his shoulders and upper back are well supported. She settles in close from the front or slightly to the side, letting the angle stay easy on her neck and shoulders. Use hands for support and stay with a steady, relaxed rhythm.",
+    tips: ["The more supported he is, the easier it is to stay relaxed", "A slight side angle can feel better than straight-on", "Great when you want a slower, more affectionate tone", "Perfect for lingering eye contact and touches on his thighs or stomach"],
+    pairsWellWith: ["The Looker", "The Slow Mo", "Morning intimacy"]
   }
 ];
 

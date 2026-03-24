@@ -433,6 +433,58 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     howToPlay: "Start the timer and start exploring each other. The only rule is you must wait. Tease relentlessly. Get as close to the edge as you dare. Watch the clock together. When it hits zero, there are no more rules.",
     tips: ["Longer timers mean more intensity at the end", "Taking turns being the teaser keeps it balanced", "Watching the clock together is part of the tension", "If you break early, add penalty time"],
     pairsWellWith: ["Any position", "Urgent positions", "Against the Wall"]
+  },
+  {
+    id: 431,
+    name: "Bookstore Crush",
+    category: "Romantic",
+    mood: "blossoming",
+    intensity: "Light",
+    vibe: "Slow flirting between shelves and stolen glances",
+    description: "You keep running into each other in a cozy bookstore, each encounter a little bolder than the last.",
+    setup: "Stack books, magazines, or journals around the room. One of you is browsing; the other notices a familiar face nearby. Dress softly, like you accidentally look very good today.",
+    howToPlay: "Recommend each other books. Let your hands brush as you pass one over. Debate whether the ending was satisfying. Sit together to 'read' and let the conversation turn personal, then openly flirt once the chemistry is impossible to ignore.",
+    tips: ["Keep the energy curious instead of rushed", "A compliment about taste is a good opener", "The slow burn is what makes this one work", "Shared blankets and tea make the scene feel even sweeter"],
+    pairsWellWith: ["Face-Off", "The Lotus", "Couch Cocoon"]
+  },
+  {
+    id: 432,
+    name: "Chef's Table",
+    category: "Playful",
+    mood: "dynamic",
+    intensity: "Medium",
+    vibe: "A private tasting with lots of hands-on attention",
+    description: "One partner is the chef, the other gets a front-row seat to a very personal tasting menu.",
+    setup: "Use your kitchen or dining area as the stage. Put on an apron, prep a small tasting plate, and make the other sit close enough to watch every move. The chef is in charge of the experience.",
+    howToPlay: "Serve tiny bites, pour sips, and narrate the experience like it is a special event. The chef adjusts posture, feeds by hand, and keeps finding reasons to step closer. The tasting becomes more playful and tactile with every course.",
+    tips: ["Small bites keep the mood light and teasing", "Use texture and temperature to make it feel more immersive", "The chef should sound confident and a little indulgent", "A cleanup break can turn into part of the flirtation"],
+    pairsWellWith: ["Kitchen Counter", "Living Room Picnic", "Playful teasing"]
+  },
+  {
+    id: 433,
+    name: "Airport Reunion",
+    category: "Romantic",
+    mood: "passionate",
+    intensity: "Medium",
+    vibe: "You've been apart too long and finally collide again",
+    description: "One of you has just arrived after time away, and the reunion has that can't-wait-another-minute energy.",
+    setup: "Use a weekender bag, coat, or travel outfit to set the scene. One partner arrives at the door while the other has clearly been waiting. Let the first hug do most of the talking.",
+    howToPlay: "The traveler drops their bag, the waiting partner closes the distance, and the reunion unfolds in waves: holding, kissing, talking over each other, and not really wanting to make it past the doorway before things heat up.",
+    tips: ["The first minute should feel almost breathless", "A little chaos helps this scenario feel real", "Keep the dialogue simple and emotional", "This works best when the physical reunion starts before the practical questions do"],
+    pairsWellWith: ["Against the Wall", "Standing Ovation", "The Lift"]
+  },
+  {
+    id: 434,
+    name: "Private Spa Escape",
+    category: "Fantasy",
+    mood: "flowing",
+    intensity: "Light",
+    vibe: "A luxury reset with devoted attention",
+    description: "One partner welcomes the other into a private spa suite where the entire evening is designed to relax, pamper, and slowly tempt.",
+    setup: "Lay out robes, warm towels, oils, and water or tea. Dim the lights and make the bedroom or bathroom feel like a spa that closes only for the two of you. One is the host, the other is the guest of honor.",
+    howToPlay: "The host narrates each step of the experience: robe, towel, warm hands, gentle massage, check-ins, and slow transitions. Keep the energy soft and indulgent, like the whole point is to take care of the guest until they completely melt.",
+    tips: ["The slower and more attentive you are, the better this works", "Little luxuries like warm towels matter more than expensive props", "A calm voice makes the whole scene feel more immersive", "This can stay sweet or become more sensual without changing the setup"],
+    pairsWellWith: ["The Full-Body Surrender", "Massage techniques", "Slow positions"]
   }
 ];
 

@@ -96,6 +96,32 @@ export const PREFERENCE_DECAY = 0.98;
 export const MAX_PREFERENCE_SCORE = 100;
 export const MIN_PREFERENCE_SCORE = 0;
 
+const getRecommendationRotationKey = (date: Date = new Date()): string => {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const stableHash = (value: string): number => {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash << 5) - hash) + value.charCodeAt(index);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+};
+
+const getDeterministicVarietyOffset = (
+  itemKey: string,
+  contentType: string,
+  rotationKey: string
+): number => {
+  // Keep recommendations fresh across days without reshuffling on every render.
+  const hash = stableHash(`${rotationKey}:${contentType}:${itemKey}`);
+  return ((hash % 1000) / 1000 - 0.5) * 4;
+};
+
 // Smart Learning Helper Functions
 export const SmartLearning = {
   // Update preferences based on user interaction
@@ -198,11 +224,12 @@ export const SmartLearning = {
 
   // Calculate recommendation score for an item
   calculateItemScore: (
-    item: { category?: string; mood?: string; difficulty?: string },
+    item: { id?: string | number; name?: string; category?: string; mood?: string; difficulty?: string },
     contentType: string,
     prefs: UserPreferences,
     isTried: boolean,
-    isFavorite: boolean
+    isFavorite: boolean,
+    rotationKey: string
   ): number => {
     let score = 50; // Base score
 
@@ -236,8 +263,11 @@ export const SmartLearning = {
       score -= 5;
     }
 
-    // Add small random factor for variety
-    score += Math.random() * 10 - 5;
+    const itemKey = String(item.id ?? item.name ?? `${contentType}-fallback`);
+
+    // Add a small deterministic daily rotation so recommendations feel fresh
+    // without changing unpredictably during a session.
+    score += getDeterministicVarietyOffset(itemKey, contentType, rotationKey);
 
     return Math.max(0, Math.min(100, score));
   },
@@ -267,13 +297,14 @@ export const SmartLearning = {
     count: number = 5
   ): Array<{ type: string; item: any; score: number; reason: string }> => {
     const scored: Array<{ type: string; item: any; score: number; reason: string }> = [];
+    const rotationKey = getRecommendationRotationKey();
 
     // Score positions
     allContent.positions.forEach(item => {
       const isTried = userState.tried.includes(item.id);
       const isFavorite = userState.favorites.includes(item.id);
       const score = SmartLearning.calculateItemScore(
-        item, 'position', prefs, isTried, isFavorite
+        item, 'position', prefs, isTried, isFavorite, rotationKey
       );
       const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
       scored.push({ type: 'position', item, score, reason });
@@ -284,7 +315,7 @@ export const SmartLearning = {
       const isTried = userState.triedForeplay.includes(item.id);
       const isFavorite = userState.favoriteForeplay.includes(item.id);
       const score = SmartLearning.calculateItemScore(
-        item, 'foreplay', prefs, isTried, isFavorite
+        item, 'foreplay', prefs, isTried, isFavorite, rotationKey
       );
       const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
       scored.push({ type: 'foreplay', item, score, reason });
@@ -295,7 +326,7 @@ export const SmartLearning = {
       const isTried = userState.triedOral.includes(item.id);
       const isFavorite = userState.favoriteOral.includes(item.id);
       const score = SmartLearning.calculateItemScore(
-        item, 'oral', prefs, isTried, isFavorite
+        item, 'oral', prefs, isTried, isFavorite, rotationKey
       );
       const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
       scored.push({ type: 'oral', item, score, reason });
@@ -306,7 +337,7 @@ export const SmartLearning = {
       const isTried = userState.triedMassage.includes(item.id);
       const isFavorite = userState.favoriteMassage.includes(item.id);
       const score = SmartLearning.calculateItemScore(
-        item, 'massage', prefs, isTried, isFavorite
+        item, 'massage', prefs, isTried, isFavorite, rotationKey
       );
       const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
       scored.push({ type: 'massage', item, score, reason });
@@ -317,7 +348,7 @@ export const SmartLearning = {
       const isTried = userState.triedRoleplay.includes(item.id);
       const isFavorite = userState.favoriteRoleplay.includes(item.id);
       const score = SmartLearning.calculateItemScore(
-        item, 'roleplay', prefs, isTried, isFavorite
+        item, 'roleplay', prefs, isTried, isFavorite, rotationKey
       );
       const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
       scored.push({ type: 'roleplay', item, score, reason });

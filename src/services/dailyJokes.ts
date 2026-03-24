@@ -78,6 +78,46 @@ const _DAILY_JOKE_SETUPS_EN: string[] = [
   'What did one silk sheet whisper to the other?',
   'Why was the bedroom playlist smirking before play?',
   'What\'s secretly the sexiest way to torch calories?',
+  'Why did the robe suddenly feel underdressed?',
+  'What did the kitchen counter brag about after midnight?',
+  'Why did the second kiss arrive with so much confidence?',
+  'What did the slow exhale promise before anything even started?',
+  'Why did the hallway suddenly become the main event?',
+  'What\'s the flirtiest way to say “five more minutes”?',
+  'Why did the playful dare refuse to stay hypothetical?',
+  'What did the half-buttoned shirt do to raise suspicion?',
+  'Why did the teasing text earn a gold medal?',
+  'What did the locked door quietly agree to?',
+  'Why did the bath steam start acting smug?',
+  'What did one ankle brush say to the other?',
+  'Why did the dessert spoon never make it back to the sink?',
+  'What did the whispered “come here” actually mean?',
+  'Why did the oversized hoodie lose its innocence?',
+  'What\'s the coziest way to ruin a perfectly good bedtime?',
+  'Why did the back-of-the-neck kiss deserve a sequel?',
+  'What did the countdown app accidentally turn into?',
+  'Why did the soft lamp choose such flattering timing?',
+  'What\'s the fastest route from cuddling to trouble?',
+  'Why did the “goodnight” message sound suspiciously ambitious?',
+  'What did the bare shoulder dare the room to do?',
+  'Why did the edge of the bed become everyone’s favorite stage?',
+  'What did the velvet voice leave lingering in the air?',
+  'Why did the shared laugh suddenly become dangerous?',
+  'What did the hand at the small of the back quietly announce?',
+  'Why did the champagne flute feel completely unnecessary?',
+  'What\'s the boldest thing a soft blanket has ever covered for?',
+  'Why did the almost-kiss hold the room hostage?',
+  'What did the rain outside know that we didn’t?',
+  'Why did the lamp switch get pressed like it meant something?',
+  'What did the tiny pause between songs make possible?',
+  'Why did the after-dinner walk never reach the front door?',
+  'What did the playful eyebrow raise sign off on?',
+  'Why did the midnight snack turn into a full detour?',
+  'What did the mirror catch before anyone else did?',
+  'Why did the countdown to bedtime feel wildly optimistic?',
+  'What\'s the sweetest way to lose an entire evening?',
+  'Why did the warm towel suddenly feel like foreplay?',
+  'What did the couch armrest learn the hard way?',
 ];
 
 export const DAILY_JOKE_SETUPS = createLocalizedArrayProxy<string>({
@@ -128,6 +168,46 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
   'It knew cuddling could easily upgrade to full-contact sport.',
   'Tonight runs on rhythm… zero rush allowed.',
   'Because the plot twist ended up being unfairly adorable.',
+  'Because it knew modesty was only making a guest appearance.',
+  'It was absolutely certain it deserved front-row access.',
+  'Because round two showed up dressed like it owned the place.',
+  'That tonight had no interest in staying hypothetical.',
+  'Because chemistry refuses to respect room boundaries.',
+  '“Stay close… I’m not done making this difficult.”',
+  'It was tired of being treated like a suggestion.',
+  'It stopped pretending this was still a casual evening.',
+  'Because suspense is hotter when it arrives in writing.',
+  'That privacy was about to become a team sport.',
+  'Because warm water and bad intentions are a dangerous mix.',
+  '“We are definitely not behaving ourselves tonight.”',
+  'Because it found a better use for our attention span.',
+  'That self-control officially clocked out first.',
+  'Because oversized comfort sometimes comes with undersized patience.',
+  'One soft kiss too many and bedtime lost all authority.',
+  'Because one perfect spot deserves repeat business.',
+  'A harmless timer… with wildly unharmless consequences.',
+  'Because soft lighting loves a confident decision.',
+  'One cuddle too deep and the map changed completely.',
+  'Because “goodnight” was clearly just opening remarks.',
+  'That the room had officially joined the flirting.',
+  'Because balance is overrated when the view is this good.',
+  'A voice like that should come with a warning label.',
+  'Because playful turns serious the second breathing changes.',
+  'That trouble had excellent posture and great timing.',
+  'Because bubbles are charming until focus disappears.',
+  'It was hiding evidence of very good decisions.',
+  'Because unfinished kisses are cruel and unusual.',
+  'That weather had absolutely nothing to do with the heat in here.',
+  'Because ambiance is just foreplay with electricity.',
+  'A two-second pause… and suddenly no one remembered the lyrics.',
+  'Because some walks are just long routes back to temptation.',
+  'That consent can still look dangerously confident.',
+  'Because nobody really wanted the snack.',
+  'A reflection of two people pretending they still had restraint.',
+  'Because bedtime was an adorable little lie.',
+  'One soft start and the whole night changed genre.',
+  'Because comfort got promoted to chemistry.',
+  'That boundaries are very flexible when the towel is warm.',
 ];
 
 export const DAILY_JOKE_PUNCHLINES = createLocalizedArrayProxy<string>({
@@ -367,9 +447,9 @@ const getLocalizedFallbackPunchlines = (language: AppLanguage): string[] => {
 };
 
 const getJokeNotificationSuffix = (language: AppLanguage): string => {
-  if (language === 'es') return 'Toca para ver el remate.';
-  if (language === 'pt') return 'Toque para ver o desfecho.';
-  return 'Tap to reveal the punchline.';
+  if (language === 'es') return 'Toca para ver la respuesta.';
+  if (language === 'pt') return 'Toque para ver a resposta.';
+  return 'Tap to see the answer.';
 };
 
 export const getDailyJokeForDate = (

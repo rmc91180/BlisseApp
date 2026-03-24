@@ -7928,6 +7928,40 @@
         "A torção",
         "Aprender juntos"
       ]
+    },
+    "256": {
+      "name": "A troca à beira da cama",
+      "vibe": "Revezamento sem sair do conforto da cama",
+      "description": "Uma proposta mútua pensada para trocar de vez com facilidade, manter a proximidade e não quebrar o clima.",
+      "howTo": "Apoiem-se em travesseiros na cabeceira ou ao lado da cama. Uma pessoa se reclina enquanto a outra dá prazer, e depois vocês trocam sem cortar totalmente o contato. Mantenham beijos, mãos e pequenos comentários entre as trocas.",
+      "tips": [
+        "Os travesseiros fazem a troca parecer muito mais natural",
+        "Deixem cada turno durar o bastante para encontrar ritmo",
+        "Manter contato entre as trocas evita que a energia caia",
+        "Ótima quando vocês querem atenção mútua sem correr direto para o 69"
+      ],
+      "pairsWellWith": [
+        "A troca com almofadas",
+        "Troca lenta",
+        "Couch Cocoon"
+      ]
+    },
+    "257": {
+      "name": "O convite reclinado",
+      "vibe": "Apoio relaxado com um ritmo mais lento e demorado",
+      "description": "Ele se reclina entre travesseiros enquanto ela vai sem pressa por um ângulo confortável, mantendo tudo macio e desacelerado.",
+      "howTo": "Apoie ombros e costas dele com travesseiros. Ela se aproxima de frente ou ligeiramente de lado, encontrando um ângulo mais gentil para o próprio pescoço e ombros. As mãos ajudam no apoio e mantêm um ritmo constante e calmo.",
+      "tips": [
+        "Quanto melhor apoiado ele estiver, mais fácil será relaxar",
+        "Um leve ângulo lateral pode ser mais confortável do que ficar totalmente de frente",
+        "É perfeita para uma energia mais afetuosa e sem correria",
+        "Contato visual e toques nas coxas ou no abdômen somam bastante"
+      ],
+      "pairsWellWith": [
+        "O observador",
+        "Em câmera lenta",
+        "Intimidade matinal"
+      ]
     }
   },
   "massage": {
@@ -8470,6 +8504,78 @@
         "Liberação de ponto de pressão"
       ],
       "bodyArea": "Ombros e pescoço"
+    },
+    "331": {
+      "name": "Resgate pós-escritório",
+      "vibe": "Alívio para as áreas que travam depois de horas sentado",
+      "description": "Um reinício prático para dias de tela, focado em ombros, parte alta das costas e quadris que ficam presos depois de muito tempo sentado.",
+      "howTo": "Comece atrás da sua parceria, sentados ou em pé. Use a palma com pressão firme no topo dos ombros e depois amasse entre as escápulas. Desça para os quadris com círculos amplos sobre glúteos externos e dobras do quadril. Termine com uma abertura suave do peito e da lateral do tronco.",
+      "tips": [
+        "Funciona muito bem antes do jantar ou antes de dormir",
+        "Os quadris costumam precisar de tanta atenção quanto os ombros",
+        "Pressão constante funciona melhor do que cutucar os nós",
+        "Uma toalha morna antes de começar ajuda tudo a soltar mais rápido"
+      ],
+      "pairsWellWith": [
+        "Neck Reset",
+        "Shoulder Melting Magic",
+        "Hip Opener"
+      ],
+      "bodyArea": "Ombros e quadris"
+    },
+    "332": {
+      "name": "Reinício palma com palma",
+      "vibe": "Um pequeno ritual que parece muito cuidadoso",
+      "description": "Uma massagem de mãos e antebraços que acalma, aproxima e surpreende pelo quanto pode ser íntima mesmo sendo simples.",
+      "howTo": "Sentem-se de frente um para o outro. Pegue uma mão por vez e trace linhas lentas com os polegares da base da palma até os dedos. Gire cada dedo com cuidado e depois deslize os polegares pelo antebraço enquanto apoia por baixo com os outros dedos.",
+      "tips": [
+        "Perfeita para a transição do dia para a noite",
+        "Use menos força e mais lentidão do que imagina",
+        "Punho e base do polegar costumam guardar muita tensão",
+        "Só troquem de mão depois de terminar completamente um lado"
+      ],
+      "pairsWellWith": [
+        "Arm & Hand Heaven",
+        "Couch Cocoon",
+        "Conexão profunda"
+      ],
+      "bodyArea": "Mãos e antebraços"
+    },
+    "333": {
+      "name": "Onda de respiração",
+      "vibe": "Deslizamentos longos guiados por cada expiração",
+      "description": "Uma massagem de tronco guiada pela respiração, em que cada passada acompanha a expiração e transforma o toque em algo calmo e carregado.",
+      "howTo": "Peça para sua parceria deitar de costas ou de lado. Coloque as mãos aquecidas sobre as costelas ou a cintura. Quando ela expirar, deslize as palmas lentamente para baixo ou para fora. Durante a inspiração, volte com suavidade. Repita até vocês entrarem no mesmo ritmo.",
+      "tips": [
+        "Não acelerem o padrão de inspirar e expirar",
+        "As laterais das costelas costumam ser mais sensíveis do que parece",
+        "Às vezes uma pausa com as mãos quietas é tão potente quanto o movimento",
+        "Funciona melhor com silêncio e ritmo bem lento"
+      ],
+      "pairsWellWith": [
+        "Belly Breathing Massage",
+        "The Whisper Touch",
+        "Preliminares lentas"
+      ],
+      "bodyArea": "Tronco e costelas"
+    },
+    "334": {
+      "name": "O acolhimento final",
+      "vibe": "Toque suave para vocês voltarem um ao outro",
+      "description": "Uma massagem mais lenta e acolhedora para depois da intimidade ou de um dia longo, focada em conforto, calor e em desacelerar juntos.",
+      "howTo": "Use pouco óleo ou loção e mantenha os movimentos amplos e lentos. Passe por costas, quadris, ombros e coxas com toques reconfortantes em vez de trabalho profundo. Faça pausas para segurar, respirar e simplesmente deixar as mãos descansarem.",
+      "tips": [
+        "Aqui o cuidado importa mais do que a técnica",
+        "A quietude entre as passadas deixa tudo ainda mais seguro",
+        "Funciona lindamente depois do sexo, do estresse ou de uma conversa emocional",
+        "Uma manta por perto ajuda o corpo a permanecer aquecido enquanto relaxa"
+      ],
+      "pairsWellWith": [
+        "The Full-Body Surrender",
+        "Cuddling with Intent",
+        "Spooning"
+      ],
+      "bodyArea": "Corpo inteiro"
     }
   },
   "roleplay": {
@@ -9011,6 +9117,78 @@
         "Qualquer posição",
         "Urgente posições",
         "Contra a Parede"
+      ]
+    },
+    "431": {
+      "name": "Paquera na livraria",
+      "vibe": "Flertes lentos entre prateleiras e olhares roubados",
+      "description": "Vocês se esbarram repetidas vezes numa livraria aconchegante, e cada encontro parece um pouco mais ousado do que o anterior.",
+      "setup": "Espalhem livros, revistas ou cadernos pelo espaço. Uma pessoa está procurando algo; a outra repara em um rosto interessante por perto. Vista-se como quem casualmente está especialmente bonito hoje.",
+      "howToPlay": "Recomendem livros um ao outro. Deixem as mãos se tocar ao passar um exemplar. Conversem sobre finais marcantes. Sentem-se juntos para \"ler\" e deixem o papo ficar mais pessoal até o flerte ficar impossível de esconder.",
+      "tips": [
+        "A chave é a curiosidade, não a pressa",
+        "Um elogio ao gosto da outra pessoa é uma ótima abertura",
+        "Aqui o desejo que cresce devagar funciona melhor",
+        "Chá, manta e proximidade deixam a cena ainda mais gostosa"
+      ],
+      "pairsWellWith": [
+        "Face-Off",
+        "The Lotus",
+        "Couch Cocoon"
+      ]
+    },
+    "432": {
+      "name": "Mesa do chef",
+      "vibe": "Uma degustação privada com atenção de primeira fila",
+      "description": "Uma pessoa é o chef e a outra aproveita um menu muito pessoal do melhor assento da casa.",
+      "setup": "Usem a cozinha ou a sala de jantar como palco. Coloquem um avental, preparem algo pequeno para provar e façam a outra pessoa sentar perto o bastante para acompanhar cada movimento. O chef conduz a experiência.",
+      "howToPlay": "Sirvam pequenas porções, ofereçam goles e descrevam sabores enquanto ajustam postura com as mãos. O chef encontra cada vez mais desculpas para se aproximar. A degustação fica mais tátil e divertida a cada etapa.",
+      "tips": [
+        "Pequenas porções mantêm o clima leve e provocante",
+        "Textura e temperatura deixam tudo mais imersivo",
+        "O chef deve soar confiante e um pouco indulgente",
+        "A arrumação depois pode virar parte da brincadeira"
+      ],
+      "pairsWellWith": [
+        "Kitchen Counter",
+        "Living Room Picnic",
+        "Provocação divertida"
+      ]
+    },
+    "433": {
+      "name": "Reencontro no aeroporto",
+      "vibe": "Tempo demais separados e finalmente de volta um ao outro",
+      "description": "Uma pessoa acabou de chegar depois de ficar fora, e o reencontro vem com aquela energia de não querer esperar nem mais um minuto.",
+      "setup": "Usem uma mala de mão, casaco ou roupa de viagem para vender a cena. Uma pessoa chega à porta enquanto a outra claramente estava esperando. Deixem o primeiro abraço fazer quase todo o trabalho.",
+      "howToPlay": "Quem chega larga a mala, a outra encurta a distância, e o reencontro acontece em ondas: abraço, beijo, fala atropelada e nenhuma vontade de ir muito além da entrada antes de deixar a química tomar conta.",
+      "tips": [
+        "O primeiro minuto deve parecer quase sem fôlego",
+        "Um pouco de caos faz a cena soar mais real",
+        "O diálogo pode ser simples e emocional",
+        "Funciona melhor quando o reencontro físico vem antes das perguntas práticas"
+      ],
+      "pairsWellWith": [
+        "Against the Wall",
+        "Standing Ovation",
+        "The Lift"
+      ]
+    },
+    "434": {
+      "name": "Spa privado a dois",
+      "vibe": "Um luxo íntimo com atenção totalmente dedicada",
+      "description": "Uma pessoa recebe a outra numa suíte de spa privada em que a noite inteira foi pensada para relaxar, cuidar e provocar aos poucos.",
+      "setup": "Separem roupões, toalhas mornas, óleos e água ou chá. Baixem a luz e façam o quarto ou o banheiro parecer um spa reservado só para vocês dois. Uma pessoa é a anfitriã e a outra a convidada de honra.",
+      "howToPlay": "A anfitriã conduz cada etapa da experiência: roupão, toalha, mãos quentes, massagem, checagens e transições lentas. Mantenham uma energia macia e generosa, como se a missão fosse derreter completamente a outra pessoa.",
+      "tips": [
+        "Quanto mais lento e atencioso, melhor funciona",
+        "Pequenos luxos importam mais do que acessórios caros",
+        "Uma voz calma deixa tudo muito mais imersivo",
+        "Pode continuar doce ou ficar mais sensual sem mudar a base"
+      ],
+      "pairsWellWith": [
+        "The Full-Body Surrender",
+        "Massage techniques",
+        "Slow positions"
       ]
     }
   }

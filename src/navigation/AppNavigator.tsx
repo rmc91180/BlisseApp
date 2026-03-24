@@ -180,6 +180,15 @@ const getPlanName = (pkg: PurchasesPackage, language: 'en' | 'es' | 'pt'): strin
   return pkg.product.title;
 };
 
+const getPackageTypeKey = (pkg: PurchasesPackage) => String(pkg.packageType || '').toUpperCase();
+
+const getPercentSavings = (monthlyPrice?: number, annualPrice?: number): number | null => {
+  if (!monthlyPrice || !annualPrice || monthlyPrice <= 0 || annualPrice <= 0) return null;
+  const yearlyMonthlyCost = monthlyPrice * 12;
+  if (annualPrice >= yearlyMonthlyCost) return null;
+  return Math.round(((yearlyMonthlyCost - annualPrice) / yearlyMonthlyCost) * 100);
+};
+
 function SubscriptionPaywallScreen() {
   const language = useStore((state) => state.language);
   const themeStore = useThemeStore();
@@ -205,6 +214,13 @@ function SubscriptionPaywallScreen() {
       noPlans: 'Plans are loading. Please wait a moment or retry.',
       legal: 'Subscriptions renew automatically unless canceled in App Store settings.',
       fullAccess: 'Full premium access for couples',
+      monthlyHighlight: 'Most flexible',
+      annualHighlight: 'Best value',
+      lifetimeHighlight: 'One-time unlock',
+      weeklyHighlight: 'Easy to try',
+      recurringNote: 'Cancel anytime in your App Store settings.',
+      lifetimeNote: 'Pay once and keep premium access.',
+      saveVsMonthly: 'Save {percent}% vs monthly',
       billedEvery: 'Billed {period}',
       billedOnce: 'One-time purchase',
       purchaseError: 'Purchase failed',
@@ -225,6 +241,13 @@ function SubscriptionPaywallScreen() {
       noPlans: 'Estamos cargando los planes. Espera un momento o vuelve a intentar.',
       legal: 'Las suscripciones se renuevan automáticamente hasta que las canceles en App Store.',
       fullAccess: 'Acceso premium completo para parejas',
+      monthlyHighlight: 'La opción más flexible',
+      annualHighlight: 'Mejor valor',
+      lifetimeHighlight: 'Desbloqueo único',
+      weeklyHighlight: 'Fácil de probar',
+      recurringNote: 'Puedes cancelar cuando quieras desde App Store.',
+      lifetimeNote: 'Pagas una vez y mantienes el acceso premium.',
+      saveVsMonthly: 'Ahorra {percent}% frente al plan mensual',
       billedEvery: 'Cobro {period}',
       billedOnce: 'Pago único',
       purchaseError: 'No se pudo completar la compra',
@@ -245,6 +268,13 @@ function SubscriptionPaywallScreen() {
       noPlans: 'Estamos carregando os planos. Aguarde um momento ou tente novamente.',
       legal: 'As assinaturas renovam automaticamente até serem canceladas na App Store.',
       fullAccess: 'Acesso premium completo para casais',
+      monthlyHighlight: 'Mais flexível',
+      annualHighlight: 'Melhor valor',
+      lifetimeHighlight: 'Desbloqueio único',
+      weeklyHighlight: 'Fácil de experimentar',
+      recurringNote: 'Cancele a qualquer momento na App Store.',
+      lifetimeNote: 'Pague uma vez e mantenha o acesso premium.',
+      saveVsMonthly: 'Economize {percent}% em relação ao mensal',
       billedEvery: 'Cobrança {period}',
       billedOnce: 'Pagamento único',
       purchaseError: 'Não foi possível concluir a compra',
@@ -257,6 +287,7 @@ function SubscriptionPaywallScreen() {
   } as const;
 
   const i18n = copy[language] ?? copy.en;
+  const monthlyPackage = offerings.find((pkg) => getPackageTypeKey(pkg) === 'MONTHLY');
 
   const onPurchase = async (pkg: PurchasesPackage) => {
     try {
@@ -310,12 +341,24 @@ function SubscriptionPaywallScreen() {
               : null;
             const billingPeriod = parseIso8601Period(pkg.product.subscriptionPeriod);
             const planName = getPlanName(pkg, language);
+            const packageType = getPackageTypeKey(pkg);
+            const savingsPercent = packageType === 'ANNUAL'
+              ? getPercentSavings(monthlyPackage?.product.price, pkg.product.price)
+              : null;
+            const highlight = packageType === 'ANNUAL'
+              ? i18n.annualHighlight
+              : packageType === 'LIFETIME'
+                ? i18n.lifetimeHighlight
+                : packageType === 'WEEKLY'
+                  ? i18n.weeklyHighlight
+                  : i18n.monthlyHighlight;
             const billingCaption = billingPeriod
               ? i18n.billedEvery.replace('{period}', formatBillingPeriod(billingPeriod.count, billingPeriod.unit, language))
               : i18n.billedOnce;
             const renewalPrice = billingPeriod
               ? `${pkg.product.priceString} ${formatBillingPeriod(billingPeriod.count, billingPeriod.unit, language)}`
               : pkg.product.priceString;
+            const planSupportCopy = packageType === 'LIFETIME' ? i18n.lifetimeNote : i18n.recurringNote;
 
             return (
           <TouchableOpacity
@@ -332,9 +375,17 @@ function SubscriptionPaywallScreen() {
               opacity: loading ? 0.7 : 1,
             }}
           >
+            <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(168, 85, 247, 0.18)', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 5, marginBottom: 10 }}>
+              <Text style={{ color: themeColors.primary[400], fontSize: 11, fontWeight: '800', letterSpacing: 0.2 }}>{highlight}</Text>
+            </View>
             <Text style={{ color: themeColors.text.primary, fontSize: 19, fontWeight: '700' }}>{planName}</Text>
             <Text style={{ color: themeColors.text.secondary, fontSize: 13, marginTop: 4 }}>{i18n.fullAccess}</Text>
             <Text style={{ color: themeColors.text.muted, fontSize: 12, marginTop: 6 }}>{billingCaption}</Text>
+            {savingsPercent ? (
+              <Text style={{ color: themeColors.gold, fontSize: 12, marginTop: 8, fontWeight: '700' }}>
+                {i18n.saveVsMonthly.replace('{percent}', String(savingsPercent))}
+              </Text>
+            ) : null}
             {hasFreeTrial && introDuration ? (
               <Text style={{ color: themeColors.success, fontSize: 13, marginTop: 8, fontWeight: '700' }}>
                 {`${i18n.freeTrialBadge} - ${introDuration}. ${i18n.freeTrialThen.replace('{price}', renewalPrice)}`}
@@ -345,6 +396,7 @@ function SubscriptionPaywallScreen() {
               </Text>
             ) : null}
             <Text style={{ color: themeColors.primary[400], fontSize: 16, fontWeight: '700', marginTop: 10 }}>{renewalPrice}</Text>
+            <Text style={{ color: themeColors.text.muted, fontSize: 12, lineHeight: 18, marginTop: 8 }}>{planSupportCopy}</Text>
           </TouchableOpacity>
             );
           })()

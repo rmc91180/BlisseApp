@@ -425,6 +425,58 @@ export const massageTechniques: MassageTechnique[] = [
     howTo: "Sit behind your partner. Cup the base of their skull and apply gentle upward traction. Use thumbs to work the muscles along each side of the cervical spine. Gently tilt their head to each side, massaging the stretched side. Finish with slow circles on the upper trapezius.",
     tips: ["Support the head fully — never let it drop", "Avoid rotating the neck forcefully", "The levator scapulae muscle at the side of the neck is often the tightest", "Warm towel on the shoulders beforehand works wonders"],
     pairsWellWith: ["Shoulder Melting Magic", "Tension Headache Release", "Pressure Point Release"]
+  },
+  {
+    id: 331,
+    name: "Desk Day Rescue",
+    category: "Therapeutic",
+    mood: "grounded",
+    duration: "Quick",
+    bodyArea: "Shoulders & Hips",
+    vibe: "Relief for the spots that tighten after long hours sitting",
+    description: "A practical reset for screen-heavy days, focused on shoulders, upper back, and hips that feel locked from sitting too long.",
+    howTo: "Start seated or standing behind your partner. Use firm palm pressure across the tops of the shoulders, then knead between the shoulder blades. Move to the hips with broad circular pressure at the outer glutes and hip creases. Finish with a slow stretch through the chest and side body.",
+    tips: ["This works well before dinner or before bed", "The hips often need just as much attention as the shoulders", "Keep pressure steady instead of poking at knots", "A warm towel before starting helps everything soften faster"],
+    pairsWellWith: ["Neck Reset", "Shoulder Melting Magic", "Hip Opener"]
+  },
+  {
+    id: 332,
+    name: "Palm-to-Palm Reset",
+    category: "Relaxation",
+    mood: "unified",
+    duration: "Quick",
+    bodyArea: "Hands & Forearms",
+    vibe: "A small ritual that instantly feels caring",
+    description: "A focused hand and forearm massage that feels grounding, attentive, and surprisingly intimate for such a simple setup.",
+    howTo: "Sit facing each other. Take one hand at a time and press your thumbs through the palm in slow lines from heel to fingers. Rotate each finger gently, then glide along the forearm with both thumbs while supporting underneath with your fingers.",
+    tips: ["Perfect for transitions between the day and the night", "Use slower pressure than you think you need", "The wrist and base of the thumb often hold the most tension", "Switch hands only after finishing one side completely"],
+    pairsWellWith: ["Arm & Hand Heaven", "Couch Cocoon", "Deep connection"]
+  },
+  {
+    id: 333,
+    name: "Breathing Wave",
+    category: "Sensual",
+    mood: "flowing",
+    duration: "Medium",
+    bodyArea: "Torso & Ribs",
+    vibe: "Long glides timed to each exhale",
+    description: "A torso massage guided by breath, where each stroke follows the exhale and turns simple touch into something calm and deeply charged.",
+    howTo: "Have your partner lie on their back or side. Place warm hands at the ribs or sides of the waist. As they exhale, glide slowly downward or outward with full palms. Reset softly during the inhale. Repeat until both of you settle into the same tempo.",
+    tips: ["Do not rush the inhale-exhale rhythm", "The side ribs are often more sensitive than expected", "A pause with still hands can be just as powerful as movement", "This works best when the room is quiet and the pace stays slow"],
+    pairsWellWith: ["Belly Breathing Massage", "The Whisper Touch", "Slow-build foreplay"]
+  },
+  {
+    id: 334,
+    name: "The Aftercare Hold",
+    category: "Relaxation",
+    mood: "blossoming",
+    duration: "Medium",
+    bodyArea: "Full Body",
+    vibe: "Gentle touch for settling back into each other",
+    description: "A softer, slower massage for after intimacy or after a long day, focused on reassurance, warmth, and helping both bodies come back down together.",
+    howTo: "Use very light oil or lotion and keep strokes broad and slow. Focus on the back, hips, shoulders, and thighs with comforting passes instead of deep work. Pause often to simply hold, breathe, and let your hands rest.",
+    tips: ["This is about comfort, not technique", "Stillness between strokes makes it feel even safer", "Works beautifully after sex, stress, or an emotional conversation", "A blanket nearby helps the body stay warm while relaxing"],
+    pairsWellWith: ["The Full-Body Surrender", "Cuddling with Intent", "Spooning"]
   }
 ];
 
