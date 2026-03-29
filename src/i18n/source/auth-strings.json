@@ -1,6 +1,11 @@
 {
   "version": "1.0",
-  "languages": ["en", "es", "pt-BR"],
+  "languages": [
+    "en",
+    "es",
+    "pt-BR",
+    "hi"
+  ],
   "screens": {
     "welcome": {
       "en": {
@@ -41,6 +46,19 @@
         "teaserCardHint": "Comecem com um sorriso, antes mesmo de entrar.",
         "teaserReveal": "Toque para ver a resposta",
         "teaserHide": "Ocultar resposta"
+      },
+      "hi": {
+        "title": "Blisse में आपका स्वागत है",
+        "subtitle": "आज रात की सबसे प्यारी कहानी यहीं से शुरू होती है",
+        "tagline": "Tammy और Mark की ओर से, उन जोड़ों के लिए जो अब भी खुलकर फ़्लर्ट करते हैं।",
+        "teaser": "खेल-खेल में जुड़ने वाली ideas, flirty games और रोज़ की छोटी sparks, ताकि व्यस्त दिनों में भी closeness बनी रहे।",
+        "getStarted": "शुरू करें",
+        "alreadyHaveAccount": "मेरा साथी पहले से यहाँ है।",
+        "signIn": "साइन इन",
+        "teaserCardTitle": "आज की playful tease",
+        "teaserCardHint": "अंदर जाने से पहले एक मुस्कान से शुरुआत करें।",
+        "teaserReveal": "जवाब देखने के लिए टैप करें",
+        "teaserHide": "जवाब छिपाएँ"
       }
     },
     "signup": {
@@ -94,6 +112,23 @@
         "orContinueWith": "Ou continue com",
         "google": "Continuar com Google",
         "apple": "Continuar com Apple"
+      },
+      "hi": {
+        "title": "अपना खाता बनाएँ",
+        "subtitle": "हज़ारों जोड़ों के साथ गहरी connection की ओर बढ़ें",
+        "teaser": "एक मिनट से भी कम समय में ऐसी personalized ideas पाएँ जो आपके mood और preferences पर फिट बैठें।",
+        "email": "ईमेल",
+        "emailPlaceholder": "your@email.com",
+        "password": "पासवर्ड",
+        "passwordPlaceholder": "एक सुरक्षित पासवर्ड बनाएँ",
+        "confirmPassword": "पासवर्ड की पुष्टि करें",
+        "confirmPasswordPlaceholder": "पासवर्ड फिर से लिखें",
+        "passwordRequirements": "कम से कम 8 अक्षर और एक संख्या",
+        "createAccount": "खाता बनाएँ",
+        "emailAlreadyInUse": "इस ईमेल से पहले से एक खाता मौजूद है",
+        "orContinueWith": "या आगे बढ़ें",
+        "google": "Google से जारी रखें",
+        "apple": "Apple से जारी रखें"
       }
     },
     "login": {
@@ -141,6 +176,21 @@
         "signIn": "Entrar",
         "noAccount": "Não tem uma conta?",
         "signUp": "Cadastre-se"
+      },
+      "hi": {
+        "title": "वापसी पर स्वागत है",
+        "subtitle": "अपनी journey जारी रखने के लिए साइन इन करें",
+        "teaser": "आज रात की spark आपका इंतज़ार कर रही है। वहीं से शुरू करें जहाँ आप रुके थे।",
+        "personalNote": "Tammy और Mark की ओर से, प्यार से बनाया गया — 20 साल से शादीशुदा, और अब भी flirt करते हुए।",
+        "email": "ईमेल",
+        "emailPlaceholder": "your@email.com",
+        "password": "पासवर्ड",
+        "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
+        "forgotPassword": "पासवर्ड भूल गए?",
+        "invalidCredentials": "ईमेल या पासवर्ड सही नहीं है",
+        "signIn": "साइन इन",
+        "noAccount": "क्या आपका खाता नहीं है?",
+        "signUp": "साइन अप"
       }
     },
     "legalConsent": {
@@ -182,6 +232,19 @@
         "continue": "Continuar",
         "mustAcceptAll": "Por favor, aceite todos os itens para continuar",
         "ageWarning": "Este aplicativo é destinado a adultos com 18 anos ou mais"
+      },
+      "hi": {
+        "title": "आगे बढ़ने से पहले",
+        "subtitle": "कृपया नीचे दी गई बातों को पढ़कर स्वीकार करें",
+        "ageVerification": "मैं पुष्टि करता/करती हूँ कि मेरी आयु 18 वर्ष या उससे अधिक है",
+        "termsAcceptance": "मैंने पढ़ लिया है और सहमत हूँ",
+        "termsOfService": "सेवा की शर्तों से",
+        "and": "और",
+        "privacyPolicy": "गोपनीयता नीति से",
+        "dataConsent": "मैं समझता/समझती हूँ कि Blisse मेरी experience को personalize करने के लिए डेटा उपयोग करता है, जैसा कि privacy policy में बताया गया है।",
+        "continue": "जारी रखें",
+        "mustAcceptAll": "कृपया आगे बढ़ने के लिए सभी बिंदु स्वीकार करें",
+        "ageWarning": "यह ऐप केवल 18 वर्ष और उससे अधिक आयु के वयस्कों के लिए है"
       }
     },
     "onboardingRelationship": {
@@ -244,6 +307,26 @@
         },
         "skip": "Pular por enquanto",
         "continue": "Continuar"
+      },
+      "hi": {
+        "title": "अपने बारे में थोड़ा बताएँ",
+        "subtitle": "इससे हम आपकी experience को बेहतर ढंग से personalize कर पाएँगे",
+        "relationshipType": "रिश्ते का प्रकार",
+        "relationshipOptions": {
+          "hetero": "पुरुष और महिला",
+          "mm": "पुरुष और पुरुष",
+          "ff": "महिला और महिला",
+          "other": "अन्य / बताना नहीं चाहते"
+        },
+        "relationshipDuration": "आप दोनों कब से साथ हैं?",
+        "durationOptions": {
+          "new": "1 साल से कम",
+          "established": "1-5 साल",
+          "longterm": "5-10 साल",
+          "veteran": "10+ साल"
+        },
+        "skip": "अभी छोड़ें",
+        "continue": "जारी रखें"
       }
     },
     "onboardingPreferences": {
@@ -315,6 +398,29 @@
         },
         "skip": "Pular por enquanto",
         "continue": "Continuar"
+      },
+      "hi": {
+        "title": "आपकी पसंद",
+        "subtitle": "जो बातें सबसे ज़्यादा आपके काम की लगें, उन्हें चुनें",
+        "preferencesLabel": "आप किस तरह की चीज़ें explore करना चाहते हैं?",
+        "preferences": {
+          "deepConnection": "और गहरी भावनात्मक connection",
+          "spiceThingsUp": "रिश्ते में नई spark लाना",
+          "newPositions": "नई positions आज़माना",
+          "foreplayIdeas": "foreplay और anticipation",
+          "quickies": "छोटे intimate moments",
+          "extendedSessions": "धीमे और लंबे sessions",
+          "communication": "बेहतर communication",
+          "adventurous": "थोड़ी और adventurous experiences"
+        },
+        "experienceLevel": "आप अपने experience level को कैसे बताएँगे?",
+        "experienceLevels": {
+          "beginner": "अभी-अभी explore करना शुरू किया है",
+          "intermediate": "आरामदायक हैं, पर जिज्ञासा बाकी है",
+          "advanced": "काफ़ी अनुभवी"
+        },
+        "skip": "अभी छोड़ें",
+        "continue": "जारी रखें"
       }
     },
     "onboardingMood": {
@@ -437,6 +543,46 @@
         },
         "skip": "Pular por enquanto",
         "finish": "Vamos Começar"
+      },
+      "hi": {
+        "title": "आज आपको किस vibe की ओर खिंचाव है?",
+        "subtitle": "जो moods आपसे सबसे ज़्यादा resonate करते हैं, उन्हें चुनें",
+        "moods": {
+          "flowing": {
+            "name": "बहाव",
+            "description": "नरम, बिना जल्दबाज़ी, पानी की तरह"
+          },
+          "passionate": {
+            "name": "उत्साही",
+            "description": "गहरा, गर्म, पूरे दिल से"
+          },
+          "playful": {
+            "name": "चंचल",
+            "description": "मज़ेदार, हल्का, spontaneous"
+          },
+          "unified": {
+            "name": "एकसाथ",
+            "description": "गहरी connection, दो लोग एक rhythm में"
+          },
+          "commanding": {
+            "name": "lead वाला",
+            "description": "control लेना या देना"
+          },
+          "blossoming": {
+            "name": "खिलता हुआ",
+            "description": "कोमल, खुलता हुआ, vulnerable"
+          },
+          "dynamic": {
+            "name": "ऊर्जावान",
+            "description": "active, energetic, lively"
+          },
+          "grounded": {
+            "name": "स्थिर",
+            "description": "present, calm, secure"
+          }
+        },
+        "skip": "अभी छोड़ें",
+        "finish": "आइए शुरू करें"
       }
     },
     "onboardingComplete": {
@@ -460,6 +606,13 @@
         "message": "Com base nas suas preferências, vamos sugerir posições, atividades e ideias feitas sob medida para você.",
         "tip": "Você sempre pode atualizar suas preferências em Configurações",
         "enterApp": "Entrar no Blisse"
+      },
+      "hi": {
+        "title": "सब तैयार है!",
+        "subtitle": "अब आपकी personalized experience आपका इंतज़ार कर रही है",
+        "message": "आपकी preferences के आधार पर हम positions, activities और ideas सुझाएँगे जो आप दोनों पर बेहतर फिट बैठें।",
+        "tip": "आप अपनी preferences बाद में Settings में कभी भी बदल सकते हैं",
+        "enterApp": "Blisse में जाएँ"
       }
     },
     "forgotPassword": {
@@ -495,6 +648,17 @@
         "backToLogin": "Voltar para Entrar",
         "emailSent": "Verifique seu e-mail para o link de redefinição",
         "emailNotFound": "Não conseguimos encontrar uma conta com esse e-mail"
+      },
+      "hi": {
+        "title": "पासवर्ड रीसेट करें",
+        "subtitle": "अपना ईमेल दर्ज करें, हम आपको reset link भेजेंगे",
+        "teaser": "हम एक secure reset link भेजेंगे ताकि आप जल्दी से Blisse में वापस आ सकें।",
+        "email": "ईमेल",
+        "emailPlaceholder": "your@email.com",
+        "sendLink": "रीसेट लिंक भेजें",
+        "backToLogin": "साइन इन पर वापस जाएँ",
+        "emailSent": "रीसेट लिंक के लिए अपना ईमेल देखें",
+        "emailNotFound": "हमें इस ईमेल से जुड़ा कोई खाता नहीं मिला"
       }
     },
     "validation": {
@@ -524,6 +688,15 @@
         "passwordNeedsNumber": "A senha deve conter um número",
         "passwordsDontMatch": "As senhas não coincidem",
         "allFieldsRequired": "Por favor, preencha todos os campos obrigatórios"
+      },
+      "hi": {
+        "emailRequired": "ईमेल आवश्यक है",
+        "emailInvalid": "कृपया मान्य ईमेल दर्ज करें",
+        "passwordRequired": "पासवर्ड आवश्यक है",
+        "passwordTooShort": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए",
+        "passwordNeedsNumber": "पासवर्ड में एक संख्या होनी चाहिए",
+        "passwordsDontMatch": "पासवर्ड मेल नहीं खाते",
+        "allFieldsRequired": "कृपया सभी आवश्यक फ़ील्ड भरें"
       }
     },
     "common": {
@@ -565,6 +738,19 @@
         "tooManyRequests": "Muitas tentativas. Aguarde um pouco e tente novamente.",
         "success": "Sucesso!",
         "stepOf": "Passo {current} de {total}"
+      },
+      "hi": {
+        "back": "वापस",
+        "next": "आगे",
+        "skip": "छोड़ें",
+        "cancel": "रद्द करें",
+        "save": "सेव करें",
+        "loading": "लोड हो रहा है...",
+        "error": "कुछ गड़बड़ हुई। कृपया फिर से कोशिश करें।",
+        "networkError": "नेटवर्क समस्या है। कनेक्शन जाँचें और फिर कोशिश करें।",
+        "tooManyRequests": "बहुत अधिक कोशिशें हो चुकी हैं। थोड़ी देर बाद फिर कोशिश करें।",
+        "success": "सफल!",
+        "stepOf": "स्टेप {current} / {total}"
       }
     }
   }

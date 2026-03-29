@@ -5,6 +5,7 @@ import type { Position } from '@/content/positions';
 import type { RolePlayScenario } from '@/content/roleplay';
 import type { AppLanguage } from '@/i18n/translations';
 import esGenerated from '@/i18n/content/es.generated.json';
+import hiGenerated from '@/i18n/content/hi.generated.json';
 import ptGenerated from '@/i18n/content/pt.generated.json';
 
 type PositionOverlay = Partial<Pick<Position, 'name' | 'vibe' | 'description' | 'howTo' | 'whyItWorks' | 'tips' | 'pairsWellWith' | 'goodFor'>>;
@@ -33,7 +34,7 @@ const OVERLAY_BY_LANGUAGE: Record<AppLanguage, GeneratedOverlay | null> = {
   en: null,
   es: esGenerated as GeneratedOverlay,
   pt: ptGenerated as GeneratedOverlay,
-  hi: null,
+  hi: hiGenerated as GeneratedOverlay,
 };
 
 const localizedCatalogCache = new Map<AppLanguage, ContentCatalog>();

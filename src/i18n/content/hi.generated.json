@@ -1,0 +1,465 @@
+{
+  "positions": {
+    "1": {
+      "name": "काउगर्ल",
+      "vibe": "रफ़्तार और गहराई पर उसका नियंत्रण",
+      "description": "एक classic ऊपर वाली position, जिसमें वह rhythm और angle दोनों अपने हिसाब से तय करती है।",
+      "howTo": "साथी पीठ के बल लेटता है। वह सामने की ओर बैठकर ऊपर आती है और धीरे-धीरे अपनी पसंद का movement चुनती है।"
+    },
+    "2": {
+      "name": "रिवर्स काउगर्ल",
+      "vibe": "नई sensation और bold visual energy",
+      "description": "ऊपर वही रहती है, लेकिन दूसरी दिशा में मुड़कर, जिससे angle और feel दोनों बदल जाते हैं।",
+      "howTo": "साथी लेटा रहे। वह ऊपर आए और चेहरा पैरों की तरफ रखे। छोटे, steady moves से शुरुआत करें।"
+    },
+    "3": {
+      "name": "लैप डांस",
+      "vibe": "tease, control और showmanship",
+      "description": "ऊपर बैठकर बड़े thrusts की जगह circles और grinding का use, ताकि पूरी feel playful और performative लगे।",
+      "howTo": "उसे थोड़ा उठाकर बैठाएँ या तकियों का सहारा दें। वह ऊपर बैठकर hips से slow circles बनाए।"
+    },
+    "4": {
+      "name": "झुकी हुई काउगर्ल",
+      "vibe": "पीछे झुकाव के साथ deeper angle",
+      "description": "ऊपर वाली position का एक lean-back version, जो angle बदल देता है और experience को ज़्यादा focused बनाता है।",
+      "howTo": "काउगर्ल से शुरू करें। फिर वह हाथों का सहारा लेकर पीछे की ओर झुके और छोटे controlled movements रखे।"
+    },
+    "5": {
+      "name": "अमेज़न",
+      "vibe": "ज़्यादा control और role-reversal की energy",
+      "description": "एक adventurous setup जिसमें ऊपर वाले partner का control बहुत साफ़ महसूस होता है।",
+      "howTo": "साथी पीठ के बल रहे और घुटने ऊपर लाए। वह squat जैसी posture में ऊपर आए और बहुत धीरे angle ढूँढे।"
+    },
+    "6": {
+      "name": "लॉन्च पैड",
+      "vibe": "powerful squatting rhythm",
+      "description": "ऊपर से squat posture वाला setup, जहाँ मजबूत leg drive और full control दोनों मिलते हैं।",
+      "howTo": "वह ऊपर आए, घुटनों के बजाय पैरों पर weight रखे और pace को अपनी legs की मदद से चलाए।"
+    },
+    "7": {
+      "name": "काउगर्ल का सहारा",
+      "vibe": "ऊपर control, नीचे से steady support",
+      "description": "काउगर्ल का teamwork version, जहाँ नीचे वाला partner hips को guide करके movement को आसान बनाता है।",
+      "howTo": "काउगर्ल में रहते हुए नीचे वाला partner hips पकड़कर rhythm में हल्का support दे।"
+    },
+    "8": {
+      "name": "मेंढक",
+      "vibe": "खुली squat posture और deep access",
+      "description": "ऊपर से wide squat वाली posture जो opening और angle दोनों को बढ़ाती है।",
+      "howTo": "वह ऊपर squat करे, घुटनों को बाहर रखे और bounce के बजाय controlled grind या short movements चुने।"
+    },
+    "226": {
+      "name": "हार्मनी",
+      "vibe": "चेहरे सामने, धीमा और synced rhythm",
+      "description": "एक gentle face-to-face option जो closeness, breathing और shared pace पर टिकी है.",
+      "howTo": "मिशनरी जैसी comfortable posture से शुरू करें और movement को छोटा, नरम और synced रखें।"
+    },
+    "227": {
+      "name": "ईगल",
+      "vibe": "खुला angle और face-to-face intimacy",
+      "description": "एक खुली posture जो familiar setup को नए angle के साथ fresh feel देती है.",
+      "howTo": "वह आराम से open होकर लेटे और ऊपर वाला partner angle को धीरे-धीरे adjust करे।"
+    },
+    "228": {
+      "name": "एनविल",
+      "vibe": "folded posture और focused intensity",
+      "description": "एक compact face-to-face setup जो deeper angle और concentrated feel देता है.",
+      "howTo": "घुटनों को करीब लाकर शुरू करें और pace को gentle रखते हुए best angle ढूँढें।"
+    },
+    "229": {
+      "name": "बास्केट",
+      "vibe": "बैठकर, पास रहकर, steady rhythm",
+      "description": "एक seated position जो talking, kissing और slow movement के लिए बहुत अच्छी है.",
+      "howTo": "आमने-सामने बैठें, body को close रखें और rocking movement चुनें।"
+    },
+    "230": {
+      "name": "वॉटरिंग कैन",
+      "vibe": "lean-back control और soft circles",
+      "description": "ऊपर वाली posture का reclined version, जिसमें speed से ज़्यादा pressure और angle matter करता है.",
+      "howTo": "ऊपर रहते हुए पीछे की ओर lean करें और circles या slow glides पर टिके रहें।"
+    },
+    "231": {
+      "name": "क्लैपर",
+      "vibe": "rear-entry में short, playful rhythm",
+      "description": "पीछे से एक lively option जो big thrusts के बजाय quick, controlled pulse पर काम करती है.",
+      "howTo": "stable rear-entry posture चुनें और short, playful movement रखें।"
+    },
+    "232": {
+      "name": "मैजिक माउंटेन",
+      "vibe": "pillows के सहारे elevated rear angle",
+      "description": "support के साथ rear-entry option जो comfort और angle दोनों को better बनाती है.",
+      "howTo": "hips या torso के नीचे pillow लगाएँ और support के साथ slow angle-testing करें।"
+    },
+    "233": {
+      "name": "फैन",
+      "vibe": "open posture और easy angle play",
+      "description": "एक rear-entry setup जिसमें body अधिक open रहती है और angle बदलना आसान लगता है.",
+      "howTo": "body को comfortable opening में रखें और support लेकर small adjustments करें।"
+    },
+    "234": {
+      "name": "कैंडल",
+      "vibe": "लंबी line और elegant posture",
+      "description": "एक stretched setup जो visual elegance और focused movement दोनों देता है.",
+      "howTo": "दीवार, bed edge या furniture का सहारा लें और posture को लंबा रखते हुए move करें।"
+    },
+    "235": {
+      "name": "बोट",
+      "vibe": "rear-entry में धीमा sway",
+      "description": "एक calmer rear-entry option जो thrusting के बजाय rocking और glide पर ज़ोर देती है.",
+      "howTo": "support के साथ rear-entry में आएँ और rhythm को floating, rocking feel दें।"
+    },
+    "236": {
+      "name": "कॉफी टेबल",
+      "vibe": "furniture support के साथ living-room spontaneity",
+      "description": "एक playful furniture-assisted setup जो scene change के साथ novelty लाता है.",
+      "howTo": "मज़बूत low furniture या padded surface का use करें और पहले stability जाँच लें।"
+    },
+    "237": {
+      "name": "वाइल्ड पोनी",
+      "vibe": "ऊर्जावान pace और bold rear energy",
+      "description": "एक more active rear-entry option जब mood थोड़ा ज़्यादा energetic हो.",
+      "howTo": "stable base बनाएँ, pace धीरे शुरू करें और फिर comfort के हिसाब से बढ़ाएँ।"
+    },
+    "238": {
+      "name": "सॉफ्ट चेयर",
+      "vibe": "बैठे-बैठे comfort और closeness",
+      "description": "chair-supported setup जो steady support और easy eye contact देता है.",
+      "howTo": "मज़बूत chair पर बैठें, body को close रखें और छोटे, smooth movements चुनें।"
+    },
+    "239": {
+      "name": "लॉक",
+      "vibe": "wrapped closeness और tight connection",
+      "description": "एक close-contact setup जहाँ arms और legs की wrapping intimacy को और बढ़ाती है.",
+      "howTo": "face-to-face posture में body को करीब रखें और legs या arms से closeness बढ़ाएँ।"
+    },
+    "240": {
+      "name": "टैंगो",
+      "vibe": "standing balance और intimate tension",
+      "description": "एक standing option जो dance-like closeness और playful balance माँगती है.",
+      "howTo": "दीवार या support के पास खड़े रहें, hips close रखें और movement को dance की तरह flow करें।"
+    },
+    "241": {
+      "name": "लेज़ी ईवनिंग",
+      "vibe": "दिन के अंत की नरम closeness",
+      "description": "एक easy, low-effort setup जो cozy, connected और unhurried feel देता है.",
+      "howTo": "side-lying या cushioned posture चुनें और movement को slow cuddling energy पर रखें।"
+    }
+  },
+  "foreplay": {
+    "101": {
+      "name": "धीमा पिघलाव",
+      "vibe": "नरम शुरुआत और धीरे-धीरे बढ़ती गर्माहट",
+      "description": "ऐसा foreplay जो urgency के बजाय softness और anticipation से build होता है.",
+      "howTo": "धीमे kisses, लंबे touches और pauses का use करें ताकि tension naturally बढ़े।"
+    },
+    "102": {
+      "name": "गरदन और कान पर ध्यान",
+      "vibe": "sensitive spots पर focused teasing",
+      "description": "neck, ears और hairline जैसी highly responsive जगहों पर ध्यान देकर closeness बढ़ाना.",
+      "howTo": "हल्के kisses, breath और fingertips से शुरू करें, फिर reaction के हिसाब से pace बढ़ाएँ।"
+    },
+    "103": {
+      "name": "मज़ेदार इंतज़ार",
+      "vibe": "थोड़ा रोको, थोड़ा छेड़ो",
+      "description": "delayed gratification वाला playful foreplay जो excitement को जल्दी build करता है.",
+      "howTo": "touch शुरू करें, फिर जानबूझकर pause लें, मुस्कान या eye contact जोड़ें और फिर वापस आएँ।"
+    },
+    "104": {
+      "name": "तन की तारीफ़",
+      "vibe": "पूरे शरीर पर attentive appreciation",
+      "description": "ऐसा slow attention जो partner को seen, desired और cared-for महसूस कराए.",
+      "howTo": "कंधों, arms, waist, thighs और back पर धीरे-धीरे hands और lips ले जाएँ।"
+    },
+    "105": {
+      "name": "पंख-सा स्पर्श",
+      "vibe": "हल्का, playful और teasing touch",
+      "description": "इतना हल्का स्पर्श कि body खुद anticipation में जागने लगे.",
+      "howTo": "fingertips, hair ends या soft fabric से बहुत हल्के strokes दें।"
+    },
+    "106": {
+      "name": "साथ-साथ खोज",
+      "vibe": "mutual feedback और shared curiosity",
+      "description": "एक playful format जहाँ दोनों यह पता लगाते हैं कि क्या सबसे अच्छा लगता है.",
+      "howTo": "बारी-बारी से guide करें: कहाँ, कितना और किस pace पर touch अच्छा लगता है।"
+    },
+    "176": {
+      "name": "सोफ़ा कोकून",
+      "vibe": "मुलायम, wrapped-up closeness",
+      "description": "सोफ़े, कंबल और close body contact वाला foreplay जो जल्दी comfort बना देता है.",
+      "howTo": "सोफ़े पर पास बैठें या लेटें, blanket share करें और hands, kisses, whispers से build करें।"
+    },
+    "177": {
+      "name": "डिनर के बाद की नरमी",
+      "vibe": "दिन से रात की ओर smooth transition",
+      "description": "खाने के बाद की वह gentle energy जब body आराम में हो और mood naturally warm हो।",
+      "howTo": "धीमी walk, waist touch, soft compliments और longer hugs से pace बदलें।"
+    },
+    "178": {
+      "name": "चुपचाप चुनौती",
+      "vibe": "कम शब्द, ज़्यादा tension",
+      "description": "एक silent flirt game जिसमें looks, gestures और restraint ही excitement बनाते हैं.",
+      "howTo": "बिना ज़्यादा बोले eye contact, संकेत और teasing proximity बनाए रखें।"
+    },
+    "179": {
+      "name": "मुझे धीरे दिखाओ",
+      "vibe": "pace को जानबूझकर धीमा करना",
+      "description": "ऐसा foreplay जहाँ दोनों speed कम करके sensation को ज़्यादा notice करते हैं.",
+      "howTo": "एक-दूसरे को दिखाएँ कि slow touch कैसा अच्छा लगता है, फिर उसी tempo पर टिके रहें।"
+    },
+    "180": {
+      "name": "पसंदीदा छुअन फिर से",
+      "vibe": "याद की हुई favorite moves",
+      "description": "जो पहले अच्छा लगा था, उसे फिर से intentional तरीके से लाना।",
+      "howTo": "एक-दूसरे को बताइए या याद से दोहराइए कि कौन-सी touch सबसे जल्दी melt कर देती है।"
+    },
+    "181": {
+      "name": "गलियारे की ठहराव",
+      "vibe": "छोटी सी pause, बड़ा असर",
+      "description": "घर के बीच रास्ते में रुककर closeness create करने वाला spontaneous moment.",
+      "howTo": "रास्ते में रुकें, partner को हल्का सा पास खींचें और kiss या whisper से moment को hold करें।"
+    },
+    "182": {
+      "name": "आईने वाला फ़्लर्ट",
+      "vibe": "देखना, दिखना और blush करना",
+      "description": "mirror के सामने playful attention जो visual tension को बढ़ाता है.",
+      "howTo": "आईने के पास खड़े हों, पीछे से पास आएँ, compliments दें और body language को slow रखें।"
+    },
+    "183": {
+      "name": "काउंटडाउन किस",
+      "vibe": "anticipation with a deadline",
+      "description": "एक playful countdown जो simple kiss को भी event बना देता है.",
+      "howTo": "धीरे-धीरे गिनती करें और आख़िरी सेकंड तक kiss को रोककर रखें।"
+    },
+    "184": {
+      "name": "राह दिखाते हाथ",
+      "vibe": "guided touch और clear feedback",
+      "description": "जब hands gently guide करते हैं, तो foreplay ज़्यादा synced और personal लगता है.",
+      "howTo": "एक partner दूसरे के हाथों को अपनी पसंद की जगहों और गति की ओर guide करे।"
+    },
+    "185": {
+      "name": "बेडरूम ट्रेल",
+      "vibe": "कमरे तक playful build-up",
+      "description": "bedroom पहुँचने से पहले ही energy build करने वाला teasing lead-in.",
+      "howTo": "हॉल, दरवाज़ा या bed तक छोटे touches, pauses और backward glances के साथ जाएँ।"
+    }
+  },
+  "oral": {
+    "201": {
+      "name": "धीमी और प्यारी अदा",
+      "vibe": "धीमा, attentive और full-focus",
+      "description": "एक slow, worshipful approach जो जल्दबाज़ी के बजाय rhythm और reaction पर टिकती है.",
+      "howTo": "pace को calm रखें, reaction पढ़ें और hand support या pauses से flow बनाएँ।"
+    },
+    "202": {
+      "name": "मैजिक 8",
+      "vibe": "playful pattern और steady focus",
+      "description": "एक repeatable motion pattern जो variety और consistency दोनों देता है.",
+      "howTo": "एक comfortable shape या motion pattern चुनें और pace को stable रखते हुए adjust करें।"
+    },
+    "203": {
+      "name": "रानी अपने सिंहासन पर",
+      "vibe": "relaxed support और confident receiving",
+      "description": "एक supported setup जिसमें receiving partner पूरी तरह आराम में रह सकता है.",
+      "howTo": "pillows, chair या bed edge का सहारा दें और receiving partner को comfortable posture में रखें।"
+    },
+    "204": {
+      "name": "अल्फ़ाबेट",
+      "vibe": "playful variation और teasing rhythm",
+      "description": "एक playful concept जो repetition को रोचक variety में बदल देता है.",
+      "howTo": "pace हल्का रखें, reaction notice करें और what works उसी पर थोड़ा ज़्यादा समय दें।"
+    },
+    "205": {
+      "name": "तितली",
+      "vibe": "open angle और responsive movement",
+      "description": "एक angle-based setup जो comfort और access दोनों पर ज़ोर देता है.",
+      "howTo": "body को open और supported रखें, फिर छोटे adjustments से best angle ढूँढें।"
+    },
+    "206": {
+      "name": "रोडमैप",
+      "vibe": "धीरे-धीरे explore करते हुए build-up",
+      "description": "एक exploratory style जिसमें पूरे area को curiosity और attention के साथ read किया जाता है.",
+      "howTo": "जल्दबाज़ी न करें; different spots, pressure और pace का response notice करें।"
+    },
+    "246": {
+      "name": "बिस्तर का किनारा",
+      "vibe": "bed edge support और easy access",
+      "description": "एक practical setup जो angle और support दोनों को आसान बनाता है.",
+      "howTo": "receiving partner को bed edge पर आराम से रखें और body support पहले set करें।"
+    },
+    "247": {
+      "name": "तकियों का सिंहासन",
+      "vibe": "pillows के सहारे पूरा आराम",
+      "description": "तकियों से बनाया गया supported setup जो receiving partner को soften और open होने देता है.",
+      "howTo": "upper back, neck या hips के नीचे pillows लगाएँ और angle को छोटे changes से tune करें।"
+    },
+    "248": {
+      "name": "साइड लाउंज",
+      "vibe": "side-lying comfort और low pressure",
+      "description": "एक side-lying option जो neck, shoulders और breathing पर कम दबाव डालती है.",
+      "howTo": "दोनों को side support दें और relaxed, easy pace रखें।"
+    },
+    "249": {
+      "name": "पीछे से छेड़छाड़",
+      "vibe": "rear-angle novelty और tease",
+      "description": "एक more adventurous setup जो angle बदलकर नई feel लाता है.",
+      "howTo": "support और balance पहले set करें, फिर छोटे, careful adjustments करें।"
+    },
+    "250": {
+      "name": "कुर्सी का सहारा",
+      "vibe": "seated support और clearer feedback",
+      "description": "chair-based setup जो posture stable रखता है और communication आसान बनाता है.",
+      "howTo": "मज़बूत chair पर बैठें, receiving partner आराम से रहे और guide करने की जगह बनी रहे।"
+    },
+    "251": {
+      "name": "कुशन वाला अदला-बदली",
+      "vibe": "turn-taking with comfort",
+      "description": "एक mutual setup जो partners को turn-by-turn attention देने देता है बिना mood तोड़े।",
+      "howTo": "pillows के साथ easy posture set करें, turns लें और transitions में kissing/holding बनाए रखें।"
+    },
+    "252": {
+      "name": "स्टैक्ड 69",
+      "vibe": "classic mutual intensity",
+      "description": "एक classic mutual format जो simultaneous pleasure और rhythm माँगता है.",
+      "howTo": "comfort और breathing को priority दें, फिर pace को ऐसा रखें कि दोनों enjoy कर सकें।"
+    },
+    "253": {
+      "name": "खड़े होकर काउंटर के पास",
+      "vibe": "standing support और spontaneous mood",
+      "description": "counter या vanity support वाला setup जो spontaneity को आसान बनाता है.",
+      "howTo": "stable surface चुनें, receiving partner को support दें और posture की height ठीक करें।"
+    },
+    "254": {
+      "name": "शॉवर की भाप",
+      "vibe": "warm water, steam और soft build-up",
+      "description": "शॉवर में warmth और steam से sensory atmosphere बनता है जो pace को naturally धीमा करता है.",
+      "howTo": "anti-slip support रखें, water को comfortable रखें और short, mindful session चुनें।"
+    },
+    "255": {
+      "name": "बैठा हुआ इशारा",
+      "vibe": "easy guidance और quick feedback",
+      "description": "seated receiving posture जिसमें body language और छोटे signals पढ़ना आसान हो जाता है.",
+      "howTo": "receiving partner को bed edge, chair या sofa पर बैठाएँ और subtle guidance पर ध्यान दें।"
+    },
+    "256": {
+      "name": "बेडसाइड बदलाव",
+      "vibe": "close turn-taking without losing warmth",
+      "description": "एक mutual bedside setup जिसमें switching आसान और connected feel natural रहती है.",
+      "howTo": "pillows के सहारे bed पर close रहें और turns बदलते समय touch और eye contact बनाए रखें।"
+    },
+    "257": {
+      "name": "आराम से बुलावा",
+      "vibe": "reclined comfort और affectionate pace",
+      "description": "एक reclined setup जो tension कम करता है और softer, more affectionate energy देता है.",
+      "howTo": "receiving partner को pillows से recline कराएँ और angle को neck-friendly रखते हुए आगे बढ़ें।"
+    }
+  },
+  "massage": {
+    "301": {
+      "name": "पूरा बदन ढीला छोड़ो",
+      "vibe": "head-to-toe deep relaxation",
+      "description": "full-body massage जो पूरे शरीर से दिनभर की tension उतारने के लिए बनाया गया है.",
+      "howTo": "कंधों से शुरू करें, arms, back, hips और legs तक लंबे, steady strokes में जाएँ।",
+      "bodyArea": "पूरा शरीर"
+    },
+    "302": {
+      "name": "कंधों को पिघलाने वाला स्पर्श",
+      "vibe": "stress-heavy shoulders के लिए राहत",
+      "description": "neck और shoulders पर focused work जो desk-day stress के बाद बहुत सुकून देता है.",
+      "howTo": "thumbs और palms से shoulder line और upper back पर slow pressure दें।",
+      "bodyArea": "कंधे और गरदन"
+    },
+    "303": {
+      "name": "लोअर बैक का आराम",
+      "vibe": "deep support for tired lower back",
+      "description": "lower back और आसपास की muscles को release करने वाला soothing massage.",
+      "howTo": "spine के दोनों तरफ palms और thumbs से circles और broad pressure दें.",
+      "bodyArea": "लोअर बैक"
+    },
+    "304": {
+      "name": "स्कैल्प की शांति",
+      "vibe": "head tension को melt करने वाला calm touch",
+      "description": "scalp, temples और hairline पर gentle work जो पूरे शरीर को soften कर देता है.",
+      "howTo": "fingertips से छोटे circles बनाएँ और temples व neck base पर extra time दें।",
+      "bodyArea": "सिर और स्कैल्प"
+    },
+    "331": {
+      "name": "डेस्क डे रेस्क्यू",
+      "vibe": "screen-day tension के लिए reset",
+      "description": "shoulders, upper back और hips पर focused sequence जो लंबे कामकाजी दिन के बाद राहत देता है.",
+      "howTo": "shoulders को warm up करें, upper back knead करें और hips पर broad circles के साथ finish करें।",
+      "bodyArea": "कंधे और कूल्हे"
+    },
+    "332": {
+      "name": "हथेली से हथेली रीसेट",
+      "vibe": "छोटा मगर बहुत caring ritual",
+      "description": "hands और forearms का massage जो surprisingly intimate और grounding लगता है.",
+      "howTo": "एक-एक हाथ पकड़ें, palm lines पर thumbs चलाएँ और wrist से forearm तक slow strokes दें।",
+      "bodyArea": "हाथ और forearms"
+    },
+    "333": {
+      "name": "साँसों की लहर",
+      "vibe": "breathing के साथ synced touch",
+      "description": "torso और ribs पर ऐसा massage जो exhale के साथ move करके body को calm कर देता है.",
+      "howTo": "hands को ribs या waist पर रखें और हर exhale पर palms को धीरे से glide करें।",
+      "bodyArea": "धड़ और पसलियाँ"
+    },
+    "334": {
+      "name": "आफ़्टरकेयर होल्ड",
+      "vibe": "reassuring, warm, slow recovery touch",
+      "description": "intimacy या emotional evening के बाद calm और connection लौटाने वाला soothing massage.",
+      "howTo": "कम lotion के साथ broad, slow strokes दें और बीच-बीच में hands को बस टिकाकर रखें।",
+      "bodyArea": "पूरा शरीर"
+    }
+  },
+  "roleplay": {
+    "401": {
+      "name": "पहली डेट फिर से",
+      "vibe": "पहले जैसी nervous sparkle",
+      "description": "ऐसा roleplay जिसमें आप दोनों मानते हैं कि आज पहली बार मिल रहे हैं।",
+      "setup": "अलग-अलग तैयार हों और casual date setting बनाएँ।",
+      "howToPlay": "एक-दूसरे से fresh questions पूछें, flirt करें और tension को धीरे-धीरे build होने दें।"
+    },
+    "402": {
+      "name": "बार में अजनबी",
+      "vibe": "anonymous attraction और playful pickup energy",
+      "description": "दो अजनबी जो एक ही room में एक-दूसरे पर टिक ही नहीं पाते।",
+      "setup": "घर पर bar corner बनाएँ या बाहर किसी cozy जगह पर अलग-अलग entry लें।",
+      "howToPlay": "eye contact, approach line और drink-chat के साथ stranger fantasy को खेलें।"
+    },
+    "403": {
+      "name": "सालगिरह वाला सरप्राइज़",
+      "vibe": "celebration, care और intentional romance",
+      "description": "एक partner पूरी शाम दूसरे के लिए plan करता है ताकि उसे खास feel कराया जा सके।",
+      "setup": "candles, favorite snacks या small surprises के साथ mood set करें।",
+      "howToPlay": "host partner पूरी evening lead करे और guest partner को indulge होने दे।"
+    },
+    "431": {
+      "name": "बुकस्टोर क्रश",
+      "vibe": "shelves के बीच धीरे-धीरे बढ़ता flirt",
+      "description": "एक cozy bookstore setting जहाँ casual conversation अचानक बहुत personal होने लगती है।",
+      "setup": "किताबें, notebooks या magazines के साथ quiet reading corner बनाएँ।",
+      "howToPlay": "book recommendations, teasing comments और accidental hand brushes से scene चलाएँ।"
+    },
+    "432": {
+      "name": "शेफ़्स टेबल",
+      "vibe": "tasting menu और front-row attention",
+      "description": "एक partner chef बनता है और दूसरा उसके खास private menu का guest।",
+      "setup": "छोटे bites, drinks और kitchen या dining area को stage की तरह set करें।",
+      "howToPlay": "chef हर course को थोड़ा dramatic, थोड़ा teasing अंदाज़ में serve करे।"
+    },
+    "433": {
+      "name": "एयरपोर्ट रीयूनियन",
+      "vibe": "बहुत इंतज़ार के बाद finally मिलने की energy",
+      "description": "एक long-awaited reunion जहाँ पहला hug ही पूरी scene का tone set कर देता है।",
+      "setup": "coat, bag या travel vibe से arrival moment बनाएँ।",
+      "howToPlay": "doorway reunion, relieved laughter और immediate closeness से scene build करें।"
+    },
+    "434": {
+      "name": "प्राइवेट स्पा एस्केप",
+      "vibe": "luxury, care और soft seduction",
+      "description": "एक partner spa host है और दूसरा guest of honor, पूरी शाम unwind करने के लिए।",
+      "setup": "robes, towels, warm oil और low lighting से spa mood बनाएँ।",
+      "howToPlay": "host partner हर step narrate करे: welcome, warm towel, massage और slow indulgence।"
+    }
+  }
+}

@@ -14,8 +14,8 @@ import { getFirebaseDb } from '@/services/firebase';
 import { createLocalizedArrayProxy, getCurrentLanguage } from '@/i18n/languageGetter';
 import type { AppLanguage } from '@/i18n/translations';
 import {
-  DAILY_JOKE_SETUPS_ES, DAILY_JOKE_SETUPS_PT,
-  DAILY_JOKE_PUNCHLINES_ES, DAILY_JOKE_PUNCHLINES_PT,
+  DAILY_JOKE_SETUPS_ES, DAILY_JOKE_SETUPS_PT, DAILY_JOKE_SETUPS_HI,
+  DAILY_JOKE_PUNCHLINES_ES, DAILY_JOKE_PUNCHLINES_PT, DAILY_JOKE_PUNCHLINES_HI,
 } from '@/i18n/translatedJokes';
 import {
   DAILY_JOKE_BANK_CACHE_KEY,
@@ -121,7 +121,7 @@ const _DAILY_JOKE_SETUPS_EN: string[] = [
 ];
 
 export const DAILY_JOKE_SETUPS = createLocalizedArrayProxy<string>({
-  en: _DAILY_JOKE_SETUPS_EN, es: DAILY_JOKE_SETUPS_ES, pt: DAILY_JOKE_SETUPS_PT, hi: _DAILY_JOKE_SETUPS_EN,
+  en: _DAILY_JOKE_SETUPS_EN, es: DAILY_JOKE_SETUPS_ES, pt: DAILY_JOKE_SETUPS_PT, hi: DAILY_JOKE_SETUPS_HI,
 });
 
 const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
@@ -211,7 +211,7 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
 ];
 
 export const DAILY_JOKE_PUNCHLINES = createLocalizedArrayProxy<string>({
-  en: _DAILY_JOKE_PUNCHLINES_EN, es: DAILY_JOKE_PUNCHLINES_ES, pt: DAILY_JOKE_PUNCHLINES_PT, hi: _DAILY_JOKE_PUNCHLINES_EN,
+  en: _DAILY_JOKE_PUNCHLINES_EN, es: DAILY_JOKE_PUNCHLINES_ES, pt: DAILY_JOKE_PUNCHLINES_PT, hi: DAILY_JOKE_PUNCHLINES_HI,
 });
 
 // ============================================
