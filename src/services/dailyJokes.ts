@@ -121,7 +121,7 @@ const _DAILY_JOKE_SETUPS_EN: string[] = [
 ];
 
 export const DAILY_JOKE_SETUPS = createLocalizedArrayProxy<string>({
-  en: _DAILY_JOKE_SETUPS_EN, es: DAILY_JOKE_SETUPS_ES, pt: DAILY_JOKE_SETUPS_PT,
+  en: _DAILY_JOKE_SETUPS_EN, es: DAILY_JOKE_SETUPS_ES, pt: DAILY_JOKE_SETUPS_PT, hi: _DAILY_JOKE_SETUPS_EN,
 });
 
 const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
@@ -211,7 +211,7 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
 ];
 
 export const DAILY_JOKE_PUNCHLINES = createLocalizedArrayProxy<string>({
-  en: _DAILY_JOKE_PUNCHLINES_EN, es: DAILY_JOKE_PUNCHLINES_ES, pt: DAILY_JOKE_PUNCHLINES_PT,
+  en: _DAILY_JOKE_PUNCHLINES_EN, es: DAILY_JOKE_PUNCHLINES_ES, pt: DAILY_JOKE_PUNCHLINES_PT, hi: _DAILY_JOKE_PUNCHLINES_EN,
 });
 
 // ============================================
@@ -317,7 +317,7 @@ export const normalizeDailyJokeBank = (raw: unknown): DailyJokeBank | null => {
   const localized: Partial<Record<AppLanguage, { setups: string[]; punchlines: string[] }>> = {};
   if (candidate.localized && typeof candidate.localized === 'object') {
     const localizedRaw = candidate.localized as Record<string, unknown>;
-    (['en', 'es', 'pt'] as AppLanguage[]).forEach((language) => {
+    (['en', 'es', 'pt', 'hi'] as AppLanguage[]).forEach((language) => {
       const node = localizedRaw[language];
       if (!node || typeof node !== 'object') return;
       const languageNode = node as { setups?: unknown; punchlines?: unknown };
@@ -449,6 +449,7 @@ const getLocalizedFallbackPunchlines = (language: AppLanguage): string[] => {
 const getJokeNotificationSuffix = (language: AppLanguage): string => {
   if (language === 'es') return 'Toca para ver la respuesta.';
   if (language === 'pt') return 'Toque para ver a resposta.';
+  if (language === 'hi') return 'जवाब देखने के लिए टैप करें।';
   return 'Tap to see the answer.';
 };
 

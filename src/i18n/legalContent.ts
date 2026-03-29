@@ -481,6 +481,7 @@ const LEGAL_CONTENT: Record<AppLanguage, LegalLocaleContent> = {
   en: EN_CONTENT,
   es: ES_CONTENT,
   pt: PT_CONTENT,
+  hi: EN_CONTENT,
 };
 
 export const getLegalContent = (language: AppLanguage): LegalLocaleContent => {

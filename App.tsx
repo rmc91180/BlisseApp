@@ -1959,7 +1959,11 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
   const formatMonth = (monthStr: string) => {
     const [year, month] = monthStr.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1);
-    const locale = language === 'es' ? 'es-ES' : language === 'pt' ? 'pt-BR' : 'en-US';
+    const locale =
+      language === 'es' ? 'es-ES'
+      : language === 'pt' ? 'pt-BR'
+      : language === 'hi' ? 'hi-IN'
+      : 'en-US';
     return date.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
   };
 

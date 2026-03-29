@@ -90,97 +90,103 @@ export const LEVEL_MOTIVATOR_LINES_PT: string[] = [
 // ===== SEASONAL HOME SPARK MESSAGES =====
 
 export const SEASONAL_HOME_SPARK_MESSAGES_ES: Record<string, Array<{ headline: string; body: string }>> = {
-  valentines: [
+  san_valentin: [
     { headline: 'Energía de San Valentín, todo el mes 💕', body: 'Más mirada, más besos y un toque de travesura esta noche.' },
     { headline: 'Aquí las cartas de amor son bienvenidas 🌹', body: 'Que sea dulce, coqueto y un poco más atrevido de lo normal.' },
   ],
-  spring: [
-    { headline: 'La primavera es tu botón de reinicio 🌸', body: 'Nuevo ánimo, nueva energía, nuevas historias para crear juntos.' },
-    { headline: 'Nueva estación, nuevas chispas 🌿', body: 'Prueben algo nuevo esta noche y dejen que la curiosidad los guíe.' },
+  ano_nuevo_latam: [
+    { headline: 'Año nuevo, chispa nueva 🎆', body: 'Empiecen el año con intención compartida y un poquito de picardía.' },
+    { headline: 'La mejor cuenta regresiva es en pareja ✨', body: 'Un beso planeado y una idea nueva pueden cambiar todo el mes.' },
   ],
-  summer: [
-    { headline: 'Noches calientes de verano desbloqueadas ☀️', body: 'Retos divertidos, vibras espontáneas y cero sobrepensar.' },
-    { headline: 'Súbanle al calor, mantengan la diversión 🍹', body: 'Modo aventura activado. Elijan un reto y a jugar.' },
+  semana_santa: [
+    { headline: 'Tiempo de pausa, tiempo para ustedes 🌿', body: 'Desaceleren, respiren y conviertan la noche en un pequeño ritual.' },
+    { headline: 'Una escapada suave también puede ser en casa 🕯️', body: 'Menos prisa, más presencia y una curiosidad que se note.' },
   ],
-  fall: [
-    { headline: 'Temporada acogedora, conexión más cercana 🍂', body: 'Más despacio, más calidez, y la tensión juguetona siempre viva.' },
-    { headline: 'Noches de otoño, luces más suaves 🕯️', body: 'Comodidad más química es una combinación imbatible.' },
+  verano_latino: [
+    { headline: 'Verano latino: calor, música y antojo ☀️', body: 'Una noche ligera, una idea atrevida y cero sobrepensar.' },
+    { headline: 'Lleven la energía de escapada hasta su habitación 🍹', body: 'Que la noche se sienta espontánea, viva y muy de ustedes.' },
   ],
-  winter: [
-    { headline: 'El calorcito invernal empieza aquí ❄️', body: 'Cobijas, calor corporal y cero excusas.' },
-    { headline: 'Frío afuera, chispa adentro 🔥', body: 'Haz que esta noche se sienta como tu secreto favorito.' },
+  fiestas_patrias: [
+    { headline: 'Fiestas Patrias con química extra 🎉', body: 'Lleven la energía de la celebración hacia algo más íntimo.' },
+    { headline: 'Cuando se acaba la fiesta, empieza lo bueno 💃', body: 'Una canción, una sonrisa y un plan pequeño pueden hacer magia.' },
   ],
-  newyear: [
-    { headline: 'Año nuevo, mismo amor, juego más atrevido 🎆', body: 'Fija una intención divertida y hazla realidad esta noche.' },
-    { headline: 'Energía de capítulo nuevo ✨', body: 'Pequeños rituales compartidos hoy, gran impulso de pareja mañana.' },
+  dia_de_muertos_nochevieja: [
+    { headline: 'Recuerdos tiernos, noche encendida 🕯️', body: 'Honren lo vivido y creen algo nuevo antes de que termine el año.' },
+    { headline: 'De los recuerdos a la chispa de hoy ✨', body: 'Una noche cercana, suave y con ese calorcito que sí se queda.' },
   ],
 };
 
 export const SEASONAL_HOME_SPARK_MESSAGES_PT: Record<string, Array<{ headline: string; body: string }>> = {
-  valentines: [
-    { headline: 'Energia de Dia dos Namorados o mês inteiro 💕', body: 'Mais olho no olho, mais beijos e travessura na medida hoje à noite.' },
-    { headline: 'Bilhetinhos de amor são bem-vindos aqui 🌹', body: 'Mantenham doce, sedutor e um pouco mais ousado que o normal.' },
+  verao_brasil: [
+    { headline: 'Verão brasileiro, química sem pressa 🌴', body: 'Mais leveza, mais calor gostoso e uma noite com cara de férias.' },
+    { headline: 'Tragam a energia da praia para dentro de casa ☀️', body: 'Pouco planejamento, muito clima e vontade de ficar perto.' },
   ],
-  spring: [
-    { headline: 'A primavera é o botão de reinício de vocês 🌸', body: 'Novo ânimo, nova energia, novas histórias para criarem juntos.' },
-    { headline: 'Nova estação, novas faíscas 🌿', body: 'Experimentem algo novo hoje e deixem a curiosidade guiar.' },
+  carnaval: [
+    { headline: 'Carnaval para dois: fantasia e provocação 🎭', body: 'Mantenham divertido, leve e um pouquinho mais ousado que o normal.' },
+    { headline: 'Quando a folia termina, a brincadeira continua 💋', body: 'Escolham um papel, um acessório ou um desafio para começar.' },
   ],
-  summer: [
-    { headline: 'Noites quentes de verão desbloqueadas ☀️', body: 'Desafios divertidos, vibe espontânea e zero encucação.' },
-    { headline: 'Aumentem o calor, mantenham a diversão 🍹', body: 'Modo aventura ativado. Escolham um desafio e partam pra ação.' },
+  outono_a_dois: [
+    { headline: 'Outono a dois: menos correria, mais presença 🍁', body: 'Criem um clima calmo e deixem a noite crescer no ritmo de vocês.' },
+    { headline: 'Conforto e química fazem um par perfeito 🕯️', body: 'Mais aconchego, mais sintonia e um pouco de travessura boa.' },
   ],
-  fall: [
-    { headline: 'Temporada aconchegante, conexão mais íntima 🍂', body: 'Desacelerem, se aqueçam e mantenham a tensão gostosa no ar.' },
-    { headline: 'Noites de outono, luzes mais suaves 🕯️', body: 'Conforto mais química é uma combinação perfeita.' },
+  dia_dos_namorados: [
+    { headline: 'Dia dos Namorados com clima especial 💘', body: 'Mais carinho, mais intenção e aquele beijo que demora um pouco mais.' },
+    { headline: 'Bilhetes, detalhes e uma boa surpresa 🌹', body: 'Mantenham romântico, gostoso e com espaço para a brincadeira.' },
   ],
-  winter: [
-    { headline: 'O aconchego do inverno começa aqui ❄️', body: 'Cobertor, calor corporal e zero desculpas.' },
-    { headline: 'Frio lá fora, faísca aqui dentro 🔥', body: 'Façam dessa noite o segredo favorito de vocês.' },
+  inverno_carinhoso: [
+    { headline: 'Inverno carinhoso desbloqueado ❄️', body: 'Cobertor, pele quente e zero motivo para ficar distante.' },
+    { headline: 'Frio lá fora, conexão aqui dentro 🔥', body: 'Façam dessa noite o refúgio favorito de vocês.' },
   ],
-  newyear: [
-    { headline: 'Ano novo, mesmo amor, jogo mais ousado 🎆', body: 'Definam uma intenção divertida e coloquem isso em prática hoje à noite.' },
-    { headline: 'Energia de capítulo novo ✨', body: 'Pequenos rituais compartilhados agora, grande impulso no relacionamento depois.' },
+  primavera_brasil: [
+    { headline: 'Primavera brasileira: leveza e curiosidade 🌺', body: 'Uma boa noite para testar algo novo sem tirar a delicadeza do caminho.' },
+    { headline: 'Mais cor, mais clima, mais vontade de brincar 🌿', body: 'Deixem a estação lembrar vocês de recomeçar com charme.' },
+  ],
+  reveillon: [
+    { headline: 'Réveillon a dois, com promessa boa 🥂', body: 'Escolham um desejo para o ano e comecem hoje à noite.' },
+    { headline: 'Virada com brilho, beijo e intenção ✨', body: 'Façam da última noite do ano o primeiro capítulo do próximo.' },
   ],
 };
 
 // ===== SEASONAL TONIGHT TEASERS =====
 
 export const SEASONAL_TONIGHT_TEASERS_ES: Record<string, string[]> = {
-  valentines: ['Romántico y juguetón, con la cantidad justa de calor.'],
-  spring: ['Cita con energía fresca: comienzo suave, final atrevido.'],
-  summer: ['Espontáneo y picante, sin ninguna presión.'],
-  fall: ['Acogedor, cercano e imposible de apurar.'],
-  winter: ['Caliéntense despacio y quédense cerquita más tiempo.'],
-  newyear: ['Prueben algo nuevo y llámenlo su ritual de la suerte.'],
+  ano_nuevo_latam: ['Capítulo nuevo, beso largo y una idea que marque el tono del mes.'],
+  san_valentin: ['Romántico, coqueto y con esa subida de temperatura que sí se nota.'],
+  semana_santa: ['Bajen el ritmo y dejen que la tensión suba sola.'],
+  verano_latino: ['Espontáneo, cálido y con sabor a escapada.'],
+  fiestas_patrias: ['Celebren, vuelvan a casa y conviertan la energía en química.'],
+  dia_de_muertos_nochevieja: ['Una noche íntima para recordar, agradecer y encender algo nuevo.'],
 };
 
 export const SEASONAL_TONIGHT_TEASERS_PT: Record<string, string[]> = {
-  valentines: ['Romântico e divertido, com a dose certa de calor.'],
-  spring: ['Encontro com energia renovada: começo suave, final ousado.'],
-  summer: ['Espontâneo e picante, sem pressão nenhuma.'],
-  fall: ['Aconchegante, íntimo e impossível de apressar.'],
-  winter: ['Aqueçam-se devagar e fiquem juntinhos por mais tempo.'],
-  newyear: ['Experimentem algo novo e chamem de ritual da sorte de vocês.'],
+  verao_brasil: ['Leve, quente e com aquela energia boa de férias a dois.'],
+  carnaval: ['Fantasia, sorriso e um primeiro passo mais ousado.'],
+  outono_a_dois: ['Comecem devagar e deixem a química fazer o resto.'],
+  dia_dos_namorados: ['Romance com presença, detalhe e um pouco mais de calor.'],
+  inverno_carinhoso: ['Aqueçam-se com calma e demorem mais um pouco juntos.'],
+  primavera_brasil: ['Clima novo, faísca nova e espaço para tentar algo diferente.'],
+  reveillon: ['Fechem o ano com intenção e abram o próximo com coragem.'],
 };
 
 // ===== SEASONAL HOOK LINES =====
 
 export const SEASONAL_HOOK_LINES_ES: Record<string, string[]> = {
-  valentines: ['Modo San Valentín: más miradas, más besos, más juego.'],
-  spring: ['Nuevos comienzos y experimentos divertidos los esperan.'],
-  summer: ['Noches más largas, decisiones más atrevidas, más risas.'],
-  fall: ['Comodidad y química se encuentran en cada momento acogedor.'],
-  winter: ['Cobija + calor corporal + intención juguetona = plan perfecto.'],
-  newyear: ['Comienzos frescos y primeros pasos atrevidos.'],
+  ano_nuevo_latam: ['Año nuevo, intención compartida y pasos juguetones.'],
+  san_valentin: ['Más mirada, más beso, más complicidad.'],
+  semana_santa: ['Pausa rica, conexión suave y curiosidad despierta.'],
+  verano_latino: ['Calor, música y más ganas de decir que sí.'],
+  fiestas_patrias: ['La celebración también puede terminar en ternura y fuego.'],
+  dia_de_muertos_nochevieja: ['Recuerdos dulces y una chispa lista para cerrar el año.'],
 };
 
 export const SEASONAL_HOOK_LINES_PT: Record<string, string[]> = {
-  valentines: ['Clima de Dia dos Namorados: mais olhar, mais beijo, mais brincadeira.'],
-  spring: ['Novos começos e experiências divertidas esperam por vocês.'],
-  summer: ['Noites mais longas, escolhas mais ousadas, mais risadas.'],
-  fall: ['Conforto e química se encontram em cada momento aconchegante.'],
-  winter: ['Cobertor + calor corporal + intenção divertida = noite perfeita.'],
-  newyear: ['Recomeços e primeiros passos ousados.'],
+  verao_brasil: ['Mais leveza, mais calor e mais chance de dizer “fica mais”.'],
+  carnaval: ['Brincadeira boa, fantasia leve e química solta.'],
+  outono_a_dois: ['Conforto e conexão andando lado a lado.'],
+  dia_dos_namorados: ['Mais presença, mais carinho, mais clima.'],
+  inverno_carinhoso: ['Cobertor, corpo perto e intenção divertida.'],
+  primavera_brasil: ['Recomeço leve com curiosidade e charme.'],
+  reveillon: ['Virada com coragem, beijo e promessa boa.'],
 };
 
 // ===== COUPLE CONNECTION PROMPTS =====
@@ -215,3 +221,107 @@ export const COUPLE_PROMPTS_PT = [
 
 export const DAILY_JOKE_NOTIFICATION_TITLE_ES = 'Blisse - Provocación Diaria 💌';
 export const DAILY_JOKE_NOTIFICATION_TITLE_PT = 'Blisse - Provocação Diária 💌';
+export const DAILY_JOKE_NOTIFICATION_TITLE_HI = 'Blisse - आज की छेड़छाड़ 💌';
+
+export const HOME_SPARK_MESSAGES_HI: Array<{ headline: string; body: string }> = [
+  {
+    headline: 'आज की छोटी-सी मिशन: एक-दूसरे को मुस्कुराना 😈',
+    body: 'एक playful idea चुनिए और उसे पूरी तरह निभाइए।',
+  },
+  {
+    headline: 'कम सोचना, ज़्यादा chemistry ✨',
+    body: 'Blisse खोलिए, mood चुनिए, और रात को अपने ढंग से आगे बढ़ने दीजिए।',
+  },
+  {
+    headline: 'दो मिनट में डेट-नाइट वाली ऊर्जा 😘',
+    body: 'एक prompt, एक dare और एक लंबा kiss रात का पूरा रंग बदल सकते हैं।',
+  },
+  {
+    headline: 'आपकी love story ने नया level खोल लिया 🌙',
+    body: 'सितारे जमा कीजिए, streak बनाए रखिए और connection को इरादे से पोषित कीजिए।',
+  },
+  {
+    headline: 'गर्म दिल, हल्की शरारत, और अच्छी यादें 🔥',
+    body: 'छोटे इरादतन पल अभी, यादगार नज़दीकी बाद में।',
+  },
+];
+
+export const TONIGHT_SUGGESTION_TEASERS_HI: string[] = [
+  'आज की रात को हल्के से शुरू कीजिए और जिज्ञासा को आगे बढ़ने दीजिए।',
+  'आज eye contact, हँसी और एक थोड़ी-सी bold शुरुआत के नाम।',
+  'कोई दबाव नहीं। बस मौजूदगी, खेल और अच्छी chemistry।',
+  'एक idea चुनिए और उसे अपनी छोटी-सी secret ritual की तरह निभाइए।',
+  'छोटी-सी चिंगारी अभी, प्यारी याद बाद में।',
+];
+
+export const LEVEL_MOTIVATOR_LINES_HI: string[] = [
+  'हर सितारा अगली शाम को थोड़ा और खास बना देता है।',
+  'आप दोनों साथ मिलकर trust, playfulness और rhythm बना रहे हैं।',
+  'प्रगति आकर्षक होती है। ऐसे ही आगे बढ़िए।',
+  'नई चिंगारियों से Eternal Flame तक, एक playful कदम में।',
+  'आप सिर्फ ऐप में नहीं, अपने रिश्ते में भी level up कर रहे हैं।',
+];
+
+export const SEASONAL_HOME_SPARK_MESSAGES_HI: Record<string, Array<{ headline: string; body: string }>> = {
+  makar_sankranti: [
+    { headline: 'नई धूप, नया इरादा, नई चिंगारी 🪁', body: 'आज रात को हल्केपन और playful warmth से शुरू कीजिए।' },
+    { headline: 'छोटा-सा ritual, बड़ी-सी connection ✨', body: 'एक ऐसा पल बनाइए जिसे आप फिर दोहराना चाहें।' },
+  ],
+  basant_panchami: [
+    { headline: 'बसंत का मौसम, दिल थोड़ा और खुला हुआ 🌼', body: 'रात को हल्का, कोमल और flirt से भरा रहने दीजिए।' },
+    { headline: 'नई ऊर्जा, नया softness 💛', body: 'एक छोटी-सी romantic शुरुआत पूरी शाम बदल सकती है।' },
+  ],
+  holi: [
+    { headline: 'रंगों के बाद अब chemistry की बारी 🎨', body: 'हँसी, touch और playfulness को एक साथ आने दीजिए।' },
+    { headline: 'थोड़ी शरारत, बहुत सारा consent 💕', body: 'एक dare चुनिए और शाम को मज़ेदार बनाइए।' },
+  ],
+  monsoon_magic: [
+    { headline: 'मानसून मूड: बाहर बारिश, भीतर warmth 🌧️', body: 'धीमे पल, नरम रोशनी और पास रहने का बहाना।' },
+    { headline: 'बरसाती शामों में connection जल्दी खिलता है ☕', body: 'कंबल, चाय और थोड़ी flirtiness काफी है।' },
+  ],
+  karva_chauth: [
+    { headline: 'इरादे, नज़रों और softness की शाम 🌙', body: 'आज रात को meaningful gestures से खास बनाइए।' },
+    { headline: 'धीमा रोमांस भी बहुत गहरा हो सकता है ✨', body: 'एक-दूसरे के लिए gratitude बोलें और फिर पास आएँ।' },
+  ],
+  diwali: [
+    { headline: 'रोशनी बाहर भी, भीतर भी 🪔', body: 'आज एक bright, playful और intimate रात बनाइए।' },
+    { headline: 'उत्सव के बाद की सबसे अच्छी शांति साथ में मिलती है 💫', body: 'एक soft reconnect moment चुनिए और उसे लंबा चलने दें।' },
+  ],
+  winter_wedding_season: [
+    { headline: 'जश्न के बाद अपनी private chemistry ✨', body: 'बाहर की चमक के बाद अपनी cozy दुनिया बनाइए।' },
+    { headline: 'तैयार होने की energy को flirt में बदल दीजिए 💌', body: 'थोड़ा glamour, थोड़ा warmth और ढेर सारी नज़दीकी।' },
+  ],
+};
+
+export const SEASONAL_TONIGHT_TEASERS_HI: Record<string, string[]> = {
+  makar_sankranti: ['नई शुरुआत, नरम flirt और एक शाम जो अच्छी दिशा तय करे।'],
+  basant_panchami: ['हल्का, ताज़ा और कोमल रोमांस से भरा हुआ।'],
+  holi: ['रंगों जितनी playful और हँसी जितनी हल्की।'],
+  monsoon_magic: ['धीमा, cozy और बारिश की तरह lingering।'],
+  karva_chauth: ['इरादतन, भावुक और करीब लाने वाला।'],
+  diwali: ['जश्न के बाद का private glow, सिर्फ आप दोनों के लिए।'],
+  winter_wedding_season: ['उत्सव से लौटकर अपनी खुद की chemistry जगाइए।'],
+};
+
+export const SEASONAL_HOOK_LINES_HI: Record<string, string[]> = {
+  makar_sankranti: ['नई धूप, नया mood, नया playful कदम।'],
+  basant_panchami: ['नरम मौसम, खुला दिल, और flirt की सही वजह।'],
+  holi: ['रंग, हँसी और थोड़ी-सी daring energy।'],
+  monsoon_magic: ['बारिश, warmth और रुककर पास आने का बहाना।'],
+  karva_chauth: ['नज़र, इरादा और quiet closeness।'],
+  diwali: ['रोशनी, celebration और अंदर की private चमक।'],
+  winter_wedding_season: ['सजे हुए मौसम के बाद अपना cozy chapter।'],
+};
+
+export const COUPLE_PROMPTS_HI = [
+  { emoji: '\u{1F4AC}', text: 'पूछिए: इस हफ्ते आपने खुद को सबसे ज़्यादा चाहे गए कब महसूस किया?' },
+  { emoji: '\u{1F48B}', text: 'एक धीमा, थोड़ा teasing kiss दीजिए। बिना जल्दी किए।' },
+  { emoji: '\u{1F4A5}', text: 'आज रात के लिए एक playful idea साझा कीजिए।' },
+  { emoji: '\u{1F3B5}', text: 'अपना गाना चलाइए और एक मिनट साथ झूमिए।' },
+  { emoji: '\u{1F525}', text: 'एक ऐसी बात फुसफुसाइए जो आपको अपने साथी में irresistible लगती है।' },
+  { emoji: '\u{1F917}', text: '20-सेकंड hug challenge. फ़ोन नीचे, नज़रें ऊपर।' },
+  { emoji: '\u{1F4CC}', text: 'पिछली रात को 1-10 दें और आज उसे बेहतर बनाने की सोचें।' },
+  { emoji: '\u{1F440}', text: '15 सेकंड eye contact रखें, फिर vibe को आगे बढ़ने दें।' },
+  { emoji: '\u{1F48C}', text: 'एक लाइन का “बाद में मिलो” नोट लिखिए।' },
+  { emoji: '\u{1F31F}', text: 'अपनी सबसे मीठी-सी शरारती याद साझा कीजिए।' },
+];

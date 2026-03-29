@@ -8,6 +8,7 @@ import { useStore } from '@/store/useStore';
 import { useThemeStore, getThemeColors, colors } from '@/store/useThemeStore';
 import { useAuth } from '@/services/auth';
 import { useSubscription } from '@/services/subscription';
+import type { AppLanguage } from '@/i18n/translations';
 import type { PurchasesPackage } from 'react-native-purchases';
 
 type ScreenComponent = ComponentType<any>;
@@ -52,7 +53,7 @@ const parseIso8601Period = (period: string | null): { count: number; unit: 'day'
   return null;
 };
 
-const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, language: 'en' | 'es' | 'pt'): string => {
+const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, language: AppLanguage): string => {
   const unit = periodUnit.toUpperCase();
   const plural = periodNumberOfUnits > 1;
 
@@ -72,6 +73,14 @@ const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, lang
     return `${periodNumberOfUnits}`;
   }
 
+  if (language === 'hi') {
+    if (unit === 'DAY') return `${periodNumberOfUnits} ${plural ? 'दिन' : 'दिन'}`;
+    if (unit === 'WEEK') return `${periodNumberOfUnits} ${plural ? 'सप्ताह' : 'सप्ताह'}`;
+    if (unit === 'MONTH') return `${periodNumberOfUnits} ${plural ? 'महीने' : 'महीना'}`;
+    if (unit === 'YEAR') return `${periodNumberOfUnits} ${plural ? 'वर्ष' : 'वर्ष'}`;
+    return `${periodNumberOfUnits}`;
+  }
+
   if (unit === 'DAY') return `${periodNumberOfUnits} day${plural ? 's' : ''}`;
   if (unit === 'WEEK') return `${periodNumberOfUnits} week${plural ? 's' : ''}`;
   if (unit === 'MONTH') return `${periodNumberOfUnits} month${plural ? 's' : ''}`;
@@ -82,7 +91,7 @@ const formatIntroPeriod = (periodNumberOfUnits: number, periodUnit: string, lang
 const formatBillingPeriod = (
   count: number,
   unit: 'day' | 'week' | 'month' | 'year',
-  language: 'en' | 'es' | 'pt',
+  language: AppLanguage,
   style: 'per' | 'every' = 'per'
 ): string => {
   const plural = count > 1;
@@ -119,6 +128,22 @@ const formatBillingPeriod = (
     return `a cada ${count} ${label}`;
   }
 
+  if (language === 'hi') {
+    const label =
+      unit === 'day' ? (plural ? 'दिन' : 'दिन')
+      : unit === 'week' ? (plural ? 'सप्ताह' : 'सप्ताह')
+      : unit === 'month' ? (plural ? 'महीने' : 'महीना')
+      : (plural ? 'वर्ष' : 'वर्ष');
+
+    if (style === 'per' && count === 1) {
+      return unit === 'day' ? 'प्रति दिन'
+        : unit === 'week' ? 'प्रति सप्ताह'
+        : unit === 'month' ? 'प्रति माह'
+        : 'प्रति वर्ष';
+    }
+    return `हर ${count} ${label}`;
+  }
+
   const label =
     unit === 'day' ? `day${plural ? 's' : ''}`
     : unit === 'week' ? `week${plural ? 's' : ''}`
@@ -134,7 +159,7 @@ const formatBillingPeriod = (
   return `every ${count} ${label}`;
 };
 
-const getPlanName = (pkg: PurchasesPackage, language: 'en' | 'es' | 'pt'): string => {
+const getPlanName = (pkg: PurchasesPackage, language: AppLanguage): string => {
   const packageType = String(pkg.packageType || '').toUpperCase();
 
   const map = {
@@ -164,6 +189,15 @@ const getPlanName = (pkg: PurchasesPackage, language: 'en' | 'es' | 'pt'): strin
       SIX_MONTH: '6 meses',
       THREE_MONTH: '3 meses',
       TWO_MONTH: '2 meses',
+    },
+    hi: {
+      MONTHLY: 'मासिक',
+      ANNUAL: 'वार्षिक',
+      WEEKLY: 'साप्ताहिक',
+      LIFETIME: 'आजीवन',
+      SIX_MONTH: '6 महीने',
+      THREE_MONTH: '3 महीने',
+      TWO_MONTH: '2 महीने',
     },
   } as const;
 
@@ -283,6 +317,33 @@ function SubscriptionPaywallScreen() {
       restoreMissing: 'Não encontramos assinatura ativa.',
       checkingSubscription: 'Verificando assinatura...',
       billingUnavailableTitle: 'Cobrança indisponível',
+    },
+    hi: {
+      title: 'Blisse अनलॉक करें',
+      subtitle: 'सभी experiences, games और personalized recommendations के लिए premium access शुरू करें।',
+      restore: 'खरीदारी बहाल करें',
+      retry: 'फिर से कोशिश करें',
+      freeTrialBadge: 'मुफ़्त ट्रायल उपलब्ध',
+      freeTrialThen: 'इसके बाद {price}',
+      introOfferBadge: 'शुरुआती ऑफ़र उपलब्ध',
+      noPlans: 'प्लान लोड हो रहे हैं। कृपया थोड़ी देर रुकें या फिर से कोशिश करें।',
+      legal: 'सब्सक्रिप्शन अपने-आप नवीनीकृत होते हैं, जब तक आप उन्हें App Store सेटिंग्स में रद्द न करें।',
+      fullAccess: 'कपल्स के लिए पूरा premium access',
+      monthlyHighlight: 'सबसे लचीला',
+      annualHighlight: 'सबसे अच्छा value',
+      lifetimeHighlight: 'एक बार का unlock',
+      weeklyHighlight: 'आसानी से आज़माएँ',
+      recurringNote: 'आप App Store सेटिंग्स में कभी भी रद्द कर सकते हैं।',
+      lifetimeNote: 'एक बार भुगतान करें और premium access बनाए रखें।',
+      saveVsMonthly: 'मासिक की तुलना में {percent}% बचाएँ',
+      billedEvery: 'बिलिंग {period}',
+      billedOnce: 'एक बार का भुगतान',
+      purchaseError: 'खरीद पूरी नहीं हो सकी',
+      restoreSuccess: 'बहाली पूरी हुई',
+      restoreFound: 'आपका subscription बहाल हो गया।',
+      restoreMissing: 'कोई सक्रिय subscription नहीं मिला।',
+      checkingSubscription: 'subscription जाँची जा रही है...',
+      billingUnavailableTitle: 'बिलिंग उपलब्ध नहीं है',
     },
   } as const;
 

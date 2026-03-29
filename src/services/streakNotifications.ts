@@ -16,6 +16,7 @@ const getStreakReminderTitle = (): string => {
   const language = getCurrentLanguage();
   if (language === 'es') return 'Mantengan la racha viva ✨';
   if (language === 'pt') return 'Mantenham a sequência viva ✨';
+  if (language === 'hi') return 'अपनी स्ट्रीक ज़िंदा रखें ✨';
   return 'Keep your streak alive ✨';
 };
 
@@ -23,6 +24,7 @@ const getStreakReminderBody = (): string => {
   const language = getCurrentLanguage();
   if (language === 'es') return 'Entren hoy a Blisse para conservar estrellas, ritmo y conexión.';
   if (language === 'pt') return 'Entrem hoje no Blisse para manter estrelas, ritmo e conexão.';
+  if (language === 'hi') return 'आज Blisse खोलिए ताकि सितारे, लय और जुड़ाव बना रहे।';
   return 'Open Blisse today to keep your stars, momentum, and connection.';
 };
 
@@ -74,4 +76,3 @@ export const scheduleDailyStreakReminder = async (
 
   await AsyncStorage.setItem(STREAK_NOTIFICATION_ID_KEY, id);
 };
-

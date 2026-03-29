@@ -33,6 +33,7 @@ const OVERLAY_BY_LANGUAGE: Record<AppLanguage, GeneratedOverlay | null> = {
   en: null,
   es: esGenerated as GeneratedOverlay,
   pt: ptGenerated as GeneratedOverlay,
+  hi: null,
 };
 
 const localizedCatalogCache = new Map<AppLanguage, ContentCatalog>();

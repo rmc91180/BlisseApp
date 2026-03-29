@@ -6,13 +6,21 @@ import {
 } from '@/i18n/languageGetter';
 import {
   HOME_SPARK_MESSAGES_ES, HOME_SPARK_MESSAGES_PT,
+  HOME_SPARK_MESSAGES_HI,
   TONIGHT_SUGGESTION_TEASERS_ES, TONIGHT_SUGGESTION_TEASERS_PT,
+  TONIGHT_SUGGESTION_TEASERS_HI,
   LEVEL_MOTIVATOR_LINES_ES, LEVEL_MOTIVATOR_LINES_PT,
+  LEVEL_MOTIVATOR_LINES_HI,
   SEASONAL_HOME_SPARK_MESSAGES_ES, SEASONAL_HOME_SPARK_MESSAGES_PT,
+  SEASONAL_HOME_SPARK_MESSAGES_HI,
   SEASONAL_TONIGHT_TEASERS_ES, SEASONAL_TONIGHT_TEASERS_PT,
+  SEASONAL_TONIGHT_TEASERS_HI,
   SEASONAL_HOOK_LINES_ES, SEASONAL_HOOK_LINES_PT,
+  SEASONAL_HOOK_LINES_HI,
   DAILY_JOKE_NOTIFICATION_TITLE_ES, DAILY_JOKE_NOTIFICATION_TITLE_PT,
+  DAILY_JOKE_NOTIFICATION_TITLE_HI,
   COUPLE_PROMPTS_ES, COUPLE_PROMPTS_PT,
+  COUPLE_PROMPTS_HI,
 } from '@/i18n/translatedAppConfig';
 
 // ============================================
@@ -70,6 +78,7 @@ export const getDailyJokeNotificationTitle = (): string =>
     en: _DAILY_JOKE_NOTIFICATION_TITLE_EN,
     es: DAILY_JOKE_NOTIFICATION_TITLE_ES,
     pt: DAILY_JOKE_NOTIFICATION_TITLE_PT,
+    hi: DAILY_JOKE_NOTIFICATION_TITLE_HI,
   });
 /** @deprecated Use getDailyJokeNotificationTitle() for localized version */
 export const DAILY_JOKE_NOTIFICATION_TITLE = _DAILY_JOKE_NOTIFICATION_TITLE_EN;
@@ -108,7 +117,7 @@ const _HOME_SPARK_MESSAGES_EN: Array<{ headline: string; body: string }> = [
   { headline: 'Warm hearts. Playful trouble. \u{1F525}', body: 'Tiny intentional moments now, unforgettable memories later.' },
 ];
 export const HOME_SPARK_MESSAGES = createLocalizedArrayProxy<{ headline: string; body: string }>({
-  en: _HOME_SPARK_MESSAGES_EN, es: HOME_SPARK_MESSAGES_ES, pt: HOME_SPARK_MESSAGES_PT,
+  en: _HOME_SPARK_MESSAGES_EN, es: HOME_SPARK_MESSAGES_ES, pt: HOME_SPARK_MESSAGES_PT, hi: HOME_SPARK_MESSAGES_HI,
 });
 
 const _TONIGHT_SUGGESTION_TEASERS_EN: string[] = [
@@ -119,7 +128,7 @@ const _TONIGHT_SUGGESTION_TEASERS_EN: string[] = [
   'Small spark now, unforgettable memory later.',
 ];
 export const TONIGHT_SUGGESTION_TEASERS = createLocalizedArrayProxy<string>({
-  en: _TONIGHT_SUGGESTION_TEASERS_EN, es: TONIGHT_SUGGESTION_TEASERS_ES, pt: TONIGHT_SUGGESTION_TEASERS_PT,
+  en: _TONIGHT_SUGGESTION_TEASERS_EN, es: TONIGHT_SUGGESTION_TEASERS_ES, pt: TONIGHT_SUGGESTION_TEASERS_PT, hi: TONIGHT_SUGGESTION_TEASERS_HI,
 });
 
 const _LEVEL_MOTIVATOR_LINES_EN: string[] = [
@@ -130,7 +139,7 @@ const _LEVEL_MOTIVATOR_LINES_EN: string[] = [
   'You are not just leveling up the app. You are leveling up us.',
 ];
 export const LEVEL_MOTIVATOR_LINES = createLocalizedArrayProxy<string>({
-  en: _LEVEL_MOTIVATOR_LINES_EN, es: LEVEL_MOTIVATOR_LINES_ES, pt: LEVEL_MOTIVATOR_LINES_PT,
+  en: _LEVEL_MOTIVATOR_LINES_EN, es: LEVEL_MOTIVATOR_LINES_ES, pt: LEVEL_MOTIVATOR_LINES_PT, hi: LEVEL_MOTIVATOR_LINES_HI,
 });
 
 const _SEASONAL_HOME_SPARK_MESSAGES_EN: Record<string, Array<{ headline: string; body: string }>> = {
@@ -138,57 +147,58 @@ const _SEASONAL_HOME_SPARK_MESSAGES_EN: Record<string, Array<{ headline: string;
     { headline: 'Valentine energy, all month long \u{1F495}', body: 'Extra eye contact, extra kisses, extra playful trouble tonight.' },
     { headline: 'Love notes are welcome here \u{1F339}', body: 'Keep it sweet, flirty, and a little bolder than usual.' },
   ],
-  spring: [
-    { headline: 'Spring is your reset button \u{1F338}', body: 'Fresh mood, fresh energy, fresh stories to create together.' },
-    { headline: 'New season, new sparks \u{1F33F}', body: 'Try one new thing tonight and let curiosity lead.' },
+  newyear_reset: [
+    { headline: 'New year, fresh spark \u{1F386}', body: 'A soft reset, one bold kiss, and a plan that feels fun again.' },
+    { headline: 'Turn your intentions into chemistry \u2728', body: 'A tiny ritual tonight can shape the whole month.' },
   ],
-  summer: [
-    { headline: 'Hot summer nights unlocked \u2600\uFE0F', body: 'Playful challenges, spontaneous vibes, and zero overthinking.' },
-    { headline: 'Bring the heat, keep it fun \u{1F379}', body: 'Adventure mode is on. Pick a dare and go.' },
+  spring_break: [
+    { headline: 'Spring break energy, but make it intimate \u{1F338}', body: 'Fresh mood, playful plans, and a little extra curiosity tonight.' },
+    { headline: 'A reset season for chemistry \u{1F33F}', body: 'Try something new without making it complicated.' },
   ],
-  fall: [
-    { headline: 'Cozy season, closer connection \u{1F342}', body: 'Slow down, warm up, and keep the playful tension alive.' },
-    { headline: 'Autumn nights, softer lights \u{1F56F}\uFE0F', body: 'Comfort plus chemistry is a very good combo.' },
+  summer_escape: [
+    { headline: 'Escape mode: on \u2600\uFE0F', body: 'Less routine, more chemistry, and a night that feels a little like a getaway.' },
+    { headline: 'Bring the heat, keep it easy \u{1F379}', body: 'One playful challenge can set the whole tone.' },
   ],
-  winter: [
-    { headline: 'Winter warmth starts here \u2744\uFE0F', body: 'Blankets, body heat, and zero excuses.' },
-    { headline: 'Cold outside, spark inside \u{1F525}', body: 'Make tonight feel like your favorite secret.' },
+  halloween_nights: [
+    { headline: 'A little mystery looks good on you \u{1F383}', body: 'Tonight works best when it is playful, confident, and a touch theatrical.' },
+    { headline: 'Costume energy, real chemistry \u{1F319}', body: 'Keep the mood daring, not overplanned.' },
   ],
-  newyear: [
-    { headline: 'New year, same love, bolder play \u{1F386}', body: 'Set one playful intention and make it happen tonight.' },
-    { headline: 'Fresh chapter energy \u2728', body: 'Small shared rituals now, big relationship momentum later.' },
+  holiday_season: [
+    { headline: 'Holiday season, softer lights, closer bodies \u{1F56F}\uFE0F', body: 'Blankets, warmth, and a reason to stay in just a little longer.' },
+    { headline: 'End the year feeling closer \u{1F525}', body: 'Comfort and chemistry make a very good winter pairing.' },
   ],
 };
 export const SEASONAL_HOME_SPARK_MESSAGES = createLocalizedRecordProxy<Record<string, Array<{ headline: string; body: string }>>>({
-  en: _SEASONAL_HOME_SPARK_MESSAGES_EN, es: SEASONAL_HOME_SPARK_MESSAGES_ES, pt: SEASONAL_HOME_SPARK_MESSAGES_PT,
+  en: _SEASONAL_HOME_SPARK_MESSAGES_EN, es: SEASONAL_HOME_SPARK_MESSAGES_ES, pt: SEASONAL_HOME_SPARK_MESSAGES_PT, hi: SEASONAL_HOME_SPARK_MESSAGES_HI,
 });
 
 const _SEASONAL_TONIGHT_TEASERS_EN: Record<string, string[]> = {
+  newyear_reset: ['Fresh chapter, bold kiss, and a softer way to begin again.'],
   valentines: ['Romantic and playful with just the right amount of heat.'],
-  spring: ['Fresh-energy date night: soft start, bold finish.'],
-  summer: ['Spontaneous and spicy, with zero pressure.'],
-  fall: ['Cozy, close, and impossible to rush.'],
-  winter: ['Warm up slowly and stay close longer.'],
-  newyear: ['Try one new thing and call it your lucky ritual.'],
+  spring_break: ['Fresh energy, easier laughter, and a night that feels newly yours.'],
+  summer_escape: ['Spontaneous, warm, and a little more adventurous than usual.'],
+  halloween_nights: ['A little mystery, a little dare, and a lot of chemistry.'],
+  holiday_season: ['Slow, cozy, and built for staying close longer.'],
 };
 export const SEASONAL_TONIGHT_TEASERS = createLocalizedRecordProxy<Record<string, string[]>>({
-  en: _SEASONAL_TONIGHT_TEASERS_EN, es: SEASONAL_TONIGHT_TEASERS_ES, pt: SEASONAL_TONIGHT_TEASERS_PT,
+  en: _SEASONAL_TONIGHT_TEASERS_EN, es: SEASONAL_TONIGHT_TEASERS_ES, pt: SEASONAL_TONIGHT_TEASERS_PT, hi: SEASONAL_TONIGHT_TEASERS_HI,
 });
 
 const _SEASONAL_HOOK_LINES_EN: Record<string, string[]> = {
+  newyear_reset: ['Fresh starts and daring first moves.'],
   valentines: ['Valentine vibe: extra eye contact, extra kisses, extra trouble.'],
-  spring: ['Fresh beginnings and playful experiments await.'],
-  summer: ['Longer nights, bolder choices, more laughter.'],
-  fall: ['Comfort meets chemistry in every cozy moment.'],
-  winter: ['Blankets + body heat + playful intent = winter perfection.'],
-  newyear: ['Fresh starts and daring first moves.'],
+  spring_break: ['Fresh beginnings and playful experiments await.'],
+  summer_escape: ['Longer nights, bolder choices, more laughter.'],
+  halloween_nights: ['Mystery, confidence, and playful tension set the tone.'],
+  holiday_season: ['Blankets + body heat + playful intent = winter perfection.'],
 };
 export const SEASONAL_HOOK_LINES = createLocalizedRecordProxy<Record<string, string[]>>({
-  en: _SEASONAL_HOOK_LINES_EN, es: SEASONAL_HOOK_LINES_ES, pt: SEASONAL_HOOK_LINES_PT,
+  en: _SEASONAL_HOOK_LINES_EN, es: SEASONAL_HOOK_LINES_ES, pt: SEASONAL_HOOK_LINES_PT, hi: SEASONAL_HOOK_LINES_HI,
 });
 
 export const COUPLE_PROMPTS = createLocalizedArrayProxy<{ emoji: string; text: string }>({
   en: _COUPLE_PROMPTS_EN,
   es: COUPLE_PROMPTS_ES,
   pt: COUPLE_PROMPTS_PT,
+  hi: COUPLE_PROMPTS_HI,
 });
