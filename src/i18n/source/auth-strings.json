@@ -51,11 +51,11 @@
         "title": "Blisse में आपका स्वागत है",
         "subtitle": "आज रात की सबसे प्यारी कहानी यहीं से शुरू होती है",
         "tagline": "Tammy और Mark की ओर से, उन जोड़ों के लिए जो अब भी खुलकर फ़्लर्ट करते हैं।",
-        "teaser": "खेल-खेल में जुड़ने वाली ideas, flirty games और रोज़ की छोटी sparks, ताकि व्यस्त दिनों में भी closeness बनी रहे।",
+        "teaser": "चुलबुले सुझाव, शरारती खेल और रोज़ की छोटी चिंगारियाँ, ताकि व्यस्त दिनों में भी अपनापन बना रहे।",
         "getStarted": "शुरू करें",
         "alreadyHaveAccount": "मेरा साथी पहले से यहाँ है।",
         "signIn": "साइन इन",
-        "teaserCardTitle": "आज की playful tease",
+        "teaserCardTitle": "आज की चुलबुली छेड़छाड़",
         "teaserCardHint": "अंदर जाने से पहले एक मुस्कान से शुरुआत करें।",
         "teaserReveal": "जवाब देखने के लिए टैप करें",
         "teaserHide": "जवाब छिपाएँ"
@@ -115,8 +115,8 @@
       },
       "hi": {
         "title": "अपना खाता बनाएँ",
-        "subtitle": "हज़ारों जोड़ों के साथ गहरी connection की ओर बढ़ें",
-        "teaser": "एक मिनट से भी कम समय में ऐसी personalized ideas पाएँ जो आपके mood और preferences पर फिट बैठें।",
+        "subtitle": "हज़ारों जोड़ों के साथ और गहरे जुड़ाव की ओर बढ़ें",
+        "teaser": "एक मिनट से भी कम समय में ऐसे निजी सुझाव पाएँ जो आपके मूड और पसंद के मुताबिक हों।",
         "email": "ईमेल",
         "emailPlaceholder": "your@email.com",
         "password": "पासवर्ड",
@@ -179,9 +179,9 @@
       },
       "hi": {
         "title": "वापसी पर स्वागत है",
-        "subtitle": "अपनी journey जारी रखने के लिए साइन इन करें",
-        "teaser": "आज रात की spark आपका इंतज़ार कर रही है। वहीं से शुरू करें जहाँ आप रुके थे।",
-        "personalNote": "Tammy और Mark की ओर से, प्यार से बनाया गया — 20 साल से शादीशुदा, और अब भी flirt करते हुए।",
+        "subtitle": "अपनी कहानी आगे बढ़ाने के लिए साइन इन करें",
+        "teaser": "आज रात की चिंगारी आपका इंतज़ार कर रही है। वहीं से आगे बढ़ें जहाँ आप रुके थे।",
+        "personalNote": "Tammy और Mark की ओर से, प्यार से बनाया गया — 20 साल से साथ हैं और आज भी खुलकर इश्क़ करते हैं।",
         "email": "ईमेल",
         "emailPlaceholder": "your@email.com",
         "password": "पासवर्ड",
@@ -241,7 +241,7 @@
         "termsOfService": "सेवा की शर्तों से",
         "and": "और",
         "privacyPolicy": "गोपनीयता नीति से",
-        "dataConsent": "मैं समझता/समझती हूँ कि Blisse मेरी experience को personalize करने के लिए डेटा उपयोग करता है, जैसा कि privacy policy में बताया गया है।",
+        "dataConsent": "मैं समझता/समझती हूँ कि Blisse मेरे अनुभव को मेरे लिए बेहतर बनाने के लिए डेटा का उपयोग करता है, जैसा कि गोपनीयता नीति में बताया गया है।",
         "continue": "जारी रखें",
         "mustAcceptAll": "कृपया आगे बढ़ने के लिए सभी बिंदु स्वीकार करें",
         "ageWarning": "यह ऐप केवल 18 वर्ष और उससे अधिक आयु के वयस्कों के लिए है"
@@ -310,7 +310,7 @@
       },
       "hi": {
         "title": "अपने बारे में थोड़ा बताएँ",
-        "subtitle": "इससे हम आपकी experience को बेहतर ढंग से personalize कर पाएँगे",
+        "subtitle": "इससे हम आपका अनुभव आपके लिए और बेहतर बना पाएँगे",
         "relationshipType": "रिश्ते का प्रकार",
         "relationshipOptions": {
           "hetero": "पुरुष और महिला",
@@ -401,21 +401,21 @@
       },
       "hi": {
         "title": "आपकी पसंद",
-        "subtitle": "जो बातें सबसे ज़्यादा आपके काम की लगें, उन्हें चुनें",
-        "preferencesLabel": "आप किस तरह की चीज़ें explore करना चाहते हैं?",
+        "subtitle": "जो बातें आपको सबसे ज़्यादा अपनी लगें, उन्हें चुनें",
+        "preferencesLabel": "आप किस तरह की चीज़ें आज़माना चाहते हैं?",
         "preferences": {
-          "deepConnection": "और गहरी भावनात्मक connection",
-          "spiceThingsUp": "रिश्ते में नई spark लाना",
-          "newPositions": "नई positions आज़माना",
-          "foreplayIdeas": "foreplay और anticipation",
-          "quickies": "छोटे intimate moments",
-          "extendedSessions": "धीमे और लंबे sessions",
-          "communication": "बेहतर communication",
-          "adventurous": "थोड़ी और adventurous experiences"
+          "deepConnection": "और गहरा भावनात्मक जुड़ाव",
+          "spiceThingsUp": "रिश्ते में नई चिंगारी लाना",
+          "newPositions": "नई मुद्राएँ आज़माना",
+          "foreplayIdeas": "पूर्वरंग और प्रतीक्षा का रोमांच",
+          "quickies": "छोटे, अंतरंग पल",
+          "extendedSessions": "धीमे और लंबे अंतरंग पल",
+          "communication": "बेहतर बातचीत",
+          "adventurous": "थोड़ा और रोमांचक अनुभव"
         },
-        "experienceLevel": "आप अपने experience level को कैसे बताएँगे?",
+        "experienceLevel": "आप अपने अनुभव के स्तर को कैसे बताएँगे?",
         "experienceLevels": {
-          "beginner": "अभी-अभी explore करना शुरू किया है",
+          "beginner": "अभी-अभी शुरुआत की है",
           "intermediate": "आरामदायक हैं, पर जिज्ञासा बाकी है",
           "advanced": "काफ़ी अनुभवी"
         },
@@ -545,8 +545,8 @@
         "finish": "Vamos Começar"
       },
       "hi": {
-        "title": "आज आपको किस vibe की ओर खिंचाव है?",
-        "subtitle": "जो moods आपसे सबसे ज़्यादा resonate करते हैं, उन्हें चुनें",
+        "title": "आज आपका मन किस माहौल की ओर खिंचता है?",
+        "subtitle": "वे मनःस्थितियाँ चुनें जो आपको सबसे ज़्यादा अपनी लगती हैं",
         "moods": {
           "flowing": {
             "name": "बहाव",
@@ -558,27 +558,27 @@
           },
           "playful": {
             "name": "चंचल",
-            "description": "मज़ेदार, हल्का, spontaneous"
+            "description": "मज़ेदार, हल्का और सहज"
           },
           "unified": {
             "name": "एकसाथ",
-            "description": "गहरी connection, दो लोग एक rhythm में"
+            "description": "गहरा जुड़ाव, दो लोग एक ही लय में"
           },
           "commanding": {
-            "name": "lead वाला",
-            "description": "control लेना या देना"
+            "name": "नेतृत्वपूर्ण",
+            "description": "नियंत्रण लेना या सौंपना"
           },
           "blossoming": {
             "name": "खिलता हुआ",
-            "description": "कोमल, खुलता हुआ, vulnerable"
+            "description": "कोमल, खुलता हुआ, संवेदनशील"
           },
           "dynamic": {
             "name": "ऊर्जावान",
-            "description": "active, energetic, lively"
+            "description": "सक्रिय, तेज़ और जीवंत"
           },
           "grounded": {
             "name": "स्थिर",
-            "description": "present, calm, secure"
+            "description": "मौजूद, शांत और सुरक्षित"
           }
         },
         "skip": "अभी छोड़ें",
@@ -609,9 +609,9 @@
       },
       "hi": {
         "title": "सब तैयार है!",
-        "subtitle": "अब आपकी personalized experience आपका इंतज़ार कर रही है",
-        "message": "आपकी preferences के आधार पर हम positions, activities और ideas सुझाएँगे जो आप दोनों पर बेहतर फिट बैठें।",
-        "tip": "आप अपनी preferences बाद में Settings में कभी भी बदल सकते हैं",
+        "subtitle": "अब आपका निजी अनुभव आपका इंतज़ार कर रहा है",
+        "message": "आपकी पसंद के आधार पर हम ऐसी मुद्राएँ, गतिविधियाँ और सुझाव देंगे जो आप दोनों के लिए सही बैठें।",
+        "tip": "आप अपनी पसंद बाद में सेटिंग्स में कभी भी बदल सकते हैं",
         "enterApp": "Blisse में जाएँ"
       }
     },
