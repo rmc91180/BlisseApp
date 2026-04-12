@@ -1,4 +1,4 @@
-import { AppLanguage } from '@/i18n/translations';
+﻿import { AppLanguage } from '@/i18n/translations';
 
 export interface LegalSection {
   heading: string;
@@ -54,7 +54,7 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '5. Subscriptions, Trials, Billing, and Cancellation',
-        body: 'Some Blisse features require a paid subscription or one-time purchase. Pricing, billing period, and trial terms are shown in the App before purchase. Auto-renewable subscriptions renew automatically unless cancelled at least 24 hours before the end of the current billing period. Payment is charged through your Apple ID account after purchase confirmation. You can manage or cancel subscriptions in your App Store account settings. Free trial periods, if offered, automatically convert to the paid subscription unless cancelled before the trial ends. If you cancel a monthly subscription, access continues until the end of the then-current monthly billing period. If you cancel an annual subscription, access continues until the end of the then-current annual billing period. If you voluntarily close or terminate a lifetime-access account, access continues until the end of the then-current calendar year unless deletion must occur sooner because you request erasure under applicable law. Except where required by law or the App Store rules, purchases are non-refundable and we do not provide credits for unused time.',
+        body: 'Some Blisse features require a paid subscription or one-time purchase. Pricing, billing period, and trial terms are shown in the App before purchase. Auto-renewable subscriptions renew automatically unless cancelled at least 24 hours before the end of the current billing period. Payment is charged through your Apple ID account or Google Play account, as applicable, after purchase confirmation. You can manage or cancel subscriptions in your App Store or Google Play account settings, as applicable. Free trial periods, if offered, automatically convert to the paid subscription unless cancelled before the trial ends. If you cancel a monthly subscription, access continues until the end of the then-current monthly billing period. If you cancel an annual subscription, access continues until the end of the then-current annual billing period. If you voluntarily close or terminate a lifetime-access account, access continues until the end of the then-current calendar year unless deletion must occur sooner because you request erasure under applicable law. Except where required by law or the rules of the platform through which you made your purchase, purchases are non-refundable and we do not provide credits for unused time.',
       },
       {
         heading: '6. User Conduct and Consent',
@@ -66,7 +66,7 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '8. Third-Party Services and Platform Terms',
-        body: 'The App may integrate or interact with third-party services such as Apple Sign-In, Firebase, PostHog, Formspree, RevenueCat, or the App Store. Those services are governed by their own terms and privacy policies. Blisse is not responsible for third-party services, payment processors, app stores, networks, or devices.',
+        body: 'The App may integrate or interact with third-party services such as Apple Sign-In, Google Sign-In, Firebase, PostHog, Formspree, RevenueCat, the App Store, or Google Play. Those services are governed by their own terms and privacy policies. Blisse is not responsible for third-party services, payment processors, app stores, networks, or devices.',
       },
       {
         heading: '9. Intellectual Property',
@@ -74,19 +74,19 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '10. Maintenance, Support, Service Changes, and Discontinuation',
-        body: 'Blisse may update, change, suspend, or discontinue features at any time. We may also decide to discontinue the App or subscription services entirely. If we do so, we may stop future renewals, stop offering new purchases, and terminate service availability upon commercially reasonable advance notice where practicable, including through the App, by email, or via App Store Connect metadata. If the App or service is discontinued, access ends when the service shuts down, including for lifetime access, and no refunds, credits, or prorated reimbursements will be issued except where required by applicable law or App Store rules. To the extent the App is distributed through Apple, you acknowledge that Blisse, and not Apple, is solely responsible for providing any maintenance and support for the App, if any. Apple has no obligation to furnish maintenance or support services for the App.',
+        body: 'Blisse may update, change, suspend, or discontinue features at any time. We may also decide to discontinue the App or subscription services entirely. If we do so, we may stop future renewals, stop offering new purchases, and terminate service availability upon commercially reasonable advance notice where practicable, including through the App, by email, or via App Store Connect or Google Play listing metadata. If the App or service is discontinued, access ends when the service shuts down, including for lifetime access, and no refunds, credits, or prorated reimbursements will be issued except where required by applicable law or the rules of the platform through which you made your purchase. To the extent the App is distributed through Apple, you acknowledge that Blisse, and not Apple, is solely responsible for providing any maintenance and support for the App, if any. Apple has no obligation to furnish maintenance or support services for the App. If the App is distributed through Google Play, purchases, billing, cancellation, refunds, and subscription management are also subject to the applicable Google Play terms and policies.',
       },
       {
-        heading: '11. Warranty Disclaimer and Apple-Specific Warranty Notice',
-        body: 'THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT, AND NON-INFRINGEMENT, TO THE MAXIMUM EXTENT PERMITTED BY LAW. If the App fails to conform to any applicable warranty and you obtained it through Apple, you may notify Apple, and Apple may refund the purchase price, if any, paid for the App. To the maximum extent permitted by law, Apple has no other warranty obligation with respect to the App, and any other claims, losses, liabilities, damages, costs, or expenses attributable to any failure to conform to a warranty are Blisse’s responsibility, if any, under applicable law.',
+        heading: '11. Warranty Disclaimer and Platform-Specific Warranty Notice',
+        body: 'THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT, AND NON-INFRINGEMENT, TO THE MAXIMUM EXTENT PERMITTED BY LAW. If the App fails to conform to any applicable warranty and you obtained it through Apple, you may notify Apple, and Apple may refund the purchase price, if any, paid for the App. To the maximum extent permitted by law, Apple has no other warranty obligation with respect to the App, and any other claims, losses, liabilities, damages, costs, or expenses attributable to any failure to conform to a warranty are Blisse’s responsibility, if any, under applicable law. If you obtained the App or a subscription through Google Play, any refunds, billing reversals, or purchase disputes are handled subject to the applicable Google Play terms, Google Play refund policies, and applicable law.',
       },
       {
-        heading: '12. Product Claims and Apple Responsibility',
-        body: 'Blisse, and not Apple, is responsible for addressing any claims by you or any third party relating to the App or your possession or use of the App, including product liability claims, claims that the App fails to conform to legal or regulatory requirements, and claims arising under consumer protection, privacy, or similar laws.',
+        heading: '12. Product Claims and Platform Responsibility Allocation',
+        body: 'Blisse, and not Apple, is responsible for addressing any claims by you or any third party relating to the App or your possession or use of the App, including product liability claims, claims that the App fails to conform to legal or regulatory requirements, and claims arising under consumer protection, privacy, or similar laws. If you obtained the App through Apple, Apple has no responsibility for such claims. Purchases made through Google Play remain subject to the applicable Google Play distribution, billing, and consumer terms.',
       },
       {
         heading: '13. Intellectual Property Claims',
-        body: 'Blisse, and not Apple, is responsible for the investigation, defense, settlement, and discharge of any third-party claim that the App or your possession and use of the App infringes that third party’s intellectual property rights.',
+        body: 'Blisse, and not Apple, is responsible for the investigation, defense, settlement, and discharge of any third-party claim that the App or your possession and use of the App infringes that third party’s intellectual property rights. If you obtained the App through Apple, Apple has no responsibility for such claims.',
       },
       {
         heading: '14. Legal Compliance and Export',
@@ -105,8 +105,8 @@ const EN_CONTENT: LegalLocaleContent = {
         body: 'These Terms are governed by the laws of the State of Israel, without regard to conflict of laws rules. Any dispute arising out of or relating to these Terms or the App shall be subject to the exclusive jurisdiction of the competent courts in Tel Aviv, Israel, subject to any mandatory consumer protection rights that may apply under non-waivable law.',
       },
       {
-        heading: '18. Apple Third-Party Beneficiary and Contact',
-        body: 'If you obtained the App through Apple, Apple and Apple’s subsidiaries are third-party beneficiaries of these Terms and may enforce them against you. If you have questions about these Terms, contact us at legal@blisse.online. If you require our legal entity name or mailing address for a regulatory or contractual purpose, contact us and we will provide the applicable details.',
+        heading: '18. Platform-Specific Beneficiary and Contact',
+        body: 'If you obtained the App through Apple, Apple and Apple’s subsidiaries are third-party beneficiaries of these Terms and may enforce them against you. If you obtained the App through Google Play, your purchase and subscription administration are also subject to the applicable Google Play terms and policies. If you have questions about these Terms, contact us at blisse.online@gmail.com. If you require our legal entity name or mailing address for a regulatory or contractual purpose, contact us and we will provide the applicable details.',
       },
     ],
   },
@@ -165,7 +165,7 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Contact Us',
-        body: 'Questions about privacy? Contact us at: privacy@blisse.online',
+        body: 'Questions about privacy? Contact us at: blisse.online@gmail.com',
       },
     ],
   },
@@ -250,16 +250,16 @@ const ES_CONTENT: LegalLocaleContent = {
         body: 'Blisse puede actualizar, cambiar, suspender o interrumpir funciones en cualquier momento. También podemos decidir descontinuar por completo la App o los servicios de suscripción. Si lo hacemos, podremos detener futuras renovaciones, dejar de ofrecer nuevas compras y terminar la disponibilidad del servicio con un aviso previo comercialmente razonable cuando sea practicable, incluso mediante la App, por correo electrónico o a través de App Store Connect. Si la App o el servicio se descontinúan, el acceso finalizará cuando el servicio se apague, incluso para el acceso de por vida, y no se emitirán reembolsos, créditos ni devoluciones prorrateadas salvo cuando la ley aplicable o las reglas de la App Store exijan lo contrario. En la medida en que la App se distribuya a través de Apple, reconoces que Blisse, y no Apple, es la única responsable de prestar mantenimiento y soporte respecto de la App, si existiera tal soporte. Apple no tiene obligación alguna de prestar mantenimiento ni soporte para la App.',
       },
       {
-        heading: '11. Exclusión de garantías y aviso específico sobre Apple',
-        body: 'LA APP SE PROPORCIONA "TAL CUAL" Y "SEGÚN DISPONIBILIDAD", SIN GARANTÍAS DE NINGÚN TIPO, EXPRESAS, IMPLÍCITAS O LEGALES, INCLUIDAS LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN PARTICULAR, DISFRUTE PACÍFICO Y NO INFRACCIÓN, EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY. Si la App no se ajusta a una garantía aplicable y la obtuviste a través de Apple, puedes notificarlo a Apple y Apple podrá reembolsar el precio de compra, si lo hubiera, pagado por la App. En la máxima medida permitida por la ley, Apple no tendrá ninguna otra obligación de garantía respecto de la App, y cualquier otra reclamación, pérdida, responsabilidad, daño, coste o gasto atribuible al incumplimiento de una garantía será responsabilidad de Blisse, en su caso, según la ley aplicable.',
+        heading: '11. Exclusión de garantías y aviso específico por plataforma',
+        body: 'LA APP SE PROPORCIONA "TAL CUAL" Y "SEGÚN DISPONIBILIDAD", SIN GARANTÍAS DE NINGÚN TIPO, EXPRESAS, IMPLÍCITAS O LEGALES, INCLUIDAS LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN PARTICULAR, DISFRUTE PACÍFICO Y NO INFRACCIÓN, EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY. Si la App no se ajusta a una garantía aplicable y la obtuviste a través de Apple, puedes notificarlo a Apple y Apple podrá reembolsar el precio de compra, si lo hubiera, pagado por la App. En la máxima medida permitida por la ley, Apple no tendrá ninguna otra obligación de garantía respecto de la App, y cualquier otra reclamación, pérdida, responsabilidad, daño, coste o gasto atribuible al incumplimiento de una garantía será responsabilidad de Blisse, en su caso, según la ley aplicable. Si obtuviste la App o una suscripción a través de Google Play, cualquier reembolso, reversión de cobro o disputa de compra se tramitará conforme a los términos aplicables de Google Play, sus políticas de reembolso y la ley aplicable.',
       },
       {
-        heading: '12. Reclamaciones sobre el producto y responsabilidad de Apple',
-        body: 'Blisse, y no Apple, es responsable de atender cualquier reclamación tuya o de terceros relacionada con la App o con tu posesión o uso de la App, incluidas reclamaciones por responsabilidad del producto, por incumplimiento de requisitos legales o regulatorios y por obligaciones derivadas de normas de consumo, privacidad u otras similares.',
+        heading: '12. Reclamaciones sobre el producto y asignación de responsabilidad por plataforma',
+        body: 'Blisse, y no Apple, es responsable de atender cualquier reclamación tuya o de terceros relacionada con la App o con tu posesión o uso de la App, incluidas reclamaciones por responsabilidad del producto, por incumplimiento de requisitos legales o regulatorios y por obligaciones derivadas de normas de consumo, privacidad u otras similares. Si obtuviste la App a través de Apple, Apple no tiene responsabilidad por dichas reclamaciones. Las compras realizadas a través de Google Play siguen sujetas a los términos aplicables de distribución, facturación y consumo de Google Play.',
       },
       {
         heading: '13. Reclamaciones por propiedad intelectual',
-        body: 'Blisse, y no Apple, es responsable de investigar, defender, resolver y extinguir cualquier reclamación de terceros por la que se alegue que la App o tu posesión y uso de la App infringe derechos de propiedad intelectual de terceros.',
+        body: 'Blisse, y no Apple, es responsable de investigar, defender, resolver y extinguir cualquier reclamación de terceros por la que se alegue que la App o tu posesión y uso de la App infringe derechos de propiedad intelectual de terceros. Si obtuviste la App a través de Apple, Apple no tiene responsabilidad por dichas reclamaciones.',
       },
       {
         heading: '14. Cumplimiento legal y controles de exportación',
@@ -278,8 +278,8 @@ const ES_CONTENT: LegalLocaleContent = {
         body: 'Estos Términos se rigen por las leyes del Estado de Israel, sin aplicar reglas sobre conflicto de leyes. Cualquier controversia que surja de o en relación con estos Términos o con la App quedará sometida a la jurisdicción exclusiva de los tribunales competentes de Tel Aviv, Israel, sin perjuicio de los derechos imperativos de protección al consumidor que pudieran resultar aplicables conforme a una ley no renunciable.',
       },
       {
-        heading: '18. Apple como tercero beneficiario y contacto',
-        body: 'Si obtuviste la App a través de Apple, Apple y sus filiales son terceros beneficiarios de estos Términos y podrán hacerlos valer frente a ti. Si tienes preguntas sobre estos Términos, escríbenos a legal@blisse.online. Si necesitas el nombre legal de la entidad o la dirección postal por motivos regulatorios o contractuales, contáctanos y te proporcionaremos los datos aplicables.',
+        heading: '18. Beneficiario por plataforma y contacto',
+        body: 'Si obtuviste la App a través de Apple, Apple y sus filiales son terceros beneficiarios de estos Términos y podrán hacerlos valer frente a ti. Si obtuviste la App a través de Google Play, tu compra y la administración de tu suscripción también están sujetas a los términos y políticas aplicables de Google Play. Si tienes preguntas sobre estos Términos, escríbenos a blisse.online@gmail.com. Si necesitas el nombre legal de la entidad o la dirección postal por motivos regulatorios o contractuales, contáctanos y te proporcionaremos los datos aplicables.',
       },
     ],
   },
@@ -338,7 +338,7 @@ const ES_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Contacto',
-        body: 'Preguntas sobre privacidad: privacy@blisse.online',
+        body: 'Preguntas sobre privacidad: blisse.online@gmail.com',
       },
     ],
   },
@@ -423,16 +423,16 @@ const PT_CONTENT: LegalLocaleContent = {
         body: 'A Blisse pode atualizar, alterar, suspender ou descontinuar funcionalidades a qualquer momento. Também podemos decidir descontinuar totalmente o App ou os serviços de assinatura. Se isso acontecer, poderemos interromper futuras renovações, deixar de oferecer novas compras e encerrar a disponibilidade do serviço mediante aviso prévio comercialmente razoável, quando praticável, inclusive por meio do App, por e-mail ou via App Store Connect. Se o App ou o serviço forem descontinuados, o acesso terminará quando o serviço for encerrado, inclusive para o acesso vitalício, e não haverá reembolsos, créditos ou devoluções proporcionais, salvo quando a lei aplicável ou as regras da App Store exigirem o contrário. Na medida em que o App seja distribuído pela Apple, você reconhece que a Blisse, e não a Apple, é a única responsável por fornecer manutenção e suporte ao App, se houver tal suporte. A Apple não tem obrigação de fornecer manutenção ou suporte ao App.',
       },
       {
-        heading: '11. Isenção de garantias e aviso específico da Apple',
-        body: 'O APP É FORNECIDO "COMO ESTÁ" E "CONFORME DISPONÍVEL", SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS, IMPLÍCITAS OU LEGAIS, INCLUINDO GARANTIAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM FIM ESPECÍFICO, USO PACÍFICO E NÃO VIOLAÇÃO, NA MAIOR EXTENSÃO PERMITIDA POR LEI. Se o App deixar de atender a uma garantia aplicável e você o tiver obtido pela Apple, você poderá notificar a Apple, e a Apple poderá reembolsar o preço de compra, se houver, pago pelo App. Na maior extensão permitida por lei, a Apple não terá qualquer outra obrigação de garantia em relação ao App, e quaisquer outras reivindicações, perdas, responsabilidades, danos, custos ou despesas atribuíveis a eventual falha de conformidade com garantia serão de responsabilidade da Blisse, se houver, nos termos da lei aplicável.',
+        heading: '11. Isenção de garantias e aviso específico por plataforma',
+        body: 'O APP É FORNECIDO "COMO ESTÁ" E "CONFORME DISPONÍVEL", SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS, IMPLÍCITAS OU LEGAIS, INCLUINDO GARANTIAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM FIM ESPECÍFICO, USO PACÍFICO E NÃO VIOLAÇÃO, NA MAIOR EXTENSÃO PERMITIDA POR LEI. Se o App deixar de atender a uma garantia aplicável e você o tiver obtido pela Apple, você poderá notificar a Apple, e a Apple poderá reembolsar o preço de compra, se houver, pago pelo App. Na maior extensão permitida por lei, a Apple não terá qualquer outra obrigação de garantia em relação ao App, e quaisquer outras reivindicações, perdas, responsabilidades, danos, custos ou despesas atribuíveis a eventual falha de conformidade com garantia serão de responsabilidade da Blisse, se houver, nos termos da lei aplicável. Se você obteve o App ou uma assinatura pelo Google Play, quaisquer reembolsos, estornos ou disputas de compra serão tratados de acordo com os termos aplicáveis do Google Play, suas políticas de reembolso e a lei aplicável.',
       },
       {
-        heading: '12. Reclamações sobre o produto e responsabilidade da Apple',
-        body: 'A Blisse, e não a Apple, é responsável por tratar quaisquer reclamações feitas por você ou por terceiros relacionadas ao App ou à sua posse e uso do App, incluindo reclamações por responsabilidade do produto, por não conformidade com requisitos legais ou regulatórios e por obrigações decorrentes de normas de defesa do consumidor, privacidade ou semelhantes.',
+        heading: '12. Reclamações sobre o produto e alocação de responsabilidade por plataforma',
+        body: 'A Blisse, e não a Apple, é responsável por tratar quaisquer reclamações feitas por você ou por terceiros relacionadas ao App ou à sua posse e uso do App, incluindo reclamações por responsabilidade do produto, por não conformidade com requisitos legais ou regulatórios e por obrigações decorrentes de normas de defesa do consumidor, privacidade ou semelhantes. Se você obteve o App pela Apple, a Apple não tem responsabilidade por tais reclamações. Compras realizadas pelo Google Play permanecem sujeitas aos termos aplicáveis de distribuição, cobrança e consumo do Google Play.',
       },
       {
         heading: '13. Reclamações de propriedade intelectual',
-        body: 'A Blisse, e não a Apple, é responsável por investigar, defender, resolver e quitar qualquer reclamação de terceiro alegando que o App ou sua posse e uso do App violam direitos de propriedade intelectual de terceiros.',
+        body: 'A Blisse, e não a Apple, é responsável por investigar, defender, resolver e quitar qualquer reclamação de terceiro alegando que o App ou sua posse e uso do App violam direitos de propriedade intelectual de terceiros. Se você obteve o App pela Apple, a Apple não tem responsabilidade por tais reclamações.',
       },
       {
         heading: '14. Conformidade legal e controles de exportação',
@@ -451,8 +451,8 @@ const PT_CONTENT: LegalLocaleContent = {
         body: 'Estes Termos são regidos pelas leis do Estado de Israel, sem aplicação de regras de conflito de leis. Qualquer controvérsia decorrente ou relacionada a estes Termos ou ao App será submetida à jurisdição exclusiva dos tribunais competentes de Tel Aviv, Israel, sem prejuízo de quaisquer direitos obrigatórios de proteção ao consumidor que possam ser aplicáveis por força de lei irrenunciável.',
       },
       {
-        heading: '18. Apple como terceira beneficiária e contato',
-        body: 'Se você obteve o App pela Apple, a Apple e suas subsidiárias são terceiras beneficiárias destes Termos e poderão fazê-los valer contra você. Se tiver dúvidas sobre estes Termos, escreva para legal@blisse.online. Se você precisar do nome jurídico da entidade ou do endereço postal para finalidade regulatória ou contratual, entre em contato conosco e forneceremos os dados aplicáveis.',
+        heading: '18. Beneficiário por plataforma e contato',
+        body: 'Se você obteve o App pela Apple, a Apple e suas subsidiárias são terceiras beneficiárias destes Termos e poderão fazê-los valer contra você. Se você obteve o App pelo Google Play, sua compra e a administração da sua assinatura também estão sujeitas aos termos e políticas aplicáveis do Google Play. Se tiver dúvidas sobre estes Termos, escreva para blisse.online@gmail.com. Se você precisar do nome jurídico da entidade ou do endereço postal para finalidade regulatória ou contratual, entre em contato conosco e forneceremos os dados aplicáveis.',
       },
     ],
   },
@@ -511,7 +511,7 @@ const PT_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Contato',
-        body: 'Dúvidas sobre privacidade: privacy@blisse.online',
+        body: 'Dúvidas sobre privacidade: blisse.online@gmail.com',
       },
     ],
   },
@@ -559,5 +559,6 @@ const LEGAL_CONTENT: Record<AppLanguage, LegalLocaleContent> = {
 export const getLegalContent = (language: AppLanguage): LegalLocaleContent => {
   return LEGAL_CONTENT[language] || LEGAL_CONTENT.en;
 };
+
 
 
