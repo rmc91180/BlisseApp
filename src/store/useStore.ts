@@ -7,6 +7,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AppLanguage } from '@/i18n/translations';
 import type {
+  Level,
   Note,
   Challenge,
   ActivityLog,
@@ -19,15 +20,26 @@ import type {
 import { savePinToSecureStorage } from '@/services/firebase';
 import {
   SmartLearning,
+  ALL_UNLOCKABLE_FEATURES,
   DEFAULT_PREFERENCES,
+  getLevelUnlockByLevel,
+  getUnlockedFeaturesForLevel,
   getLevel,
   generateWeeklyGoals,
+  type UnlockableFeature,
 } from '@/constants/gamification';
 import { buildExperienceClusterKey, resolveExperienceProfile } from '@/content/experienceProfiles';
 import { detectPlatform, MAX_USER_PLAYLISTS } from '@/content/seasonal';
 import { positions, foreplayIdeas, oralPlayIdeas, massageTechniques, rolePlayScenarios } from '@/content/localizedContent';
 import { moods, categories } from '@/content/positions';
 import { Analytics } from '@/services/analytics';
+
+export interface LevelUpResult {
+  leveledUp: boolean;
+  newLevel: Level;
+  unlockedFeatures: UnlockableFeature[];
+  unlockMessage: string;
+}
 
 export interface UserState {
   name: string;
@@ -58,6 +70,8 @@ export interface UserState {
   currentStreak: number;
   lastActivityDate: string | null;
   dateNightsCompleted: number;
+  unlockedFeatures: UnlockableFeature[];
+  pendingLevelUp: LevelUpResult | null;
   // Weekly Goals
   weeklyGoals: WeeklyGoal[];
   weeklyGoalsStartDate: string | null;
@@ -103,9 +117,15 @@ export interface UserState {
   setChallenge: (challenge: Challenge | null) => void;
   completeChallenge: () => void;
   // Gamification Actions
-  logActivity: (type: 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay' | 'session', itemId?: number) => { stars: number; newAchievements: string[] };
+  logActivity: (
+    type: 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay' | 'session',
+    itemId?: number
+  ) => { stars: number; newAchievements: string[]; levelUp: LevelUpResult };
   completeDateNight: () => { stars: number; newAchievements: string[] };
   checkAndAwardAchievements: () => string[];
+  onLevelUp: (newLevel: Level) => LevelUpResult;
+  clearPendingLevelUp: () => void;
+  grantSubscriberAccess: () => void;
   // Weekly Goals & Daily Login
   refreshWeeklyGoals: () => void;
   updateWeeklyGoalProgress: (type: string, amount?: number) => void;
@@ -165,6 +185,8 @@ export const useStore = create<UserState>()(
       currentStreak: 0,
       lastActivityDate: null,
       dateNightsCompleted: 0,
+      unlockedFeatures: getUnlockedFeaturesForLevel(1),
+      pendingLevelUp: null,
       weeklyGoals: [],
       weeklyGoalsStartDate: null,
       lastLoginDate: null,
@@ -192,6 +214,34 @@ export const useStore = create<UserState>()(
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
       completeTutorial: () => set({ hasSeenTutorial: true }),
       setCurrentMood: (mood) => set({ currentMood: mood }),
+      onLevelUp: (newLevel) => {
+        const state = get();
+        const targetUnlocks = getUnlockedFeaturesForLevel(newLevel.level);
+        const currentUnlocks = state.unlockedFeatures || [];
+        const newlyUnlocked = targetUnlocks.filter((feature) => !currentUnlocks.includes(feature));
+        const levelUnlock = getLevelUnlockByLevel(newLevel.level);
+        const result: LevelUpResult = {
+          leveledUp: true,
+          newLevel,
+          unlockedFeatures: newlyUnlocked,
+          unlockMessage: levelUnlock?.unlockMessage || '',
+        };
+
+        set({
+          unlockedFeatures: Array.from(new Set([...currentUnlocks, ...targetUnlocks])),
+          pendingLevelUp: result,
+        });
+
+        return result;
+      },
+      clearPendingLevelUp: () => set({ pendingLevelUp: null }),
+      grantSubscriberAccess: () => {
+        const state = get();
+        const merged = Array.from(new Set([...state.unlockedFeatures, ...ALL_UNLOCKABLE_FEATURES]));
+        if (merged.length !== state.unlockedFeatures.length) {
+          set({ unlockedFeatures: merged });
+        }
+      },
 
       toggleFavorite: (id) => {
         const favs = get().favorites;
@@ -261,6 +311,7 @@ export const useStore = create<UserState>()(
         const state = get();
         let starsEarned = 1; // Base star for any activity
         const newAchievements: string[] = [];
+        const previousLevel = getLevel(state.totalStars);
         const today = new Date().toISOString().split('T')[0];
         const currentMonth = getCurrentMonth();
 
@@ -389,13 +440,25 @@ export const useStore = create<UserState>()(
           });
         }
 
+        const newTotalStars = state.totalStars + starsEarned;
         set({
-          totalStars: state.totalStars + starsEarned,
+          totalStars: newTotalStars,
           activityLog: [...state.activityLog, logEntry],
           currentStreak: newStreak,
           lastActivityDate: today,
           monthlyStats,
         });
+
+        const reachedLevel = getLevel(newTotalStars);
+        let levelUpResult: LevelUpResult = {
+          leveledUp: false,
+          newLevel: reachedLevel,
+          unlockedFeatures: [],
+          unlockMessage: '',
+        };
+        if (reachedLevel.level > previousLevel.level) {
+          levelUpResult = get().onLevelUp(reachedLevel);
+        }
 
         // Weekly goals should reflect live activity momentum.
         get().updateWeeklyGoalProgress('earn_stars', starsEarned);
@@ -407,7 +470,7 @@ export const useStore = create<UserState>()(
         const achievementResults = get().checkAndAwardAchievements();
         newAchievements.push(...achievementResults);
 
-        return { stars: starsEarned, newAchievements };
+        return { stars: starsEarned, newAchievements, levelUp: levelUpResult };
       },
 
       completeDateNight: () => {
@@ -735,8 +798,9 @@ export const useStore = create<UserState>()(
       name: 'blisse-storage',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => {
-        const { pinCode: removedPinCode, ...persistedState } = state;
+        const { pinCode: removedPinCode, pendingLevelUp: removedLevelUp, ...persistedState } = state;
         void removedPinCode;
+        void removedLevelUp;
         return persistedState;
       },
     }

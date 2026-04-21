@@ -55,7 +55,7 @@ import {
   detectPlatform, getPlatformIcon, getPlatformName,
 } from '@/content/seasonal';
 import {
-  getLevel, getNextLevel, MOOD_PLAYLISTS, ACHIEVEMENTS,
+  getLevel, getNextLevel, getUnlockedFeaturesForLevel, MOOD_PLAYLISTS, ACHIEVEMENTS, type UnlockableFeature,
 } from '@/constants/gamification';
 import { savePinToSecureStorage, loadPinFromSecureStorage } from '@/services/firebase';
 import {
@@ -80,6 +80,7 @@ import { AuthProvider, useAuth } from '@/services/auth';
 import { sound } from '@/services/audio';
 import { SubscriptionProvider } from '@/services/subscription';
 import { DailyBonusModal } from '@/components/DailyBonusModal';
+import { LevelUpModal } from '@/components/LevelUpModal';
 import { SmartSuggestionCard } from '@/components/home/SmartSuggestionCard';
 import { WeeklyGoalsCard } from '@/components/home/WeeklyGoalsCard';
 import { OnboardingPayoffScreen } from '@/screens/onboarding/OnboardingPayoffScreen';
@@ -111,6 +112,16 @@ Notifications.setNotificationHandler({
 
 const { width } = Dimensions.get('window');
 const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
+
+const FEATURE_LOCK_REQUIREMENTS: Record<
+  'starter_pack_collections' | 'truth_or_dare' | 'date_night_generator' | 'seasonal_content',
+  { level: number; stars: number }
+> = {
+  starter_pack_collections: { level: 2, stars: 25 },
+  truth_or_dare: { level: 3, stars: 75 },
+  date_night_generator: { level: 4, stars: 150 },
+  seasonal_content: { level: 5, stars: 300 },
+};
 
 // ============================================
 // HAPTIC FEEDBACK HELPER
@@ -2192,43 +2203,6 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
 }
 
 // ============================================
-// LEVEL UP MODAL
-// ============================================
-function LevelUpModal({ visible, onClose, newLevel }: { visible: boolean; onClose: () => void; newLevel: Level | null }) {
-  const { t, localizeTerm } = useI18n();
-  const [showConfetti, setShowConfetti] = useState(false);
-  
-  useEffect(() => {
-    if (visible && newLevel) {
-      haptic.celebration();
-      sounds.playLevelUp();
-      setShowConfetti(true);
-    } else {
-      setShowConfetti(false);
-    }
-  }, [visible, newLevel]);
-
-  if (!newLevel) return null;
-
-  return (
-    <Modal visible={visible} animationType="fade" transparent>
-      <View style={styles.celebrationOverlay}>
-        <ConfettiCelebration visible={showConfetti} />
-        <View style={styles.levelUpContent}>
-          <Text style={styles.levelUpEmoji}>{newLevel.emoji}</Text>
-          <Text style={styles.levelUpTitle}>{t('level_up.title')}</Text>
-          <Text style={[styles.levelUpNewLevel, { color: newLevel.color }]}>{localizeTerm(newLevel.title)}</Text>
-          <Text style={styles.levelUpSubtitle}>{t('level_up.subtitle', { level: newLevel.level })}</Text>
-          <TouchableOpacity style={styles.celebrationButton} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('level_up.button')}>
-            <Text style={styles.celebrationButtonText}>{t('level_up.button')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-// ============================================
 // MOOD PLAYLISTS MODAL
 // ============================================
 function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
@@ -3606,9 +3580,6 @@ function HomeScreen({
   const [showWeeklyGoals, setShowWeeklyGoals] = useState(false);
   const [showPlaylists, setShowPlaylists] = useState(false);
   const [showRecommendations, setShowRecommendations] = useState(false);
-  const [showLevelUp, setShowLevelUp] = useState(false);
-  const [newLevelData, setNewLevelData] = useState<Level | null>(null);
-  const prevLevelRef = useRef(getLevel(store.totalStars).level);
   const trackedRecommendationImpressionsRef = useRef<Set<string>>(new Set());
   const [showSeasonal, setShowSeasonal] = useState(false);
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
@@ -3630,6 +3601,24 @@ function HomeScreen({
   const progressToNext = nextLevel 
     ? ((store.totalStars - currentLevel.minStars) / (nextLevel.minStars - currentLevel.minStars)) * 100 
     : 100;
+  const unlockedFeatureSet = useMemo(
+    () => new Set<UnlockableFeature>(store.unlockedFeatures || []),
+    [store.unlockedFeatures]
+  );
+  const isFeatureUnlocked = useCallback(
+    (feature: UnlockableFeature) => unlockedFeatureSet.has(feature),
+    [unlockedFeatureSet]
+  );
+  const dateNightUnlocked = isFeatureUnlocked('date_night_generator');
+  const truthOrDareUnlocked = isFeatureUnlocked('truth_or_dare');
+  const seasonalUnlocked = isFeatureUnlocked('seasonal_content');
+  const lockProgressText = useCallback(
+    (feature: keyof typeof FEATURE_LOCK_REQUIREMENTS) => {
+      const requirement = FEATURE_LOCK_REQUIREMENTS[feature];
+      return `Reach Level ${requirement.level} · ${Math.min(store.totalStars, requirement.stars)}/${requirement.stars} ⭐`;
+    },
+    [store.totalStars]
+  );
 
   // Current seasonal theme
   const currentSeason = getCurrentSeason();
@@ -3754,17 +3743,6 @@ function HomeScreen({
     onConsumePendingDailyJokeNotification,
     t,
   ]);
-
-  // Detect level-up when stars change
-  useEffect(() => {
-    const currentLevelNum = getLevel(store.totalStars).level;
-    if (currentLevelNum > prevLevelRef.current) {
-      const newLevel = getLevel(store.totalStars);
-      setNewLevelData(newLevel);
-      setTimeout(() => setShowLevelUp(true), 300);
-    }
-    prevLevelRef.current = currentLevelNum;
-  }, [store.totalStars]);
 
   useEffect(() => {
     introAnim.setValue(0);
@@ -3953,14 +3931,28 @@ function HomeScreen({
         )}
 
         {featureFlags.showSeasonalCard && currentSeason && (
-          <TouchableOpacity style={[styles.seasonalCard, { borderColor: currentSeason.color }]} onPress={() => setShowSeasonal(true)} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={[styles.seasonalCard, { borderColor: currentSeason.color, opacity: seasonalUnlocked ? 1 : 0.9 }]}
+            onPress={() => {
+              if (seasonalUnlocked) {
+                setShowSeasonal(true);
+                return;
+              }
+              haptic.light();
+            }}
+            activeOpacity={0.8}
+          >
             <Text style={styles.seasonalCardEmoji}>{currentSeason.emoji}</Text>
             <View style={styles.seasonalCardInfo}>
               <Text style={[styles.seasonalCardTitle, { color: currentSeason.color }]}>{currentSeason.name}</Text>
               <Text style={styles.seasonalCardSubtitle}>{currentSeason.description}</Text>
-              {seasonalHook ? <Text style={styles.seasonalCardHook}>{seasonalHook}</Text> : null}
+              {seasonalUnlocked ? (
+                seasonalHook ? <Text style={styles.seasonalCardHook}>{seasonalHook}</Text> : null
+              ) : (
+                <Text style={styles.seasonalCardHook}>🔒 {lockProgressText('seasonal_content')}</Text>
+              )}
             </View>
-            <Text style={styles.seasonalCardArrow}>→</Text>
+            <Text style={styles.seasonalCardArrow}>{seasonalUnlocked ? '→' : '🔒'}</Text>
           </TouchableOpacity>
         )}
       </Animated.View>
@@ -3998,11 +3990,20 @@ function HomeScreen({
       {/* ── Feature Buttons — intimate / fun first ── */}
       <Animated.View style={{ opacity: actionsAnim, transform: [{ translateY: actionsTranslateY }] }}>
       <View style={styles.featureButtonsRow}>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowDateNight(true)}>
+        <TouchableOpacity
+          style={styles.featureButton}
+          onPress={() => {
+            if (dateNightUnlocked) {
+              setShowDateNight(true);
+              return;
+            }
+            haptic.light();
+          }}
+        >
           <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🌙</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.date_night')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.romance')}</Text>
+            <Text style={styles.featureButtonText}>{dateNightUnlocked ? t('home.feature.date_night') : '🔒 Reach Level 4'}</Text>
+            <Text style={styles.featureButtonSubtext}>{dateNightUnlocked ? t('home.quality.romance') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars)}/${FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars} ⭐`}</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.featureButton} onPress={() => setShowSpinner(true)}>
@@ -4012,11 +4013,20 @@ function HomeScreen({
             <Text style={styles.featureButtonSubtext}>{t('home.quality.playful')}</Text>
           </LinearGradient>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowTruthOrDare(true)}>
+        <TouchableOpacity
+          style={styles.featureButton}
+          onPress={() => {
+            if (truthOrDareUnlocked) {
+              setShowTruthOrDare(true);
+              return;
+            }
+            haptic.light();
+          }}
+        >
           <LinearGradient colors={[colors.error, '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎲</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.truth_dare')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.truth_dare')}</Text>
+            <Text style={styles.featureButtonText}>{truthOrDareUnlocked ? t('home.feature.truth_dare') : '🔒 Reach Level 3'}</Text>
+            <Text style={styles.featureButtonSubtext}>{truthOrDareUnlocked ? t('home.quality.truth_dare') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars)}/${FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars} ⭐`}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -4175,7 +4185,6 @@ function HomeScreen({
       <WeeklyGoalsModal visible={showWeeklyGoals} onClose={() => setShowWeeklyGoals(false)} />
       <MoodPlaylistsModal visible={showPlaylists} onClose={() => setShowPlaylists(false)} navigation={navigation} />
       <RecommendationsModal visible={showRecommendations} onClose={() => setShowRecommendations(false)} navigation={navigation} />
-      <LevelUpModal visible={showLevelUp} onClose={() => setShowLevelUp(false)} newLevel={newLevelData} />
       <SeasonalModal
         visible={showSeasonal}
         onClose={() => setShowSeasonal(false)}
@@ -4199,6 +4208,11 @@ function ExploreScreen({ navigation }: any) {
   const [sortBy, setSortBy] = useState<'all' | 'untried' | 'tried'>('all');
   const store = useStore();
   const { language, t, localizeTerm } = useI18n();
+  const unlockedFeatureSet = useMemo(
+    () => new Set<UnlockableFeature>(store.unlockedFeatures || []),
+    [store.unlockedFeatures]
+  );
+  const starterPacksUnlocked = unlockedFeatureSet.has('starter_pack_collections');
 
   const normalizeSearchText = useCallback((value: string) => (
     value
@@ -4544,7 +4558,7 @@ function ExploreScreen({ navigation }: any) {
       <View style={styles.collectionSection}>
         <View style={styles.collectionHeader}>
           <Text style={styles.collectionTitle}>{t('explore.collections.title')}</Text>
-          {selectedStarterPack ? (
+          {starterPacksUnlocked && selectedStarterPack ? (
             <TouchableOpacity
               onPress={() => {
                 haptic.light();
@@ -4556,26 +4570,36 @@ function ExploreScreen({ navigation }: any) {
             </TouchableOpacity>
           ) : null}
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.collectionScrollContent}>
-          {currentStarterPacks.map((pack) => {
-            const isActive = selectedStarterPack === pack.id;
-            return (
-              <TouchableOpacity
-                key={pack.id}
-                style={[styles.collectionCard, isActive && styles.collectionCardActive]}
-                onPress={() => {
-                  haptic.light();
-                  setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
-                }}
-                activeOpacity={0.9}
-              >
-                <Text style={styles.collectionEmoji}>{pack.icon}</Text>
-                <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
-                <Text style={[styles.collectionCardSubtitle, isActive && styles.collectionCardSubtitleActive]}>{pack.subtitle}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        {starterPacksUnlocked ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.collectionScrollContent}>
+            {currentStarterPacks.map((pack) => {
+              const isActive = selectedStarterPack === pack.id;
+              return (
+                <TouchableOpacity
+                  key={pack.id}
+                  style={[styles.collectionCard, isActive && styles.collectionCardActive]}
+                  onPress={() => {
+                    haptic.light();
+                    setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
+                  }}
+                  activeOpacity={0.9}
+                >
+                  <Text style={styles.collectionEmoji}>{pack.icon}</Text>
+                  <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
+                  <Text style={[styles.collectionCardSubtitle, isActive && styles.collectionCardSubtitleActive]}>{pack.subtitle}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <View style={styles.collectionLockedCard}>
+            <Text style={styles.collectionLockedEmoji}>🔒</Text>
+            <Text style={styles.collectionLockedTitle}>Starter Packs unlock at Level 2</Text>
+            <Text style={styles.collectionLockedSubtitle}>
+              {`${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.starter_pack_collections.stars)}/${FEATURE_LOCK_REQUIREMENTS.starter_pack_collections.stars} ⭐`}
+            </Text>
+          </View>
+        )}
       </View>
       
       {/* Sort Options */}
@@ -4786,6 +4810,11 @@ function ProfileScreen({ navigation }: any) {
           <Text style={styles.profileStarText}>⭐ {t('profile.stars_earned', { count: store.totalStars })}</Text>
         </View>
         {store.pinCode && <Text style={styles.pinProtectedBadge}>🔐 {t('profile.protected')}</Text>}
+        {store.unlockedFeatures.includes('legendary_access_badge') && (
+          <View style={styles.legendaryBadge}>
+            <Text style={styles.legendaryBadgeText}>👑 Legendary access</Text>
+          </View>
+        )}
       </View>
 
       {/* Streak Banner */}
@@ -5944,6 +5973,12 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
       }
 
       const appState = useStore.getState();
+      const baselineUnlocks = getUnlockedFeaturesForLevel(getLevel(appState.totalStars).level);
+      if (baselineUnlocks.some((feature) => !appState.unlockedFeatures.includes(feature))) {
+        useStore.setState({
+          unlockedFeatures: Array.from(new Set([...appState.unlockedFeatures, ...baselineUnlocks])),
+        });
+      }
       Analytics.trackSessionStart(appState.interactionHistory.length === 0);
 
       const todayKey = getDateKey(new Date());
@@ -6147,6 +6182,14 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
         <DailyBonusModal
           visible={showDailyBonusModal}
           onClose={() => setShowDailyBonusModal(false)}
+          ConfettiComponent={ConfettiCelebration}
+        />
+        <LevelUpModal
+          visible={Boolean(store.pendingLevelUp?.leveledUp)}
+          onClose={store.clearPendingLevelUp}
+          newLevel={store.pendingLevelUp?.newLevel || null}
+          unlockedFeatures={store.pendingLevelUp?.unlockedFeatures || []}
+          unlockMessage={store.pendingLevelUp?.unlockMessage || ''}
           ConfettiComponent={ConfettiCelebration}
         />
         <StatusBar style="light" />
@@ -6371,6 +6414,10 @@ const styles = StyleSheet.create({
   collectionScrollContent: { paddingRight: 20 },
   collectionCard: { width: 188, minHeight: 118, backgroundColor: colors.card, borderRadius: 18, padding: 14, marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   collectionCardActive: { backgroundColor: 'rgba(168, 85, 247, 0.22)', borderColor: 'rgba(196, 128, 255, 0.7)' },
+  collectionLockedCard: { backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.cardLight, paddingVertical: 14, paddingHorizontal: 14, alignItems: 'center' },
+  collectionLockedEmoji: { fontSize: 20, marginBottom: 4 },
+  collectionLockedTitle: { fontSize: 13, fontWeight: '700', color: colors.text.primary, textAlign: 'center' },
+  collectionLockedSubtitle: { marginTop: 4, fontSize: 12, color: colors.text.muted, textAlign: 'center' },
   collectionEmoji: { fontSize: 20, marginBottom: 10 },
   collectionCardTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary, marginBottom: 6 },
   collectionCardTitleActive: { color: colors.white },
@@ -6936,6 +6983,8 @@ const styles = StyleSheet.create({
   profileLevel: { fontSize: 14, fontWeight: '600', marginTop: 4 },
   profileEmail: { fontSize: 12, marginTop: 2 },
   pinProtectedBadge: { fontSize: 12, color: colors.success, marginTop: 8 },
+  legendaryBadge: { marginTop: 8, backgroundColor: 'rgba(212, 165, 116, 0.18)', borderWidth: 1, borderColor: 'rgba(212, 165, 116, 0.42)', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5 },
+  legendaryBadgeText: { fontSize: 12, fontWeight: '700', color: colors.gold },
   menuItemArrow: { fontSize: 16, color: colors.text.muted },
   logoutMenuItem: { marginTop: 16, borderTopWidth: 1, borderTopColor: colors.card, paddingTop: 16 },
   versionText: { fontSize: 12, color: colors.text.muted, textAlign: 'center', marginTop: 20, marginBottom: 40 },

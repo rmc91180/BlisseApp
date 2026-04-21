@@ -621,6 +621,11 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!hasActiveEntitlement) return;
+    useStore.getState().grantSubscriberAccess();
+  }, [hasActiveEntitlement]);
+
   const todayKey = getTodayKey();
   useEffect(() => {
     if (!store.firstOpenDate) {

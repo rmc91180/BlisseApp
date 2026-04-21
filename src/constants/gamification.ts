@@ -36,6 +36,107 @@ export const getNextLevel = (stars: number): Level | null => {
 };
 
 // ============================================
+// LEVEL UNLOCKS
+// ============================================
+
+export type UnlockableFeature =
+  | 'beginner_content'
+  | 'daily_bonus'
+  | 'weekly_goals'
+  | 'starter_pack_collections'
+  | 'notes_ratings'
+  | 'truth_or_dare'
+  | 'mood_filtering'
+  | 'date_night_generator'
+  | 'user_playlists'
+  | 'seasonal_content'
+  | 'advanced_content_tier'
+  | 'legendary_access_badge';
+
+export interface LevelUnlock {
+  level: number;
+  minStars: number;
+  features: UnlockableFeature[];
+  unlockMessage: string;
+}
+
+export const FEATURE_UNLOCK_LABELS: Record<UnlockableFeature, string> = {
+  beginner_content: 'Beginner content access',
+  daily_bonus: 'Daily Bonus',
+  weekly_goals: 'Weekly Goals',
+  starter_pack_collections: 'Starter Pack collections',
+  notes_ratings: 'Notes & ratings',
+  truth_or_dare: 'Truth or Dare',
+  mood_filtering: 'Mood-based filtering',
+  date_night_generator: 'Date Night Generator',
+  user_playlists: 'User Playlists',
+  seasonal_content: 'Seasonal content',
+  advanced_content_tier: 'Advanced content tier',
+  legendary_access_badge: 'Legendary access badge',
+};
+
+export const LEVEL_UNLOCKS: LevelUnlock[] = [
+  {
+    level: 1,
+    minStars: 0,
+    features: ['beginner_content', 'daily_bonus', 'weekly_goals'],
+    unlockMessage: 'Welcome in. Start with what feels easy and connected ✨',
+  },
+  {
+    level: 2,
+    minStars: 25,
+    features: ['starter_pack_collections', 'notes_ratings'],
+    unlockMessage: 'Your secret garden just got bigger 🌿',
+  },
+  {
+    level: 3,
+    minStars: 75,
+    features: ['truth_or_dare', 'mood_filtering'],
+    unlockMessage: 'Trouble is just another word for fun 🗺️',
+  },
+  {
+    level: 4,
+    minStars: 150,
+    features: ['date_night_generator', 'user_playlists'],
+    unlockMessage: "You're building something real 💫",
+  },
+  {
+    level: 5,
+    minStars: 300,
+    features: ['seasonal_content', 'advanced_content_tier'],
+    unlockMessage: 'The full menu. You earned it 🎯',
+  },
+  {
+    level: 6,
+    minStars: 500,
+    features: ['legendary_access_badge'],
+    unlockMessage: 'Legendary access unlocked. Everything is open 👑',
+  },
+];
+
+const UNIQUE_BASE_UNLOCKS = Array.from(
+  new Set(LEVEL_UNLOCKS.flatMap((unlock) => unlock.features))
+) as UnlockableFeature[];
+
+export const ALL_UNLOCKABLE_FEATURES: UnlockableFeature[] = [...UNIQUE_BASE_UNLOCKS];
+
+export const getLevelUnlockByLevel = (level: number): LevelUnlock | null => {
+  return LEVEL_UNLOCKS.find((unlock) => unlock.level === level) || null;
+};
+
+export const getUnlockedFeaturesForLevel = (level: number): UnlockableFeature[] => {
+  if (level >= 6) return ALL_UNLOCKABLE_FEATURES;
+
+  return Array.from(
+    new Set(
+      LEVEL_UNLOCKS
+        .filter((unlock) => unlock.level <= level)
+        .flatMap((unlock) => unlock.features)
+    )
+  ) as UnlockableFeature[];
+};
+
+// ============================================
 // WEEKLY GOALS SYSTEM
 // ============================================
 
