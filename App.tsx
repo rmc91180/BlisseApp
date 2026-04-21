@@ -78,6 +78,7 @@ import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
 import { sound } from '@/services/audio';
+import { coachVoice } from '@/services/coachVoice';
 import { SubscriptionProvider } from '@/services/subscription';
 import { DailyBonusModal } from '@/components/DailyBonusModal';
 import { LevelUpModal } from '@/components/LevelUpModal';
@@ -680,6 +681,85 @@ const _StarBadge = ({ count }: { count: number }) => (
   </View>
 );
 
+function CoachNoteSection({
+  contentType,
+  item,
+}: {
+  contentType: 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
+  item: {
+    id: number;
+    name: string;
+    vibe?: string;
+    whyItWorks?: string;
+    description?: string;
+    category?: string;
+  };
+}) {
+  const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(true);
+  const shimmer = useRef(new Animated.Value(-1)).current;
+  const themeStore = useThemeStore();
+  const themeColors = getThemeColors(themeStore.currentTheme);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+
+    void coachVoice.getNote(contentType, item).then((value) => {
+      if (!active) return;
+      setNote(value);
+      setLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [contentType, item.id, item.name, item.vibe, item.whyItWorks, item.description, item.category]);
+
+  useEffect(() => {
+    if (!loading) return;
+    shimmer.setValue(-1);
+
+    const loop = Animated.loop(
+      Animated.timing(shimmer, {
+        toValue: 1,
+        duration: 1200,
+        useNativeDriver: true,
+      })
+    );
+
+    loop.start();
+    return () => loop.stop();
+  }, [loading, shimmer]);
+
+  const shimmerTranslateX = shimmer.interpolate({
+    inputRange: [-1, 1],
+    outputRange: [-220, 220],
+  });
+
+  return (
+    <View style={[styles.coachNoteCard, { backgroundColor: themeColors.card, borderColor: themeColors.cardLight }]}>
+      <Text style={[styles.coachNoteTitle, { color: themeColors.primary[400] }]}>Coach says 🌸</Text>
+      {loading ? (
+        <View style={styles.coachSkeletonWrap}>
+          <View style={[styles.coachSkeletonLine, { width: '95%', backgroundColor: themeColors.cardLight }]} />
+          <View style={[styles.coachSkeletonLine, { width: '78%', backgroundColor: themeColors.cardLight }]} />
+          <Animated.View style={[styles.coachShimmer, { transform: [{ translateX: shimmerTranslateX }] }]}>
+            <LinearGradient
+              colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.16)', 'rgba(255,255,255,0)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
+        </View>
+      ) : (
+        <Text style={[styles.coachNoteText, { color: themeColors.text.muted }]}>{note}</Text>
+      )}
+    </View>
+  );
+}
+
 const PositionCard = ({ position, onPress }: { position: Position; onPress: () => void }) => {
   const store = useStore();
   const { localizeTerm, t } = useI18n();
@@ -687,7 +767,7 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
   const isTried = store.tried.includes(position.id);
   const mood = moods.find((m) => m.id === position.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${position.name}, ${localizeTerm(position.category)}, ${localizeTerm(position.difficulty)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('position', position); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${position.name}, ${localizeTerm(position.category)}, ${localizeTerm(position.difficulty)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -718,7 +798,7 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
   const isTried = store.triedForeplay.includes(item.id);
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('foreplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -748,7 +828,7 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
   const mood = moods.find((m) => m.id === item.mood);
   const giverLabel = item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual');
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('oral', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -777,7 +857,7 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
   const isTried = store.triedMassage?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('massage', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>💆</Text>
@@ -807,7 +887,7 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
   const mood = moods.find((m) => m.id === item.mood);
   const intensityColor = item.intensity === 'Light' ? colors.success : item.intensity === 'Medium' ? colors.warning : colors.error;
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('roleplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>🎭</Text>
@@ -3811,6 +3891,7 @@ function HomeScreen({
     const contentType = recommendation.type as InteractionEvent['contentType'];
 
     trackRecommendationView(recommendation);
+    coachVoice.preloadNote(contentType, resolvedItem);
 
     if (contentType === 'position') {
       navigation.navigate('PositionDetail', { position: resolvedItem });
@@ -4991,6 +5072,7 @@ function PositionDetailScreen({ route, navigation }: any) {
             )}
           </View>
           <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{position.vibe}"</Text></View>
+          <CoachNoteSection contentType="position" item={position} />
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
@@ -5103,6 +5185,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
             )}
           </View>
           <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+          <CoachNoteSection contentType="foreplay" item={item} />
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
@@ -5213,6 +5296,7 @@ function OralDetailScreen({ route, navigation }: any) {
             )}
           </View>
           <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+          <CoachNoteSection contentType="oral" item={item} />
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
@@ -5326,6 +5410,7 @@ function MassageDetailScreen({ route, navigation }: any) {
             )}
           </View>
           <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+          <CoachNoteSection contentType="massage" item={item} />
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
@@ -5445,6 +5530,7 @@ function RolePlayDetailScreen({ route, navigation }: any) {
             )}
           </View>
           <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+          <CoachNoteSection contentType="roleplay" item={item} />
           <View style={styles.actionRow}>
             <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
               <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
@@ -6525,6 +6611,12 @@ const styles = StyleSheet.create({
   actionBtnNotes: { backgroundColor: 'rgba(168, 85, 247, 0.2)' },
   actionBtnIcon: { fontSize: 16, marginRight: 6 },
   actionBtnText: { fontSize: 13, color: colors.text.primary },
+  coachNoteCard: { borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 16 },
+  coachNoteTitle: { fontSize: 14, fontWeight: '700', marginBottom: 8 },
+  coachNoteText: { fontSize: 14, lineHeight: 20, fontStyle: 'italic' },
+  coachSkeletonWrap: { height: 38, justifyContent: 'space-between', overflow: 'hidden' },
+  coachSkeletonLine: { height: 14, borderRadius: 8 },
+  coachShimmer: { position: 'absolute', top: 0, left: 0, width: 120, height: 42 },
   detailSection: { marginBottom: 24 },
   detailSectionTitle: { fontSize: 18, fontWeight: '600', color: colors.text.primary, marginBottom: 12 },
   detailText: { fontSize: 15, color: colors.text.secondary, lineHeight: 24 },
