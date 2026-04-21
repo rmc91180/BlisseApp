@@ -12,6 +12,14 @@
 /** Union of all first-class content categories in the app. */
 export type ContentType = 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
 
+export interface ExperienceProfile {
+  effort: 'low' | 'medium' | 'high';
+  energy: 'calm' | 'building' | 'intense';
+  connection: 'emotional' | 'mixed' | 'physical';
+  novelty: 'familiar' | 'varied' | 'adventurous';
+  controlBalance: 'shared' | 'one-led';
+}
+
 // ============================================
 // Seasonal Content
 // ============================================
@@ -210,6 +218,16 @@ export interface UserPreferences {
   favoriteToTriedRatio: number;
   /** Last updated */
   lastUpdated: string;
+  /** Experience-level preferences used for intent inference. */
+  experienceScores: {
+    effort: Record<ExperienceProfile['effort'], number>;
+    energy: Record<ExperienceProfile['energy'], number>;
+    connection: Record<ExperienceProfile['connection'], number>;
+    novelty: Record<ExperienceProfile['novelty'], number>;
+    controlBalance: Record<ExperienceProfile['controlBalance'], number>;
+  };
+  /** Recent recommendation clusters to prevent repetitive outputs. */
+  recentExperienceClusters: string[];
 }
 
 /** A single user interaction event fed into the learning system. */
@@ -221,6 +239,7 @@ export interface InteractionEvent {
   mood?: string;
   difficulty?: string;
   rating?: number;
+  experienceProfile?: ExperienceProfile;
   timestamp: string;
 }
 

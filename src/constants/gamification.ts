@@ -5,7 +5,10 @@ import type {
   UserPreferences,
   InteractionEvent,
   Achievement,
+  ExperienceProfile,
+  ContentType,
 } from '@/types/app';
+import { buildExperienceClusterKey, resolveExperienceProfile } from '@/content/experienceProfiles';
 
 // ============================================
 // LEVELS & TITLES SYSTEM
@@ -77,6 +80,14 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   avgSessionLength: 0,
   favoriteToTriedRatio: 0,
   lastUpdated: new Date().toISOString(),
+  experienceScores: {
+    effort: { low: 50, medium: 50, high: 50 },
+    energy: { calm: 50, building: 50, intense: 50 },
+    connection: { emotional: 50, mixed: 50, physical: 50 },
+    novelty: { familiar: 60, varied: 50, adventurous: 45 },
+    controlBalance: { shared: 60, 'one-led': 50 },
+  },
+  recentExperienceClusters: [],
 };
 
 // Learning weights - how much each action affects preferences
@@ -122,6 +133,44 @@ const getDeterministicVarietyOffset = (
   return ((hash % 1000) / 1000 - 0.5) * 4;
 };
 
+const clampScore = (value: number): number => Math.max(MIN_PREFERENCE_SCORE, Math.min(MAX_PREFERENCE_SCORE, value));
+
+const getEventWeight = (event: InteractionEvent): number => {
+  if (event.type === 'rate') {
+    if (event.rating && event.rating >= 4) return LEARNING_WEIGHTS.rate_high;
+    if (event.rating === 3) return LEARNING_WEIGHTS.rate_medium;
+    return LEARNING_WEIGHTS.rate_low;
+  }
+  const actionWeights: Record<string, number> = {
+    view: LEARNING_WEIGHTS.view,
+    try: LEARNING_WEIGHTS.try,
+    favorite: LEARNING_WEIGHTS.favorite,
+    unfavorite: LEARNING_WEIGHTS.unfavorite,
+    skip: LEARNING_WEIGHTS.skip,
+  };
+  return actionWeights[event.type] || 0;
+};
+
+const applyExperienceWeight = (
+  scores: UserPreferences['experienceScores'],
+  profile: ExperienceProfile,
+  weight: number
+): UserPreferences['experienceScores'] => ({
+  effort: { ...scores.effort, [profile.effort]: clampScore(scores.effort[profile.effort] + weight) },
+  energy: { ...scores.energy, [profile.energy]: clampScore(scores.energy[profile.energy] + weight) },
+  connection: { ...scores.connection, [profile.connection]: clampScore(scores.connection[profile.connection] + weight) },
+  novelty: { ...scores.novelty, [profile.novelty]: clampScore(scores.novelty[profile.novelty] + weight) },
+  controlBalance: {
+    ...scores.controlBalance,
+    [profile.controlBalance]: clampScore(scores.controlBalance[profile.controlBalance] + weight),
+  },
+});
+
+const topPreference = <T extends string>(record: Record<T, number>, fallback: T): T => (
+  (Object.entries(record as Record<string, number>)
+    .sort(([, a], [, b]) => Number(b) - Number(a))[0]?.[0] as T) || fallback
+);
+
 // Smart Learning Helper Functions
 export const SmartLearning = {
   // Update preferences based on user interaction
@@ -130,59 +179,38 @@ export const SmartLearning = {
     event: InteractionEvent
   ): UserPreferences => {
     const newPrefs = { ...currentPrefs };
-
-    // Determine the weight for this action
-    let weight = 0;
-    if (event.type === 'rate') {
-      // Handle rating separately since it uses rate_high/medium/low
-      if (event.rating && event.rating >= 4) weight = LEARNING_WEIGHTS.rate_high;
-      else if (event.rating === 3) weight = LEARNING_WEIGHTS.rate_medium;
-      else weight = LEARNING_WEIGHTS.rate_low;
-    } else {
-      // For non-rate actions, look up directly
-      const actionWeights: Record<string, number> = {
-        view: LEARNING_WEIGHTS.view,
-        try: LEARNING_WEIGHTS.try,
-        favorite: LEARNING_WEIGHTS.favorite,
-        unfavorite: LEARNING_WEIGHTS.unfavorite,
-        skip: LEARNING_WEIGHTS.skip,
-      };
-      weight = actionWeights[event.type] || 0;
-    }
+    const weight = getEventWeight(event);
 
     // Update category score
     if (event.category) {
       const currentScore = newPrefs.categoryScores[event.category] || 50;
-      newPrefs.categoryScores[event.category] = Math.max(
-        MIN_PREFERENCE_SCORE,
-        Math.min(MAX_PREFERENCE_SCORE, currentScore + weight)
-      );
+      newPrefs.categoryScores[event.category] = clampScore(currentScore + weight);
     }
 
     // Update mood score
     if (event.mood) {
       const currentScore = newPrefs.moodScores[event.mood] || 50;
-      newPrefs.moodScores[event.mood] = Math.max(
-        MIN_PREFERENCE_SCORE,
-        Math.min(MAX_PREFERENCE_SCORE, currentScore + weight)
-      );
+      newPrefs.moodScores[event.mood] = clampScore(currentScore + weight);
     }
 
     // Update difficulty score
     if (event.difficulty) {
       const currentScore = newPrefs.difficultyScores[event.difficulty] || 50;
-      newPrefs.difficultyScores[event.difficulty] = Math.max(
-        MIN_PREFERENCE_SCORE,
-        Math.min(MAX_PREFERENCE_SCORE, currentScore + weight)
-      );
+      newPrefs.difficultyScores[event.difficulty] = clampScore(currentScore + weight);
     }
 
     // Update content type score
     const currentTypeScore = newPrefs.contentTypeScores[event.contentType] || 50;
-    newPrefs.contentTypeScores[event.contentType] = Math.max(
-      MIN_PREFERENCE_SCORE,
-      Math.min(MAX_PREFERENCE_SCORE, currentTypeScore + weight)
-    );
+    newPrefs.contentTypeScores[event.contentType] = clampScore(currentTypeScore + weight);
+
+    // Experience-level learning is primary (retention-safe default when sparse).
+    const experienceProfile = event.experienceProfile || resolveExperienceProfile(event.contentType, {
+      id: event.itemId,
+      category: event.category,
+      mood: event.mood,
+      difficulty: event.difficulty,
+    });
+    newPrefs.experienceScores = applyExperienceWeight(newPrefs.experienceScores, experienceProfile, weight);
 
     // Update time of day preference
     const hour = new Date().getHours();
@@ -218,14 +246,21 @@ export const SmartLearning = {
       contentTypeScores: Object.fromEntries(
         Object.entries(prefs.contentTypeScores).map(([k, v]) => [k, decayScore(v)])
       ),
+      experienceScores: {
+        effort: Object.fromEntries(Object.entries(prefs.experienceScores.effort).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['effort'],
+        energy: Object.fromEntries(Object.entries(prefs.experienceScores.energy).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['energy'],
+        connection: Object.fromEntries(Object.entries(prefs.experienceScores.connection).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['connection'],
+        novelty: Object.fromEntries(Object.entries(prefs.experienceScores.novelty).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['novelty'],
+        controlBalance: Object.fromEntries(Object.entries(prefs.experienceScores.controlBalance).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['controlBalance'],
+      },
       lastUpdated: new Date().toISOString(),
     };
   },
 
   // Calculate recommendation score for an item
   calculateItemScore: (
-    item: { id?: string | number; name?: string; category?: string; mood?: string; difficulty?: string },
-    contentType: string,
+    item: { id?: string | number; name?: string; category?: string; mood?: string; difficulty?: string; duration?: string },
+    contentType: 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay',
     prefs: UserPreferences,
     isTried: boolean,
     isFavorite: boolean,
@@ -248,14 +283,36 @@ export const SmartLearning = {
       score += (prefs.difficultyScores[item.difficulty] - 50) * 0.2;
     }
 
-    // Content type preference
+    // Content type preference (secondary to experience-level fit).
     if (prefs.contentTypeScores[contentType]) {
       score += (prefs.contentTypeScores[contentType] - 50) * 0.15;
     }
 
+    const profile = resolveExperienceProfile(contentType, {
+      id: Number(item.id || 0),
+      category: item.category,
+      mood: item.mood,
+      difficulty: item.difficulty,
+      duration: item.duration,
+    });
+    score += (prefs.experienceScores.effort[profile.effort] - 50) * 0.25;
+    score += (prefs.experienceScores.energy[profile.energy] - 50) * 0.2;
+    score += (prefs.experienceScores.connection[profile.connection] - 50) * 0.3;
+    score += (prefs.experienceScores.novelty[profile.novelty] - 50) * 0.2;
+    score += (prefs.experienceScores.controlBalance[profile.controlBalance] - 50) * 0.15;
+
+    // Retention-safe default: favor comforting/low-effort on sparse history.
+    const profileKey = buildExperienceClusterKey(profile);
+    if (prefs.recentExperienceClusters[0] === profileKey) {
+      score -= 18;
+    }
+    if (prefs.recentExperienceClusters.includes(profileKey)) {
+      score -= 8;
+    }
+
     // Novelty bonus - prefer untried items slightly
     if (!isTried) {
-      score += 10;
+      score += 6;
     }
 
     // Favorite penalty - don't recommend what they already love
@@ -306,7 +363,7 @@ export const SmartLearning = {
       const score = SmartLearning.calculateItemScore(
         item, 'position', prefs, isTried, isFavorite, rotationKey
       );
-      const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
+      const reason = SmartLearning.getRecommendationReason(item, 'position', prefs, isTried);
       scored.push({ type: 'position', item, score, reason });
     });
 
@@ -317,7 +374,7 @@ export const SmartLearning = {
       const score = SmartLearning.calculateItemScore(
         item, 'foreplay', prefs, isTried, isFavorite, rotationKey
       );
-      const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
+      const reason = SmartLearning.getRecommendationReason(item, 'foreplay', prefs, isTried);
       scored.push({ type: 'foreplay', item, score, reason });
     });
 
@@ -328,7 +385,7 @@ export const SmartLearning = {
       const score = SmartLearning.calculateItemScore(
         item, 'oral', prefs, isTried, isFavorite, rotationKey
       );
-      const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
+      const reason = SmartLearning.getRecommendationReason(item, 'oral', prefs, isTried);
       scored.push({ type: 'oral', item, score, reason });
     });
 
@@ -339,7 +396,7 @@ export const SmartLearning = {
       const score = SmartLearning.calculateItemScore(
         item, 'massage', prefs, isTried, isFavorite, rotationKey
       );
-      const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
+      const reason = SmartLearning.getRecommendationReason(item, 'massage', prefs, isTried);
       scored.push({ type: 'massage', item, score, reason });
     });
 
@@ -350,43 +407,61 @@ export const SmartLearning = {
       const score = SmartLearning.calculateItemScore(
         item, 'roleplay', prefs, isTried, isFavorite, rotationKey
       );
-      const reason = SmartLearning.getRecommendationReason(item, prefs, isTried);
+      const reason = SmartLearning.getRecommendationReason(item, 'roleplay', prefs, isTried);
       scored.push({ type: 'roleplay', item, score, reason });
     });
 
-    // Sort by score and return top N
-    return scored
-      .sort((a, b) => b.score - a.score)
-      .slice(0, count);
+    // Sort and avoid near-duplicate clusters in a single recommendation set.
+    const selected: Array<{ type: string; item: any; score: number; reason: string }> = [];
+    const seenClusters = new Set<string>();
+    scored.sort((a, b) => b.score - a.score).forEach((candidate) => {
+      if (selected.length >= count) return;
+      const profile = resolveExperienceProfile(candidate.type as ContentType, {
+        id: Number(candidate.item?.id || 0),
+        category: candidate.item?.category,
+        mood: candidate.item?.mood,
+        difficulty: candidate.item?.difficulty,
+        duration: candidate.item?.duration,
+      });
+      const cluster = `${candidate.type}:${buildExperienceClusterKey(profile)}`;
+      if (seenClusters.has(cluster)) return;
+      seenClusters.add(cluster);
+      selected.push(candidate);
+    });
+
+    return selected;
   },
 
   // Generate human-readable reason for recommendation
   getRecommendationReason: (
-    item: { category?: string; mood?: string; difficulty?: string },
+    item: { id?: number; category?: string; mood?: string; difficulty?: string; duration?: string },
+    contentType: 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay',
     prefs: UserPreferences,
     isTried: boolean
   ): string => {
-    const reasons: string[] = [];
+    const profile = resolveExperienceProfile(contentType, {
+      id: item.id || 0,
+      category: item.category,
+      mood: item.mood,
+      difficulty: item.difficulty,
+      duration: item.duration,
+    });
+    const dominantEffort = topPreference(prefs.experienceScores.effort, 'low');
+    const dominantConnection = topPreference(prefs.experienceScores.connection, 'emotional');
+    const dominantNovelty = topPreference(prefs.experienceScores.novelty, 'familiar');
 
-    if (!isTried) {
-      reasons.push('Fresh spark for tonight');
+    if (!isTried && profile.effort === 'low' && profile.connection === 'emotional') {
+      return 'You tend to like it slow and connected.';
     }
-
-    if (item.category && prefs.categoryScores[item.category] > 65) {
-      reasons.push('Fits your favorite vibe');
+    if (profile.effort === dominantEffort && profile.connection === dominantConnection) {
+      return 'This one fits you.';
     }
-
-    if (item.mood && prefs.moodScores[item.mood] > 65) {
-      reasons.push('Matches your current mood');
+    if (profile.novelty === dominantNovelty) {
+      return dominantNovelty === 'familiar'
+        ? 'This is right in your comfort zone - in a good way.'
+        : 'This matches your favorite kind of energy.';
     }
-
-    if (item.difficulty === 'Beginner' && prefs.difficultyScores['Beginner'] > 60) {
-      reasons.push('Easy win to warm up');
-    } else if (item.difficulty === 'Advanced' && prefs.difficultyScores['Advanced'] > 60) {
-      reasons.push("You're ready for a bolder move");
-    }
-
-    return reasons.length > 0 ? reasons[0] : 'Picked for your chemistry';
+    return 'You come back to this kind of vibe.';
   },
 
   // Get top preferences for display
@@ -414,17 +489,17 @@ export const SmartLearning = {
 // ============================================
 
 export const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_try', name: 'First Spark', description: 'Try your first couple idea', emoji: '🌱', category: 'milestone' },
-  { id: 'tried_5', name: 'Chemistry Starter', description: 'Try 5 different ideas together', emoji: '🌿', category: 'milestone' },
-  { id: 'tried_10', name: 'Curious Hearts', description: 'Try 10 different ideas together', emoji: '🗺️', category: 'milestone' },
+  { id: 'first_try', name: 'Found your comfort rhythm', description: 'You started discovering what feels good together', emoji: '🌱', category: 'milestone' },
+  { id: 'tried_5', name: 'Tried something new - your way', description: 'You explored new moments in a way that felt right for you', emoji: '🌿', category: 'milestone' },
+  { id: 'tried_10', name: 'Exploring with care', description: 'You are gently learning more of your shared rhythm', emoji: '🗺️', category: 'milestone' },
   { id: 'tried_25', name: 'Playful Momentum', description: 'Try 25 different ideas together', emoji: '⛰️', category: 'milestone' },
   { id: 'tried_50', name: 'Heat Builder', description: 'Try 50 different ideas together', emoji: '🏆', category: 'milestone' },
   { id: 'tried_100', name: 'Legendary Chemistry', description: 'Try 100 different ideas together', emoji: '👑', category: 'milestone' },
   { id: 'first_challenge', name: 'Challenge Accepted', description: 'Complete your first challenge', emoji: '🎯', category: 'adventure' },
   { id: 'challenges_5', name: 'Bold Pair', description: 'Complete 5 challenges', emoji: '💪', category: 'adventure' },
   { id: 'challenges_10', name: 'Dare Duo', description: 'Complete 10 challenges', emoji: '🔥', category: 'adventure' },
-  { id: 'week_streak_2', name: 'Two-Week Glow', description: 'Keep a 2 week streak', emoji: '🌡️', category: 'consistency' },
-  { id: 'week_streak_4', name: 'Firekeeper', description: 'Keep a 4 week streak', emoji: '🔥', category: 'consistency' },
+  { id: 'week_streak_2', name: 'Kept things gentle this week', description: 'You returned and stayed connected in your own pace', emoji: '🌡️', category: 'consistency' },
+  { id: 'week_streak_4', name: 'Balanced familiarity and curiosity', description: 'You kept showing up with both comfort and openness', emoji: '🔥', category: 'consistency' },
   { id: 'all_moods', name: 'Mood Shifter', description: 'Try positions in all moods', emoji: '🎭', category: 'exploration' },
   { id: 'all_categories', name: 'Full Menu', description: 'Try all position categories', emoji: '⭕', category: 'exploration' },
   { id: 'advanced_5', name: 'Edge Explorer', description: 'Try 5 advanced positions', emoji: '🎪', category: 'adventure' },

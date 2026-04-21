@@ -23,6 +23,7 @@ import {
   getLevel,
   generateWeeklyGoals,
 } from '@/constants/gamification';
+import { buildExperienceClusterKey, resolveExperienceProfile } from '@/content/experienceProfiles';
 import { detectPlatform, MAX_USER_PLAYLISTS } from '@/content/seasonal';
 import { positions, foreplayIdeas, oralPlayIdeas, massageTechniques, rolePlayScenarios } from '@/content/localizedContent';
 import { moods, categories } from '@/content/positions';
@@ -249,6 +250,7 @@ export const useStore = create<UserState>()(
             completedChallenges: [...get().completedChallenges, { ...current, completed: true }],
             currentChallenge: null,
           });
+          get().updateWeeklyGoalProgress('complete_challenge', 1);
         }
       },
 
@@ -288,6 +290,12 @@ export const useStore = create<UserState>()(
 
         // Track for smart learning system
         if (itemId && type !== 'session') {
+          const experienceProfile = resolveExperienceProfile(type as InteractionEvent['contentType'], {
+            id: itemId,
+            category,
+            mood,
+            difficulty,
+          });
           const interactionEvent: Omit<InteractionEvent, 'timestamp'> = {
             type: 'try',
             contentType: type as InteractionEvent['contentType'],
@@ -295,6 +303,7 @@ export const useStore = create<UserState>()(
             category,
             mood,
             difficulty,
+            experienceProfile,
           };
 
           // Update learning preferences
@@ -384,6 +393,12 @@ export const useStore = create<UserState>()(
           lastActivityDate: today,
           monthlyStats,
         });
+
+        // Weekly goals should reflect live activity momentum.
+        get().updateWeeklyGoalProgress('earn_stars', starsEarned);
+        if (isNewItem) {
+          get().updateWeeklyGoalProgress('try_new', 1);
+        }
 
         // Check for new achievements
         const achievementResults = get().checkAndAwardAchievements();
@@ -593,8 +608,15 @@ export const useStore = create<UserState>()(
       // Smart Learning Actions
       trackInteraction: (event) => {
         const state = get();
+        const resolvedProfile = event.experienceProfile || resolveExperienceProfile(event.contentType, {
+          id: event.itemId,
+          category: event.category,
+          mood: event.mood,
+          difficulty: event.difficulty,
+        });
         const fullEvent: InteractionEvent = {
           ...event,
+          experienceProfile: resolvedProfile,
           timestamp: new Date().toISOString(),
         };
 
@@ -622,7 +644,7 @@ export const useStore = create<UserState>()(
 
       getSmartRecommendations: (count = 5) => {
         const state = get();
-        return SmartLearning.getRecommendations(
+        const recommendations = SmartLearning.getRecommendations(
           state.learningPreferences,
           {
             positions,
@@ -645,6 +667,24 @@ export const useStore = create<UserState>()(
           },
           count
         );
+        const updatedClusters = [...state.learningPreferences.recentExperienceClusters];
+        recommendations.forEach((recommendation) => {
+          const profile = resolveExperienceProfile(recommendation.type as InteractionEvent['contentType'], {
+            id: Number(recommendation.item?.id || 0),
+            category: recommendation.item?.category,
+            mood: recommendation.item?.mood,
+            difficulty: recommendation.item?.difficulty,
+            duration: recommendation.item?.duration,
+          });
+          updatedClusters.unshift(buildExperienceClusterKey(profile));
+        });
+        set({
+          learningPreferences: {
+            ...state.learningPreferences,
+            recentExperienceClusters: updatedClusters.slice(0, 12),
+          },
+        });
+        return recommendations;
       },
 
       getUserPreferenceSummary: () => {

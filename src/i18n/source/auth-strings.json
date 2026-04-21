@@ -9,10 +9,10 @@
   "screens": {
     "welcome": {
       "en": {
-        "title": "Welcome to Blisse",
-        "subtitle": "Where tonight's best story begins",
+        "title": "Let's get into it.",
+        "subtitle": "Set the mood. We'll take it from there.",
         "tagline": "Made by Tammy & Mark, for couples who still flirt.",
-        "teaser": "Playful ideas, flirty games, and daily sparks to keep connection warm even on busy days.",
+        "teaser": "Playful ideas, sexy energy, and just the right spark for tonight.",
         "getStarted": "Get Started",
         "alreadyHaveAccount": "I already have my partner here.",
         "signIn": "Sign In",
@@ -22,10 +22,10 @@
         "teaserHide": "Hide answer"
       },
       "es": {
-        "title": "Bienvenido a Blisse",
-        "subtitle": "Donde empieza la mejor historia de esta noche",
+        "title": "Vamos a encender esto.",
+        "subtitle": "Elijan la vibra. Nosotros guiamos lo demás.",
         "tagline": "Creado por Tammy y Mark, para parejas que siguen coqueteando.",
-        "teaser": "Ideas juguetonas, juegos coquetos y chispas diarias para mantener viva la conexión, incluso con días ocupados.",
+        "teaser": "Ideas sexy, juegos divertidos y el empuje perfecto para esta noche.",
         "getStarted": "Comenzar",
         "alreadyHaveAccount": "Ya estamos aquí en pareja.",
         "signIn": "Iniciar sesión",
@@ -35,10 +35,10 @@
         "teaserHide": "Ocultar respuesta"
       },
       "pt-BR": {
-        "title": "Bem-vindo ao Blisse",
-        "subtitle": "Onde a melhor história de hoje à noite começa",
+        "title": "Vamos entrar no clima.",
+        "subtitle": "Escolham a vibe. O resto a gente conduz.",
         "tagline": "Criado por Tammy e Mark, para casais que ainda flertam.",
-        "teaser": "Ideias divertidas, jogos de paquera e faíscas diárias para manter a conexão acesa, mesmo na correria.",
+        "teaser": "Ideias sensuais, energia divertida e o empurrão certo pra noite.",
         "getStarted": "Começar",
         "alreadyHaveAccount": "Meu par já está aqui.",
         "signIn": "Entrar",
@@ -48,10 +48,10 @@
         "teaserHide": "Ocultar resposta"
       },
       "hi": {
-        "title": "Blisse में आपका स्वागत है",
-        "subtitle": "आज रात की सबसे प्यारी कहानी यहीं से शुरू होती है",
+        "title": "चलो शुरू करते हैं।",
+        "subtitle": "वाइब चुनिए। बाकी हम संभाल लेंगे।",
         "tagline": "Tammy और Mark की ओर से, उन जोड़ों के लिए जो अब भी खुलकर फ़्लर्ट करते हैं।",
-        "teaser": "चुलबुले सुझाव, शरारती खेल और रोज़ की छोटी चिंगारियाँ, ताकि व्यस्त दिनों में भी अपनापन बना रहे।",
+        "teaser": "सेक्सी ideas, playful energy, और आज रात के लिए सही spark।",
         "getStarted": "शुरू करें",
         "alreadyHaveAccount": "मेरा साथी पहले से यहाँ है।",
         "signIn": "साइन इन",
@@ -331,9 +331,9 @@
     },
     "onboardingPreferences": {
       "en": {
-        "title": "Your Preferences",
-        "subtitle": "Select what interests you most (choose any that apply)",
-        "preferencesLabel": "What are you looking to explore?",
+        "title": "Pick your vibe.",
+        "subtitle": "Quick choices now, better suggestions right away.",
+        "preferencesLabel": "What are you in the mood for most days?",
         "preferences": {
           "deepConnection": "Deeper emotional connection",
           "spiceThingsUp": "Spicing things up",
@@ -344,7 +344,7 @@
           "communication": "Better communication",
           "adventurous": "More adventurous experiences"
         },
-        "experienceLevel": "How would you describe your experience level?",
+        "experienceLevel": "Familiar and easy, or playful and different?",
         "experienceLevels": {
           "beginner": "Just starting to explore",
           "intermediate": "Comfortable but curious",
@@ -354,9 +354,9 @@
         "continue": "Continue"
       },
       "es": {
-        "title": "Tus Preferencias",
-        "subtitle": "Selecciona lo que más te interesa (elige todas las que apliquen)",
-        "preferencesLabel": "¿Qué estás buscando explorar?",
+        "title": "Elijan la vibra.",
+        "subtitle": "Decidan rápido y nosotros afinamos el resto.",
+        "preferencesLabel": "¿Qué se les antoja la mayoría de los días?",
         "preferences": {
           "deepConnection": "Conexión emocional más profunda",
           "spiceThingsUp": "Darle sabor a la relación",
@@ -367,7 +367,7 @@
           "communication": "Mejor comunicación",
           "adventurous": "Experiencias más aventureras"
         },
-        "experienceLevel": "¿Cómo describirías tu nivel de experiencia?",
+        "experienceLevel": "¿Más familiar y fácil, o más juguetón y diferente?",
         "experienceLevels": {
           "beginner": "Apenas comenzando a explorar",
           "intermediate": "Cómodo pero curioso",
@@ -377,9 +377,9 @@
         "continue": "Continuar"
       },
       "pt-BR": {
-        "title": "Suas Preferências",
-        "subtitle": "Selecione o que mais te interessa (escolha todas que se aplicam)",
-        "preferencesLabel": "O que você está buscando explorar?",
+        "title": "Escolham a vibe.",
+        "subtitle": "Escolha rápida agora, sugestão certeira já já.",
+        "preferencesLabel": "O que mais combina com vocês na maioria dos dias?",
         "preferences": {
           "deepConnection": "Conexão emocional mais profunda",
           "spiceThingsUp": "Apimentar a relação",
@@ -390,7 +390,7 @@
           "communication": "Melhor comunicação",
           "adventurous": "Experiências mais aventureiras"
         },
-        "experienceLevel": "Como você descreveria seu nível de experiência?",
+        "experienceLevel": "Mais familiar e fácil, ou mais brincalhão e diferente?",
         "experienceLevels": {
           "beginner": "Apenas começando a explorar",
           "intermediate": "Confortável mas curioso",
@@ -400,9 +400,9 @@
         "continue": "Continuar"
       },
       "hi": {
-        "title": "आपकी पसंद",
-        "subtitle": "जो बातें आपको सबसे ज़्यादा अपनी लगें, उन्हें चुनें",
-        "preferencesLabel": "आप किस तरह की चीज़ें आज़माना चाहते हैं?",
+        "title": "अपनी vibe चुनिए।",
+        "subtitle": "जल्दी चुनिए, बाकी हम ठीक से सेट कर देंगे।",
+        "preferencesLabel": "ज़्यादातर दिनों में क्या सबसे अच्छा लगता है?",
         "preferences": {
           "deepConnection": "और गहरा भावनात्मक जुड़ाव",
           "spiceThingsUp": "रिश्ते में नई चिंगारी लाना",
@@ -413,7 +413,7 @@
           "communication": "बेहतर बातचीत",
           "adventurous": "थोड़ा और रोमांचक अनुभव"
         },
-        "experienceLevel": "आप अपने अनुभव के स्तर को कैसे बताएँगे?",
+        "experienceLevel": "जाना-पहचाना और आसान, या playful और थोड़ा अलग?",
         "experienceLevels": {
           "beginner": "अभी-अभी शुरुआत की है",
           "intermediate": "आरामदायक हैं, पर जिज्ञासा बाकी है",
@@ -425,8 +425,8 @@
     },
     "onboardingMood": {
       "en": {
-        "title": "What Draws You?",
-        "subtitle": "Select the moods that resonate with you",
+        "title": "Let's set the vibe.",
+        "subtitle": "Choose what sounds good right now.",
         "moods": {
           "flowing": {
             "name": "Flowing",
@@ -465,8 +465,8 @@
         "finish": "Let's Begin"
       },
       "es": {
-        "title": "¿Qué Te Atrae?",
-        "subtitle": "Selecciona los estados de ánimo que resuenan contigo",
+        "title": "Vamos a poner el mood.",
+        "subtitle": "Elijan lo que suena bien ahora mismo.",
         "moods": {
           "flowing": {
             "name": "Fluido",
@@ -505,8 +505,8 @@
         "finish": "Comencemos"
       },
       "pt-BR": {
-        "title": "O Que Te Atrai?",
-        "subtitle": "Selecione os humores que ressoam com você",
+        "title": "Vamos ajustar o mood.",
+        "subtitle": "Escolham o que parece certo agora.",
         "moods": {
           "flowing": {
             "name": "Fluido",
@@ -545,8 +545,8 @@
         "finish": "Vamos Começar"
       },
       "hi": {
-        "title": "आज आपका मन किस माहौल की ओर खिंचता है?",
-        "subtitle": "वे मनःस्थितियाँ चुनें जो आपको सबसे ज़्यादा अपनी लगती हैं",
+        "title": "चलो mood सेट करें।",
+        "subtitle": "अभी जो सही लगे, वही चुनिए।",
         "moods": {
           "flowing": {
             "name": "बहाव",

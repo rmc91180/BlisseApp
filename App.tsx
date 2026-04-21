@@ -43,10 +43,11 @@ import {
 import { SUPPORTED_LANGUAGES, getContentTypeKey, translateUi } from '@/i18n/translations';
 import { getLegalContent } from '@/i18n/legalContent';
 import {
-  CONFETTI_COLORS, HOME_SPARK_MESSAGES, TONIGHT_SUGGESTION_TEASERS,
-  LEVEL_MOTIVATOR_LINES, SEASONAL_HOME_SPARK_MESSAGES,
-  SEASONAL_TONIGHT_TEASERS, SEASONAL_HOOK_LINES,
-  MAX_PIN_ATTEMPTS, PIN_LOCKOUT_MS, COUPLE_PROMPTS,
+  CONFETTI_COLORS,
+  LEVEL_MOTIVATOR_LINES,
+  SEASONAL_HOOK_LINES,
+  MAX_PIN_ATTEMPTS,
+  PIN_LOCKOUT_MS,
 } from '@/constants/appConfig';
 import {
   SEASONAL_GAME_OPTIONS, getCurrentSeason,
@@ -72,10 +73,14 @@ import { scheduleDailyStreakReminder, clearDailyStreakReminder } from '@/service
 import { useStore } from '@/store/useStore';
 import { useThemeStore, THEMES, FONT_SIZES, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
+import { useRecommendations } from '@/hooks/useRecommendations';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
+import { sound } from '@/services/audio';
 import { SubscriptionProvider } from '@/services/subscription';
+import { SmartSuggestionCard } from '@/components/home/SmartSuggestionCard';
+import { WeeklyGoalsCard } from '@/components/home/WeeklyGoalsCard';
 import type {
   SeasonalGameAction, SeasonalGameOption, TruthOrDareItem,
   Level,
@@ -105,13 +110,7 @@ const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
 // ============================================
 // HAPTIC FEEDBACK HELPER
 // ============================================
-const haptic = {
-  light: () => {},
-  medium: () => {},
-  success: () => {},
-  celebration: () => {},
-  error: () => {},
-};
+const haptic = sound;
 
 // ============================================
 // ANIMATION COMPONENTS
@@ -3615,9 +3614,11 @@ function HomeScreen({
   pendingDailyJokeDateKey?: string | null;
   onConsumePendingDailyJokeNotification?: () => void;
 }) {
+  type HomeRecommendation = ReturnType<typeof useRecommendations>['recommendations'][number];
   const store = useStore();
   const featureFlags = useFeatureFlags();
   const { language, t, localizeTerm } = useI18n();
+  const { recommendations } = useRecommendations();
   const introAnim = useRef(new Animated.Value(0)).current;
   const suggestionsAnim = useRef(new Animated.Value(0)).current;
   const actionsAnim = useRef(new Animated.Value(0)).current;
@@ -3633,6 +3634,7 @@ function HomeScreen({
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [newLevelData, setNewLevelData] = useState<Level | null>(null);
   const prevLevelRef = useRef(getLevel(store.totalStars).level);
+  const trackedRecommendationImpressionsRef = useRef<Set<string>>(new Set());
   const [showSeasonal, setShowSeasonal] = useState(false);
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
   const [showMusic, setShowMusic] = useState(false);
@@ -3660,18 +3662,6 @@ function HomeScreen({
     () => Math.max(0, getDayOfYear(new Date(`${dailyJokeDateKey}T12:00:00`)) - 1),
     [dailyJokeDateKey]
   );
-  const sparkMessage = useMemo(() => {
-    void language;
-    const seasonalMessages = currentSeason ? SEASONAL_HOME_SPARK_MESSAGES[currentSeason.id] : null;
-    const source = seasonalMessages?.length ? seasonalMessages : HOME_SPARK_MESSAGES;
-    return source[homeCopyDayIndex % source.length];
-  }, [currentSeason, homeCopyDayIndex, language]);
-  const tonightTeaser = useMemo(() => {
-    void language;
-    const seasonalTeasers = currentSeason ? SEASONAL_TONIGHT_TEASERS[currentSeason.id] : null;
-    const source = seasonalTeasers?.length ? seasonalTeasers : TONIGHT_SUGGESTION_TEASERS;
-    return source[homeCopyDayIndex % source.length];
-  }, [currentSeason, homeCopyDayIndex, language]);
   const seasonalHook = useMemo(() => {
     void language;
     const hooks = currentSeason ? SEASONAL_HOOK_LINES[currentSeason.id] : null;
@@ -3679,13 +3669,6 @@ function HomeScreen({
     return hooks[homeCopyDayIndex % hooks.length];
   }, [currentSeason, homeCopyDayIndex, language]);
   const levelMotivator = LEVEL_MOTIVATOR_LINES[homeCopyDayIndex % LEVEL_MOTIVATOR_LINES.length];
-  const couplePrompt = useMemo(
-    () => {
-      void language;
-      return COUPLE_PROMPTS[homeCopyDayIndex % COUPLE_PROMPTS.length];
-    },
-    [homeCopyDayIndex, language]
-  );
   const dailyJoke = useMemo(
     () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank, language),
     [dailyJokeDateKey, dailyJokeBank, language]
@@ -3829,18 +3812,70 @@ function HomeScreen({
   const suggestionsTranslateY = suggestionsAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] });
   const actionsTranslateY = actionsAnim.interpolate({ inputRange: [0, 1], outputRange: [18, 0] });
 
-  const tonightPosition = useMemo(() => {
-    void language;
-    if (store.currentMood) {
-      const moodPositions = positions.filter((p) => p.mood === store.currentMood);
-      const untried = moodPositions.filter((p) => !store.tried.includes(p.id));
-      if (untried.length > 0) return untried[Math.floor(Math.random() * untried.length)];
-      if (moodPositions.length > 0) return moodPositions[Math.floor(Math.random() * moodPositions.length)];
+  const resolveRecommendationItem = useCallback((recommendation: HomeRecommendation) => {
+    const targetId = Number(recommendation.item?.id || 0);
+    if (recommendation.type === 'position') {
+      return positions.find((entry) => entry.id === targetId) || recommendation.item;
     }
-    const untried = positions.filter((p) => !store.tried.includes(p.id));
-    if (untried.length > 0) return untried[Math.floor(Math.random() * untried.length)];
-    return positions[Math.floor(Math.random() * positions.length)];
-  }, [language, store.currentMood, store.tried]);
+    if (recommendation.type === 'foreplay') {
+      return foreplayIdeas.find((entry) => entry.id === targetId) || recommendation.item;
+    }
+    if (recommendation.type === 'oral') {
+      return oralPlayIdeas.find((entry) => entry.id === targetId) || recommendation.item;
+    }
+    if (recommendation.type === 'massage') {
+      return massageTechniques.find((entry) => entry.id === targetId) || recommendation.item;
+    }
+    return rolePlayScenarios.find((entry) => entry.id === targetId) || recommendation.item;
+  }, []);
+
+  const trackRecommendationView = useCallback((recommendation: HomeRecommendation) => {
+    const resolvedItem = resolveRecommendationItem(recommendation);
+    const contentType = recommendation.type as InteractionEvent['contentType'];
+
+    store.trackInteraction({
+      type: 'view',
+      contentType,
+      itemId: Number(resolvedItem?.id || recommendation.item.id),
+      category: typeof resolvedItem?.category === 'string' ? resolvedItem.category : undefined,
+      mood: typeof resolvedItem?.mood === 'string' ? resolvedItem.mood : undefined,
+      difficulty: typeof resolvedItem?.difficulty === 'string' ? resolvedItem.difficulty : undefined,
+    });
+  }, [resolveRecommendationItem, store]);
+
+  useEffect(() => {
+    recommendations.forEach((recommendation) => {
+      const recommendationKey = `${recommendation.type}:${recommendation.item.id}`;
+      if (trackedRecommendationImpressionsRef.current.has(recommendationKey)) return;
+      trackedRecommendationImpressionsRef.current.add(recommendationKey);
+      trackRecommendationView(recommendation);
+    });
+  }, [recommendations, trackRecommendationView]);
+
+  const handleRecommendationPress = useCallback((recommendation: HomeRecommendation) => {
+    const resolvedItem = resolveRecommendationItem(recommendation);
+    const contentType = recommendation.type as InteractionEvent['contentType'];
+
+    trackRecommendationView(recommendation);
+
+    if (contentType === 'position') {
+      navigation.navigate('PositionDetail', { position: resolvedItem });
+      return;
+    }
+    if (contentType === 'foreplay') {
+      navigation.navigate('ForeplayDetail', { item: resolvedItem });
+      return;
+    }
+    if (contentType === 'oral') {
+      navigation.navigate('OralDetail', { item: resolvedItem });
+      return;
+    }
+    if (contentType === 'massage') {
+      navigation.navigate('MassageDetail', { item: resolvedItem });
+      return;
+    }
+    navigation.navigate('RolePlayDetail', { item: resolvedItem });
+  }, [navigation, resolveRecommendationItem, trackRecommendationView]);
 
   return (
     <ScreenWrapper scroll>
@@ -3859,37 +3894,20 @@ function HomeScreen({
         <LanguageQuickSwitcher compact />
       </View>
 
-      {/* ── Tonight Suggestion (hero card — the romantic centrepiece) ── */}
+      {/* ── Tonight Suggestions ── */}
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
-        <TouchableOpacity onPress={() => { haptic.light(); navigation.navigate('PositionDetail', { position: tonightPosition }); }} activeOpacity={0.9}>
-          <View style={styles.tonightCard}>
-            <LinearGradient colors={GRADIENT_PRESETS.tonight} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.tonightGradient}>
-              <Text style={styles.tonightLabel}>{t('home.tonight_suggestion')}</Text>
-              <Text style={styles.tonightTitle}>{tonightPosition.name}</Text>
-              <Text style={styles.tonightSubtitle}>{tonightPosition.vibe}</Text>
-              <Text style={styles.tonightTeaser}>{tonightTeaser}</Text>
-              {!store.tried.includes(tonightPosition.id) && (
-                <View style={styles.newBadge}><Text style={styles.newBadgeText}>✨ {t('home.new_badge', { count: 3 })}</Text></View>
-              )}
-            </LinearGradient>
-          </View>
-        </TouchableOpacity>
-
-        {/* ── Couple's Spark — daily intimacy micro-prompt ── */}
-        <View style={styles.coupleSparkCard}>
-          <Text style={styles.coupleSparkEmoji}>{couplePrompt.emoji}</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.coupleSparkLabel}>{t('home.couple_prompt_label')}</Text>
-            <Text style={styles.coupleSparkText}>{couplePrompt.text}</Text>
-          </View>
-        </View>
-
-        {/* ── Spark Banner ── */}
-        <View style={styles.homeSparkBanner}>
-          <Text style={styles.homeSparkBannerHeadline}>{sparkMessage.headline}</Text>
-          <Text style={styles.homeSparkBannerBody}>{sparkMessage.body}</Text>
-        </View>
+        <Text style={styles.sectionTitle}>✨ Picked for You Tonight</Text>
+        {recommendations.map((recommendation, index) => (
+          <SmartSuggestionCard
+            key={`${recommendation.type}-${recommendation.item.id}-${index}`}
+            recommendation={recommendation}
+            index={index}
+            onPress={() => handleRecommendationPress(recommendation)}
+          />
+        ))}
       </Animated.View>
+
+      <WeeklyGoalsCard />
 
       {/* ── Daily Joke & Seasonal ── */}
       <Animated.View style={{ opacity: suggestionsAnim, transform: [{ translateY: suggestionsTranslateY }] }}>
