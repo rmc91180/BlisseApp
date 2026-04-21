@@ -32,11 +32,44 @@ export const ANALYTICS_BASE_PROPERTIES = {
 
 export const ALLOWED_ANALYTICS_PROPERTY_KEYS = new Set([
   'contentType',
+  'itemId',
   'category',
   'mood',
   'feature',
   'level',
+  'step',
+  'trigger',
+  'planType',
+  'isFirstSession',
+  'durationSeconds',
+  'daysSinceInstall',
+  'totalActivities',
 ]);
+
+/**
+ * Retention-focused instrumentation map.
+ * Documents what each event answers so product decisions remain explicit.
+ */
+export const RETENTION_EVENTS = {
+  onboarding_step: {
+    decision: 'Locate onboarding drop-off and friction by step.',
+  },
+  paywall_shown: {
+    decision: 'Compare paywall entry triggers and visibility patterns.',
+  },
+  paywall_converted: {
+    decision: 'Measure conversion by plan and acquisition context.',
+  },
+  session_started: {
+    decision: 'Track first-session completion versus returning usage.',
+  },
+  content_completed: {
+    decision: 'Understand completion behavior and time-to-complete by content type.',
+  },
+  retention_signal: {
+    decision: 'Monitor returning engagement by lifecycle day and activity depth.',
+  },
+} as const;
 
 export const FORMSPREE_ALLOWED_FIELDS = new Set([
   'type',
@@ -205,6 +238,42 @@ export const submitFormspreeMessage = async (payload: Record<string, string>): P
  * Events are flushed by the AnalyticsFlusher component which has PostHog access.
  */
 export const Analytics = {
+  trackOnboardingStep: (step: 'name' | 'relationship' | 'preferences' | 'experience' | 'legal' | 'payoff') => {
+    pendingEvents.push({
+      event: 'onboarding_step',
+      properties: { step },
+    });
+  },
+  trackPaywallShown: (trigger: 'trial_expired' | 'manual' | 'banner') => {
+    pendingEvents.push({
+      event: 'paywall_shown',
+      properties: { trigger },
+    });
+  },
+  trackPaywallConverted: (planType: string) => {
+    pendingEvents.push({
+      event: 'paywall_converted',
+      properties: { planType },
+    });
+  },
+  trackSessionStart: (isFirstSession: boolean) => {
+    pendingEvents.push({
+      event: 'session_started',
+      properties: { isFirstSession },
+    });
+  },
+  trackContentCompleted: (contentType: string, itemId: number, durationSeconds: number) => {
+    pendingEvents.push({
+      event: 'content_completed',
+      properties: { contentType, itemId, durationSeconds },
+    });
+  },
+  trackRetentionSignal: (daysSinceInstall: number, totalActivities: number) => {
+    pendingEvents.push({
+      event: 'retention_signal',
+      properties: { daysSinceInstall, totalActivities },
+    });
+  },
   trackContentTried: (contentType: string, category: string, mood: string) => {
     pendingEvents.push({
       event: 'content_tried',

@@ -79,8 +79,13 @@ import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
 import { sound } from '@/services/audio';
 import { SubscriptionProvider } from '@/services/subscription';
+import { DailyBonusModal } from '@/components/DailyBonusModal';
 import { SmartSuggestionCard } from '@/components/home/SmartSuggestionCard';
 import { WeeklyGoalsCard } from '@/components/home/WeeklyGoalsCard';
+import { OnboardingPayoffScreen } from '@/screens/onboarding/OnboardingPayoffScreen';
+import { MoodCheckScreen } from '@/screens/tonight/MoodCheckScreen';
+import { TonightSessionScreen } from '@/screens/tonight/TonightSessionScreen';
+import { SessionRatingScreen } from '@/screens/tonight/SessionRatingScreen';
 import type {
   SeasonalGameAction, SeasonalGameOption, TruthOrDareItem,
   Level,
@@ -874,6 +879,9 @@ function NameInputScreen({ navigation }: any) {
   const { t, uiPack } = useI18n();
   const [name, setName] = useState('');
   const store = useStore();
+  useEffect(() => {
+    Analytics.trackOnboardingStep('name');
+  }, []);
   const handleContinue = () => { store.setName(name); navigation.navigate('RelationshipType'); };
   return (
     <ScreenWrapper>
@@ -892,6 +900,9 @@ function RelationshipTypeScreen({ navigation }: any) {
   const { authPack } = useI18n();
   const store = useStore();
   const [selected, setSelected] = useState<string | null>(store.relationshipType);
+  useEffect(() => {
+    Analytics.trackOnboardingStep('relationship');
+  }, []);
   const options = [
     { id: 'hetero', title: authPack('onboardingRelationship', 'relationshipOptions.hetero') },
     { id: 'mm', title: authPack('onboardingRelationship', 'relationshipOptions.mm') },
@@ -915,6 +926,9 @@ function RelationshipTypeScreen({ navigation }: any) {
 function PreferencesScreen({ navigation }: any) {
   const { authPack } = useI18n();
   const store = useStore();
+  useEffect(() => {
+    Analytics.trackOnboardingStep('preferences');
+  }, []);
   const options = useMemo(() => [
     { id: 'deepConnection', label: authPack('onboardingPreferences', 'preferences.deepConnection') },
     { id: 'spiceThingsUp', label: authPack('onboardingPreferences', 'preferences.spiceThingsUp') },
@@ -952,6 +966,9 @@ function ExperienceLevelScreen({ navigation }: any) {
   const { uiPack, authPack } = useI18n();
   const store = useStore();
   const [selected, setSelected] = useState<string | null>(store.experience);
+  useEffect(() => {
+    Analytics.trackOnboardingStep('experience');
+  }, []);
   const options = [
     { id: 'beginner', title: `🌱 ${uiPack('onboarding.experience.beginner')}`, subtitle: authPack('onboardingPreferences', 'experienceLevels.beginner') },
     { id: 'intermediate', title: `🌿 ${uiPack('onboarding.experience.intermediate')}`, subtitle: authPack('onboardingPreferences', 'experienceLevels.intermediate') },
@@ -989,13 +1006,16 @@ function LegalScreen({ navigation }: any) {
   const store = useStore();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  useEffect(() => {
+    Analytics.trackOnboardingStep('legal');
+  }, []);
   
   const allConfirmed = hasReadTerms && hasReadPrivacy && confirmedAge;
   
   const handleEnter = () => {
     store.agreeToTerms();
-    store.completeOnboarding();
     haptic.success();
+    navigation.navigate('OnboardingPayoff');
   };
 
   const handleTermsScroll = (event: any) => {
@@ -2164,56 +2184,6 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
               <Text style={styles.allGoalsCompleteEmoji}>🎉</Text>
               <Text style={styles.allGoalsCompleteText}>{t('weekly_goals.all_completed')}</Text>
             </View>
-          )}
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-// ============================================
-// DAILY BONUS MODAL
-// ============================================
-function DailyBonusModal({ visible, onClose: _onClose, onClaim }: { visible: boolean; onClose: () => void; onClaim: () => void }) {
-  const { t } = useI18n();
-  const store = useStore();
-  const [claimed, setClaimed] = useState(false);
-  const [bonusAmount, setBonusAmount] = useState(0);
-
-  const handleClaim = () => {
-    const bonus = store.claimDailyBonus();
-    setBonusAmount(bonus);
-    setClaimed(true);
-    haptic.celebration();
-    sounds.playBonus(); // Play coin/bonus sound
-    setTimeout(() => {
-      onClaim();
-    }, 1500);
-  };
-
-  return (
-    <Modal visible={visible} animationType="fade" transparent>
-      <View style={styles.celebrationOverlay}>
-        <View style={styles.dailyBonusContent}>
-          {!claimed ? (
-            <>
-              <Text style={styles.dailyBonusEmoji}>🎁</Text>
-              <Text style={styles.dailyBonusTitle}>{t('daily_bonus.title')}</Text>
-              <Text style={styles.dailyBonusSubtitle}>
-                {store.loginStreak > 1 ? t('daily_bonus.streak', { count: store.loginStreak }) : t('daily_bonus.welcome_back')}
-              </Text>
-              <TouchableOpacity style={styles.dailyBonusButton} onPress={handleClaim}>
-                <LinearGradient colors={GRADIENT_PRESETS.amberGold} style={styles.dailyBonusButtonGradient}>
-                  <Text style={styles.dailyBonusButtonText}>{t('daily_bonus.claim')}</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <Text style={styles.dailyBonusEmoji}>🌟</Text>
-              <Text style={styles.dailyBonusTitle}>{t('daily_bonus.stars', { count: bonusAmount })}</Text>
-              <Text style={styles.dailyBonusSubtitle}>{t('daily_bonus.come_back')}</Text>
-            </>
           )}
         </View>
       </View>
@@ -3609,10 +3579,16 @@ function HomeScreen({
   navigation,
   pendingDailyJokeDateKey,
   onConsumePendingDailyJokeNotification,
+  trialDaysRemaining = 0,
+  showTrialBanner = false,
+  onOpenPaywallModal,
 }: {
   navigation: any;
   pendingDailyJokeDateKey?: string | null;
   onConsumePendingDailyJokeNotification?: () => void;
+  trialDaysRemaining?: number;
+  showTrialBanner?: boolean;
+  onOpenPaywallModal?: () => void;
 }) {
   type HomeRecommendation = ReturnType<typeof useRecommendations>['recommendations'][number];
   const store = useStore();
@@ -3628,7 +3604,6 @@ function HomeScreen({
   const [showAchievements, setShowAchievements] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
   const [showWeeklyGoals, setShowWeeklyGoals] = useState(false);
-  const [showDailyBonus, setShowDailyBonus] = useState(false);
   const [showPlaylists, setShowPlaylists] = useState(false);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -3705,15 +3680,9 @@ function HomeScreen({
     store.triedRoleplay.length,
   ]);
 
-  // Check for daily bonus on mount
+  // Keep weekly goals fresh for the home summary cards
   useEffect(() => {
-    store.checkLoginStreak();
     store.refreshWeeklyGoals();
-    
-    // Show daily bonus if not claimed today
-    if (!store.dailyBonusClaimed) {
-      setTimeout(() => setShowDailyBonus(true), 500);
-    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -3832,6 +3801,13 @@ function HomeScreen({
   const trackRecommendationView = useCallback((recommendation: HomeRecommendation) => {
     const resolvedItem = resolveRecommendationItem(recommendation);
     const contentType = recommendation.type as InteractionEvent['contentType'];
+    const difficulty =
+      resolvedItem &&
+      typeof resolvedItem === 'object' &&
+      'difficulty' in resolvedItem &&
+      typeof (resolvedItem as { difficulty?: unknown }).difficulty === 'string'
+        ? (resolvedItem as { difficulty: string }).difficulty
+        : undefined;
 
     store.trackInteraction({
       type: 'view',
@@ -3839,7 +3815,7 @@ function HomeScreen({
       itemId: Number(resolvedItem?.id || recommendation.item.id),
       category: typeof resolvedItem?.category === 'string' ? resolvedItem.category : undefined,
       mood: typeof resolvedItem?.mood === 'string' ? resolvedItem.mood : undefined,
-      difficulty: typeof resolvedItem?.difficulty === 'string' ? resolvedItem.difficulty : undefined,
+      difficulty,
     });
   }, [resolveRecommendationItem, store]);
 
@@ -3893,6 +3869,46 @@ function HomeScreen({
         </View>
         <LanguageQuickSwitcher compact />
       </View>
+
+      {showTrialBanner && trialDaysRemaining > 0 ? (
+        <TouchableOpacity
+          style={styles.trialBanner}
+          onPress={() => {
+            haptic.light();
+            onOpenPaywallModal?.();
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={`Free trial ${trialDaysRemaining} days left`}
+        >
+          <Text style={styles.trialBannerText}>
+            {`✨ Free trial · ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'} left — Subscribe to keep going`}
+          </Text>
+        </TouchableOpacity>
+      ) : null}
+
+      <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
+        <View style={styles.tonightCard}>
+          <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.tonightGradient}>
+            <Text style={styles.tonightLabel}>Tonight Session</Text>
+            <Text style={styles.tonightTitle}>3 easy guided steps</Text>
+            <Text style={styles.tonightSubtitle}>Mood check → Curated session → Reflection</Text>
+            <Text style={styles.tonightTeaser}>
+              Low-pressure, warm guidance that adapts to how you feel tonight.
+            </Text>
+            <TouchableOpacity
+              style={styles.tonightSessionButton}
+              onPress={() => {
+                haptic.medium();
+                navigation.navigate('MoodCheckScreen');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Begin tonight session"
+            >
+              <Text style={styles.tonightSessionButtonText}>Begin Session →</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+      </Animated.View>
 
       {/* ── Tonight Suggestions ── */}
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
@@ -4157,7 +4173,6 @@ function HomeScreen({
       <AchievementsModal visible={showAchievements} onClose={() => setShowAchievements(false)} />
       <InsightsModal visible={showInsights} onClose={() => setShowInsights(false)} />
       <WeeklyGoalsModal visible={showWeeklyGoals} onClose={() => setShowWeeklyGoals(false)} />
-      <DailyBonusModal visible={showDailyBonus} onClose={() => setShowDailyBonus(false)} onClaim={() => setShowDailyBonus(false)} />
       <MoodPlaylistsModal visible={showPlaylists} onClose={() => setShowPlaylists(false)} navigation={navigation} />
       <RecommendationsModal visible={showRecommendations} onClose={() => setShowRecommendations(false)} navigation={navigation} />
       <LevelUpModal visible={showLevelUp} onClose={() => setShowLevelUp(false)} newLevel={newLevelData} />
@@ -4902,9 +4917,12 @@ function PositionDetailScreen({ route, navigation }: any) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
   const existingNote = store.notes.find(n => n.itemId === position.id && n.type === 'position');
+  const openedAtRef = useRef(Date.now());
 
   const handleMarkTried = () => {
     if (!isTried) {
+      const durationSeconds = Math.max(0, Math.round((Date.now() - openedAtRef.current) / 1000));
+      Analytics.trackContentCompleted('position', position.id, durationSeconds);
       const result = store.logActivity('position', position.id);
       store.markTried(position.id);
       setCelebrationData({ stars: result.stars, achievements: result.newAchievements });
@@ -5013,9 +5031,12 @@ function ForeplayDetailScreen({ route, navigation }: any) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
   const existingNote = store.notes.find(n => n.itemId === item.id && n.type === 'foreplay');
+  const openedAtRef = useRef(Date.now());
 
   const handleMarkTried = () => {
     if (!isTried) {
+      const durationSeconds = Math.max(0, Math.round((Date.now() - openedAtRef.current) / 1000));
+      Analytics.trackContentCompleted('foreplay', item.id, durationSeconds);
       const result = store.logActivity('foreplay', item.id);
       store.markForeplayTried(item.id);
       setCelebrationData({ stars: result.stars, achievements: result.newAchievements });
@@ -5120,9 +5141,12 @@ function OralDetailScreen({ route, navigation }: any) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
   const existingNote = store.notes.find(n => n.itemId === item.id && n.type === 'oral');
+  const openedAtRef = useRef(Date.now());
 
   const handleMarkTried = () => {
     if (!isTried) {
+      const durationSeconds = Math.max(0, Math.round((Date.now() - openedAtRef.current) / 1000));
+      Analytics.trackContentCompleted('oral', item.id, durationSeconds);
       const result = store.logActivity('oral', item.id);
       store.markOralTried(item.id);
       setCelebrationData({ stars: result.stars, achievements: result.newAchievements });
@@ -5230,9 +5254,12 @@ function MassageDetailScreen({ route, navigation }: any) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
   const existingNote = store.notes.find(n => n.itemId === item.id && n.type === 'massage');
+  const openedAtRef = useRef(Date.now());
 
   const handleMarkTried = () => {
     if (!isTried) {
+      const durationSeconds = Math.max(0, Math.round((Date.now() - openedAtRef.current) / 1000));
+      Analytics.trackContentCompleted('massage', item.id, durationSeconds);
       const result = store.logActivity('massage', item.id);
       store.markMassageTried(item.id);
       setCelebrationData({ stars: result.stars, achievements: result.newAchievements });
@@ -5339,9 +5366,12 @@ function RolePlayDetailScreen({ route, navigation }: any) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
   const existingNote = store.notes.find(n => n.itemId === item.id && n.type === 'roleplay');
+  const openedAtRef = useRef(Date.now());
 
   const handleMarkTried = () => {
     if (!isTried) {
+      const durationSeconds = Math.max(0, Math.round((Date.now() - openedAtRef.current) / 1000));
+      Analytics.trackContentCompleted('roleplay', item.id, durationSeconds);
       const result = store.logActivity('roleplay', item.id);
       store.markRoleplayTried(item.id);
       setCelebrationData({ stars: result.stars, achievements: result.newAchievements });
@@ -5851,6 +5881,7 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
   const [isReady, setIsReady] = useState(false);
   const [isQueueSyncing, setIsQueueSyncing] = useState(false);
   const [showOnlineRecovered, setShowOnlineRecovered] = useState(false);
+  const [showDailyBonusModal, setShowDailyBonusModal] = useState(false);
   const [pendingDailyJokeDateKey, setPendingDailyJokeDateKey] = useState<string | null>(null);
   const lastOnlineStateRef = useRef(true);
   const lastHandledNotificationIdRef = useRef<string | null>(null);
@@ -5910,6 +5941,26 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
         useStore.getState().setPinCode(securePin);
       } else if (currentPin && securePin && currentPin !== securePin) {
         useStore.getState().setPinCode(securePin);
+      }
+
+      const appState = useStore.getState();
+      Analytics.trackSessionStart(appState.interactionHistory.length === 0);
+
+      const todayKey = getDateKey(new Date());
+      const installDateKey = appState.firstOpenDate || todayKey;
+      if (!appState.firstOpenDate) {
+        appState.setFirstOpenDate(installDateKey);
+      }
+
+      const totalActivities = appState.activityLog.length;
+      if (totalActivities > 0) {
+        const installDate = new Date(`${installDateKey}T00:00:00`);
+        const todayDate = new Date(`${todayKey}T00:00:00`);
+        const daysSinceInstall = Math.max(
+          0,
+          Math.floor((todayDate.getTime() - installDate.getTime()) / (1000 * 60 * 60 * 24))
+        );
+        Analytics.trackRetentionSignal(daysSinceInstall, totalActivities);
       }
 
       if (isMounted) {
@@ -6000,6 +6051,30 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
       .finally(() => setIsQueueSyncing(false));
   }, [isReady, isOnline]);
 
+  useEffect(() => {
+    if (!isReady) return;
+
+    const today = getDateKey(new Date());
+    const previousLastLoginDate = useStore.getState().lastLoginDate;
+    useStore.getState().checkLoginStreak();
+
+    const currentState = useStore.getState();
+    const shouldShowDailyBonus =
+      currentState.hasCompletedOnboarding &&
+      currentState.hasAgreedToTerms &&
+      previousLastLoginDate !== today &&
+      currentState.lastLoginDate === today &&
+      !currentState.dailyBonusClaimed;
+
+    if (!shouldShowDailyBonus) return;
+
+    const timer = setTimeout(() => {
+      setShowDailyBonusModal(true);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [isReady]);
+
   // Show loading while store hydrates
   if (!isReady) {
     return (
@@ -6045,6 +6120,14 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
               ExploreScreen,
               FavoritesScreen,
               ProfileScreen,
+              MoodCheckScreen,
+              TonightSessionScreen,
+              SessionRatingScreen: (props: any) => (
+                <SessionRatingScreen
+                  {...props}
+                  ConfettiComponent={ConfettiCelebration}
+                />
+              ),
               PositionDetailScreen,
               ForeplayDetailScreen,
               OralDetailScreen,
@@ -6056,10 +6139,16 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
               PreferencesScreen,
               ExperienceLevelScreen,
               LegalScreen,
+              OnboardingPayoffScreen,
               SignInScreen,
             }}
           />
         </NavigationContainer>
+        <DailyBonusModal
+          visible={showDailyBonusModal}
+          onClose={() => setShowDailyBonusModal(false)}
+          ConfettiComponent={ConfettiCelebration}
+        />
         <StatusBar style="light" />
       </SafeAreaProvider>
     );
@@ -6180,6 +6269,22 @@ const styles = StyleSheet.create({
   checkboxText: { flex: 1, color: colors.text.primary, fontSize: 14, lineHeight: 20 },
   homeHeader: { paddingTop: 10, marginBottom: 16 },
   homeHeaderTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  trialBanner: {
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: 'rgba(212, 165, 116, 0.26)',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 165, 116, 0.45)',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    marginBottom: 12,
+  },
+  trialBannerText: {
+    color: colors.text.primary,
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
   greeting: { fontSize: 14, color: colors.text.secondary },
   homeSparkBanner: { backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.cardLight, padding: 14, marginBottom: 16 },
   homeSparkBannerHeadline: { color: colors.text.primary, fontSize: 16, fontWeight: '700', marginBottom: 4 },
@@ -6211,6 +6316,21 @@ const styles = StyleSheet.create({
   tonightTitle: { color: colors.white, fontSize: 26, fontWeight: '700', marginBottom: 4 },
   tonightSubtitle: { color: 'rgba(255,255,255,0.9)', fontSize: 14 },
   tonightTeaser: { color: 'rgba(255,255,255,0.88)', fontSize: 13, marginTop: 10, lineHeight: 18 },
+  tonightSessionButton: {
+    marginTop: 14,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.28)',
+  },
+  tonightSessionButtonText: {
+    color: colors.white,
+    fontSize: 13,
+    fontWeight: '700',
+  },
   newBadge: { backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, alignSelf: 'flex-start', marginTop: 12 },
   newBadgeText: { color: colors.white, fontSize: 12, fontWeight: '600' },
   featureButtonsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },

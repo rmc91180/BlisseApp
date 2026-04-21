@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ComponentType } from 'react';
+import React, { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { View, Text, ActivityIndicator, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,6 +8,7 @@ import { useStore } from '@/store/useStore';
 import { useThemeStore, getThemeColors, colors } from '@/store/useThemeStore';
 import { useAuth } from '@/services/auth';
 import { useSubscription } from '@/services/subscription';
+import { Analytics } from '@/services/analytics';
 import type { AppLanguage } from '@/i18n/translations';
 import type { PurchasesPackage } from 'react-native-purchases';
 
@@ -19,6 +20,9 @@ export interface AppNavigatorScreens {
   ExploreScreen: ScreenComponent;
   FavoritesScreen: ScreenComponent;
   ProfileScreen: ScreenComponent;
+  MoodCheckScreen: ScreenComponent;
+  TonightSessionScreen: ScreenComponent;
+  SessionRatingScreen: ScreenComponent;
   PositionDetailScreen: ScreenComponent;
   ForeplayDetailScreen: ScreenComponent;
   OralDetailScreen: ScreenComponent;
@@ -30,11 +34,14 @@ export interface AppNavigatorScreens {
   PreferencesScreen: ScreenComponent;
   ExperienceLevelScreen: ScreenComponent;
   LegalScreen: ScreenComponent;
+  OnboardingPayoffScreen: ScreenComponent;
   SignInScreen: ScreenComponent;
 }
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+const getTodayKey = () => new Date().toISOString().split('T')[0];
 
 const parseIso8601Period = (period: string | null): { count: number; unit: 'day' | 'week' | 'month' | 'year' } | null => {
   if (!period) return null;
@@ -223,10 +230,11 @@ const getPercentSavings = (monthlyPrice?: number, annualPrice?: number): number 
   return Math.round(((yearlyMonthlyCost - annualPrice) / yearlyMonthlyCost) * 100);
 };
 
-function SubscriptionPaywallScreen() {
+function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: 'trial_expired' | 'manual' | 'banner' } } }) {
   const language = useStore((state) => state.language);
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const trigger = route?.params?.trigger === 'trial_expired' || route?.params?.trigger === 'banner' ? route.params.trigger : 'manual';
   const {
     offerings,
     loading,
@@ -236,11 +244,15 @@ function SubscriptionPaywallScreen() {
     refresh,
   } = useSubscription();
 
+  useEffect(() => {
+    Analytics.trackPaywallShown(trigger);
+  }, [trigger]);
+
   const copy = {
     en: {
-      title: 'Unlock Blisse',
-      subtitle: 'Start your premium access to all experiences, games, and personalized recommendations.',
-      restore: 'Restore Purchases',
+      title: 'Your couples toolkit, unlocked',
+      subtitle: 'Join thousands of couples exploring together.',
+      restore: 'Restore Purchase',
       retry: 'Retry',
       freeTrialBadge: 'Free trial available',
       freeTrialThen: 'Then {price}',
@@ -263,11 +275,16 @@ function SubscriptionPaywallScreen() {
       restoreMissing: 'No active subscription found.',
       checkingSubscription: 'Checking subscription...',
       billingUnavailableTitle: 'Billing unavailable',
+      featureIdeas: '🌸 400+ ideas, positions & date nights',
+      featureChallenges: '🎯 Weekly challenges & smart suggestions',
+      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
+      primaryCta: 'Start My Subscription →',
+      contact: "Questions? We're real people. Contact us.",
     },
     es: {
-      title: 'Desbloquea Blisse',
-      subtitle: 'Activa el acceso premium a todas las experiencias, juegos y recomendaciones personalizadas.',
-      restore: 'Restaurar compras',
+      title: 'Your couples toolkit, unlocked',
+      subtitle: 'Join thousands of couples exploring together.',
+      restore: 'Restore Purchase',
       retry: 'Reintentar',
       freeTrialBadge: 'Prueba gratis disponible',
       freeTrialThen: 'Luego {price}',
@@ -290,11 +307,16 @@ function SubscriptionPaywallScreen() {
       restoreMissing: 'No encontramos una suscripción activa.',
       checkingSubscription: 'Comprobando la suscripción...',
       billingUnavailableTitle: 'Facturación no disponible',
+      featureIdeas: '🌸 400+ ideas, positions & date nights',
+      featureChallenges: '🎯 Weekly challenges & smart suggestions',
+      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
+      primaryCta: 'Start My Subscription →',
+      contact: "Questions? We're real people. Contact us.",
     },
     pt: {
-      title: 'Desbloqueie o Blisse',
-      subtitle: 'Ative o acesso premium para todas as experiências, jogos e recomendações personalizadas.',
-      restore: 'Restaurar compras',
+      title: 'Your couples toolkit, unlocked',
+      subtitle: 'Join thousands of couples exploring together.',
+      restore: 'Restore Purchase',
       retry: 'Tentar novamente',
       freeTrialBadge: 'Teste grátis disponível',
       freeTrialThen: 'Depois {price}',
@@ -317,11 +339,16 @@ function SubscriptionPaywallScreen() {
       restoreMissing: 'Não encontramos assinatura ativa.',
       checkingSubscription: 'Verificando assinatura...',
       billingUnavailableTitle: 'Cobrança indisponível',
+      featureIdeas: '🌸 400+ ideas, positions & date nights',
+      featureChallenges: '🎯 Weekly challenges & smart suggestions',
+      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
+      primaryCta: 'Start My Subscription →',
+      contact: "Questions? We're real people. Contact us.",
     },
     hi: {
-      title: 'Blisse अनलॉक करें',
-      subtitle: 'सभी experiences, games और personalized recommendations के लिए premium access शुरू करें।',
-      restore: 'खरीदारी बहाल करें',
+      title: 'Your couples toolkit, unlocked',
+      subtitle: 'Join thousands of couples exploring together.',
+      restore: 'Restore Purchase',
       retry: 'फिर से कोशिश करें',
       freeTrialBadge: 'मुफ़्त ट्रायल उपलब्ध',
       freeTrialThen: 'इसके बाद {price}',
@@ -344,6 +371,11 @@ function SubscriptionPaywallScreen() {
       restoreMissing: 'कोई सक्रिय subscription नहीं मिला।',
       checkingSubscription: 'subscription जाँची जा रही है...',
       billingUnavailableTitle: 'बिलिंग उपलब्ध नहीं है',
+      featureIdeas: '🌸 400+ ideas, positions & date nights',
+      featureChallenges: '🎯 Weekly challenges & smart suggestions',
+      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
+      primaryCta: 'Start My Subscription →',
+      contact: "Questions? We're real people. Contact us.",
     },
   } as const;
 
@@ -353,6 +385,7 @@ function SubscriptionPaywallScreen() {
   const onPurchase = async (pkg: PurchasesPackage) => {
     try {
       await purchase(pkg);
+      Analytics.trackPaywallConverted(getPackageTypeKey(pkg) || pkg.identifier || 'unknown');
     } catch {
       Alert.alert(i18n.purchaseError);
     }
@@ -380,6 +413,11 @@ function SubscriptionPaywallScreen() {
       <Text style={{ color: themeColors.text.primary, fontSize: 34, fontWeight: '800', marginBottom: 10 }}>🌸</Text>
       <Text style={{ color: themeColors.text.primary, fontSize: 30, fontWeight: '700', marginBottom: 8 }}>{i18n.title}</Text>
       <Text style={{ color: themeColors.text.secondary, fontSize: 15, lineHeight: 22, marginBottom: 20 }}>{i18n.subtitle}</Text>
+      <View style={{ marginBottom: 18, gap: 6 }}>
+        <Text style={{ color: themeColors.text.primary, fontSize: 14, fontWeight: '600' }}>{i18n.featureIdeas}</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 14, fontWeight: '600' }}>{i18n.featureChallenges}</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 14, fontWeight: '600' }}>{i18n.featurePrivacy}</Text>
+      </View>
 
       {offerings.length === 0 ? (
         <View style={{ backgroundColor: themeColors.card, borderRadius: 14, padding: 16, marginBottom: 12 }}>
@@ -458,6 +496,9 @@ function SubscriptionPaywallScreen() {
             ) : null}
             <Text style={{ color: themeColors.primary[400], fontSize: 16, fontWeight: '700', marginTop: 10 }}>{renewalPrice}</Text>
             <Text style={{ color: themeColors.text.muted, fontSize: 12, lineHeight: 18, marginTop: 8 }}>{planSupportCopy}</Text>
+            <Text style={{ color: themeColors.primary[400], fontSize: 14, fontWeight: '700', marginTop: 12 }}>
+              {i18n.primaryCta}
+            </Text>
           </TouchableOpacity>
             );
           })()
@@ -476,11 +517,20 @@ function SubscriptionPaywallScreen() {
 
       {loading ? <ActivityIndicator color={themeColors.primary[500]} style={{ marginTop: 14 }} /> : null}
       <Text style={{ color: themeColors.text.muted, fontSize: 12, lineHeight: 18, marginTop: 14 }}>{i18n.legal}</Text>
+      <Text style={{ color: themeColors.text.secondary, fontSize: 12, lineHeight: 18, marginTop: 12 }}>{i18n.contact}</Text>
     </ScrollView>
   );
 }
 
-function MainTabs({ screens }: { screens: AppNavigatorScreens }) {
+function MainTabs({
+  screens,
+  trialDaysRemaining,
+  showTrialBanner,
+}: {
+  screens: AppNavigatorScreens;
+  trialDaysRemaining: number;
+  showTrialBanner: boolean;
+}) {
   const { t } = useI18n();
   return (
     <Tab.Navigator
@@ -500,9 +550,17 @@ function MainTabs({ screens }: { screens: AppNavigatorScreens }) {
     >
       <Tab.Screen
         name="Home"
-        component={screens.HomeScreen}
         options={{ tabBarLabel: t('tabs.home'), tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} /> }}
-      />
+      >
+        {(props: any) => (
+          <screens.HomeScreen
+            {...props}
+            trialDaysRemaining={trialDaysRemaining}
+            showTrialBanner={showTrialBanner}
+            onOpenPaywallModal={() => props.navigation.getParent()?.navigate('PaywallModal', { trigger: 'banner' })}
+          />
+        )}
+      </Tab.Screen>
       <Tab.Screen
         name="Explore"
         component={screens.ExploreScreen}
@@ -531,6 +589,7 @@ function OnboardingStack({ screens }: { screens: AppNavigatorScreens }) {
       <Stack.Screen name="Preferences" component={screens.PreferencesScreen} />
       <Stack.Screen name="ExperienceLevel" component={screens.ExperienceLevelScreen} />
       <Stack.Screen name="Legal" component={screens.LegalScreen} />
+      <Stack.Screen name="OnboardingPayoff" component={screens.OnboardingPayoffScreen} />
       <Stack.Screen name="SignIn" component={screens.SignInScreen} />
     </Stack.Navigator>
   );
@@ -549,7 +608,6 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     enabled: billingEnabled,
     required: billingRequired,
     ready: billingReady,
-    loading: billingLoading,
     hasActiveEntitlement,
     configError: billingConfigError,
     refresh: refreshBilling,
@@ -562,6 +620,29 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     const timer = setTimeout(() => setIsReady(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  const todayKey = getTodayKey();
+  useEffect(() => {
+    if (!store.firstOpenDate) {
+      store.setFirstOpenDate(todayKey);
+    }
+  }, [store.firstOpenDate, store.setFirstOpenDate, todayKey]);
+
+  const trialDaysRemaining = useMemo(() => {
+    if (!store.firstOpenDate) return 3;
+    const trialStart = new Date(`${store.firstOpenDate}T00:00:00`);
+    const today = new Date(`${todayKey}T00:00:00`);
+    const diffMs = today.getTime() - trialStart.getTime();
+    const daysSince = Math.max(0, Math.floor(diffMs / MS_PER_DAY));
+    return Math.max(0, 3 - daysSince);
+  }, [store.firstOpenDate, todayKey]);
+
+  const shouldShowTrialBanner =
+    billingEnabled &&
+    !hasActiveEntitlement &&
+    !isReviewerBypassUser &&
+    trialDaysRemaining > 0 &&
+    trialDaysRemaining < 3;
 
   if (!isReady || authLoading) {
     return (
@@ -632,10 +713,10 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     );
   }
 
-  if (billingEnabled && !billingLoading && !hasActiveEntitlement && !isReviewerBypassUser) {
+  if (billingEnabled && !hasActiveEntitlement && trialDaysRemaining <= 0 && !isReviewerBypassUser) {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Paywall" component={SubscriptionPaywallScreen} />
+        <Stack.Screen name="Paywall" component={SubscriptionPaywallScreen} initialParams={{ trigger: 'trial_expired' }} />
       </Stack.Navigator>
     );
   }
@@ -643,8 +724,18 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs">
-        {() => <MainTabs screens={screens} />}
+        {() => (
+          <MainTabs
+            screens={screens}
+            trialDaysRemaining={trialDaysRemaining}
+            showTrialBanner={shouldShowTrialBanner}
+          />
+        )}
       </Stack.Screen>
+      <Stack.Screen name="PaywallModal" component={SubscriptionPaywallScreen} initialParams={{ trigger: 'manual' }} options={{ presentation: 'modal' }} />
+      <Stack.Screen name="MoodCheckScreen" component={screens.MoodCheckScreen} />
+      <Stack.Screen name="TonightSessionScreen" component={screens.TonightSessionScreen} />
+      <Stack.Screen name="SessionRatingScreen" component={screens.SessionRatingScreen} />
       <Stack.Screen name="PositionDetail" component={screens.PositionDetailScreen} />
       <Stack.Screen name="ForeplayDetail" component={screens.ForeplayDetailScreen} />
       <Stack.Screen name="OralDetail" component={screens.OralDetailScreen} />

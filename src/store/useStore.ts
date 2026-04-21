@@ -65,6 +65,7 @@ export interface UserState {
   lastLoginDate: string | null;
   loginStreak: number;
   dailyBonusClaimed: boolean;
+  firstOpenDate: string | null;
   // Security & Settings
   pinCode: string | null;
   useBiometrics: boolean;
@@ -110,6 +111,7 @@ export interface UserState {
   updateWeeklyGoalProgress: (type: string, amount?: number) => void;
   claimDailyBonus: () => number;
   checkLoginStreak: () => void;
+  setFirstOpenDate: (date: string) => void;
   // Security & Settings Actions
   setPinCode: (pin: string | null) => void;
   setUseBiometrics: (use: boolean) => void;
@@ -168,6 +170,7 @@ export const useStore = create<UserState>()(
       lastLoginDate: null,
       loginStreak: 0,
       dailyBonusClaimed: false,
+      firstOpenDate: null,
       pinCode: null,
       useBiometrics: false,
       language: 'en',
@@ -577,6 +580,12 @@ export const useStore = create<UserState>()(
           dailyBonusClaimed: true
         });
         return bonus;
+      },
+
+      setFirstOpenDate: (date) => {
+        if (!get().firstOpenDate) {
+          set({ firstOpenDate: date });
+        }
       },
 
       setPinCode: (pin) => {

@@ -94,11 +94,17 @@ export interface UserPlaylist {
 /** Allowed anonymous analytics event names. */
 export type AnalyticsEventName =
   | 'content_tried'
+  | 'content_completed'
   | 'feature_used'
   | 'category_viewed'
   | 'mood_selected'
   | 'app_opened'
-  | 'level_reached';
+  | 'level_reached'
+  | 'onboarding_step'
+  | 'paywall_shown'
+  | 'paywall_converted'
+  | 'session_started'
+  | 'retention_signal';
 
 /** Scalar value that may appear in an analytics property bag. */
 export type AnalyticsPropertyValue = string | number | boolean;
