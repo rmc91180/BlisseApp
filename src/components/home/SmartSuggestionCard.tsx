@@ -10,6 +10,8 @@ import {
 } from '@/content/localizedContent';
 import { sound } from '@/services/audio';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy } from '@/copy';
 import type { ContentType } from '@/types/app';
 
 type Recommendation = {
@@ -29,14 +31,6 @@ interface SmartSuggestionCardProps {
   onPress: () => void;
   index: number;
 }
-
-const BADGE_LABELS: Record<ContentType, string> = {
-  position: '✨ Position',
-  foreplay: '✨ Foreplay',
-  oral: '✨ Oral',
-  massage: '✨ Massage',
-  roleplay: '✨ Roleplay',
-};
 
 const resolveMoodIdFromCatalog = (recommendation: Recommendation): string | undefined => {
   const itemId = recommendation.item?.id;
@@ -59,6 +53,8 @@ const resolveMoodIdFromCatalog = (recommendation: Recommendation): string | unde
 
 export function SmartSuggestionCard({ recommendation, onPress, index }: SmartSuggestionCardProps) {
   const themeStore = useThemeStore();
+  const { language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const themeColors = getThemeColors(themeStore.currentTheme);
   const opacity = useRef(new Animated.Value(0)).current;
   const translateX = useRef(new Animated.Value(26)).current;
@@ -113,13 +109,13 @@ export function SmartSuggestionCard({ recommendation, onPress, index }: SmartSug
             </Text>
             <View style={[styles.badge, { backgroundColor: `${themeColors.primary[500]}30` }]}>
               <Text style={[styles.badgeText, { color: themeColors.primary[400] }]}>
-                {BADGE_LABELS[recommendation.type]}
+                {voice.suggestion.badge[recommendation.type]}
               </Text>
             </View>
           </View>
 
           <Text style={[styles.vibe, { color: themeColors.text.muted }]} numberOfLines={2}>
-            {recommendation.item.vibe || 'A warm suggestion tailored for your pace.'}
+            {recommendation.item.vibe || voice.suggestion.fallbackVibe}
           </Text>
 
           <Text style={[styles.reason, { color: themeColors.primary[400] }]} numberOfLines={2}>

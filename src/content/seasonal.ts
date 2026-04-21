@@ -13,10 +13,12 @@ import {
 } from '@/i18n/languageGetter';
 import {
   SEASONAL_GAME_OPTIONS_ES, SEASONAL_GAME_OPTIONS_PT,
-  PLAYLIST_MOODS_ES, PLAYLIST_MOODS_PT,
-  CURATED_PLAYLIST_STRINGS_ES, CURATED_PLAYLIST_STRINGS_PT,
+  SEASONAL_GAME_OPTIONS_HI,
+  PLAYLIST_MOODS_ES, PLAYLIST_MOODS_PT, PLAYLIST_MOODS_HI,
+  CURATED_PLAYLIST_STRINGS_ES, CURATED_PLAYLIST_STRINGS_PT, CURATED_PLAYLIST_STRINGS_HI,
   TRUTH_OR_DARE_ES, TRUTH_OR_DARE_PT,
 } from '@/i18n/translatedSeasonal';
+import TRUTH_OR_DARE_HI from '@/i18n/content/truth-or-dare-hi.generated.json';
 
 // ============================================
 // SEASONAL GAME OPTIONS (localized)
@@ -55,7 +57,7 @@ export const SEASONAL_GAME_OPTIONS = createLocalizedRecordProxy<
   en: _SEASONAL_GAME_OPTIONS_EN,
   es: SEASONAL_GAME_OPTIONS_ES as Record<SeasonalGameAction, SeasonalGameOption>,
   pt: SEASONAL_GAME_OPTIONS_PT as Record<SeasonalGameAction, SeasonalGameOption>,
-  hi: _SEASONAL_GAME_OPTIONS_EN,
+  hi: SEASONAL_GAME_OPTIONS_HI as Record<SeasonalGameAction, SeasonalGameOption>,
 });
 
 // ============================================
@@ -627,7 +629,7 @@ export const TRUTH_OR_DARE = createLocalizedArrayProxy<TruthOrDareItem>({
   en: _TRUTH_OR_DARE_EN,
   es: TRUTH_OR_DARE_ES,
   pt: TRUTH_OR_DARE_PT,
-  hi: _TRUTH_OR_DARE_EN,
+  hi: TRUTH_OR_DARE_HI as TruthOrDareItem[],
 });
 
 // ============================================
@@ -691,7 +693,7 @@ export const CURATED_PLAYLISTS = createLocalizedArrayProxy<PlaylistLink>({
   en: _CURATED_PLAYLISTS_EN,
   es: buildLocalizedPlaylists(CURATED_PLAYLIST_STRINGS_ES),
   pt: buildLocalizedPlaylists(CURATED_PLAYLIST_STRINGS_PT),
-  hi: _CURATED_PLAYLISTS_EN,
+  hi: buildLocalizedPlaylists(CURATED_PLAYLIST_STRINGS_HI),
 });
 
 // ============================================
@@ -711,7 +713,7 @@ export const PLAYLIST_MOODS = createLocalizedArrayProxy<{ id: string; emoji: str
   en: _PLAYLIST_MOODS_EN,
   es: PLAYLIST_MOODS_ES,
   pt: PLAYLIST_MOODS_PT,
-  hi: _PLAYLIST_MOODS_EN,
+  hi: PLAYLIST_MOODS_HI,
 });
 
 export const MAX_USER_PLAYLISTS = 10;

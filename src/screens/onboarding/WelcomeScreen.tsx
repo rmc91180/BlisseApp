@@ -8,9 +8,14 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy, pickVoiceLine } from '@/copy';
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
+  const { language } = useI18n();
+  const voice = getVoiceCopy(language);
+  const primaryCta = pickVoiceLine(voice.entry.primaryCTA, `welcome-primary-${language}`);
 
   return (
     <LinearGradient
@@ -30,9 +35,9 @@ export default function WelcomeScreen() {
 
         {/* Text Content */}
         <View style={styles.content}>
-          <Text style={styles.title}>Blisse</Text>
+          <Text style={styles.title}>{voice.labels.brandName}</Text>
           <Text style={styles.subtitle}>
-            Your journey to deeper{'\n'}connection starts here
+            {voice.onboarding.welcomeSubtitle}
           </Text>
         </View>
 
@@ -48,7 +53,7 @@ export default function WelcomeScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.primaryButton}
             >
-              <Text style={styles.primaryButtonText}>Get Started</Text>
+              <Text style={styles.primaryButtonText}>{primaryCta}</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -58,7 +63,7 @@ export default function WelcomeScreen() {
             activeOpacity={0.7}
           >
             <Text style={styles.secondaryButtonText}>
-              Already have an account? Sign In
+              {voice.onboarding.welcomeExisting}
             </Text>
           </TouchableOpacity>
         </View>

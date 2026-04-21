@@ -5,11 +5,13 @@ import { useStore } from '@/store/useStore';
 import { useI18n } from '@/hooks/useI18n';
 import { sound } from '@/services/audio';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
+import { getVoiceCopy, pickVoiceLine } from '@/copy';
 
 export function WeeklyGoalsCard() {
   const store = useStore();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const themeStore = useThemeStore();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const themeColors = getThemeColors(themeStore.currentTheme);
   const [expanded, setExpanded] = useState(true);
   const [tooltipGoalId, setTooltipGoalId] = useState<string | null>(null);
@@ -55,7 +57,7 @@ export function WeeklyGoalsCard() {
   const allComplete = store.weeklyGoals.length > 0 && completedCount === store.weeklyGoals.length;
 
   const streakLabel = useMemo(
-    () => `${store.currentStreak} ${store.currentStreak === 1 ? 'week' : 'weeks'}`,
+    () => `${store.currentStreak}`,
     [store.currentStreak]
   );
 
@@ -77,7 +79,7 @@ export function WeeklyGoalsCard() {
     >
       <View style={styles.headerRow}>
         <View>
-          <Text style={[styles.title, { color: themeColors.text.primary }]}>This Week</Text>
+          <Text style={[styles.title, { color: themeColors.text.primary }]}>{voice.progress.cardTitle}</Text>
           <Text style={[styles.streakText, { color: themeColors.text.secondary }]}>🔥 {streakLabel}</Text>
         </View>
         <TouchableOpacity
@@ -87,7 +89,7 @@ export function WeeklyGoalsCard() {
           }}
           style={styles.chevronButton}
           accessibilityRole="button"
-          accessibilityLabel={expanded ? 'Collapse weekly goals' : 'Expand weekly goals'}
+          accessibilityLabel={expanded ? voice.progress.cardExpandedA11y : voice.progress.cardCollapsedA11y}
         >
           <Text style={[styles.chevron, { color: themeColors.text.secondary }]}>{expanded ? '▾' : '▸'}</Text>
         </TouchableOpacity>
@@ -96,7 +98,7 @@ export function WeeklyGoalsCard() {
       {expanded && (
         <View style={styles.content}>
           {store.weeklyGoals.length === 0 ? (
-            <Text style={[styles.emptyState, { color: themeColors.text.muted }]}>Preparing this week&apos;s goals...</Text>
+            <Text style={[styles.emptyState, { color: themeColors.text.muted }]}>{voice.progress.cardPreparing}</Text>
           ) : allComplete ? (
             <View
               style={[
@@ -107,7 +109,9 @@ export function WeeklyGoalsCard() {
                 },
               ]}
             >
-              <Text style={[styles.completeTitle, { color: themeColors.text.primary }]}>🎉 Week complete! New goals Sunday.</Text>
+              <Text style={[styles.completeTitle, { color: themeColors.text.primary }]}>
+                {pickVoiceLine(voice.progress.weekComplete, `weekly-goals-complete-${language}`)}
+              </Text>
             </View>
           ) : (
             <View style={styles.goalsList}>
@@ -154,7 +158,7 @@ export function WeeklyGoalsCard() {
                       </View>
                       {tooltipGoalId === goal.id && !isCompleted ? (
                         <Text style={[styles.tooltip, { color: themeColors.primary[400] }]}>
-                          Keep going — you&apos;re almost there 🌸
+                          {pickVoiceLine(voice.progress.encouragement, `${goal.id}-${language}`)}
                         </Text>
                       ) : null}
                     </View>

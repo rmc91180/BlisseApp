@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { getCurrentLanguage } from '@/i18n/languageGetter';
+import { getVoiceCopy } from '@/copy';
 import {
   STREAK_NOTIFICATION_HOUR,
   STREAK_NOTIFICATION_ID_KEY,
@@ -14,18 +15,16 @@ interface StreakReminderOptions {
 
 const getStreakReminderTitle = (): string => {
   const language = getCurrentLanguage();
-  if (language === 'es') return 'Mantengan la racha viva ✨';
-  if (language === 'pt') return 'Mantenham a sequência viva ✨';
-  if (language === 'hi') return 'अपनी स्ट्रीक ज़िंदा रखें ✨';
-  return 'Keep your streak alive ✨';
+  return getVoiceCopy(language).notifications.streakTitle;
 };
 
 const getStreakReminderBody = (): string => {
   const language = getCurrentLanguage();
-  if (language === 'es') return 'Entren hoy a Blisse para conservar estrellas, ritmo y conexión.';
-  if (language === 'pt') return 'Entrem hoje no Blisse para manter estrelas, ritmo e conexão.';
-  if (language === 'hi') return 'आज Blisse खोलिए ताकि सितारे, लय और जुड़ाव बना रहे।';
-  return 'Open Blisse today to keep your stars, momentum, and connection.';
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const dayIndex = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+  const bodies = getVoiceCopy(language).notifications.streakBodies;
+  return bodies[Math.max(0, dayIndex) % bodies.length];
 };
 
 export const clearDailyStreakReminder = async (): Promise<void> => {

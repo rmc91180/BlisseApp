@@ -61,6 +61,33 @@ export const SEASONAL_GAME_OPTIONS_PT: Record<string, SeasonalGameOption> = {
   },
 };
 
+export const SEASONAL_GAME_OPTIONS_HI: Record<string, SeasonalGameOption> = {
+  truth_or_dare: {
+    id: 'truth_or_dare',
+    emoji: '🎲',
+    title: 'सच या डेयर',
+    description: 'मौसम की वाइब से मेल खाते चुलबुले प्रॉम्प्ट',
+  },
+  date_night: {
+    id: 'date_night',
+    emoji: '🌙',
+    title: 'डेट नाइट जनरेटर',
+    description: 'जुड़ाव और खुशी के लिए तैयार की गई शाम',
+  },
+  challenge: {
+    id: 'challenge',
+    emoji: '🎯',
+    title: 'सीज़नल चैलेंज',
+    description: 'खेल-खेल में आगे बढ़ाने वाली लक्ष्य-आधारित गतिविधि',
+  },
+  spin: {
+    id: 'spin',
+    emoji: '🎰',
+    title: 'सरप्राइज़ स्पिन',
+    description: 'अचानक प्रेरणा के लिए तेज़ रैंडमाइज़र',
+  },
+};
+
 // ============================================
 // SEASONAL THEMES (name, description, tips)
 // ============================================
@@ -213,6 +240,15 @@ export const PLAYLIST_MOODS_PT = [
   { id: 'energetic', emoji: '⚡', label: 'Energético' },
 ];
 
+export const PLAYLIST_MOODS_HI = [
+  { id: 'romantic', emoji: '🌹', label: 'रोमांटिक' },
+  { id: 'sensual', emoji: '🔥', label: 'संवेदनशील' },
+  { id: 'passionate', emoji: '💋', label: 'जुनूनी' },
+  { id: 'relaxed', emoji: '🌊', label: 'आरामदायक' },
+  { id: 'playful', emoji: '😊', label: 'चुलबुला' },
+  { id: 'energetic', emoji: '⚡', label: 'ऊर्जावान' },
+];
+
 // ============================================
 // CURATED PLAYLIST STRINGS
 // ============================================
@@ -233,6 +269,15 @@ export const CURATED_PLAYLIST_STRINGS_PT: Array<{ name: string; description: str
   { name: 'Chill e Íntimo', description: 'Batidas suaves para intimidade relaxada' },
   { name: 'Ritmo Latino Quente', description: 'Ritmos latinos quentes para esquentar o clima' },
   { name: 'Energia Elétrica', description: 'Faixas de alta energia para noites aventureiras' },
+];
+
+export const CURATED_PLAYLIST_STRINGS_HI: Array<{ name: string; description: string }> = [
+  { name: 'रोमांटिक इवनिंग', description: 'धीमे और रोमांटिक पलों के लिए कोमल, अंतरंग ट्रैक' },
+  { name: 'सेंसुअल और स्लो', description: 'जुनूनी जुड़ाव के लिए R&B स्लो जैम्स' },
+  { name: 'आफ्टर डार्क', description: 'रात देर की मादक वाइब्स' },
+  { name: 'चिल और अंतरंग', description: 'आरामदायक अंतरंगता के लिए सॉफ्ट बीट्स' },
+  { name: 'स्पाइसी लैटिन', description: 'माहौल गर्म करने के लिए गर्म लैटिन रिदम्स' },
+  { name: 'इलेक्ट्रिक एनर्जी', description: 'रोमांचक रातों के लिए हाई-एनर्जी ट्रैक' },
 ];
 
 // ============================================

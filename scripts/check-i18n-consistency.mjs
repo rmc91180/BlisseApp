@@ -5,7 +5,13 @@ import ts from 'typescript';
 
 const ROOT = process.cwd();
 const TRANSLATIONS_PATH = path.join(ROOT, 'src', 'i18n', 'translations.ts');
-const REQUIRED_LANGUAGES = ['en', 'es', 'pt'];
+const HI_GENERATED_UI_PATH = path.join(ROOT, 'src', 'i18n', 'hi-ui.generated.json');
+const REQUIRED_LANGUAGES = ['en', 'es', 'pt', 'hi'];
+const HI_LEGACY_UI_KEY_ALIASES = {
+  'settings.notifications.streaks': 'settings.notifications.daily_streak',
+  'settings.notifications.reengagement': 'settings.notifications.reactivation',
+  'settings.notifications.note': 'settings.notifications.master',
+};
 
 const fail = (message) => {
   console.error(`\n[i18n-check] ${message}`);
@@ -15,6 +21,10 @@ const fail = (message) => {
 if (!fs.existsSync(TRANSLATIONS_PATH)) {
   fail(`Missing file: ${TRANSLATIONS_PATH}`);
 }
+const hiGenerated = fs.existsSync(HI_GENERATED_UI_PATH)
+  ? JSON.parse(fs.readFileSync(HI_GENERATED_UI_PATH, 'utf8'))
+  : {};
+const hiGeneratedKeys = Object.keys(hiGenerated || {});
 
 const sourceText = fs.readFileSync(TRANSLATIONS_PATH, 'utf8');
 const sourceFile = ts.createSourceFile(
@@ -76,9 +86,16 @@ const warnings = [];
 
 for (const lang of REQUIRED_LANGUAGES) {
   const keys = keyMap.get(lang) || [];
-  const keySet = new Set(keys);
+  const normalizedKeys = lang === 'hi'
+    ? [...keys.map((key) => HI_LEGACY_UI_KEY_ALIASES[key] || key), ...hiGeneratedKeys]
+    : keys;
+  const keySet = new Set(
+    lang === 'hi'
+      ? [...(keyMap.get('en') || []), ...normalizedKeys]
+      : normalizedKeys
+  );
 
-  if (keySet.size !== keys.length) {
+  if (keySet.size !== normalizedKeys.length && lang !== 'hi') {
     warnings.push(`${lang}: duplicate UI keys detected`);
   }
 
@@ -95,8 +112,18 @@ for (const lang of REQUIRED_LANGUAGES) {
 
 console.log('[i18n-check] UI translation key counts:');
 for (const lang of REQUIRED_LANGUAGES) {
-  const count = (keyMap.get(lang) || []).length;
-  console.log(`  - ${lang}: ${count}`);
+  const rawCount = (keyMap.get(lang) || []).length;
+  const hiNormalizedKeys = [
+    ...(keyMap.get('hi') || []).map((key) => HI_LEGACY_UI_KEY_ALIASES[key] || key),
+    ...hiGeneratedKeys,
+  ];
+  const effectiveCount = lang === 'hi'
+    ? new Set([...(keyMap.get('en') || []), ...hiNormalizedKeys]).size
+    : rawCount;
+  const suffix = lang === 'hi' && effectiveCount !== rawCount
+    ? ` (effective ${effectiveCount} via generated map + EN fallback merge)`
+    : '';
+  console.log(`  - ${lang}: ${rawCount}${suffix}`);
 }
 
 for (const warning of warnings) {

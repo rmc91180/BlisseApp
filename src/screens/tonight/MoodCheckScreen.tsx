@@ -11,6 +11,8 @@ import { MOOD_PLAYLISTS } from '@/constants/gamification';
 import type { MoodPlaylist } from '@/types/app';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { sound } from '@/services/audio';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy } from '@/copy';
 
 interface MoodCheckScreenProps {
   navigation: {
@@ -21,7 +23,9 @@ interface MoodCheckScreenProps {
 export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const { language } = useI18n();
   const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
+  const voice = getVoiceCopy(language);
 
   const selectedMood = MOOD_PLAYLISTS.find((mood) => mood.id === selectedMoodId) || null;
 
@@ -46,10 +50,7 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <View style={styles.headerBlock}>
           <Text style={[styles.header, { color: themeColors.text.primary }]}>
-            How are you feeling tonight?
-          </Text>
-          <Text style={[styles.subheader, { color: themeColors.text.muted }]}>
-            Be honest — we'll match you perfectly
+            {voice.moodCheck.header}
           </Text>
         </View>
 
@@ -70,12 +71,11 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
                 onPress={() => handleSelectMood(mood)}
                 activeOpacity={0.9}
                 accessibilityRole="button"
-                accessibilityLabel={`${mood.name}. ${mood.description}`}
+                accessibilityLabel={mood.name}
                 accessibilityState={{ selected }}
               >
                 <Text style={styles.cardEmoji}>{mood.emoji}</Text>
                 <Text style={[styles.cardTitle, { color: themeColors.text.primary }]}>{mood.name}</Text>
-                <Text style={[styles.cardDescription, { color: themeColors.text.muted }]}>{mood.description}</Text>
               </TouchableOpacity>
             );
           })}
@@ -91,7 +91,7 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
           activeOpacity={0.9}
           accessibilityRole="button"
           accessibilityState={{ disabled: !selectedMood }}
-          accessibilityLabel="Build our session"
+          accessibilityLabel={voice.moodCheck.ctaA11y}
         >
           <LinearGradient
             colors={
@@ -103,7 +103,7 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
             end={{ x: 1, y: 0 }}
             style={styles.ctaGradient}
           >
-            <Text style={styles.ctaText}>Build our session →</Text>
+            <Text style={styles.ctaText}>{voice.moodCheck.cta}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </SafeAreaView>
@@ -124,18 +124,12 @@ const styles = StyleSheet.create({
     flex: 0.34,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   header: {
     fontSize: 34,
     lineHeight: 40,
     fontWeight: '700',
-    textAlign: 'center',
-  },
-  subheader: {
-    marginTop: 10,
-    fontSize: 14,
-    lineHeight: 20,
     textAlign: 'center',
   },
   grid: {
@@ -168,14 +162,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
-    textAlign: 'center',
-  },
-  cardDescription: {
-    marginTop: 4,
-    fontSize: 12,
-    lineHeight: 16,
     textAlign: 'center',
   },
   ctaWrapper: {
@@ -198,4 +186,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-

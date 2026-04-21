@@ -4,11 +4,14 @@ import type {
   MoodPlaylist,
   UserPreferences,
   InteractionEvent,
+  SessionLearningFeedback,
+  SessionReactionEmoji,
   Achievement,
   ExperienceProfile,
   ContentType,
 } from '@/types/app';
 import { buildExperienceClusterKey, resolveExperienceProfile } from '@/content/experienceProfiles';
+import { createLocalizedArrayProxy } from '@/i18n/languageGetter';
 
 // ============================================
 // LEVELS & TITLES SYSTEM
@@ -153,7 +156,7 @@ export const generateWeeklyGoals = (userLevel: number): WeeklyGoal[] => {
 // MOOD PLAYLISTS
 // ============================================
 
-export const MOOD_PLAYLISTS: MoodPlaylist[] = [
+const _MOOD_PLAYLISTS_EN: MoodPlaylist[] = [
   { id: 'romantic', name: 'Romantic Evening', emoji: '🌹', description: 'Slow, intimate, connection-focused', mood: 'unified', color: '#ec4899' },
   { id: 'passionate', name: 'Passionate Night', emoji: '🔥', description: 'Intense, fiery, urgent', mood: 'passionate', color: '#ef4444' },
   { id: 'playful', name: 'Playful Fun', emoji: '😊', description: 'Light, teasing, laughter', mood: 'playful', color: '#f59e0b' },
@@ -161,6 +164,40 @@ export const MOOD_PLAYLISTS: MoodPlaylist[] = [
   { id: 'relaxed', name: 'Lazy & Relaxed', emoji: '🌊', description: 'Low effort, maximum comfort', mood: 'flowing', color: '#06b6d4' },
   { id: 'quickie', name: 'Quick & Urgent', emoji: '⚡', description: 'Fast, spontaneous, hot', mood: 'passionate', color: '#a855f7' },
 ];
+
+const _MOOD_PLAYLISTS_ES: MoodPlaylist[] = [
+  { id: 'romantic', name: 'Noche Romántica', emoji: '🌹', description: 'Lenta, íntima y centrada en la conexión', mood: 'unified', color: '#ec4899' },
+  { id: 'passionate', name: 'Noche Apasionada', emoji: '🔥', description: 'Intensa, ardiente y con urgencia', mood: 'passionate', color: '#ef4444' },
+  { id: 'playful', name: 'Diversión Juguetona', emoji: '😊', description: 'Ligera, coqueta y con risas', mood: 'playful', color: '#f59e0b' },
+  { id: 'adventurous', name: 'Modo Aventura', emoji: '🎪', description: 'Probar algo nuevo y emocionante', mood: 'dynamic', color: '#f97316' },
+  { id: 'relaxed', name: 'Relajados y Tranquilos', emoji: '🌊', description: 'Poco esfuerzo, máxima comodidad', mood: 'flowing', color: '#06b6d4' },
+  { id: 'quickie', name: 'Rápido e Intenso', emoji: '⚡', description: 'Rápido, espontáneo y caliente', mood: 'passionate', color: '#a855f7' },
+];
+
+const _MOOD_PLAYLISTS_PT: MoodPlaylist[] = [
+  { id: 'romantic', name: 'Noite Romântica', emoji: '🌹', description: 'Lenta, íntima e focada em conexão', mood: 'unified', color: '#ec4899' },
+  { id: 'passionate', name: 'Noite Apaixonada', emoji: '🔥', description: 'Intensa, ardente e urgente', mood: 'passionate', color: '#ef4444' },
+  { id: 'playful', name: 'Diversão Brincalhona', emoji: '😊', description: 'Leve, provocante e com risadas', mood: 'playful', color: '#f59e0b' },
+  { id: 'adventurous', name: 'Modo Aventura', emoji: '🎪', description: 'Experimentar algo novo e empolgante', mood: 'dynamic', color: '#f97316' },
+  { id: 'relaxed', name: 'Leve e Relaxado', emoji: '🌊', description: 'Baixo esforço, conforto máximo', mood: 'flowing', color: '#06b6d4' },
+  { id: 'quickie', name: 'Rápido e Urgente', emoji: '⚡', description: 'Rápido, espontâneo e quente', mood: 'passionate', color: '#a855f7' },
+];
+
+const _MOOD_PLAYLISTS_HI: MoodPlaylist[] = [
+  { id: 'romantic', name: 'रोमांटिक शाम', emoji: '🌹', description: 'धीमी, अंतरंग और जुड़ाव-केंद्रित', mood: 'unified', color: '#ec4899' },
+  { id: 'passionate', name: 'जुनूनी रात', emoji: '🔥', description: 'तीव्र, गर्मजोशी भरी और तात्कालिक', mood: 'passionate', color: '#ef4444' },
+  { id: 'playful', name: 'चुलबुला मज़ा', emoji: '😊', description: 'हल्का, छेड़छाड़ भरा और हँसी से भरा', mood: 'playful', color: '#f59e0b' },
+  { id: 'adventurous', name: 'एडवेंचर मोड', emoji: '🎪', description: 'कुछ नया और रोमांचक आज़माएँ', mood: 'dynamic', color: '#f97316' },
+  { id: 'relaxed', name: 'आराम और सुकून', emoji: '🌊', description: 'कम मेहनत, अधिकतम आराम', mood: 'flowing', color: '#06b6d4' },
+  { id: 'quickie', name: 'तेज़ और तात्कालिक', emoji: '⚡', description: 'तेज़, सहज और गर्मजोशी भरा', mood: 'passionate', color: '#a855f7' },
+];
+
+export const MOOD_PLAYLISTS: MoodPlaylist[] = createLocalizedArrayProxy<MoodPlaylist>({
+  en: _MOOD_PLAYLISTS_EN,
+  es: _MOOD_PLAYLISTS_ES,
+  pt: _MOOD_PLAYLISTS_PT,
+  hi: _MOOD_PLAYLISTS_HI,
+});
 
 // ============================================
 // SMART LEARNING SYSTEM
@@ -188,6 +225,11 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
     novelty: { familiar: 60, varied: 50, adventurous: 45 },
     controlBalance: { shared: 60, 'one-led': 50 },
   },
+  sequenceScores: {
+    step1: { position: 50, foreplay: 50, oral: 50, massage: 50, roleplay: 50 },
+    step2: { position: 50, foreplay: 50, oral: 50, massage: 50, roleplay: 50 },
+    step3: { position: 50, foreplay: 50, oral: 50, massage: 50, roleplay: 50 },
+  },
   recentExperienceClusters: [],
 };
 
@@ -208,7 +250,7 @@ export const PREFERENCE_DECAY = 0.98;
 export const MAX_PREFERENCE_SCORE = 100;
 export const MIN_PREFERENCE_SCORE = 0;
 
-const getRecommendationRotationKey = (date: Date = new Date()): string => {
+export const getRecommendationRotationKey = (date: Date = new Date()): string => {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, '0');
   const day = `${date.getDate()}`.padStart(2, '0');
@@ -235,12 +277,108 @@ const getDeterministicVarietyOffset = (
 };
 
 const clampScore = (value: number): number => Math.max(MIN_PREFERENCE_SCORE, Math.min(MAX_PREFERENCE_SCORE, value));
+const SOFT_RECENCY_BLEND = 0.01;
+const EMOJI_REACTION_RATING: Record<SessionReactionEmoji, number> = {
+  '🔥': 5,
+  '💜': 4,
+  '😐': 2,
+};
+
+const softlyRecentreScore = (score: number): number => (
+  clampScore(score + (50 - score) * SOFT_RECENCY_BLEND)
+);
+
+const applySoftRecencyBias = (prefs: UserPreferences): UserPreferences => ({
+  ...prefs,
+  categoryScores: Object.fromEntries(
+    Object.entries(prefs.categoryScores).map(([key, value]) => [key, softlyRecentreScore(value)])
+  ),
+  moodScores: Object.fromEntries(
+    Object.entries(prefs.moodScores).map(([key, value]) => [key, softlyRecentreScore(value)])
+  ),
+  difficultyScores: Object.fromEntries(
+    Object.entries(prefs.difficultyScores).map(([key, value]) => [key, softlyRecentreScore(value)])
+  ),
+  contentTypeScores: Object.fromEntries(
+    Object.entries(prefs.contentTypeScores).map(([key, value]) => [key, softlyRecentreScore(value)])
+  ),
+  experienceScores: {
+    effort: Object.fromEntries(
+      Object.entries(prefs.experienceScores.effort).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['experienceScores']['effort'],
+    energy: Object.fromEntries(
+      Object.entries(prefs.experienceScores.energy).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['experienceScores']['energy'],
+    connection: Object.fromEntries(
+      Object.entries(prefs.experienceScores.connection).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['experienceScores']['connection'],
+    novelty: Object.fromEntries(
+      Object.entries(prefs.experienceScores.novelty).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['experienceScores']['novelty'],
+    controlBalance: Object.fromEntries(
+      Object.entries(prefs.experienceScores.controlBalance).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['experienceScores']['controlBalance'],
+  },
+  sequenceScores: {
+    step1: Object.fromEntries(
+      Object.entries(prefs.sequenceScores.step1).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['sequenceScores']['step1'],
+    step2: Object.fromEntries(
+      Object.entries(prefs.sequenceScores.step2).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['sequenceScores']['step2'],
+    step3: Object.fromEntries(
+      Object.entries(prefs.sequenceScores.step3).map(([key, value]) => [key, softlyRecentreScore(value)])
+    ) as UserPreferences['sequenceScores']['step3'],
+  },
+});
+
+const enforceComfortBaseline = (prefs: UserPreferences): UserPreferences => ({
+  ...prefs,
+  experienceScores: {
+    ...prefs.experienceScores,
+    effort: {
+      ...prefs.experienceScores.effort,
+      low: Math.max(48, prefs.experienceScores.effort.low),
+    },
+    energy: {
+      ...prefs.experienceScores.energy,
+      calm: Math.max(48, prefs.experienceScores.energy.calm),
+    },
+    connection: {
+      ...prefs.experienceScores.connection,
+      emotional: Math.max(48, prefs.experienceScores.connection.emotional),
+    },
+    novelty: {
+      ...prefs.experienceScores.novelty,
+      familiar: Math.max(52, prefs.experienceScores.novelty.familiar),
+    },
+  },
+});
+
+const getDwellMultiplier = (seconds?: number): number => {
+  if (!seconds || !Number.isFinite(seconds)) return 1;
+  return Math.max(0.7, Math.min(2.2, 0.7 + (seconds / 50)));
+};
+
+const adjustExperienceAxis = (
+  prefs: UserPreferences,
+  axis: keyof UserPreferences['experienceScores'],
+  key: string,
+  delta: number
+) => {
+  const axisScores = prefs.experienceScores[axis] as Record<string, number>;
+  const current = axisScores[key] ?? 50;
+  axisScores[key] = clampScore(current + delta);
+};
 
 const getEventWeight = (event: InteractionEvent): number => {
   if (event.type === 'rate') {
-    if (event.rating && event.rating >= 4) return LEARNING_WEIGHTS.rate_high;
-    if (event.rating === 3) return LEARNING_WEIGHTS.rate_medium;
-    return LEARNING_WEIGHTS.rate_low;
+    const baseRateWeight = event.rating && event.rating >= 4
+      ? LEARNING_WEIGHTS.rate_high
+      : event.rating === 3
+        ? LEARNING_WEIGHTS.rate_medium
+        : LEARNING_WEIGHTS.rate_low;
+    return baseRateWeight * (event.signalStrength ?? 1);
   }
   const actionWeights: Record<string, number> = {
     view: LEARNING_WEIGHTS.view,
@@ -249,7 +387,7 @@ const getEventWeight = (event: InteractionEvent): number => {
     unfavorite: LEARNING_WEIGHTS.unfavorite,
     skip: LEARNING_WEIGHTS.skip,
   };
-  return actionWeights[event.type] || 0;
+  return (actionWeights[event.type] || 0) * (event.signalStrength ?? 1);
 };
 
 const applyExperienceWeight = (
@@ -279,7 +417,22 @@ export const SmartLearning = {
     currentPrefs: UserPreferences,
     event: InteractionEvent
   ): UserPreferences => {
-    const newPrefs = { ...currentPrefs };
+    const newPrefs = applySoftRecencyBias({
+      ...currentPrefs,
+      experienceScores: {
+        ...currentPrefs.experienceScores,
+        effort: { ...currentPrefs.experienceScores.effort },
+        energy: { ...currentPrefs.experienceScores.energy },
+        connection: { ...currentPrefs.experienceScores.connection },
+        novelty: { ...currentPrefs.experienceScores.novelty },
+        controlBalance: { ...currentPrefs.experienceScores.controlBalance },
+      },
+      sequenceScores: {
+        step1: { ...currentPrefs.sequenceScores.step1 },
+        step2: { ...currentPrefs.sequenceScores.step2 },
+        step3: { ...currentPrefs.sequenceScores.step3 },
+      },
+    });
     const weight = getEventWeight(event);
 
     // Update category score
@@ -313,6 +466,21 @@ export const SmartLearning = {
     });
     newPrefs.experienceScores = applyExperienceWeight(newPrefs.experienceScores, experienceProfile, weight);
 
+    if (event.sequencePosition) {
+      const sequenceKey = `step${event.sequencePosition}` as keyof UserPreferences['sequenceScores'];
+      const sequenceScores = { ...newPrefs.sequenceScores[sequenceKey] };
+      const sequenceCurrent = sequenceScores[event.contentType] || 50;
+      const dwellMultiplier = getDwellMultiplier(event.timeSpentSeconds);
+      const engagementMultiplier = event.opened ? 1.2 : event.skipped ? 0.8 : 1;
+      sequenceScores[event.contentType] = clampScore(
+        sequenceCurrent + (weight * dwellMultiplier * engagementMultiplier)
+      );
+      newPrefs.sequenceScores = {
+        ...newPrefs.sequenceScores,
+        [sequenceKey]: sequenceScores,
+      };
+    }
+
     // Update time of day preference
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) newPrefs.preferredTimeOfDay = 'morning';
@@ -322,7 +490,7 @@ export const SmartLearning = {
 
     newPrefs.lastUpdated = new Date().toISOString();
 
-    return newPrefs;
+    return enforceComfortBaseline(newPrefs);
   },
 
   // Apply decay to preferences (call periodically)
@@ -354,7 +522,119 @@ export const SmartLearning = {
         novelty: Object.fromEntries(Object.entries(prefs.experienceScores.novelty).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['novelty'],
         controlBalance: Object.fromEntries(Object.entries(prefs.experienceScores.controlBalance).map(([k, v]) => [k, decayScore(v)])) as UserPreferences['experienceScores']['controlBalance'],
       },
+      sequenceScores: {
+        step1: Object.fromEntries(
+          Object.entries(prefs.sequenceScores.step1).map(([key, value]) => [key, decayScore(value)])
+        ) as UserPreferences['sequenceScores']['step1'],
+        step2: Object.fromEntries(
+          Object.entries(prefs.sequenceScores.step2).map(([key, value]) => [key, decayScore(value)])
+        ) as UserPreferences['sequenceScores']['step2'],
+        step3: Object.fromEntries(
+          Object.entries(prefs.sequenceScores.step3).map(([key, value]) => [key, decayScore(value)])
+        ) as UserPreferences['sequenceScores']['step3'],
+      },
       lastUpdated: new Date().toISOString(),
+    };
+  },
+
+  applySessionFeedback: (
+    currentPrefs: UserPreferences,
+    feedback: SessionLearningFeedback
+  ): { preferences: UserPreferences; events: InteractionEvent[] } => {
+    let nextPrefs = currentPrefs;
+    const now = new Date().toISOString();
+    const events: InteractionEvent[] = [];
+
+    const appendEvent = (event: Omit<InteractionEvent, 'timestamp'>) => {
+      const completeEvent: InteractionEvent = { ...event, timestamp: now };
+      nextPrefs = SmartLearning.updatePreferences(nextPrefs, completeEvent);
+      events.push(completeEvent);
+    };
+
+    feedback.steps.forEach((step) => {
+      const eventBase: Omit<InteractionEvent, 'timestamp' | 'type'> = {
+        contentType: step.contentType,
+        itemId: step.itemId,
+        category: step.category,
+        mood: step.mood,
+        difficulty: step.difficulty,
+        experienceProfile: step.experienceProfile,
+        sequencePosition: step.sequencePosition,
+        timeSpentSeconds: step.timeSpentSeconds,
+        opened: step.opened,
+        skipped: step.skipped,
+        source: 'session_feedback',
+      };
+
+      appendEvent({
+        ...eventBase,
+        type: step.opened ? 'view' : 'skip',
+        signalStrength: getDwellMultiplier(step.timeSpentSeconds) * (step.opened ? 1.1 : 1),
+      });
+
+      if (feedback.reaction) {
+        appendEvent({
+          ...eventBase,
+          type: 'rate',
+          rating: EMOJI_REACTION_RATING[feedback.reaction],
+          signalStrength: getDwellMultiplier(step.timeSpentSeconds),
+        });
+      }
+
+      if (feedback.saved && step.opened) {
+        appendEvent({
+          ...eventBase,
+          type: 'favorite',
+          signalStrength: 0.9 + (Math.min(90, step.timeSpentSeconds) / 90),
+        });
+      }
+    });
+
+    if (feedback.mood) {
+      const moodDelta = feedback.reaction === '🔥' ? 7 : feedback.reaction === '💜' ? 5 : -1;
+      const currentMoodScore = nextPrefs.moodScores[feedback.mood] || 50;
+      nextPrefs.moodScores[feedback.mood] = clampScore(currentMoodScore + moodDelta);
+    }
+
+    if (feedback.reaction === '🔥') {
+      adjustExperienceAxis(nextPrefs, 'energy', 'intense', 6);
+      adjustExperienceAxis(nextPrefs, 'energy', 'building', 3);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'varied', 3);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'adventurous', 2);
+    } else if (feedback.reaction === '💜') {
+      adjustExperienceAxis(nextPrefs, 'energy', 'building', 4);
+      adjustExperienceAxis(nextPrefs, 'energy', 'calm', 2);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'familiar', 2);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'varied', 2);
+      adjustExperienceAxis(nextPrefs, 'connection', 'emotional', 3);
+    } else if (feedback.reaction === '😐') {
+      adjustExperienceAxis(nextPrefs, 'effort', 'low', 5);
+      adjustExperienceAxis(nextPrefs, 'energy', 'calm', 4);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'familiar', 4);
+      adjustExperienceAxis(nextPrefs, 'energy', 'intense', -2);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'adventurous', -2);
+    }
+
+    if (feedback.regenerateCount > 0) {
+      const regenDelta = Math.min(8, feedback.regenerateCount * 2);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'varied', regenDelta);
+      adjustExperienceAxis(nextPrefs, 'energy', 'building', Math.max(1, Math.floor(regenDelta / 2)));
+    }
+
+    if (feedback.exitedEarly) {
+      adjustExperienceAxis(nextPrefs, 'effort', 'low', 5);
+      adjustExperienceAxis(nextPrefs, 'connection', 'emotional', 4);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'familiar', 3);
+      adjustExperienceAxis(nextPrefs, 'energy', 'calm', 3);
+      adjustExperienceAxis(nextPrefs, 'energy', 'intense', -2);
+      adjustExperienceAxis(nextPrefs, 'novelty', 'adventurous', -2);
+    }
+
+    nextPrefs.lastUpdated = now;
+
+    return {
+      preferences: enforceComfortBaseline(nextPrefs),
+      events,
     };
   },
 

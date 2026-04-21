@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -12,7 +12,10 @@ import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { sound } from '@/services/audio';
 import { MOOD_PLAYLISTS } from '@/constants/gamification';
-import type { MoodPlaylist } from '@/types/app';
+import { resolveExperienceProfile } from '@/content/experienceProfiles';
+import type { MoodPlaylist, SessionLearningFeedback } from '@/types/app';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy } from '@/copy';
 import {
   foreplayIdeas,
   massageTechniques,
@@ -24,7 +27,7 @@ type SessionStepType = 'foreplay' | 'position' | 'massage' | 'roleplay';
 
 interface SessionStep {
   number: 1 | 2 | 3;
-  label: 'Start with...' | 'Move into...' | 'Finish with...';
+  label: string;
   type: SessionStepType;
   item: any;
 }
@@ -40,15 +43,6 @@ interface TonightSessionScreenProps {
   };
   mood?: MoodPlaylist;
 }
-
-const COACH_COPY: Record<string, string> = {
-  romantic: 'Start slow tonight. Let the warmth build before anything else.',
-  passionate: 'Skip the slow burn. Go right for what you want.',
-  playful: "Keep it light. If you laugh, you're doing it right.",
-  adventurous: "Pick one thing you've never done. That's the whole point.",
-  relaxed: 'No performance tonight. Just be together.',
-  quickie: "You've got 20 minutes. Make them count.",
-};
 
 const normalizeExperience = (experience: string | null): 'Beginner' | 'Intermediate' | 'Advanced' => {
   const key = (experience || 'beginner').toLowerCase();
@@ -78,12 +72,20 @@ export function TonightSessionScreen({
   route,
   mood: moodProp,
 }: TonightSessionScreenProps) {
+  const { language } = useI18n();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
   const experience = useStore((state) => state.experience);
+  const learningPreferences = useStore((state) => state.learningPreferences);
   const getSmartRecommendations = useStore((state) => state.getSmartRecommendations);
+  const trackSessionFeedback = useStore((state) => state.trackSessionFeedback);
   const [regenerateCount, setRegenerateCount] = useState(0);
   const [steps, setSteps] = useState<SessionStep[]>([]);
+  const openedStepKeysRef = useRef<Set<string>>(new Set());
+  const flowStartedAtRef = useRef(Date.now());
+  const didAdvanceRef = useRef(false);
+  const latestStepsRef = useRef<SessionStep[]>([]);
+  const latestRegenerateCountRef = useRef(0);
 
   const selectedMood = useMemo(() => {
     const fromRoute = route?.params?.mood;
@@ -91,9 +93,61 @@ export function TonightSessionScreen({
     if (moodProp) return moodProp;
     return MOOD_PLAYLISTS[0];
   }, [moodProp, route?.params?.mood]);
-
-  const coachIntro = COACH_COPY[selectedMood.id] || COACH_COPY.romantic;
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
+  const copy = voice.sessionPlan;
+  const vibeLine = copy.coachIntro[selectedMood.id] || copy.coachIntro.romantic || '';
   const targetDifficulty = normalizeExperience(experience);
+  const step3SequenceScores = learningPreferences.sequenceScores.step3;
+
+  const getStepKey = useCallback((step: SessionStep) => (
+    `${step.type}:${Number(step.item?.id || step.number)}`
+  ), []);
+
+  const buildStepSignals = useCallback((sessionSteps: SessionStep[]): SessionLearningFeedback['steps'] => {
+    if (sessionSteps.length === 0) return [];
+
+    const totalSeconds = Math.max(8, Math.round((Date.now() - flowStartedAtRef.current) / 1000));
+    const openedCount = sessionSteps.filter((step) => openedStepKeysRef.current.has(getStepKey(step))).length;
+    const unopenedCount = Math.max(1, sessionSteps.length - openedCount);
+    const openedShare = openedCount > 0 ? 0.75 : 0;
+    const unopenedShare = 1 - openedShare;
+    const signals: SessionLearningFeedback['steps'] = [];
+
+    sessionSteps.forEach((step) => {
+      const itemId = Number(step.item?.id || 0);
+      if (!itemId) return;
+
+      const opened = openedStepKeysRef.current.has(getStepKey(step));
+      const share = openedCount === 0
+        ? 1 / sessionSteps.length
+        : opened
+          ? openedShare / openedCount
+          : unopenedShare / unopenedCount;
+      const timeSpentSeconds = Math.max(opened ? 8 : 4, Math.round(totalSeconds * share));
+      const difficulty = step.item?.difficulty;
+
+      signals.push({
+        sequencePosition: step.number,
+        contentType: step.type,
+        itemId,
+        category: step.item?.category,
+        mood: step.item?.mood,
+        difficulty,
+        experienceProfile: resolveExperienceProfile(step.type, {
+          id: itemId,
+          category: step.item?.category,
+          mood: step.item?.mood,
+          difficulty,
+          duration: step.item?.duration,
+        }),
+        opened,
+        skipped: !opened,
+        timeSpentSeconds,
+      });
+    });
+
+    return signals;
+  }, [getStepKey]);
 
   const generateSession = useCallback((): SessionStep[] => {
     const recommendations = getSmartRecommendations(5);
@@ -169,7 +223,7 @@ export function TonightSessionScreen({
         ? 'massage'
         : selectedMood.id === 'adventurous' || selectedMood.id === 'passionate'
           ? 'roleplay'
-          : (Math.random() > 0.5 ? 'foreplay' : 'position');
+          : ((step3SequenceScores.foreplay || 50) >= (step3SequenceScores.position || 50) ? 'foreplay' : 'position');
 
     const stepThreeItem =
       stepThreeType === 'massage'
@@ -181,17 +235,49 @@ export function TonightSessionScreen({
             : pickItem('position', positions);
 
     return [
-      { number: 1, label: 'Start with...', type: 'foreplay', item: stepOneItem },
-      { number: 2, label: 'Move into...', type: 'position', item: stepTwoItem },
-      { number: 3, label: 'Finish with...', type: stepThreeType, item: stepThreeItem },
+      { number: 1, label: copy.start, type: 'foreplay', item: stepOneItem },
+      { number: 2, label: copy.move, type: 'position', item: stepTwoItem },
+      { number: 3, label: copy.finish, type: stepThreeType, item: stepThreeItem },
     ];
-  }, [getSmartRecommendations, selectedMood.id, selectedMood.mood, targetDifficulty]);
+  }, [
+    copy.finish,
+    copy.move,
+    copy.start,
+    getSmartRecommendations,
+    selectedMood.id,
+    selectedMood.mood,
+    step3SequenceScores.foreplay,
+    step3SequenceScores.position,
+    targetDifficulty,
+  ]);
 
   useEffect(() => {
     setSteps(generateSession());
   }, [generateSession, regenerateCount]);
 
+  useEffect(() => {
+    latestStepsRef.current = steps;
+  }, [steps]);
+
+  useEffect(() => {
+    latestRegenerateCountRef.current = regenerateCount;
+  }, [regenerateCount]);
+
+  useEffect(() => () => {
+    if (didAdvanceRef.current) return;
+    const sessionSignals = buildStepSignals(latestStepsRef.current);
+    trackSessionFeedback({
+      moodId: selectedMood.id,
+      mood: selectedMood.mood,
+      regenerateCount: latestRegenerateCountRef.current,
+      exitedEarly: true,
+      saved: false,
+      steps: sessionSignals,
+    });
+  }, [buildStepSignals, selectedMood.id, selectedMood.mood, trackSessionFeedback]);
+
   const handleViewDetails = (step: SessionStep) => {
+    openedStepKeysRef.current.add(getStepKey(step));
     sound.light();
     if (step.type === 'position') {
       navigation.navigate('PositionDetail', { position: step.item });
@@ -214,80 +300,79 @@ export function TonightSessionScreen({
       style={styles.gradient}
     >
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <View style={styles.progressBlock}>
-          <Text style={[styles.progressText, { color: themeColors.text.secondary }]}>Step 2 of 3</Text>
-          <View style={[styles.progressTrack, { backgroundColor: themeColors.cardLight }]}>
-            <View style={[styles.progressFill, { backgroundColor: themeColors.primary[500], width: '66%' }]} />
-          </View>
-        </View>
+        <Text style={[styles.vibeLine, { color: themeColors.text.secondary }]}>{vibeLine}</Text>
 
-        <View style={[styles.coachCard, { backgroundColor: themeColors.card }]}>
-          <Text style={[styles.coachTitle, { color: themeColors.text.primary }]}>Tonight's coach note</Text>
-          <Text style={[styles.coachCopy, { color: themeColors.text.secondary }]}>{coachIntro}</Text>
-        </View>
-
-        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.flowList} showsVerticalScrollIndicator={false}>
           {steps.map((step, index) => (
-            <View key={`${step.number}-${step.type}-${step.item?.id || index}`} style={styles.timelineRow}>
-              <View style={styles.stepRail}>
-                <View style={[styles.stepCircle, { borderColor: themeColors.primary[500], backgroundColor: themeColors.card }]}>
-                  <Text style={[styles.stepCircleText, { color: themeColors.primary[400] }]}>{step.number}</Text>
-                </View>
-                {index < steps.length - 1 ? (
-                  <View style={[styles.connector, { backgroundColor: themeColors.cardLight }]} />
-                ) : null}
-              </View>
+            <View key={`${step.number}-${step.type}-${step.item?.id || index}`} style={[styles.flowCard, { backgroundColor: themeColors.card, borderColor: themeColors.cardLight }]}>
+              <Text style={[styles.itemName, { color: themeColors.text.primary }]}>{step.item?.name || copy.fallbackName}</Text>
+              <Text style={[styles.vibeText, { color: themeColors.text.muted }]} numberOfLines={2}>
+                {step.item?.vibe || copy.fallbackVibe}
+              </Text>
 
-              <View style={[styles.stepCard, { backgroundColor: themeColors.card, borderColor: themeColors.cardLight }]}>
-                <Text style={[styles.stepLabel, { color: themeColors.text.muted }]}>{step.label}</Text>
-                <Text style={[styles.itemName, { color: themeColors.text.primary }]}>{step.item?.name || 'Something new'}</Text>
-                <Text style={[styles.vibeText, { color: themeColors.text.muted }]}>
-                  {`"${step.item?.vibe || 'A curated fit for tonight.'}"`}
-                </Text>
-
+              <View style={styles.cardFooter}>
                 <View style={[styles.badge, { backgroundColor: themeColors.primary[500] + '22' }]}>
-                  <Text style={[styles.badgeText, { color: themeColors.primary[400] }]}>{getBadgeText(step)}</Text>
+                  <Text style={[styles.badgeText, { color: themeColors.primary[400] }]}>
+                    {getBadgeText(step)}
+                  </Text>
                 </View>
 
                 <TouchableOpacity onPress={() => handleViewDetails(step)} accessibilityRole="button">
-                  <Text style={[styles.detailsLink, { color: themeColors.primary[400] }]}>View Details →</Text>
+                  <Text style={[styles.detailsLink, { color: themeColors.primary[400] }]}>
+                    {index === steps.length - 1 ? copy.tryAction : copy.openAction}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
           ))}
         </ScrollView>
 
-        <TouchableOpacity
-          style={[styles.regenerateButton, { borderColor: themeColors.cardLight, backgroundColor: themeColors.card }]}
-          onPress={() => {
-            sound.light();
-            setRegenerateCount((value) => value + 1);
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Regenerate session"
-        >
-          <Text style={[styles.regenerateText, { color: themeColors.text.secondary }]}>Regenerate session 🎲</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.ctaWrapper}
-          onPress={() => {
-            sound.medium();
-            navigation.navigate('SessionRatingScreen', { mood: selectedMood, steps });
-          }}
-          activeOpacity={0.9}
-          accessibilityRole="button"
-          accessibilityLabel="We're ready — let's go"
-        >
-          <LinearGradient
-            colors={[themeColors.primary[400], themeColors.primary[500]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.ctaGradient}
+        <View style={styles.bottomActions}>
+          <TouchableOpacity
+            style={[styles.regenerateButton, { borderColor: themeColors.cardLight, backgroundColor: themeColors.card }]}
+            onPress={() => {
+              sound.light();
+              openedStepKeysRef.current = new Set();
+              setRegenerateCount((value) => value + 1);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={copy.regenerateA11y}
           >
-            <Text style={styles.ctaText}>We're ready — let's go →</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+            <Text style={[styles.regenerateText, { color: themeColors.text.secondary }]}>{copy.regenerate}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.ctaWrapper}
+            onPress={() => {
+              didAdvanceRef.current = true;
+              sound.medium();
+              navigation.navigate('SessionRatingScreen', {
+                mood: selectedMood,
+                steps,
+                sessionFeedback: {
+                  moodId: selectedMood.id,
+                  mood: selectedMood.mood,
+                  regenerateCount,
+                  exitedEarly: false,
+                  saved: false,
+                  steps: buildStepSignals(steps),
+                } satisfies SessionLearningFeedback,
+              });
+            }}
+            activeOpacity={0.9}
+            accessibilityRole="button"
+            accessibilityLabel={copy.ctaA11y}
+          >
+            <LinearGradient
+              colors={[themeColors.primary[400], themeColors.primary[500]]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.ctaGradient}
+            >
+              <Text style={styles.ctaText}>{copy.cta}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -300,98 +385,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
-  progressBlock: {
-    marginTop: 4,
-    marginBottom: 10,
-  },
-  progressText: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginBottom: 6,
-  },
-  progressTrack: {
-    height: 6,
-    borderRadius: 999,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 999,
-  },
-  coachCard: {
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    marginBottom: 14,
-  },
-  coachTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 5,
-  },
-  coachCopy: {
+  vibeLine: {
+    marginTop: 8,
+    marginBottom: 12,
     fontSize: 14,
     lineHeight: 20,
+    textAlign: 'center',
   },
   scroll: {
     flex: 1,
   },
-  timelineRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  flowList: {
+    paddingBottom: 6,
+  },
+  flowCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
     marginBottom: 10,
   },
-  stepRail: {
-    width: 36,
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  stepCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepCircleText: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  connector: {
-    width: 2,
-    minHeight: 86,
-    marginTop: 6,
-    borderRadius: 2,
-  },
-  stepCard: {
-    flex: 1,
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 13,
-    paddingVertical: 12,
-  },
-  stepLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 5,
-  },
   itemName: {
-    fontSize: 20,
-    lineHeight: 24,
+    fontSize: 22,
+    lineHeight: 28,
     fontWeight: '700',
   },
   vibeText: {
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 4,
-    fontStyle: 'italic',
+    marginTop: 6,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
   },
   badge: {
-    marginTop: 10,
-    alignSelf: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 999,
@@ -401,12 +431,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   detailsLink: {
-    marginTop: 11,
     fontSize: 13,
     fontWeight: '700',
   },
+  bottomActions: {
+    marginTop: 8,
+    gap: 10,
+  },
   regenerateButton: {
-    marginTop: 10,
     borderWidth: 1,
     borderRadius: 12,
     alignItems: 'center',

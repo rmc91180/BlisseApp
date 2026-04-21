@@ -9,6 +9,7 @@ import { useThemeStore, getThemeColors, colors } from '@/store/useThemeStore';
 import { useAuth } from '@/services/auth';
 import { useSubscription } from '@/services/subscription';
 import { Analytics } from '@/services/analytics';
+import { getVoiceCopy } from '@/copy';
 import type { AppLanguage } from '@/i18n/translations';
 import type { PurchasesPackage } from 'react-native-purchases';
 
@@ -232,6 +233,7 @@ const getPercentSavings = (monthlyPrice?: number, annualPrice?: number): number 
 
 function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: 'trial_expired' | 'manual' | 'banner' } } }) {
   const language = useStore((state) => state.language);
+  const voice = getVoiceCopy(language);
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
   const trigger = route?.params?.trigger === 'trial_expired' || route?.params?.trigger === 'banner' ? route.params.trigger : 'manual';
@@ -250,8 +252,8 @@ function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: '
 
   const copy = {
     en: {
-      title: 'Your couples toolkit, unlocked',
-      subtitle: 'Join thousands of couples exploring together.',
+      title: voice.paywall.title,
+      subtitle: voice.paywall.subtitle,
       restore: 'Restore Purchase',
       retry: 'Retry',
       freeTrialBadge: 'Free trial available',
@@ -275,15 +277,15 @@ function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: '
       restoreMissing: 'No active subscription found.',
       checkingSubscription: 'Checking subscription...',
       billingUnavailableTitle: 'Billing unavailable',
-      featureIdeas: '🌸 400+ ideas, positions & date nights',
-      featureChallenges: '🎯 Weekly challenges & smart suggestions',
-      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
-      primaryCta: 'Start My Subscription →',
-      contact: "Questions? We're real people. Contact us.",
+      featureIdeas: voice.paywall.featureIdeas,
+      featureChallenges: voice.paywall.featureChallenges,
+      featurePrivacy: voice.paywall.featurePrivacy,
+      primaryCta: voice.paywall.primaryCta,
+      contact: voice.paywall.contact,
     },
     es: {
-      title: 'Your couples toolkit, unlocked',
-      subtitle: 'Join thousands of couples exploring together.',
+      title: voice.paywall.title,
+      subtitle: voice.paywall.subtitle,
       restore: 'Restore Purchase',
       retry: 'Reintentar',
       freeTrialBadge: 'Prueba gratis disponible',
@@ -307,15 +309,15 @@ function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: '
       restoreMissing: 'No encontramos una suscripción activa.',
       checkingSubscription: 'Comprobando la suscripción...',
       billingUnavailableTitle: 'Facturación no disponible',
-      featureIdeas: '🌸 400+ ideas, positions & date nights',
-      featureChallenges: '🎯 Weekly challenges & smart suggestions',
-      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
-      primaryCta: 'Start My Subscription →',
-      contact: "Questions? We're real people. Contact us.",
+      featureIdeas: voice.paywall.featureIdeas,
+      featureChallenges: voice.paywall.featureChallenges,
+      featurePrivacy: voice.paywall.featurePrivacy,
+      primaryCta: voice.paywall.primaryCta,
+      contact: voice.paywall.contact,
     },
     pt: {
-      title: 'Your couples toolkit, unlocked',
-      subtitle: 'Join thousands of couples exploring together.',
+      title: voice.paywall.title,
+      subtitle: voice.paywall.subtitle,
       restore: 'Restore Purchase',
       retry: 'Tentar novamente',
       freeTrialBadge: 'Teste grátis disponível',
@@ -339,15 +341,15 @@ function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: '
       restoreMissing: 'Não encontramos assinatura ativa.',
       checkingSubscription: 'Verificando assinatura...',
       billingUnavailableTitle: 'Cobrança indisponível',
-      featureIdeas: '🌸 400+ ideas, positions & date nights',
-      featureChallenges: '🎯 Weekly challenges & smart suggestions',
-      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
-      primaryCta: 'Start My Subscription →',
-      contact: "Questions? We're real people. Contact us.",
+      featureIdeas: voice.paywall.featureIdeas,
+      featureChallenges: voice.paywall.featureChallenges,
+      featurePrivacy: voice.paywall.featurePrivacy,
+      primaryCta: voice.paywall.primaryCta,
+      contact: voice.paywall.contact,
     },
     hi: {
-      title: 'Your couples toolkit, unlocked',
-      subtitle: 'Join thousands of couples exploring together.',
+      title: voice.paywall.title,
+      subtitle: voice.paywall.subtitle,
       restore: 'Restore Purchase',
       retry: 'फिर से कोशिश करें',
       freeTrialBadge: 'मुफ़्त ट्रायल उपलब्ध',
@@ -371,11 +373,11 @@ function SubscriptionPaywallScreen({ route }: { route?: { params?: { trigger?: '
       restoreMissing: 'कोई सक्रिय subscription नहीं मिला।',
       checkingSubscription: 'subscription जाँची जा रही है...',
       billingUnavailableTitle: 'बिलिंग उपलब्ध नहीं है',
-      featureIdeas: '🌸 400+ ideas, positions & date nights',
-      featureChallenges: '🎯 Weekly challenges & smart suggestions',
-      featurePrivacy: '🔒 Private · No ads · Cancel anytime',
-      primaryCta: 'Start My Subscription →',
-      contact: "Questions? We're real people. Contact us.",
+      featureIdeas: voice.paywall.featureIdeas,
+      featureChallenges: voice.paywall.featureChallenges,
+      featurePrivacy: voice.paywall.featurePrivacy,
+      primaryCta: voice.paywall.primaryCta,
+      contact: voice.paywall.contact,
     },
   } as const;
 
@@ -598,6 +600,7 @@ function OnboardingStack({ screens }: { screens: AppNavigatorScreens }) {
 export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) {
   const { t } = useI18n();
   const store = useStore();
+  const voice = useMemo(() => getVoiceCopy(store.language), [store.language]);
   const { user, loading: authLoading, initError } = useAuth();
   const reviewerBypassEmail = (process.env.EXPO_PUBLIC_REVIEW_BYPASS_EMAIL || '').trim().toLowerCase();
   const isReviewerBypassUser =
@@ -653,7 +656,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 48, marginBottom: 16 }}>🌸</Text>
-        <Text style={{ color: themeColors.text.primary, fontSize: 28, fontWeight: '700' }}>Blisse</Text>
+        <Text style={{ color: themeColors.text.primary, fontSize: 28, fontWeight: '700' }}>{voice.labels.brandName}</Text>
         <Text style={{ color: themeColors.text.secondary, fontSize: 14, marginTop: 8 }}>{t('common.loading')}</Text>
         <ActivityIndicator color={themeColors.primary[500]} style={{ marginTop: 20 }} />
       </View>

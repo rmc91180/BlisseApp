@@ -12,6 +12,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { sound } from '@/services/audio';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy, pickVoiceLine } from '@/copy';
 
 interface DailyBonusModalProps {
   visible: boolean;
@@ -21,8 +23,10 @@ interface DailyBonusModalProps {
 
 export function DailyBonusModal({ visible, onClose, ConfettiComponent }: DailyBonusModalProps) {
   const store = useStore();
+  const { language } = useI18n();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const pulseScale = useRef(new Animated.Value(1)).current;
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimedAmount, setClaimedAmount] = useState(0);
@@ -88,14 +92,21 @@ export function DailyBonusModal({ visible, onClose, ConfettiComponent }: DailyBo
         <Pressable onPress={() => undefined} style={[styles.sheet, { backgroundColor: themeColors.card }]}>
           <ConfettiComponent visible={showConfetti} />
 
-          <TouchableOpacity style={styles.closeButton} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close daily bonus">
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel={pickVoiceLine(voice.generic.close, `daily-bonus-close-${language}`)}
+          >
             <Text style={[styles.closeText, { color: themeColors.text.muted }]}>×</Text>
           </TouchableOpacity>
 
           <Animated.Text style={[styles.heroEmoji, { transform: [{ scale: pulseScale }] }]}>⭐</Animated.Text>
-          <Text style={[styles.title, { color: themeColors.text.primary }]}>Daily Bliss Bonus</Text>
+          <Text style={[styles.title, { color: themeColors.text.primary }]}>{voice.dailyBonus.title}</Text>
           {store.loginStreak > 1 ? (
-            <Text style={[styles.streakText, { color: themeColors.text.secondary }]}>Day {store.loginStreak} streak! 🔥</Text>
+            <Text style={[styles.streakText, { color: themeColors.text.secondary }]}>
+              {voice.dailyBonus.dayStreak(store.loginStreak)}
+            </Text>
           ) : null}
 
           <View style={styles.starsRow}>
@@ -112,12 +123,12 @@ export function DailyBonusModal({ visible, onClose, ConfettiComponent }: DailyBo
               style={styles.claimGradient}
             >
               <Text style={styles.claimText}>
-                {isClaiming ? `Collected ${claimedAmount} ⭐` : `Collect ${previewBonus} ⭐`}
+                {isClaiming ? voice.dailyBonus.collected(claimedAmount) : voice.dailyBonus.collect(previewBonus)}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          <Text style={[styles.caption, { color: themeColors.text.muted }]}>Come back tomorrow for more</Text>
+          <Text style={[styles.caption, { color: themeColors.text.muted }]}>{voice.dailyBonus.caption}</Text>
         </Pressable>
       </Pressable>
     </Modal>
@@ -198,4 +209,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-

@@ -15,6 +15,7 @@ import type {
   WeeklyGoal,
   UserPreferences,
   InteractionEvent,
+  SessionLearningFeedback,
   UserPlaylist,
 } from '@/types/app';
 import { savePinToSecureStorage } from '@/services/firebase';
@@ -39,6 +40,13 @@ export interface LevelUpResult {
   newLevel: Level;
   unlockedFeatures: UnlockableFeature[];
   unlockMessage: string;
+}
+
+export interface StorageStats {
+  activityLogCount: number;
+  interactionHistoryCount: number;
+  notesCount: number;
+  totalStarsEarned: number;
 }
 
 export interface UserState {
@@ -67,6 +75,7 @@ export interface UserState {
   activityLog: ActivityLog[];
   earnedAchievements: string[];
   monthlyStats: MonthlyStats[];
+  archivedMonthlyStats: MonthlyStats[];
   currentStreak: number;
   lastActivityDate: string | null;
   dateNightsCompleted: number;
@@ -129,9 +138,11 @@ export interface UserState {
   // Weekly Goals & Daily Login
   refreshWeeklyGoals: () => void;
   updateWeeklyGoalProgress: (type: string, amount?: number) => void;
+  archiveOldStats: () => void;
   claimDailyBonus: () => number;
   checkLoginStreak: () => void;
   setFirstOpenDate: (date: string) => void;
+  storageStats: () => StorageStats;
   // Security & Settings Actions
   setPinCode: (pin: string | null) => void;
   setUseBiometrics: (use: boolean) => void;
@@ -144,6 +155,7 @@ export interface UserState {
   resetOnboarding: () => void;
   // Smart Learning Actions
   trackInteraction: (event: Omit<InteractionEvent, 'timestamp'>) => void;
+  trackSessionFeedback: (feedback: SessionLearningFeedback) => void;
   getSmartRecommendations: (count?: number) => Array<{ type: string; item: any; score: number; reason: string }>;
   getUserPreferenceSummary: () => { categories: string[]; moods: string[]; contentTypes: string[] };
   // User Playlists
@@ -154,6 +166,15 @@ export interface UserState {
 }
 
 const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
+const getMonthIndex = (month: string): number => {
+  const [yearRaw, monthRaw] = month.split('-');
+  const year = Number(yearRaw);
+  const monthNumber = Number(monthRaw);
+  if (!Number.isFinite(year) || !Number.isFinite(monthNumber) || monthNumber < 1 || monthNumber > 12) {
+    return Number.NaN;
+  }
+  return year * 12 + (monthNumber - 1);
+};
 
 export const useStore = create<UserState>()(
   persist(
@@ -182,6 +203,7 @@ export const useStore = create<UserState>()(
       activityLog: [],
       earnedAchievements: [],
       monthlyStats: [],
+      archivedMonthlyStats: [],
       currentStreak: 0,
       lastActivityDate: null,
       dateNightsCompleted: 0,
@@ -441,9 +463,14 @@ export const useStore = create<UserState>()(
         }
 
         const newTotalStars = state.totalStars + starsEarned;
+        let newActivityLog = [...state.activityLog, logEntry];
+        if (newActivityLog.length > 500) {
+          newActivityLog = newActivityLog.slice(-500);
+        }
+
         set({
           totalStars: newTotalStars,
-          activityLog: [...state.activityLog, logEntry],
+          activityLog: newActivityLog,
           currentStreak: newStreak,
           lastActivityDate: today,
           monthlyStats,
@@ -613,6 +640,56 @@ export const useStore = create<UserState>()(
         set({ weeklyGoals: updatedGoals });
       },
 
+      archiveOldStats: () => {
+        const state = get();
+        if (state.monthlyStats.length === 0) return;
+
+        const currentMonthIndex = getMonthIndex(getCurrentMonth());
+        if (!Number.isFinite(currentMonthIndex)) return;
+
+        const activeStats: MonthlyStats[] = [];
+        const toArchive: MonthlyStats[] = [];
+
+        state.monthlyStats.forEach((stat) => {
+          const statMonthIndex = getMonthIndex(stat.month);
+          if (!Number.isFinite(statMonthIndex)) {
+            activeStats.push(stat);
+            return;
+          }
+
+          if ((currentMonthIndex - statMonthIndex) >= 6) {
+            toArchive.push(stat);
+          } else {
+            activeStats.push(stat);
+          }
+        });
+
+        if (toArchive.length === 0) return;
+
+        const archivedMap = new Map<string, MonthlyStats>();
+        state.archivedMonthlyStats.forEach((stat) => {
+          archivedMap.set(stat.month, stat);
+        });
+
+        toArchive.forEach((stat) => {
+          const existing = archivedMap.get(stat.month);
+          if (existing) {
+            archivedMap.set(stat.month, {
+              month: stat.month,
+              totalSessions: existing.totalSessions + stat.totalSessions,
+              starsEarned: existing.starsEarned + stat.starsEarned,
+              newThingsTried: existing.newThingsTried + stat.newThingsTried,
+              challengesCompleted: existing.challengesCompleted + stat.challengesCompleted,
+            });
+            return;
+          }
+          archivedMap.set(stat.month, stat);
+        });
+
+        const archivedMonthlyStats = Array.from(archivedMap.values()).sort((a, b) => a.month.localeCompare(b.month));
+        set({ monthlyStats: activeStats, archivedMonthlyStats });
+      },
+
       // Daily Login System
       checkLoginStreak: () => {
         const state = get();
@@ -649,6 +726,16 @@ export const useStore = create<UserState>()(
         if (!get().firstOpenDate) {
           set({ firstOpenDate: date });
         }
+      },
+
+      storageStats: () => {
+        const state = get();
+        return {
+          activityLogCount: state.activityLog.length,
+          interactionHistoryCount: state.interactionHistory.length,
+          notesCount: state.notes.length,
+          totalStarsEarned: state.totalStars,
+        };
       },
 
       setPinCode: (pin) => {
@@ -712,6 +799,28 @@ export const useStore = create<UserState>()(
           event.category || '',
           event.mood || ''
         );
+      },
+
+      trackSessionFeedback: (feedback) => {
+        const state = get();
+        const normalizedFeedback: SessionLearningFeedback = {
+          ...feedback,
+          steps: feedback.steps.filter((step) => Number(step.itemId) > 0),
+        };
+        if (normalizedFeedback.steps.length === 0 && !normalizedFeedback.exitedEarly) {
+          return;
+        }
+
+        const sessionLearning = SmartLearning.applySessionFeedback(
+          state.learningPreferences,
+          normalizedFeedback
+        );
+        const updatedHistory = [...state.interactionHistory, ...sessionLearning.events].slice(-100);
+
+        set({
+          learningPreferences: sessionLearning.preferences,
+          interactionHistory: updatedHistory,
+        });
       },
 
       getSmartRecommendations: (count = 5) => {
@@ -797,11 +906,100 @@ export const useStore = create<UserState>()(
     {
       name: 'blisse-storage',
       storage: createJSONStorage(() => AsyncStorage),
+      version: 2,
+      migrate: (persistedState, version) => {
+        const state = (persistedState || {}) as Partial<UserState>;
+
+        if (!Array.isArray(state.activityLog)) {
+          state.activityLog = [];
+        } else if (state.activityLog.length > 500) {
+          state.activityLog = state.activityLog.slice(-500);
+        }
+
+        if (!Array.isArray(state.interactionHistory)) {
+          state.interactionHistory = [];
+        } else if (state.interactionHistory.length > 100) {
+          state.interactionHistory = state.interactionHistory.slice(-100);
+        }
+
+        if (!Array.isArray(state.archivedMonthlyStats)) {
+          state.archivedMonthlyStats = [];
+        }
+
+        if (version < 2 && !Array.isArray(state.unlockedFeatures)) {
+          const earnedCount = Array.isArray(state.earnedAchievements) ? state.earnedAchievements.length : 0;
+          state.unlockedFeatures = earnedCount > 5 ? [...ALL_UNLOCKABLE_FEATURES] : [];
+        }
+
+        if (typeof state.firstOpenDate === 'undefined') {
+          state.firstOpenDate = null;
+        }
+
+        if (!state.learningPreferences) {
+          state.learningPreferences = DEFAULT_PREFERENCES;
+        } else if (!state.learningPreferences.sequenceScores) {
+          state.learningPreferences = {
+            ...DEFAULT_PREFERENCES,
+            ...state.learningPreferences,
+            experienceScores: {
+              ...DEFAULT_PREFERENCES.experienceScores,
+              ...state.learningPreferences.experienceScores,
+            },
+            sequenceScores: DEFAULT_PREFERENCES.sequenceScores,
+          };
+        }
+
+        return state;
+      },
       partialize: (state) => {
-        const { pinCode: removedPinCode, pendingLevelUp: removedLevelUp, ...persistedState } = state;
-        void removedPinCode;
-        void removedLevelUp;
-        return persistedState;
+        return {
+          name: state.name,
+          relationshipType: state.relationshipType,
+          interests: state.interests,
+          experience: state.experience,
+          hasCompletedOnboarding: state.hasCompletedOnboarding,
+          hasSeenTutorial: state.hasSeenTutorial,
+          currentMood: state.currentMood,
+          favorites: state.favorites,
+          tried: state.tried,
+          favoriteForeplay: state.favoriteForeplay,
+          triedForeplay: state.triedForeplay,
+          favoriteOral: state.favoriteOral,
+          triedOral: state.triedOral,
+          favoriteMassage: state.favoriteMassage,
+          triedMassage: state.triedMassage,
+          favoriteRoleplay: state.favoriteRoleplay,
+          triedRoleplay: state.triedRoleplay,
+          notes: state.notes,
+          currentChallenge: state.currentChallenge,
+          completedChallenges: state.completedChallenges,
+          totalStars: state.totalStars,
+          activityLog: state.activityLog,
+          earnedAchievements: state.earnedAchievements,
+          monthlyStats: state.monthlyStats,
+          archivedMonthlyStats: state.archivedMonthlyStats,
+          currentStreak: state.currentStreak,
+          lastActivityDate: state.lastActivityDate,
+          dateNightsCompleted: state.dateNightsCompleted,
+          unlockedFeatures: state.unlockedFeatures,
+          weeklyGoals: state.weeklyGoals,
+          weeklyGoalsStartDate: state.weeklyGoalsStartDate,
+          lastLoginDate: state.lastLoginDate,
+          loginStreak: state.loginStreak,
+          dailyBonusClaimed: state.dailyBonusClaimed,
+          firstOpenDate: state.firstOpenDate,
+          useBiometrics: state.useBiometrics,
+          language: state.language,
+          notificationsEnabled: state.notificationsEnabled,
+          dailyJokeNotificationsEnabled: state.dailyJokeNotificationsEnabled,
+          dailyStreakNotificationsEnabled: state.dailyStreakNotificationsEnabled,
+          reactivationNotificationsEnabled: state.reactivationNotificationsEnabled,
+          hasAgreedToTerms: state.hasAgreedToTerms,
+          agreedToTermsDate: state.agreedToTermsDate,
+          learningPreferences: state.learningPreferences,
+          interactionHistory: state.interactionHistory,
+          userPlaylists: state.userPlaylists,
+        };
       },
     }
   )

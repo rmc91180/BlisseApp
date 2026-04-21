@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { getDoc, doc } from 'firebase/firestore';
 import { getFirebaseDb } from '@/services/firebase';
+import { getVoiceCopy } from '@/copy';
 import { createLocalizedArrayProxy, getCurrentLanguage } from '@/i18n/languageGetter';
 import type { AppLanguage } from '@/i18n/translations';
 import {
@@ -144,8 +145,8 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
   '"Stick with me… tonight just got a lot smoother."',
   'Blankets + body heat = certified happy chaos.',
   'Because flirting turned out to be the ultimate foreplay.',
-  'Tension? What tension? It disappears on skin contact.',
-  'Because a smile + a kiss = no further questions needed.',
+  'Tension melts on skin contact.',
+  'Because a smile + a kiss = no second thoughts needed.',
   'The first round was just the warm-up lap.',
   'Every outfit tonight has a dangerously short runtime.',
   'Partner squats… with bonus giggles included.',
@@ -174,7 +175,7 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
   'That tonight had no interest in staying hypothetical.',
   'Because chemistry refuses to respect room boundaries.',
   '“Stay close… I’m not done making this difficult.”',
-  'It was tired of being treated like a suggestion.',
+  'It was tired of being treated like a maybe.',
   'It stopped pretending this was still a casual evening.',
   'Because suspense is hotter when it arrives in writing.',
   'That privacy was about to become a team sport.',
@@ -203,7 +204,7 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
   'Because some walks are just long routes back to temptation.',
   'That consent can still look dangerously confident.',
   'Because nobody really wanted the snack.',
-  'A reflection of two people pretending they still had restraint.',
+  'Two people pretending they still had restraint.',
   'Because bedtime was an adorable little lie.',
   'One soft start and the whole night changed genre.',
   'Because comfort got promoted to chemistry.',
@@ -446,11 +447,44 @@ const getLocalizedFallbackPunchlines = (language: AppLanguage): string[] => {
   return _DAILY_JOKE_PUNCHLINES_EN;
 };
 
-const getJokeNotificationSuffix = (language: AppLanguage): string => {
-  if (language === 'es') return 'Toca para ver la respuesta.';
-  if (language === 'pt') return 'Toque para ver a resposta.';
-  if (language === 'hi') return 'जवाब देखने के लिए टैप करें।';
-  return 'Tap to see the answer.';
+const getDailyTeaseNotificationBody = (date: Date, language: AppLanguage = getCurrentLanguage()): string => {
+  const dayIndex = Math.max(0, getDayOfYear(date) - 1);
+  const bodies = getVoiceCopy(language).notifications.dailyTease;
+  return bodies[dayIndex % bodies.length];
+};
+
+const QUESTION_STYLE_FALLBACKS = [
+  'Tonight is made for playful trouble.',
+  'This night is already warming up nicely.',
+  'The spark is on. Stay close.',
+  'A little tease goes a long way tonight.',
+  'Slow start, then let it build.',
+  'Keep it light, keep it close, keep it fun.',
+  'You two already know how this ends.',
+  'The vibe is good. Follow it.',
+];
+
+const hashLine = (line: string): number => {
+  let hash = 0;
+  for (let i = 0; i < line.length; i += 1) {
+    hash = (hash * 31 + line.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash);
+};
+
+const normalizeFlirtyLine = (line: string): string => {
+  const trimmed = line.trim();
+  const lower = trimmed.toLowerCase();
+  if (lower.startsWith('why ') || lower.startsWith('what ')) {
+    return QUESTION_STYLE_FALLBACKS[hashLine(trimmed) % QUESTION_STYLE_FALLBACKS.length];
+  }
+
+  return trimmed
+    .replace(/\?/g, '.')
+    .replace(/suggestion/gi, 'nudge')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\.{2,}/g, '.')
+    .trim();
 };
 
 export const getDailyJokeForDate = (
@@ -477,8 +511,8 @@ export const getDailyJokeForDate = (
   const bankTag = bank?.version?.length ? bank.version : 'local';
   return {
     id: `${year}-${setupIndex}-${punchlineIndex}-${bankTag}`,
-    setup: setups[setupIndex],
-    punchline: punchlines[punchlineIndex],
+    setup: normalizeFlirtyLine(setups[setupIndex]),
+    punchline: normalizeFlirtyLine(punchlines[punchlineIndex]),
   };
 };
 
@@ -569,7 +603,7 @@ export const ensureDailyJokeTeaserNotifications = async (
       const id = await Notifications.scheduleNotificationAsync({
         content: {
           title: getDailyJokeNotificationTitle(),
-          body: `${joke.setup} ${getJokeNotificationSuffix(language)}`,
+          body: getDailyTeaseNotificationBody(adjustedFireDate, language),
           sound: false,
           data: { type: 'daily_joke_tease', jokeId: joke.id, dateKey },
         },

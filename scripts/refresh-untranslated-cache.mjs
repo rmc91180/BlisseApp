@@ -12,6 +12,7 @@ const RETRY_DELAY_MS = 700;
 const LANGUAGES = [
   { key: 'es', target: 'es' },
   { key: 'pt', target: 'pt-BR' },
+  { key: 'hi', target: 'hi' },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -117,4 +118,3 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-

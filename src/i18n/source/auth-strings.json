@@ -64,8 +64,8 @@
     "signup": {
       "en": {
         "title": "Create Your Account",
-        "subtitle": "Join thousands of couples exploring deeper connection",
-        "teaser": "In under a minute, unlock personalized ideas designed around your mood and preferences.",
+        "subtitle": "Join thousands of couples turning up the spark",
+        "teaser": "In under a minute, unlock playful picks that feel right tonight.",
         "email": "Email",
         "emailPlaceholder": "your@email.com",
         "password": "Password",
@@ -81,8 +81,8 @@
       },
       "es": {
         "title": "Crea Tu Cuenta",
-        "subtitle": "Únete a miles de parejas explorando una conexión más profunda",
-        "teaser": "En menos de un minuto, desbloquea ideas personalizadas según su estado de ánimo y preferencias.",
+        "subtitle": "Únete a miles de parejas subiendo la chispa",
+        "teaser": "En menos de un minuto, desbloqueen planes juguetones para esta noche.",
         "email": "Correo electrónico",
         "emailPlaceholder": "tu@correo.com",
         "password": "Contraseña",
@@ -98,8 +98,8 @@
       },
       "pt-BR": {
         "title": "Crie Sua Conta",
-        "subtitle": "Junte-se a milhares de casais explorando uma conexão mais profunda",
-        "teaser": "Em menos de um minuto, desbloqueie ideias personalizadas com base no humor e nas preferências de vocês.",
+        "subtitle": "Junte-se a milhares de casais aumentando a faísca",
+        "teaser": "Em menos de um minuto, desbloqueiem ideias leves e quentes para hoje.",
         "email": "E-mail",
         "emailPlaceholder": "seu@email.com",
         "password": "Senha",
@@ -115,8 +115,8 @@
       },
       "hi": {
         "title": "अपना खाता बनाएँ",
-        "subtitle": "हज़ारों जोड़ों के साथ और गहरे जुड़ाव की ओर बढ़ें",
-        "teaser": "एक मिनट से भी कम समय में ऐसे निजी सुझाव पाएँ जो आपके मूड और पसंद के मुताबिक हों।",
+        "subtitle": "हज़ारों कपल्स के साथ अपनी चिंगारी बढ़ाएँ",
+        "teaser": "एक मिनट से भी कम में आज रात के लिए playful picks अनलॉक करें।",
         "email": "ईमेल",
         "emailPlaceholder": "your@email.com",
         "password": "पासवर्ड",
@@ -134,62 +134,62 @@
     "login": {
       "en": {
         "title": "Welcome Back",
-        "subtitle": "Sign in to continue your journey",
+        "subtitle": "Sign in and pick up the spark",
         "teaser": "Tonight's spark is waiting. Pick up where you left off and keep the momentum going.",
         "personalNote": "Built with love by Tammy & Mark — married 20 years, still flirting.",
         "email": "Email",
         "emailPlaceholder": "your@email.com",
         "password": "Password",
         "passwordPlaceholder": "Enter your password",
-        "forgotPassword": "Forgot password?",
+        "forgotPassword": "Reset password",
         "invalidCredentials": "Incorrect email or password",
         "signIn": "Sign In",
-        "noAccount": "Don't have an account?",
+        "noAccount": "New here",
         "signUp": "Sign Up"
       },
       "es": {
         "title": "Bienvenido de Nuevo",
-        "subtitle": "Inicia sesión para continuar tu viaje",
+        "subtitle": "Entren y vuelvan al ritmo",
         "teaser": "La chispa de hoy ya te espera. Retomen donde lo dejaron y mantengan el ritmo.",
         "personalNote": "Creado con amor por Tammy y Mark: 20 años de casados y todavía coqueteando.",
         "email": "Correo electrónico",
         "emailPlaceholder": "tu@correo.com",
         "password": "Contraseña",
         "passwordPlaceholder": "Ingresa tu contraseña",
-        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "forgotPassword": "Restablecer contraseña",
         "invalidCredentials": "Correo o contraseña incorrectos",
         "signIn": "Iniciar Sesión",
-        "noAccount": "¿No tienes una cuenta?",
+        "noAccount": "Nuevos por aquí",
         "signUp": "Regístrate"
       },
       "pt-BR": {
         "title": "Bem-vindo de Volta",
-        "subtitle": "Entre para continuar sua jornada",
+        "subtitle": "Entrem e retomem o ritmo",
         "teaser": "A faísca de hoje já está te esperando. Continuem de onde pararam e mantenham o ritmo.",
         "personalNote": "Criado com amor por Tammy e Mark — 20 anos de casados e ainda flertando.",
         "email": "E-mail",
         "emailPlaceholder": "seu@email.com",
         "password": "Senha",
         "passwordPlaceholder": "Digite sua senha",
-        "forgotPassword": "Esqueceu a senha?",
+        "forgotPassword": "Redefinir senha",
         "invalidCredentials": "E-mail ou senha incorretos",
         "signIn": "Entrar",
-        "noAccount": "Não tem uma conta?",
+        "noAccount": "Primeira vez aqui",
         "signUp": "Cadastre-se"
       },
       "hi": {
         "title": "वापसी पर स्वागत है",
-        "subtitle": "अपनी कहानी आगे बढ़ाने के लिए साइन इन करें",
+        "subtitle": "साइन इन करें और अपनी चिंगारी फिर से चालू करें",
         "teaser": "आज रात की चिंगारी आपका इंतज़ार कर रही है। वहीं से आगे बढ़ें जहाँ आप रुके थे।",
         "personalNote": "Tammy और Mark की ओर से, प्यार से बनाया गया — 20 साल से साथ हैं और आज भी खुलकर इश्क़ करते हैं।",
         "email": "ईमेल",
         "emailPlaceholder": "your@email.com",
         "password": "पासवर्ड",
         "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
-        "forgotPassword": "पासवर्ड भूल गए?",
+        "forgotPassword": "पासवर्ड रीसेट करें",
         "invalidCredentials": "ईमेल या पासवर्ड सही नहीं है",
         "signIn": "साइन इन",
-        "noAccount": "क्या आपका खाता नहीं है?",
+        "noAccount": "पहली बार यहाँ",
         "signUp": "साइन अप"
       }
     },
@@ -249,8 +249,8 @@
     },
     "onboardingRelationship": {
       "en": {
-        "title": "Tell Us About You",
-        "subtitle": "This helps us personalize your experience",
+        "title": "Set Your Vibe",
+        "subtitle": "Quick picks now. Great nights fast.",
         "relationshipType": "Relationship type",
         "relationshipOptions": {
           "hetero": "Man & Woman",
@@ -258,7 +258,7 @@
           "ff": "Woman & Woman",
           "other": "Other / Prefer not to say"
         },
-        "relationshipDuration": "How long have you been together?",
+        "relationshipDuration": "Time together",
         "durationOptions": {
           "new": "Less than 1 year",
           "established": "1-5 years",
@@ -269,8 +269,8 @@
         "continue": "Continue"
       },
       "es": {
-        "title": "Cuéntanos Sobre Ti",
-        "subtitle": "Esto nos ayuda a personalizar tu experiencia",
+        "title": "Pongan su vibra",
+        "subtitle": "Elijan rápido. La noche se arma sola.",
         "relationshipType": "Tipo de relación",
         "relationshipOptions": {
           "hetero": "Hombre y Mujer",
@@ -278,7 +278,7 @@
           "ff": "Mujer y Mujer",
           "other": "Otro / Prefiero no decir"
         },
-        "relationshipDuration": "¿Cuánto tiempo llevan juntos?",
+        "relationshipDuration": "Tiempo juntos",
         "durationOptions": {
           "new": "Menos de 1 año",
           "established": "1-5 años",
@@ -289,8 +289,8 @@
         "continue": "Continuar"
       },
       "pt-BR": {
-        "title": "Conte-nos Sobre Você",
-        "subtitle": "Isso nos ajuda a personalizar sua experiência",
+        "title": "Definam a vibe",
+        "subtitle": "Escolham rápido. A noite encaixa.",
         "relationshipType": "Tipo de relacionamento",
         "relationshipOptions": {
           "hetero": "Homem e Mulher",
@@ -298,7 +298,7 @@
           "ff": "Mulher e Mulher",
           "other": "Outro / Prefiro não dizer"
         },
-        "relationshipDuration": "Há quanto tempo estão juntos?",
+        "relationshipDuration": "Tempo juntos",
         "durationOptions": {
           "new": "Menos de 1 ano",
           "established": "1-5 anos",
@@ -309,8 +309,8 @@
         "continue": "Continuar"
       },
       "hi": {
-        "title": "अपने बारे में थोड़ा बताएँ",
-        "subtitle": "इससे हम आपका अनुभव आपके लिए और बेहतर बना पाएँगे",
+        "title": "अपनी vibe सेट करें",
+        "subtitle": "जल्दी चुनिए। रात अपने आप बनती जाएगी।",
         "relationshipType": "रिश्ते का प्रकार",
         "relationshipOptions": {
           "hetero": "पुरुष और महिला",
@@ -318,7 +318,7 @@
           "ff": "महिला और महिला",
           "other": "अन्य / बताना नहीं चाहते"
         },
-        "relationshipDuration": "आप दोनों कब से साथ हैं?",
+        "relationshipDuration": "साथ का समय",
         "durationOptions": {
           "new": "1 साल से कम",
           "established": "1-5 साल",
@@ -332,8 +332,8 @@
     "onboardingPreferences": {
       "en": {
         "title": "Pick your vibe.",
-        "subtitle": "Quick choices now, better suggestions right away.",
-        "preferencesLabel": "What are you in the mood for most days?",
+        "subtitle": "Quick picks now. Instant heat.",
+        "preferencesLabel": "Pick what pulls you in most days.",
         "preferences": {
           "deepConnection": "Deeper emotional connection",
           "spiceThingsUp": "Spicing things up",
@@ -344,9 +344,9 @@
           "communication": "Better communication",
           "adventurous": "More adventurous experiences"
         },
-        "experienceLevel": "Familiar and easy, or playful and different?",
+        "experienceLevel": "Pick your pace.",
         "experienceLevels": {
-          "beginner": "Just starting to explore",
+          "beginner": "Just getting started",
           "intermediate": "Comfortable but curious",
           "advanced": "Very experienced"
         },
@@ -355,8 +355,8 @@
       },
       "es": {
         "title": "Elijan la vibra.",
-        "subtitle": "Decidan rápido y nosotros afinamos el resto.",
-        "preferencesLabel": "¿Qué se les antoja la mayoría de los días?",
+        "subtitle": "Decidan rápido. Lo demás fluye.",
+        "preferencesLabel": "Elijan lo que más les prende.",
         "preferences": {
           "deepConnection": "Conexión emocional más profunda",
           "spiceThingsUp": "Darle sabor a la relación",
@@ -367,9 +367,9 @@
           "communication": "Mejor comunicación",
           "adventurous": "Experiencias más aventureras"
         },
-        "experienceLevel": "¿Más familiar y fácil, o más juguetón y diferente?",
+        "experienceLevel": "Elijan su ritmo.",
         "experienceLevels": {
-          "beginner": "Apenas comenzando a explorar",
+          "beginner": "Recién empezando",
           "intermediate": "Cómodo pero curioso",
           "advanced": "Muy experimentado"
         },
@@ -378,8 +378,8 @@
       },
       "pt-BR": {
         "title": "Escolham a vibe.",
-        "subtitle": "Escolha rápida agora, sugestão certeira já já.",
-        "preferencesLabel": "O que mais combina com vocês na maioria dos dias?",
+        "subtitle": "Escolha rápida agora. O resto vem fácil.",
+        "preferencesLabel": "Escolham o que mais acende vocês.",
         "preferences": {
           "deepConnection": "Conexão emocional mais profunda",
           "spiceThingsUp": "Apimentar a relação",
@@ -390,9 +390,9 @@
           "communication": "Melhor comunicação",
           "adventurous": "Experiências mais aventureiras"
         },
-        "experienceLevel": "Mais familiar e fácil, ou mais brincalhão e diferente?",
+        "experienceLevel": "Escolham o ritmo.",
         "experienceLevels": {
-          "beginner": "Apenas começando a explorar",
+          "beginner": "Só começando",
           "intermediate": "Confortável mas curioso",
           "advanced": "Muito experiente"
         },
@@ -401,8 +401,8 @@
       },
       "hi": {
         "title": "अपनी vibe चुनिए।",
-        "subtitle": "जल्दी चुनिए, बाकी हम ठीक से सेट कर देंगे।",
-        "preferencesLabel": "ज़्यादातर दिनों में क्या सबसे अच्छा लगता है?",
+        "subtitle": "जल्दी चुनिए। बाकी अपने आप सेट हो जाएगा।",
+        "preferencesLabel": "जो सबसे ज़्यादा खींचे, उसे चुनिए।",
         "preferences": {
           "deepConnection": "और गहरा भावनात्मक जुड़ाव",
           "spiceThingsUp": "रिश्ते में नई चिंगारी लाना",
@@ -413,7 +413,7 @@
           "communication": "बेहतर बातचीत",
           "adventurous": "थोड़ा और रोमांचक अनुभव"
         },
-        "experienceLevel": "जाना-पहचाना और आसान, या playful और थोड़ा अलग?",
+        "experienceLevel": "अपनी गति चुनिए।",
         "experienceLevels": {
           "beginner": "अभी-अभी शुरुआत की है",
           "intermediate": "आरामदायक हैं, पर जिज्ञासा बाकी है",
@@ -588,30 +588,30 @@
     "onboardingComplete": {
       "en": {
         "title": "You're All Set!",
-        "subtitle": "Your personalized experience awaits",
-        "message": "Based on your preferences, we'll suggest positions, activities, and ideas tailored just for you.",
-        "tip": "You can always update your preferences in Settings",
+        "subtitle": "Your spark is ready",
+        "message": "Your next moves are lined up and ready to play.",
+        "tip": "Switch your vibe anytime in Settings",
         "enterApp": "Enter Blisse"
       },
       "es": {
         "title": "¡Todo Listo!",
-        "subtitle": "Tu experiencia personalizada te espera",
-        "message": "Basándonos en tus preferencias, te sugeriremos posiciones, actividades e ideas hechas a tu medida.",
-        "tip": "Siempre puedes actualizar tus preferencias en Configuración",
+        "subtitle": "Su chispa está lista",
+        "message": "Sus próximos pasos ya están listos para jugar.",
+        "tip": "Cambien la vibra cuando quieran en Configuración",
         "enterApp": "Entrar a Blisse"
       },
       "pt-BR": {
         "title": "Tudo Pronto!",
-        "subtitle": "Sua experiência personalizada te espera",
-        "message": "Com base nas suas preferências, vamos sugerir posições, atividades e ideias feitas sob medida para você.",
-        "tip": "Você sempre pode atualizar suas preferências em Configurações",
+        "subtitle": "A faísca de vocês está pronta",
+        "message": "Os próximos passos já estão prontos para entrar em cena.",
+        "tip": "Mudam a vibe quando quiserem em Configurações",
         "enterApp": "Entrar no Blisse"
       },
       "hi": {
         "title": "सब तैयार है!",
-        "subtitle": "अब आपका निजी अनुभव आपका इंतज़ार कर रहा है",
-        "message": "आपकी पसंद के आधार पर हम ऐसी मुद्राएँ, गतिविधियाँ और सुझाव देंगे जो आप दोनों के लिए सही बैठें।",
-        "tip": "आप अपनी पसंद बाद में सेटिंग्स में कभी भी बदल सकते हैं",
+        "subtitle": "आपकी चिंगारी अब तैयार है",
+        "message": "अगले moves तैयार हैं। बस प्ले दबाइए।",
+        "tip": "Settings में कभी भी vibe बदलें",
         "enterApp": "Blisse में जाएँ"
       }
     },

@@ -13,6 +13,8 @@ import { sound } from '@/services/audio';
 import { Analytics } from '@/services/analytics';
 import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy } from '@/copy';
 
 type PreviewKey = 'foreplay' | 'position' | 'roleplay';
 
@@ -35,24 +37,10 @@ const PREVIEW_EMOJI: Record<PreviewKey, string> = {
   roleplay: '🎭',
 };
 
-const getPayoffLine = (interests: string[]): string => {
-  if (interests.includes('deepConnection')) {
-    return "You're here for depth, not just novelty. We get it.";
-  }
-  if (interests.includes('spiceThingsUp')) {
-    return "Ready to shake things up. Let's start tonight.";
-  }
-  if (interests.includes('adventurous')) {
-    return "You like the edge. We'll take you there carefully.";
-  }
-  if (interests.includes('quickies')) {
-    return "Sometimes fast is exactly right. We've got you.";
-  }
-  return "You showed up. That's already the first step.";
-};
-
 export function OnboardingPayoffScreen() {
   const store = useStore();
+  const { language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
 
@@ -78,7 +66,13 @@ export function OnboardingPayoffScreen() {
     []
   );
 
-  const payoffLine = useMemo(() => getPayoffLine(store.interests), [store.interests]);
+  const payoffLine = useMemo(() => {
+    if (store.interests.includes('deepConnection')) return voice.onboarding.payoffSubline.deepConnection;
+    if (store.interests.includes('spiceThingsUp')) return voice.onboarding.payoffSubline.spiceThingsUp;
+    if (store.interests.includes('adventurous')) return voice.onboarding.payoffSubline.adventurous;
+    if (store.interests.includes('quickies')) return voice.onboarding.payoffSubline.quickies;
+    return voice.onboarding.payoffSubline.default;
+  }, [store.interests, voice.onboarding.payoffSubline]);
 
   const previewCards = useMemo(() => {
     const experienceKey = (store.experience || 'beginner').toLowerCase();
@@ -177,7 +171,7 @@ export function OnboardingPayoffScreen() {
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <Animated.View style={{ opacity: headerOpacity }}>
             <Text style={[styles.header, { color: themeColors.text.primary }]}>
-              {`Here's what we found for you, ${store.name || 'there'} 👋`}
+              {voice.onboarding.payoffHeader(store.name || '')}
             </Text>
           </Animated.View>
 
@@ -209,7 +203,7 @@ export function OnboardingPayoffScreen() {
                     <Text style={[styles.previewCategory, { color: themeColors.text.muted }]}>{preview.category}</Text>
                   </View>
                   <View style={styles.frostedOverlay}>
-                    <Text style={styles.lockCopy}>Unlock to explore →</Text>
+                    <Text style={styles.lockCopy}>{voice.onboarding.payoffUnlock}</Text>
                   </View>
                 </View>
               </Animated.View>
@@ -219,15 +213,15 @@ export function OnboardingPayoffScreen() {
           <Animated.View style={[styles.valueRow, { opacity: valueRowOpacity }]}>
             <View style={styles.valueColumn}>
               <Text style={styles.valueEmoji}>📚</Text>
-              <Text style={[styles.valueText, { color: themeColors.text.primary }]}>{`${totalIdeas} Ideas`}</Text>
+              <Text style={[styles.valueText, { color: themeColors.text.primary }]}>{voice.onboarding.payoffValueIdeas(totalIdeas)}</Text>
             </View>
             <View style={styles.valueColumn}>
               <Text style={styles.valueEmoji}>🎯</Text>
-              <Text style={[styles.valueText, { color: themeColors.text.primary }]}>Challenges</Text>
+              <Text style={[styles.valueText, { color: themeColors.text.primary }]}>{voice.onboarding.payoffValueChallenges}</Text>
             </View>
             <View style={styles.valueColumn}>
               <Text style={styles.valueEmoji}>🌙</Text>
-              <Text style={[styles.valueText, { color: themeColors.text.primary }]}>Date Nights</Text>
+              <Text style={[styles.valueText, { color: themeColors.text.primary }]}>{voice.onboarding.payoffValueDateNights}</Text>
             </View>
           </Animated.View>
 
@@ -244,11 +238,11 @@ export function OnboardingPayoffScreen() {
                 end={{ x: 1, y: 0 }}
                 style={styles.ctaGradient}
               >
-                <Text style={styles.ctaText}>Let's Begin →</Text>
+                <Text style={styles.ctaText}>{voice.onboarding.payoffCta}</Text>
               </LinearGradient>
             </TouchableOpacity>
             <Text style={[styles.cancelText, { color: themeColors.text.muted }]}>
-              Cancel anytime · No commitment
+              {voice.onboarding.payoffCancel}
             </Text>
           </Animated.View>
         </ScrollView>

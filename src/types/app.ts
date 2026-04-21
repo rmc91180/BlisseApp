@@ -232,6 +232,12 @@ export interface UserPreferences {
     novelty: Record<ExperienceProfile['novelty'], number>;
     controlBalance: Record<ExperienceProfile['controlBalance'], number>;
   };
+  /** Preferred sequence patterns for 3-step session flows. */
+  sequenceScores: {
+    step1: Record<ContentType, number>;
+    step2: Record<ContentType, number>;
+    step3: Record<ContentType, number>;
+  };
   /** Recent recommendation clusters to prevent repetitive outputs. */
   recentExperienceClusters: string[];
 }
@@ -246,7 +252,38 @@ export interface InteractionEvent {
   difficulty?: string;
   rating?: number;
   experienceProfile?: ExperienceProfile;
+  sequencePosition?: 1 | 2 | 3;
+  timeSpentSeconds?: number;
+  opened?: boolean;
+  skipped?: boolean;
+  signalStrength?: number;
+  source?: 'default' | 'session_feedback';
   timestamp: string;
+}
+
+export type SessionReactionEmoji = '🔥' | '💜' | '😐';
+
+export interface SessionStepFeedbackSignal {
+  sequencePosition: 1 | 2 | 3;
+  contentType: ContentType;
+  itemId: number;
+  category?: string;
+  mood?: string;
+  difficulty?: string;
+  experienceProfile?: ExperienceProfile;
+  opened: boolean;
+  skipped: boolean;
+  timeSpentSeconds: number;
+}
+
+export interface SessionLearningFeedback {
+  moodId?: string;
+  mood?: string;
+  reaction?: SessionReactionEmoji;
+  regenerateCount: number;
+  exitedEarly: boolean;
+  saved: boolean;
+  steps: SessionStepFeedbackSignal[];
 }
 
 // ============================================

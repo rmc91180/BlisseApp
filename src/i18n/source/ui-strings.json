@@ -95,10 +95,10 @@
         "hi": "Blisse में आपका स्वागत है"
       },
       "subtitle": {
-        "en": "Your journey to deeper connection starts here",
-        "es": "Tu viaje hacia una conexión más profunda comienza aquí",
-        "pt-BR": "Sua jornada para uma conexão mais profunda começa aqui",
-        "hi": "गहरी connection की यात्रा यहीं से शुरू होती है"
+        "en": "Set the mood. Let it get good.",
+        "es": "Pongan la vibra. Que empiece lo bueno.",
+        "pt-BR": "Escolham a vibe. Daqui fica bom.",
+        "hi": "मूड सेट करें। अब मज़ा शुरू होता है।"
       },
       "getStarted": {
         "en": "Get Started",
@@ -107,10 +107,10 @@
         "hi": "शुरू करें"
       },
       "alreadyHaveAccount": {
-        "en": "Already have an account?",
-        "es": "¿Ya tienes una cuenta?",
-        "pt-BR": "Já tem uma conta?",
-        "hi": "क्या आपका खाता पहले से है?"
+        "en": "Already in",
+        "es": "Ya están dentro",
+        "pt-BR": "Já estão por aqui",
+        "hi": "पहले से शामिल हैं"
       },
       "signIn": {
         "en": "Sign In",
@@ -121,10 +121,10 @@
     },
     "name": {
       "title": {
-        "en": "What should we call you?",
-        "es": "¿Cómo te llamamos?",
-        "pt-BR": "Como devemos te chamar?",
-        "hi": "हम आपको किस नाम से पुकारें?"
+        "en": "Your name",
+        "es": "Su nombre",
+        "pt-BR": "Nome de vocês",
+        "hi": "आपका नाम"
       },
       "placeholder": {
         "en": "Your name or nickname",
@@ -174,10 +174,10 @@
       },
       "duration": {
         "title": {
-          "en": "How long have you been together?",
-          "es": "¿Cuánto tiempo llevan juntos?",
-          "pt-BR": "Há quanto tempo estão juntos?",
-          "hi": "How long have you been together?"
+          "en": "Time together",
+          "es": "Tiempo juntos",
+          "pt-BR": "Tempo juntos",
+          "hi": "साथ का समय"
         },
         "new": {
           "en": "Less than 1 year",
@@ -207,10 +207,10 @@
     },
     "preferences": {
       "title": {
-        "en": "What interests you?",
-        "es": "¿Qué te interesa?",
-        "pt-BR": "O que te interessa?",
-        "hi": "What interests you?"
+        "en": "Pick what pulls you in",
+        "es": "Elijan lo que más les prende",
+        "pt-BR": "Escolham o que mais acende",
+        "hi": "जो सबसे खींचे उसे चुनें"
       },
       "subtitle": {
         "en": "Select all that apply",
@@ -277,10 +277,10 @@
         "hi": "आपका experience level"
       },
       "beginner": {
-        "en": "Just starting to explore",
-        "es": "Empezando a explorar",
-        "pt-BR": "Começando a explorar",
-        "hi": "अभी explore करना शुरू किया है"
+        "en": "Just getting started",
+        "es": "Recién empezando",
+        "pt-BR": "Só começando",
+        "hi": "अभी शुरुआत है"
       },
       "intermediate": {
         "en": "Comfortable but curious",
@@ -355,10 +355,10 @@
         "hi": "Password"
       },
       "forgotPassword": {
-        "en": "Forgot password?",
-        "es": "¿Olvidaste tu contraseña?",
-        "pt-BR": "Esqueceu a senha?",
-        "hi": "Forgot password?"
+        "en": "Reset password",
+        "es": "Restablecer contraseña",
+        "pt-BR": "Redefinir senha",
+        "hi": "पासवर्ड रीसेट करें"
       },
       "button": {
         "en": "Sign In",
@@ -367,10 +367,10 @@
         "hi": "Sign In"
       },
       "noAccount": {
-        "en": "Don't have an account?",
-        "es": "¿No tienes una cuenta?",
-        "pt-BR": "Não tem uma conta?",
-        "hi": "Don't have an account?"
+        "en": "New here",
+        "es": "Nuevos por aquí",
+        "pt-BR": "Primeira vez aqui",
+        "hi": "पहली बार यहाँ"
       },
       "signUp": {
         "en": "Sign Up",
@@ -435,10 +435,10 @@
     },
     "tonight": {
       "title": {
-        "en": "Tonight's Suggestion",
-        "es": "Sugerencia de Esta Noche",
-        "pt-BR": "Sugestão de Hoje",
-        "hi": "Tonight's Suggestion"
+        "en": "Tonight's pick",
+        "es": "Elección de esta noche",
+        "pt-BR": "Escolha da noite",
+        "hi": "आज रात की pick"
       },
       "seeDetails": {
         "en": "See Details",
@@ -455,10 +455,10 @@
     },
     "mood": {
       "title": {
-        "en": "How are you feeling?",
-        "es": "¿Cómo te sientes?",
-        "pt-BR": "Como você está se sentindo?",
-        "hi": "How are you feeling?"
+        "en": "Set the mood",
+        "es": "Pongan el mood",
+        "pt-BR": "Definam o mood",
+        "hi": "मूड सेट करें"
       },
       "passionate": {
         "en": "Passionate",
@@ -531,16 +531,16 @@
     },
     "journey": {
       "title": {
-        "en": "Your Journey",
-        "es": "Tu Viaje",
-        "pt-BR": "Sua Jornada",
-        "hi": "Your Journey"
+        "en": "Your Rhythm",
+        "es": "Su ritmo",
+        "pt-BR": "Ritmo de vocês",
+        "hi": "आपकी लय"
       },
       "viewAll": {
-        "en": "View All Progress",
-        "es": "Ver Todo el Progreso",
-        "pt-BR": "Ver Todo o Progresso",
-        "hi": "View All Progress"
+        "en": "See your full rhythm",
+        "es": "Ver todo su ritmo",
+        "pt-BR": "Ver o ritmo completo",
+        "hi": "अपनी पूरी लय देखें"
       }
     }
   },
@@ -688,10 +688,10 @@
   },
   "positionDetail": {
     "howTo": {
-      "en": "How To",
-      "es": "Cómo Hacerlo",
-      "pt-BR": "Como Fazer",
-      "hi": "How To"
+      "en": "Try This",
+      "es": "Prueben esto",
+      "pt-BR": "Tentem isso",
+      "hi": "इसे आज़माएँ"
     },
     "whyItWorks": {
       "en": "Why It Works",
@@ -793,16 +793,16 @@
     },
     "journey": {
       "positionsTried": {
-        "en": "Positions Tried",
-        "es": "Posiciones Probadas",
-        "pt-BR": "Posições Experimentadas",
-        "hi": "Positions Tried"
+        "en": "Positions played",
+        "es": "Posiciones jugadas",
+        "pt-BR": "Posições curtidas",
+        "hi": "आजमाई गई पोज़िशन्स"
       },
       "foreplayExplored": {
-        "en": "Foreplay Explored",
-        "es": "Preliminares Explorados",
-        "pt-BR": "Preliminares Explorados",
-        "hi": "Foreplay Explored"
+        "en": "Foreplay moments",
+        "es": "Momentos de preliminares",
+        "pt-BR": "Momentos de preliminares",
+        "hi": "फोरप्ले मोमेंट्स"
       }
     }
   },
@@ -991,10 +991,10 @@
         "hi": "Allow Notifications"
       },
       "dailySuggestion": {
-        "en": "Daily Suggestion",
-        "es": "Sugerencia Diaria",
-        "pt-BR": "Sugestão Diária",
-        "hi": "Daily Suggestion"
+        "en": "Daily Spark",
+        "es": "Chispa diaria",
+        "pt-BR": "Faísca diária",
+        "hi": "डेली स्पार्क"
       },
       "weeklyInspiration": {
         "en": "Weekly Inspiration",
@@ -1017,10 +1017,10 @@
     },
     "messages": {
       "dailyReady": {
-        "en": "Your daily suggestion is ready",
-        "es": "Tu sugerencia diaria está lista",
-        "pt-BR": "Sua sugestão diária está pronta",
-        "hi": "Your daily suggestion is ready"
+        "en": "Tonight's spark is ready",
+        "es": "La chispa de hoy ya está lista",
+        "pt-BR": "A faísca de hoje já está pronta",
+        "hi": "आज की चिंगारी तैयार है"
       },
       "weeklyReady": {
         "en": "Your weekly inspiration is here",
@@ -1045,10 +1045,10 @@
     },
     "time": {
       "title": {
-        "en": "How much time do you have?",
-        "es": "¿Cuánto tiempo tienes?",
-        "pt-BR": "Quanto tempo você tem?",
-        "hi": "How much time do you have?"
+        "en": "Pick your time window",
+        "es": "Elijan su tiempo",
+        "pt-BR": "Escolham o tempo",
+        "hi": "अपना समय चुनें"
       },
       "15min": {
         "en": "15 min",
@@ -1077,10 +1077,10 @@
     },
     "vibe": {
       "title": {
-        "en": "What's the vibe?",
-        "es": "¿Cuál es la vibra?",
-        "pt-BR": "Qual e o clima?",
-        "hi": "What's the vibe?"
+        "en": "Tonight's vibe",
+        "es": "Vibra de esta noche",
+        "pt-BR": "Vibe de hoje",
+        "hi": "आज रात की vibe"
       },
       "romantic": {
         "en": "Romantic",
@@ -1167,10 +1167,10 @@
     },
     "type": {
       "title": {
-        "en": "What type of idea?",
-        "es": "¿Qué tipo de idea?",
-        "pt-BR": "Que tipo de ideia?",
-        "hi": "What type of idea?"
+        "en": "Idea type",
+        "es": "Tipo de idea",
+        "pt-BR": "Tipo de ideia",
+        "hi": "आइडिया टाइप"
       },
       "position": {
         "en": "Position",
@@ -1256,10 +1256,10 @@
       "hi": "Search..."
     },
     "trySearching": {
-      "en": "Try searching for...",
-      "es": "Intenta buscar...",
-      "pt-BR": "Tente buscar...",
-      "hi": "Try searching for..."
+      "en": "Start with...",
+      "es": "Empiecen con...",
+      "pt-BR": "Comecem com...",
+      "hi": "शुरुआत करें..."
     },
     "suggestions": {
       "gentle": {
@@ -1294,10 +1294,10 @@
       "hi": "results"
     },
     "noResults": {
-      "en": "No results found",
-      "es": "No se encontraron resultados",
-      "pt-BR": "Nenhum resultado encontrado",
-      "hi": "No results found"
+      "en": "Nothing here yet",
+      "es": "Nada por aquí todavía",
+      "pt-BR": "Nada por aqui ainda",
+      "hi": "अभी यहाँ कुछ नहीं"
     }
   },
   "empty": {

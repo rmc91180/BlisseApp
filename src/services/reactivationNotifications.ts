@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import { getCurrentLanguage } from '@/i18n/languageGetter';
+import { getVoiceCopy } from '@/copy';
 import {
   REACTIVATION_NOTIFICATION_ID_KEY,
   REACTIVATION_NOTIFICATION_SCHEDULED_FOR_KEY,
@@ -11,8 +13,6 @@ import {
   DAILY_JOKE_QUIET_HOURS_END,
 } from '@/constants/appConfig';
 
-const REACTIVATION_TITLE = 'We miss your spark ✨';
-const REACTIVATION_BODY = 'Open Blisse for today\'s tease, tailored ideas, and a quick connection win.';
 interface ReactivationReminderOptions {
   enabled?: boolean;
 }
@@ -30,6 +30,19 @@ const applyQuietHours = (date: Date): Date => {
     adjusted.setHours(DAILY_JOKE_QUIET_HOURS_END, 0, 0, 0);
   }
   return adjusted;
+};
+
+const getReactivationBody = (date: Date): string => {
+  const language = getCurrentLanguage();
+  const bodies = getVoiceCopy(language).notifications.reactivationBodies;
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const dayIndex = Math.floor((date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+  return bodies[Math.max(0, dayIndex) % bodies.length];
+};
+
+const getReactivationTitle = (): string => {
+  const language = getCurrentLanguage();
+  return getVoiceCopy(language).notifications.reactivationTitle;
 };
 
 export const clearReactivationReminder = async (): Promise<void> => {
@@ -66,8 +79,8 @@ export const scheduleReactivationReminder = async (options: ReactivationReminder
 
   const id = await Notifications.scheduleNotificationAsync({
     content: {
-      title: REACTIVATION_TITLE,
-      body: REACTIVATION_BODY,
+      title: getReactivationTitle(),
+      body: getReactivationBody(adjustedDate),
       sound: false,
       data: { type: 'reactivation_reminder' },
     },

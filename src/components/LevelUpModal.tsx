@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { sound } from '@/services/audio';
 import { FEATURE_UNLOCK_LABELS, type UnlockableFeature } from '@/constants/gamification';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
+import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy } from '@/copy';
 import type { Level } from '@/types/app';
 
 interface LevelUpModalProps {
@@ -23,8 +25,10 @@ export function LevelUpModal({
   unlockMessage,
   ConfettiComponent,
 }: LevelUpModalProps) {
+  const { language } = useI18n();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const voice = getVoiceCopy(language);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -52,7 +56,7 @@ export function LevelUpModal({
           style={[styles.container, { borderColor: themeColors.cardLight }]}
         >
           <Text style={styles.emoji}>{newLevel.emoji}</Text>
-          <Text style={[styles.title, { color: themeColors.text.primary }]}>Level Up!</Text>
+          <Text style={[styles.title, { color: themeColors.text.primary }]}>{voice.labels.levelUpTitle}</Text>
           <Text style={[styles.levelName, { color: newLevel.color }]}>{newLevel.title}</Text>
           <Text style={[styles.subtitle, { color: themeColors.text.secondary }]}>
             You reached Level {newLevel.level}
@@ -62,7 +66,7 @@ export function LevelUpModal({
           ) : null}
 
           <View style={[styles.unlockList, { backgroundColor: themeColors.cardLight }]}>
-            <Text style={[styles.unlockHeader, { color: themeColors.text.primary }]}>Unlocked now</Text>
+            <Text style={[styles.unlockHeader, { color: themeColors.text.primary }]}>{voice.labels.levelUpUnlockedNow}</Text>
             {featureLines.length > 0 ? (
               featureLines.map((line) => (
                 <Text key={line} style={[styles.unlockItem, { color: themeColors.text.secondary }]}>
@@ -71,7 +75,7 @@ export function LevelUpModal({
               ))
             ) : (
               <Text style={[styles.unlockItem, { color: themeColors.text.secondary }]}>
-                • More power and momentum unlocked.
+                • {voice.labels.levelUpUnlockedNow}
               </Text>
             )}
           </View>
@@ -80,7 +84,7 @@ export function LevelUpModal({
             style={styles.ctaWrapper}
             onPress={onClose}
             accessibilityRole="button"
-            accessibilityLabel="Claim your reward"
+            accessibilityLabel={voice.labels.levelUpClaim}
             activeOpacity={0.9}
           >
             <LinearGradient
@@ -89,7 +93,7 @@ export function LevelUpModal({
               end={{ x: 1, y: 0 }}
               style={styles.cta}
             >
-              <Text style={styles.ctaText}>Claim your reward →</Text>
+              <Text style={styles.ctaText}>{voice.labels.levelUpClaim}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </LinearGradient>
@@ -172,4 +176,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-

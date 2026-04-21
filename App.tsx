@@ -55,7 +55,7 @@ import {
   detectPlatform, getPlatformIcon, getPlatformName,
 } from '@/content/seasonal';
 import {
-  getLevel, getNextLevel, getUnlockedFeaturesForLevel, MOOD_PLAYLISTS, ACHIEVEMENTS, type UnlockableFeature,
+  getLevel, getNextLevel, getUnlockedFeaturesForLevel, getRecommendationRotationKey, MOOD_PLAYLISTS, ACHIEVEMENTS, type UnlockableFeature,
 } from '@/constants/gamification';
 import { savePinToSecureStorage, loadPinFromSecureStorage } from '@/services/firebase';
 import {
@@ -73,6 +73,7 @@ import { scheduleDailyStreakReminder, clearDailyStreakReminder } from '@/service
 import { useStore } from '@/store/useStore';
 import { useThemeStore, THEMES, FONT_SIZES, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
+import { getVoiceCopy, pickVoiceLine } from '@/copy';
 import { useRecommendations } from '@/hooks/useRecommendations';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
@@ -113,6 +114,7 @@ Notifications.setNotificationHandler({
 
 const { width } = Dimensions.get('window');
 const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
+const APP_STORE_LINK = 'https://apps.apple.com/app/id0000000000';
 
 const FEATURE_LOCK_REQUIREMENTS: Record<
   'starter_pack_collections' | 'truth_or_dare' | 'date_night_generator' | 'seasonal_content',
@@ -245,7 +247,7 @@ function ConfettiCelebration({ visible, onComplete }: { visible: boolean; onComp
 }
 
 // Pulse Heart Animation Component
-function _PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; onPress: () => void; size?: number; color?: string }) {
+function PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; onPress: () => void; size?: number; color?: string }) {
   const { t } = useI18n();
   const scaleAnim = useState(new Animated.Value(1))[0];
   const themeStore = useThemeStore();
@@ -282,7 +284,7 @@ function _PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; o
 }
 
 // Scale In Animation Wrapper
-function _ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const scaleAnim = useState(new Animated.Value(0.8))[0];
   const opacityAnim = useState(new Animated.Value(0))[0];
   
@@ -311,7 +313,7 @@ function _ScaleIn({ children, delay = 0 }: { children: React.ReactNode; delay?: 
 }
 
 // Slide Up Animation Wrapper
-function _SlideUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function SlideUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const translateY = useState(new Animated.Value(30))[0];
   const opacityAnim = useState(new Animated.Value(0))[0];
   
@@ -695,11 +697,19 @@ function CoachNoteSection({
     category?: string;
   };
 }) {
+  const { language } = useI18n();
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
   const shimmer = useRef(new Animated.Value(-1)).current;
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const coachTitle = language === 'es'
+    ? 'Para ustedes 🌸'
+    : language === 'pt'
+      ? 'Pra vocês 🌸'
+      : language === 'hi'
+        ? 'आप दोनों के लिए 🌸'
+        : 'For you two 🌸';
 
   useEffect(() => {
     let active = true;
@@ -739,7 +749,7 @@ function CoachNoteSection({
 
   return (
     <View style={[styles.coachNoteCard, { backgroundColor: themeColors.card, borderColor: themeColors.cardLight }]}>
-      <Text style={[styles.coachNoteTitle, { color: themeColors.primary[400] }]}>Coach says 🌸</Text>
+      <Text style={[styles.coachNoteTitle, { color: themeColors.primary[400] }]}>{coachTitle}</Text>
       {loading ? (
         <View style={styles.coachSkeletonWrap}>
           <View style={[styles.coachSkeletonLine, { width: '95%', backgroundColor: themeColors.cardLight }]} />
@@ -774,9 +784,11 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
         </View>
         <View style={styles.cardHeaderRight}>
           {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleFavorite(position.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
-            <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-          </TouchableOpacity>
+          <PulseHeart
+            filled={isFavorite}
+            onPress={() => store.toggleFavorite(position.id)}
+            size={18}
+          />
         </View>
       </View>
       <Text style={styles.positionName}>{position.name}</Text>
@@ -805,9 +817,11 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
         </View>
         <View style={styles.cardHeaderRight}>
           {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
-            <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-          </TouchableOpacity>
+          <PulseHeart
+            filled={isFavorite}
+            onPress={() => store.toggleForeplayFavorite(item.id)}
+            size={18}
+          />
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
@@ -835,9 +849,11 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
         </View>
         <View style={styles.cardHeaderRight}>
           {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
-            <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-          </TouchableOpacity>
+          <PulseHeart
+            filled={isFavorite}
+            onPress={() => store.toggleOralFavorite(item.id)}
+            size={18}
+          />
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
@@ -864,9 +880,11 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
         </View>
         <View style={styles.cardHeaderRight}>
           {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
-            <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-          </TouchableOpacity>
+          <PulseHeart
+            filled={isFavorite}
+            onPress={() => store.toggleMassageFavorite(item.id)}
+            size={18}
+          />
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
@@ -894,9 +912,11 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
         </View>
         <View style={styles.cardHeaderRight}>
           {isTried && <Text style={styles.triedBadge} accessibilityLabel={t('stats.tried')}>✓</Text>}
-          <TouchableOpacity onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityRole="button" accessibilityLabel={isFavorite ? t('common.remove_from_favorites') : t('common.add_to_favorites')} accessibilityState={{ selected: isFavorite }}>
-            <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-          </TouchableOpacity>
+          <PulseHeart
+            filled={isFavorite}
+            onPress={() => store.toggleRoleplayFavorite(item.id)}
+            size={18}
+          />
         </View>
       </View>
       <Text style={styles.positionName}>{item.name}</Text>
@@ -914,6 +934,7 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
 // ============================================
 function WelcomeScreen({ navigation }: any) {
   const { authPack, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [showTeaserPunchline, setShowTeaserPunchline] = useState(false);
   const welcomeTagline = authPack('welcome', 'tagline');
@@ -933,7 +954,7 @@ function WelcomeScreen({ navigation }: any) {
       </Animated.View>
       <LanguageQuickSwitcher />
       <View style={styles.content}>
-        <Text style={styles.titleLarge}>Blisse</Text>
+        <Text style={styles.titleLarge}>{voice.labels.brandName}</Text>
         <Text style={styles.subtitle}>{authPack('welcome', 'subtitle')}</Text>
         {welcomeTagline ? <Text style={styles.welcomeTagline}>{welcomeTagline}</Text> : null}
         {welcomeTeaser ? <Text style={styles.welcomeTeaser}>{welcomeTeaser}</Text> : null}
@@ -967,19 +988,29 @@ function WelcomeScreen({ navigation }: any) {
 }
 
 function NameInputScreen({ navigation }: any) {
-  const { t, uiPack } = useI18n();
+  const { t, uiPack, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const [name, setName] = useState('');
+  const [namePreview, setNamePreview] = useState('');
   const store = useStore();
   useEffect(() => {
     Analytics.trackOnboardingStep('name');
   }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setNamePreview(name.trim());
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [name]);
   const handleContinue = () => { store.setName(name); navigation.navigate('RelationshipType'); };
   return (
     <ScreenWrapper>
       <BackButton onPress={() => navigation.goBack()} />
       <View style={styles.screenContent}>
         <Text style={styles.title}>{uiPack('onboarding.name.title')}</Text>
-        <Text style={styles.subtitle}>{t('onboarding.name.greeting_preview')}</Text>
+        <Text style={styles.subtitle}>
+          {namePreview ? voice.onboarding.namePreview(namePreview) : t('onboarding.name.greeting_preview')}
+        </Text>
         <TextInput style={styles.textInput} placeholder={uiPack('onboarding.name.placeholder')} placeholderTextColor={colors.text.muted} value={name} onChangeText={setName} autoFocus />
       </View>
       <View style={styles.buttons}><PrimaryButton title={t('common.continue')} onPress={handleContinue} disabled={!name.trim()} /></View>
@@ -2737,8 +2768,10 @@ function FontSizeSelector() {
 // ============================================
 function SettingsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
   const store = useStore();
-  const { languageLabel, t } = useI18n();
+  const { languageLabel, language, t } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const { user, logout } = useAuth();
+  const appDataStats = store.storageStats();
   const [showPinSetup, setShowPinSetup] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const [newPin, setNewPin] = useState('');
@@ -3132,6 +3165,24 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
               <Text style={styles.settingsItemText}>{t('settings.data.items_tried')}</Text>
               <Text style={styles.settingsItemValue}>{store.tried.length + store.triedForeplay.length + store.triedOral.length + store.triedMassage.length + store.triedRoleplay.length}</Text>
             </View>
+
+            <Text style={styles.settingsSectionTitle}>{`🗂️ ${voice.labels.appDataTitle}`}</Text>
+            <View style={styles.settingsItem}>
+              <Text style={styles.settingsItemText}>{voice.labels.activityLog}</Text>
+              <Text style={styles.settingsItemValue}>{appDataStats.activityLogCount} / 500</Text>
+            </View>
+            <View style={styles.settingsItem}>
+              <Text style={styles.settingsItemText}>{voice.labels.interactionHistory}</Text>
+              <Text style={styles.settingsItemValue}>{appDataStats.interactionHistoryCount} / 100</Text>
+            </View>
+            <View style={styles.settingsItem}>
+              <Text style={styles.settingsItemText}>{voice.labels.notesSaved}</Text>
+              <Text style={styles.settingsItemValue}>{appDataStats.notesCount}</Text>
+            </View>
+            <View style={styles.settingsItem}>
+              <Text style={styles.settingsItemText}>{voice.labels.totalStarsEarned}</Text>
+              <Text style={styles.settingsItemValue}>⭐ {appDataStats.totalStarsEarned}</Text>
+            </View>
             
             <TouchableOpacity style={[styles.settingsItem, { borderColor: colors.error }]} onPress={() => {
               Alert.alert(t('settings.data.reset_confirm_title'), t('settings.data.reset_confirm_message'), [
@@ -3498,7 +3549,8 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
 // APP LOCK SCREEN
 // ============================================
 function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const store = useStore();
   const [enteredPin, setEnteredPin] = useState('');
   const [error, setError] = useState('');
@@ -3581,7 +3633,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
   return (
     <LinearGradient colors={[colors.background.primary, colors.background.secondary]} style={styles.lockScreenContainer}>
       <SafeAreaView style={styles.lockScreenContent}>
-        <Text style={styles.lockScreenTitle}>🔐 Blisse</Text>
+        <Text style={styles.lockScreenTitle}>{`🔐 ${voice.labels.brandName}`}</Text>
         <Text style={styles.lockScreenSubtitle}>{t('lock.enter_pin')}</Text>
         
         {/* PIN Dots */}
@@ -3648,6 +3700,7 @@ function HomeScreen({
   const store = useStore();
   const featureFlags = useFeatureFlags();
   const { language, t, localizeTerm } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const { recommendations } = useRecommendations();
   const introAnim = useRef(new Animated.Value(0)).current;
   const suggestionsAnim = useRef(new Animated.Value(0)).current;
@@ -3668,12 +3721,27 @@ function HomeScreen({
   const [dailyJokeBank, setDailyJokeBank] = useState<DailyJokeBank | null>(null);
   const [showDailyPunchline, setShowDailyPunchline] = useState(false);
   
-  const greeting =
-    new Date().getHours() < 12
-      ? t('home.greeting.morning')
-      : new Date().getHours() < 18
-        ? t('home.greeting.afternoon')
-        : t('home.greeting.evening');
+  const currentHour = new Date().getHours();
+  const homeDisplayName = store.name || t('home.there');
+  const homeGreetingCopy = currentHour >= 6 && currentHour <= 11
+    ? {
+      headline: voice.home.greeting.morning(homeDisplayName),
+      context: voice.home.greeting.morningContext,
+    }
+    : currentHour >= 12 && currentHour <= 16
+      ? {
+        headline: voice.home.greeting.afternoon(homeDisplayName),
+        context: voice.home.greeting.afternoonContext,
+      }
+      : currentHour >= 17 && currentHour <= 21
+        ? {
+          headline: voice.home.greeting.evening(homeDisplayName),
+          context: voice.home.greeting.eveningContext,
+        }
+        : {
+          headline: voice.home.greeting.night(homeDisplayName),
+          context: voice.home.greeting.nightContext,
+        };
   
   // Level system
   const currentLevel = getLevel(store.totalStars);
@@ -3918,9 +3986,8 @@ function HomeScreen({
       <View style={styles.homeHeader}>
         <View style={styles.homeHeaderTop}>
           <View>
-            <Text style={styles.greeting}>{greeting} ✨</Text>
-            <Text style={styles.title}>{t('home.hey_name', { name: store.name || t('home.there') })}</Text>
-            <Text style={[styles.greeting, { marginTop: 2 }]}>{t('home.warm_subtitle')}</Text>
+            <Text style={styles.title}>{homeGreetingCopy.headline}</Text>
+            <Text style={[styles.greeting, { marginTop: 2 }]}>{homeGreetingCopy.context}</Text>
           </View>
           <TouchableOpacity style={styles.starCounter} onPress={() => setShowInsights(true)}>
             <Text style={styles.starCounterText}>⭐ {store.totalStars}</Text>
@@ -3937,10 +4004,10 @@ function HomeScreen({
             onOpenPaywallModal?.();
           }}
           accessibilityRole="button"
-          accessibilityLabel={`Free trial ${trialDaysRemaining} days left`}
+          accessibilityLabel={voice.home.trialBanner(trialDaysRemaining)}
         >
           <Text style={styles.trialBannerText}>
-            {`✨ Free trial · ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'} left — Subscribe to keep going`}
+            {voice.home.trialBanner(trialDaysRemaining)}
           </Text>
         </TouchableOpacity>
       ) : null}
@@ -3948,11 +4015,11 @@ function HomeScreen({
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
         <View style={styles.tonightCard}>
           <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.tonightGradient}>
-            <Text style={styles.tonightLabel}>Tonight Session</Text>
-            <Text style={styles.tonightTitle}>3 easy guided steps</Text>
-            <Text style={styles.tonightSubtitle}>Mood check → Curated session → Reflection</Text>
+            <Text style={styles.tonightLabel}>{voice.home.tonightSession.label}</Text>
+            <Text style={styles.tonightTitle}>{voice.home.tonightSession.title}</Text>
+            <Text style={styles.tonightSubtitle}>{voice.home.tonightSession.subtitle}</Text>
             <Text style={styles.tonightTeaser}>
-              Low-pressure, warm guidance that adapts to how you feel tonight.
+              {voice.home.tonightSession.teaser}
             </Text>
             <TouchableOpacity
               style={styles.tonightSessionButton}
@@ -3961,9 +4028,9 @@ function HomeScreen({
                 navigation.navigate('MoodCheckScreen');
               }}
               accessibilityRole="button"
-              accessibilityLabel="Begin tonight session"
+              accessibilityLabel={voice.home.tonightSession.cta}
             >
-              <Text style={styles.tonightSessionButtonText}>Begin Session →</Text>
+              <Text style={styles.tonightSessionButtonText}>{voice.home.tonightSession.cta}</Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
@@ -3971,18 +4038,21 @@ function HomeScreen({
 
       {/* ── Tonight Suggestions ── */}
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
-        <Text style={styles.sectionTitle}>✨ Picked for You Tonight</Text>
+        <Text style={styles.sectionTitle}>{voice.home.pickedForTonight}</Text>
         {recommendations.map((recommendation, index) => (
-          <SmartSuggestionCard
-            key={`${recommendation.type}-${recommendation.item.id}-${index}`}
-            recommendation={recommendation}
-            index={index}
-            onPress={() => handleRecommendationPress(recommendation)}
-          />
+          <ScaleIn key={`${recommendation.type}-${recommendation.item.id}-${index}`} delay={index * 80}>
+            <SmartSuggestionCard
+              recommendation={recommendation}
+              index={index}
+              onPress={() => handleRecommendationPress(recommendation)}
+            />
+          </ScaleIn>
         ))}
       </Animated.View>
 
-      <WeeklyGoalsCard />
+      <SlideUp delay={0}>
+        <WeeklyGoalsCard />
+      </SlideUp>
 
       {/* ── Daily Joke & Seasonal ── */}
       <Animated.View style={{ opacity: suggestionsAnim, transform: [{ translateY: suggestionsTranslateY }] }}>
@@ -4286,14 +4356,17 @@ function ExploreScreen({ navigation }: any) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStarterPack, setSelectedStarterPack] = useState<string | null>(null);
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'>('positions');
-  const [sortBy, setSortBy] = useState<'all' | 'untried' | 'tried'>('all');
+  const [sortBy, setSortBy] = useState<'all' | 'newToYou' | 'tried'>('all');
+  const [forYouItemNames, setForYouItemNames] = useState<string[]>([]);
   const store = useStore();
   const { language, t, localizeTerm } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const unlockedFeatureSet = useMemo(
     () => new Set<UnlockableFeature>(store.unlockedFeatures || []),
     [store.unlockedFeatures]
   );
   const starterPacksUnlocked = unlockedFeatureSet.has('starter_pack_collections');
+  const dailyRecommendationRotationKey = getRecommendationRotationKey(new Date());
 
   const normalizeSearchText = useCallback((value: string) => (
     value
@@ -4318,6 +4391,99 @@ function ExploreScreen({ navigation }: any) {
   );
 
   const currentCategories = contentType === 'positions' ? categories : contentType === 'foreplay' ? foreplayCategories : contentType === 'oral' ? oralCategories : contentType === 'massage' ? massageCategories : rolePlayCategories;
+  const recommendationContentType = contentType === 'positions' ? 'position' : contentType;
+  const currentTypeItemsForPack = useMemo<Array<{ id: number; name: string }>>(() => {
+    if (contentType === 'positions') return positions.map((item) => ({ id: item.id, name: item.name }));
+    if (contentType === 'foreplay') return foreplayIdeas.map((item) => ({ id: item.id, name: item.name }));
+    if (contentType === 'oral') return oralPlayIdeas.map((item) => ({ id: item.id, name: item.name }));
+    if (contentType === 'massage') return massageTechniques.map((item) => ({ id: item.id, name: item.name }));
+    return rolePlayScenarios.map((item) => ({ id: item.id, name: item.name }));
+  }, [contentType]);
+  const currentTriedIdsForType = useMemo(() => {
+    if (contentType === 'positions') return store.tried;
+    if (contentType === 'foreplay') return store.triedForeplay;
+    if (contentType === 'oral') return store.triedOral;
+    if (contentType === 'massage') return store.triedMassage;
+    return store.triedRoleplay;
+  }, [
+    contentType,
+    store.tried,
+    store.triedForeplay,
+    store.triedOral,
+    store.triedMassage,
+    store.triedRoleplay,
+  ]);
+  const categoryCounts = useMemo(() => {
+    const source = contentType === 'positions'
+      ? positions
+      : contentType === 'foreplay'
+        ? foreplayIdeas
+        : contentType === 'oral'
+          ? oralPlayIdeas
+          : contentType === 'massage'
+            ? massageTechniques
+            : rolePlayScenarios;
+    return source.reduce<Record<string, number>>((acc, item) => {
+      if (!item.category) return acc;
+      acc[item.category] = (acc[item.category] || 0) + 1;
+      return acc;
+    }, {});
+  }, [contentType]);
+  const currentFavoriteChips = useMemo(() => {
+    if (contentType === 'positions') return positions.filter((item) => store.favorites.includes(item.id)).map((item) => ({ contentType: 'positions' as const, item }));
+    if (contentType === 'foreplay') return foreplayIdeas.filter((item) => store.favoriteForeplay.includes(item.id)).map((item) => ({ contentType: 'foreplay' as const, item }));
+    if (contentType === 'oral') return oralPlayIdeas.filter((item) => store.favoriteOral.includes(item.id)).map((item) => ({ contentType: 'oral' as const, item }));
+    if (contentType === 'massage') return massageTechniques.filter((item) => store.favoriteMassage.includes(item.id)).map((item) => ({ contentType: 'massage' as const, item }));
+    return rolePlayScenarios.filter((item) => store.favoriteRoleplay.includes(item.id)).map((item) => ({ contentType: 'roleplay' as const, item }));
+  }, [
+    contentType,
+    store.favorites,
+    store.favoriteForeplay,
+    store.favoriteOral,
+    store.favoriteMassage,
+    store.favoriteRoleplay,
+  ]);
+
+  useEffect(() => {
+    const smartRecommendations = useStore.getState().getSmartRecommendations(4);
+    const smartNames = smartRecommendations
+      .filter((entry) => entry.type === recommendationContentType)
+      .map((entry) => (typeof entry.item?.name === 'string' ? entry.item.name : ''))
+      .filter((name): name is string => name.length > 0);
+
+    const deduped = Array.from(new Set(smartNames)).slice(0, 4);
+    if (deduped.length >= 4) {
+      setForYouItemNames(deduped);
+      return;
+    }
+
+    const currentTriedSet = new Set(currentTriedIdsForType);
+    const chosen = new Set(deduped);
+    const fallbackPool = [
+      ...currentTypeItemsForPack.filter((item) => !currentTriedSet.has(item.id)),
+      ...currentTypeItemsForPack,
+    ].filter((item) => !chosen.has(item.name));
+    const seedRaw = Number(dailyRecommendationRotationKey.replace(/-/g, ''));
+    const seed = Number.isFinite(seedRaw) ? seedRaw : 0;
+    const offset = fallbackPool.length > 0 ? seed % fallbackPool.length : 0;
+    const rotatedFallback = [...fallbackPool.slice(offset), ...fallbackPool.slice(0, offset)];
+    const withFallback = [...deduped];
+    for (const item of rotatedFallback) {
+      if (withFallback.length >= 4) break;
+      if (chosen.has(item.name)) continue;
+      withFallback.push(item.name);
+      chosen.add(item.name);
+    }
+
+    setForYouItemNames(withFallback.slice(0, 4));
+  }, [
+    contentType,
+    currentTriedIdsForType,
+    currentTypeItemsForPack,
+    dailyRecommendationRotationKey,
+    recommendationContentType,
+  ]);
+
   const contentTypeTabs = useMemo(
     () => [
       { type: 'positions' as const, label: t('explore.type.positions') },
@@ -4446,10 +4612,33 @@ function ExploreScreen({ navigation }: any) {
     ],
   }), [t]);
   const currentStarterPacks = starterPackConfig[contentType];
-  const activeStarterPack = currentStarterPacks.find((pack) => pack.id === selectedStarterPack) ?? null;
+  const forYouStarterPack = useMemo(
+    () => ({
+      id: 'for-you',
+      icon: '✨',
+      title: 'For You',
+      subtitle: 'Very your vibe',
+      itemNames: forYouItemNames,
+    }),
+    [forYouItemNames]
+  );
+  const visibleStarterPacks = useMemo(
+    () => starterPacksUnlocked
+      ? [forYouStarterPack, ...currentStarterPacks]
+      : [forYouStarterPack],
+    [currentStarterPacks, forYouStarterPack, starterPacksUnlocked]
+  );
+  const activeStarterPack = visibleStarterPacks.find((pack) => pack.id === selectedStarterPack) ?? null;
+
+  useEffect(() => {
+    if (!selectedStarterPack) return;
+    if (visibleStarterPacks.some((pack) => pack.id === selectedStarterPack)) return;
+    setSelectedStarterPack(null);
+  }, [selectedStarterPack, visibleStarterPacks]);
+
   const starterPackMatches = useCallback(
     <T extends { name: string }>(items: T[]) => {
-      if (!activeStarterPack) return items;
+      if (!activeStarterPack || activeStarterPack.itemNames.length === 0) return items;
       return items.filter((item) => activeStarterPack.itemNames.includes(item.name));
     },
     [activeStarterPack]
@@ -4481,7 +4670,7 @@ function ExploreScreen({ navigation }: any) {
         return searchable.includes(normalizedQuery);
       });
     }
-    if (sortBy === 'untried') result = result.filter(p => !store.tried.includes(p.id));
+    if (sortBy === 'newToYou') result = result.filter(p => !store.tried.includes(p.id));
     if (sortBy === 'tried') result = result.filter(p => store.tried.includes(p.id));
     return result;
   }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.tried]);
@@ -4507,7 +4696,7 @@ function ExploreScreen({ navigation }: any) {
         ]).includes(normalizedQuery)
       ));
     }
-    if (sortBy === 'untried') result = result.filter(f => !store.triedForeplay.includes(f.id));
+    if (sortBy === 'newToYou') result = result.filter(f => !store.triedForeplay.includes(f.id));
     if (sortBy === 'tried') result = result.filter(f => store.triedForeplay.includes(f.id));
     return result;
   }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedForeplay]);
@@ -4533,7 +4722,7 @@ function ExploreScreen({ navigation }: any) {
         ]).includes(normalizedQuery)
       ));
     }
-    if (sortBy === 'untried') result = result.filter(o => !store.triedOral.includes(o.id));
+    if (sortBy === 'newToYou') result = result.filter(o => !store.triedOral.includes(o.id));
     if (sortBy === 'tried') result = result.filter(o => store.triedOral.includes(o.id));
     return result;
   }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedOral]);
@@ -4560,7 +4749,7 @@ function ExploreScreen({ navigation }: any) {
         ]).includes(normalizedQuery)
       ));
     }
-    if (sortBy === 'untried') result = result.filter(m => !store.triedMassage.includes(m.id));
+    if (sortBy === 'newToYou') result = result.filter(m => !store.triedMassage.includes(m.id));
     if (sortBy === 'tried') result = result.filter(m => store.triedMassage.includes(m.id));
     return result;
   }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedMassage]);
@@ -4587,10 +4776,55 @@ function ExploreScreen({ navigation }: any) {
         ]).includes(normalizedQuery)
       ));
     }
-    if (sortBy === 'untried') result = result.filter(r => !store.triedRoleplay.includes(r.id));
+    if (sortBy === 'newToYou') result = result.filter(r => !store.triedRoleplay.includes(r.id));
     if (sortBy === 'tried') result = result.filter(r => store.triedRoleplay.includes(r.id));
     return result;
   }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedRoleplay]);
+
+  const currentFilteredListCount = contentType === 'positions'
+    ? filteredPositions.length
+    : contentType === 'foreplay'
+      ? filteredForeplay.length
+      : contentType === 'oral'
+        ? filteredOral.length
+        : contentType === 'massage'
+          ? filteredMassage.length
+          : filteredRoleplay.length;
+  const newToYouCount = sortBy === 'newToYou' ? currentFilteredListCount : 0;
+
+  const openFavoriteChip = useCallback((chip: { contentType: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'; item: any }) => {
+    haptic.light();
+    if (chip.contentType === 'positions') {
+      coachVoice.preloadNote('position', chip.item);
+      navigation.navigate('PositionDetail', { position: chip.item });
+      return;
+    }
+    if (chip.contentType === 'foreplay') {
+      coachVoice.preloadNote('foreplay', chip.item);
+      navigation.navigate('ForeplayDetail', { item: chip.item });
+      return;
+    }
+    if (chip.contentType === 'oral') {
+      coachVoice.preloadNote('oral', chip.item);
+      navigation.navigate('OralDetail', { item: chip.item });
+      return;
+    }
+    if (chip.contentType === 'massage') {
+      coachVoice.preloadNote('massage', chip.item);
+      navigation.navigate('MassageDetail', { item: chip.item });
+      return;
+    }
+    coachVoice.preloadNote('roleplay', chip.item);
+    navigation.navigate('RolePlayDetail', { item: chip.item });
+  }, [navigation]);
+
+  const clearExploreFilters = useCallback(() => {
+    haptic.light();
+    setSearchQuery('');
+    setSelectedCategory(null);
+    setSelectedStarterPack(null);
+    setSortBy('all');
+  }, []);
 
   const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => {
     haptic.light();
@@ -4598,6 +4832,17 @@ function ExploreScreen({ navigation }: any) {
     setSelectedCategory(null);
     setSelectedStarterPack(null);
   };
+
+  const exploreEmptyState = (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyEmoji}>🔍</Text>
+      <Text style={styles.emptyTitle}>{pickVoiceLine(voice.empty.nothingYet, `explore-empty-${language}`)}</Text>
+      <Text style={styles.exploreEmptyBody}>{voice.empty.exploreBody}</Text>
+      <TouchableOpacity style={styles.emptyActionButton} onPress={clearExploreFilters} activeOpacity={0.85}>
+        <Text style={styles.emptyActionButtonText}>{voice.empty.clearFilters}</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <ScreenWrapper>
@@ -4639,7 +4884,7 @@ function ExploreScreen({ navigation }: any) {
       <View style={styles.collectionSection}>
         <View style={styles.collectionHeader}>
           <Text style={styles.collectionTitle}>{t('explore.collections.title')}</Text>
-          {starterPacksUnlocked && selectedStarterPack ? (
+          {selectedStarterPack ? (
             <TouchableOpacity
               onPress={() => {
                 haptic.light();
@@ -4651,48 +4896,50 @@ function ExploreScreen({ navigation }: any) {
             </TouchableOpacity>
           ) : null}
         </View>
-        {starterPacksUnlocked ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.collectionScrollContent}>
-            {currentStarterPacks.map((pack) => {
-              const isActive = selectedStarterPack === pack.id;
-              return (
-                <TouchableOpacity
-                  key={pack.id}
-                  style={[styles.collectionCard, isActive && styles.collectionCardActive]}
-                  onPress={() => {
-                    haptic.light();
-                    setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
-                  }}
-                  activeOpacity={0.9}
-                >
-                  <Text style={styles.collectionEmoji}>{pack.icon}</Text>
-                  <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
-                  <Text style={[styles.collectionCardSubtitle, isActive && styles.collectionCardSubtitleActive]}>{pack.subtitle}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        ) : (
-          <View style={styles.collectionLockedCard}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.collectionScrollContent}>
+          {visibleStarterPacks.map((pack) => {
+            const isActive = selectedStarterPack === pack.id;
+            return (
+              <TouchableOpacity
+                key={pack.id}
+                style={[styles.collectionCard, isActive && styles.collectionCardActive]}
+                onPress={() => {
+                  haptic.light();
+                  setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
+                }}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.collectionEmoji}>{pack.icon}</Text>
+                <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
+                <Text style={[styles.collectionCardSubtitle, isActive && styles.collectionCardSubtitleActive]}>{pack.subtitle}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        {!starterPacksUnlocked ? (
+          <View style={[styles.collectionLockedCard, styles.collectionLockedInlineCard]}>
             <Text style={styles.collectionLockedEmoji}>🔒</Text>
-            <Text style={styles.collectionLockedTitle}>Starter Packs unlock at Level 2</Text>
+            <Text style={styles.collectionLockedTitle}>{voice.labels.collectionLevel2Lock}</Text>
             <Text style={styles.collectionLockedSubtitle}>
               {`${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.starter_pack_collections.stars)}/${FEATURE_LOCK_REQUIREMENTS.starter_pack_collections.stars} ⭐`}
             </Text>
           </View>
-        )}
+        ) : null}
       </View>
       
       {/* Sort Options */}
       <View style={styles.sortContainer}>
-        {(['all', 'untried', 'tried'] as const).map((option) => (
+        {(['all', 'newToYou', 'tried'] as const).map((option) => (
           <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { haptic.light(); setSortBy(option); }}>
             <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
-              {option === 'all' ? t('explore.sort.all') : option === 'untried' ? `✨ ${t('explore.sort.new')}` : `✓ ${t('explore.sort.tried')}`}
+              {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? '🆕 New to You' : `✓ ${t('explore.sort.tried')}`}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
+      {sortBy === 'newToYou' ? (
+        <Text style={styles.sortMetaText}>{`${newToYouCount} new ideas`}</Text>
+      ) : null}
 
       <View style={styles.categoryWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
@@ -4701,39 +4948,65 @@ function ExploreScreen({ navigation }: any) {
           </TouchableOpacity>
           {currentCategories.map((cat) => (
             <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { haptic.light(); setSelectedCategory(cat); }}>
-              <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>{localizeTerm(cat)}</Text>
+              <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>
+                {localizeTerm(cat)}{' '}
+                <Text style={[styles.categoryChipCountText, selectedCategory === cat && styles.categoryChipCountTextSelected]}>
+                  ({categoryCounts[cat] || 0})
+                </Text>
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
+      {currentFavoriteChips.length >= 3 ? (
+        <View style={styles.favoritesQuickBar}>
+          <Text style={styles.favoritesQuickHeader}>
+            {`❤️ Your saved ${contentType === 'positions' ? 'positions' : 'ideas'}`}
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.favoritesQuickScrollContent}>
+            {currentFavoriteChips.map((chip) => (
+              <TouchableOpacity
+                key={`${chip.contentType}-${chip.item.id}`}
+                style={styles.favoriteQuickChip}
+                onPress={() => openFavoriteChip(chip)}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.favoriteQuickChipText} numberOfLines={1}>
+                  {chip.item.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
       {contentType === 'positions' && (
         <FlatList data={filteredPositions} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
+          ListEmptyComponent={exploreEmptyState}
         />
       )}
       {contentType === 'foreplay' && (
         <FlatList data={filteredForeplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
+          ListEmptyComponent={exploreEmptyState}
         />
       )}
       {contentType === 'oral' && (
         <FlatList data={filteredOral} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
+          ListEmptyComponent={exploreEmptyState}
         />
       )}
       {contentType === 'massage' && (
         <FlatList data={filteredMassage} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <MassageCard item={item} onPress={() => navigation.navigate('MassageDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
+          ListEmptyComponent={exploreEmptyState}
         />
       )}
       {contentType === 'roleplay' && (
         <FlatList data={filteredRoleplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <RolePlayCard item={item} onPress={() => navigation.navigate('RolePlayDetail', { item })} />}
-          ListEmptyComponent={<View style={styles.emptyState}><Text style={styles.emptyEmoji}>🔍</Text><Text style={styles.emptyTitle}>{t('explore.empty')}</Text></View>}
+          ListEmptyComponent={exploreEmptyState}
         />
       )}
     </ScreenWrapper>
@@ -4842,21 +5115,69 @@ function FavoritesScreen({ navigation }: any) {
 
 function ProfileScreen({ navigation }: any) {
   const store = useStore();
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const { user, logout } = useAuth();
-  const [showAchievements, setShowAchievements] = useState(false);
-  const [showInsights, setShowInsights] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [showIdeas, setShowIdeas] = useState(false);
   const [showAboutBlisse, setShowAboutBlisse] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<{
+    notifications: boolean;
+    appearance: boolean;
+    privacy: boolean;
+    account: boolean;
+    appData: boolean;
+    about: boolean;
+  }>({
+    notifications: true,
+    appearance: false,
+    privacy: false,
+    account: false,
+    appData: false,
+    about: false,
+  });
   const totalTried = store.tried.length + store.triedForeplay.length + store.triedOral.length + store.triedMassage.length + store.triedRoleplay.length;
   const totalContent = positions.length + foreplayIdeas.length + oralPlayIdeas.length + massageTechniques.length + rolePlayScenarios.length;
   const currentLevel = getLevel(store.totalStars);
+  const nextLevel = getNextLevel(store.totalStars);
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
+  const preferenceSummary = store.getUserPreferenceSummary();
+  const storageStats = store.storageStats();
+  const interactionsCount = store.interactionHistory.length;
+  const favoritesCount =
+    store.favorites.length +
+    store.favoriteForeplay.length +
+    store.favoriteOral.length +
+    store.favoriteMassage.length +
+    store.favoriteRoleplay.length;
+  const starsToNextLevel = nextLevel ? Math.max(0, nextLevel.minStars - store.totalStars) : 0;
+  const exploredTarget = Math.max(400, totalContent);
+  const exploredPercent = Math.min(100, (totalTried / Math.max(exploredTarget, 1)) * 100);
+  const topMoodKey = preferenceSummary.moods[0];
+  const topMood = moods.find((item) => item.id === topMoodKey || item.label === topMoodKey);
+  const topContentType = preferenceSummary.contentTypes[0];
+  const topContentTypeLabel = topContentType === 'position'
+    ? t('explore.type.positions')
+    : topContentType === 'foreplay'
+      ? t('explore.type.foreplay')
+      : topContentType === 'oral'
+        ? t('explore.type.oral')
+        : topContentType === 'massage'
+          ? t('explore.type.massage')
+          : topContentType === 'roleplay'
+            ? t('explore.type.roleplay')
+            : t('common.not_set');
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    haptic.light();
+    setExpandedSections((current) => ({
+      ...current,
+      [section]: !current[section],
+    }));
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -4880,78 +5201,289 @@ function ProfileScreen({ navigation }: any) {
     );
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      t('settings.account.delete_confirm_title'),
+      t('settings.account.delete_confirm_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              if (!user) {
+                Alert.alert(t('common.error'), t('settings.account.no_user'));
+                return;
+              }
+              await deleteUser(user);
+              store.resetOnboarding();
+              await logout();
+              haptic.success();
+              Alert.alert(t('settings.account.deleted_title'), t('settings.account.deleted_message'));
+            } catch (error: any) {
+              if (error?.code === 'auth/requires-recent-login') {
+                try {
+                  await logout();
+                } catch (_) {
+                  // Ignore logout failure and still show re-auth guidance.
+                }
+                Alert.alert(t('settings.account.reauth_title'), t('settings.account.reauth_message'));
+              } else {
+                Alert.alert(t('common.error'), t('settings.account.delete_failed'));
+              }
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleShareBlisse = async () => {
+    try {
+      await Share.share({
+        message: voice.share.appReferral(APP_STORE_LINK),
+      });
+    } catch (error) {
+      Alert.alert(t('common.error'), t('contact.error_message'));
+    }
+  };
+
   return (
     <ScreenWrapper scroll>
-      <View style={styles.profileHeader}>
-        <View style={[styles.avatar, { borderColor: currentLevel.color }]}><Text style={styles.avatarText}>{store.name?.charAt(0)?.toUpperCase() || user?.displayName?.charAt(0)?.toUpperCase() || '?'}</Text></View>
-        <Text style={styles.profileName}>{store.name || user?.displayName || t('profile.friend')}</Text>
-        <Text style={[styles.profileEmail, { color: themeColors.text.muted }]}>{user?.email}</Text>
-        <Text style={[styles.profileLevel, { color: currentLevel.color }]}>{currentLevel.emoji} {localizeTerm(currentLevel.title)}</Text>
-        <View style={styles.profileStarBadge}>
-          <Text style={styles.profileStarText}>⭐ {t('profile.stars_earned', { count: store.totalStars })}</Text>
+      <View style={styles.profileSectionCard}>
+        <Text style={styles.profileSectionHeading}>{voice.home.profile.rhythmHeading}</Text>
+        <View style={styles.profileJourneyLevelRow}>
+          <Text style={[styles.profileJourneyLevelText, { color: currentLevel.color }]}>
+            {`${currentLevel.emoji} ${localizeTerm(currentLevel.title)}`}
+          </Text>
+          <Text style={styles.profileJourneyStarsText}>⭐ {store.totalStars}</Text>
         </View>
-        {store.pinCode && <Text style={styles.pinProtectedBadge}>🔐 {t('profile.protected')}</Text>}
-        {store.unlockedFeatures.includes('legendary_access_badge') && (
-          <View style={styles.legendaryBadge}>
-            <Text style={styles.legendaryBadgeText}>👑 Legendary access</Text>
-          </View>
+        {nextLevel ? (
+          <>
+            <View style={styles.profileJourneyProgressTrack}>
+              <View
+                style={[
+                  styles.profileJourneyProgressFill,
+                  {
+                    width: `${Math.min(100, ((store.totalStars - currentLevel.minStars) / Math.max(1, nextLevel.minStars - currentLevel.minStars)) * 100)}%`,
+                  },
+                ]}
+              />
+            </View>
+            <Text style={styles.profileJourneyProgressLabel}>
+              {`${starsToNextLevel} ⭐ to ${localizeTerm(nextLevel.title)}`}
+            </Text>
+          </>
+        ) : (
+          <Text style={styles.profileJourneyProgressLabel}>{pickVoiceLine(voice.progress.streak, `profile-max-${language}`)}</Text>
         )}
-      </View>
-
-      {/* Streak Banner */}
-      {store.currentStreak >= 1 && (
-        <View style={styles.profileStreakBanner}>
-          <Text style={styles.profileStreakText}>🔥 {t('profile.week_streak', { count: store.currentStreak })}</Text>
+        <View style={styles.profileStatPillsRow}>
+          <View style={styles.profileStatPill}>
+            <Text style={styles.profileStatPillText}>{`🎯 ${store.completedChallenges.length} ${voice.progress.cardTitle}`}</Text>
+          </View>
+          <View style={styles.profileStatPill}>
+            <Text style={styles.profileStatPillText}>{`❤️ ${favoritesCount} ${t('stats.favorites')}`}</Text>
+          </View>
+          <View style={styles.profileStatPill}>
+            <Text style={styles.profileStatPillText}>{`🔥 ${store.loginStreak}`}</Text>
+          </View>
         </View>
-      )}
-
-      <View style={styles.statsRow}>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{totalTried}</Text><Text style={styles.statLabel}>{t('stats.tried')}</Text></View>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{store.favorites.length + store.favoriteForeplay.length + store.favoriteOral.length + store.favoriteMassage.length + store.favoriteRoleplay.length}</Text><Text style={styles.statLabel}>{t('stats.favorites')}</Text></View>
-        <View style={styles.statCard}><Text style={styles.statNumber}>{store.completedChallenges.length}</Text><Text style={styles.statLabel}>{t('stats.challenges')}</Text></View>
-      </View>
-
-      <View style={styles.progressSection}>
-        <Text style={styles.sectionTitle}>{t('profile.progress')}</Text>
-        <View style={styles.progressBar}><View style={[styles.progressFill, { width: `${(totalTried / totalContent) * 100}%` }]} /></View>
-        <Text style={styles.progressText}>{t('profile.progress_text', { tried: totalTried, total: totalContent, percent: Math.round((totalTried / totalContent) * 100) })}</Text>
-      </View>
-
-      {/* Quick Action Buttons */}
-      <View style={styles.profileActionsRow}>
-        <TouchableOpacity style={styles.profileActionButton} onPress={() => setShowAchievements(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.warm} style={styles.profileActionGradient}>
-            <Text style={styles.profileActionEmoji}>🏆</Text>
-            <Text style={styles.profileActionText}>{t('profile.achievements')}</Text>
-            <Text style={styles.profileActionCount}>{store.earnedAchievements.length}/{ACHIEVEMENTS.length}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.profileActionButton} onPress={() => setShowInsights(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.cyanViolet} style={styles.profileActionGradient}>
-            <Text style={styles.profileActionEmoji}>📊</Text>
-            <Text style={styles.profileActionText}>{t('profile.insights')}</Text>
-            <Text style={styles.profileActionCount}>{t('profile.view_stats')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-
-      {/* Recent Achievements */}
-      {store.earnedAchievements.length > 0 && (
-        <View style={styles.recentAchievementsSection}>
-          <Text style={styles.sectionTitle}>{t('profile.recent_achievements')}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {store.earnedAchievements.slice(-5).reverse().map(id => {
-              const achievement = ACHIEVEMENTS.find(a => a.id === id);
-              return achievement ? (
-                <View key={id} style={styles.recentAchievementItem}>
-                  <Text style={styles.recentAchievementEmoji}>{achievement.emoji}</Text>
-                  <Text style={styles.recentAchievementName}>{localizeTerm(achievement.name)}</Text>
-                </View>
-              ) : null;
-            })}
-          </ScrollView>
+        <Text style={styles.profileExploredLabel}>{voice.home.profile.ideasPlayed(totalTried)}</Text>
+        <View style={styles.profileExploredTrack}>
+          <View style={[styles.profileExploredFill, { width: `${exploredPercent}%` }]} />
         </View>
-      )}
+      </View>
+
+      <View style={styles.profileSectionCard}>
+        <Text style={styles.profileSectionHeading}>{t('profile.insights')}</Text>
+        {interactionsCount < 5 ? (
+          <Text style={styles.profileStylePlaceholder}>{voice.home.profile.styleWarmup}</Text>
+        ) : (
+          <>
+            <View style={styles.profileStyleRow}>
+              <Text style={styles.profileStyleLabel}>{voice.home.profile.youLeanInto}</Text>
+              <View style={styles.profileStyleChipRow}>
+                {preferenceSummary.categories.slice(0, 2).map((category) => (
+                  <View key={category} style={styles.profileStyleChip}>
+                    <Text style={styles.profileStyleChipText}>{localizeTerm(category)}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+            <View style={styles.profileStyleRow}>
+              <Text style={styles.profileStyleLabel}>{voice.labels.profileEnergy}</Text>
+              <Text style={styles.profileStyleValue}>
+                {`${topMood?.emoji || '🌸'} ${localizeTerm(topMood?.label || topMoodKey || t('common.not_set'))}`}
+              </Text>
+            </View>
+            <View style={styles.profileStyleRow}>
+              <Text style={styles.profileStyleLabel}>{voice.labels.profileType}</Text>
+              <Text style={styles.profileStyleValue}>{topContentTypeLabel}</Text>
+            </View>
+          </>
+        )}
+        <Text style={styles.profileStyleSubtext}>{voice.home.profile.styleUpdates}</Text>
+      </View>
+
+      <View style={styles.profileSectionCard}>
+        <Text style={styles.profileSectionHeading}>{t('settings.title')}</Text>
+
+        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('notifications')} activeOpacity={0.85}>
+          <Text style={styles.profileGroupHeaderText}>🔔 {t('settings.section.notifications')}</Text>
+          <Text style={styles.profileGroupChevron}>{expandedSections.notifications ? '▾' : '▸'}</Text>
+        </TouchableOpacity>
+        {expandedSections.notifications ? (
+          <View style={styles.profileGroupContent}>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.notifications.daily_tease')}</Text>
+              <Text style={styles.profileInfoValue}>{store.dailyJokeNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.notifications.daily_streak')}</Text>
+              <Text style={styles.profileInfoValue}>{store.dailyStreakNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.notifications.reactivation')}</Text>
+              <Text style={styles.profileInfoValue}>{store.reactivationNotificationsEnabled ? `${t('settings.on')} ✓` : t('settings.pin.off')}</Text>
+            </View>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowSettings(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.settings')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('appearance')} activeOpacity={0.85}>
+          <Text style={styles.profileGroupHeaderText}>🎨 {t('settings.section.appearance')}</Text>
+          <Text style={styles.profileGroupChevron}>{expandedSections.appearance ? '▾' : '▸'}</Text>
+        </TouchableOpacity>
+        {expandedSections.appearance ? (
+          <View style={styles.profileGroupContent}>
+            <ThemeSelector />
+            <FontSizeSelector />
+          </View>
+        ) : null}
+
+        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('privacy')} activeOpacity={0.85}>
+          <Text style={styles.profileGroupHeaderText}>🔒 {t('settings.section.security')}</Text>
+          <Text style={styles.profileGroupChevron}>{expandedSections.privacy ? '▾' : '▸'}</Text>
+        </TouchableOpacity>
+        {expandedSections.privacy ? (
+          <View style={styles.profileGroupContent}>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.pin.set')}</Text>
+              <Text style={styles.profileInfoValue}>{store.pinCode ? `${t('settings.on')} ✓` : t('settings.pin.off')}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.biometrics')}</Text>
+              <Text style={styles.profileInfoValue}>{store.useBiometrics ? `${t('settings.on')} ✓` : t('settings.pin.off')}</Text>
+            </View>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowSettings(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.settings')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('account')} activeOpacity={0.85}>
+          <Text style={styles.profileGroupHeaderText}>👤 {t('settings.section.account')}</Text>
+          <Text style={styles.profileGroupChevron}>{expandedSections.account ? '▾' : '▸'}</Text>
+        </TouchableOpacity>
+        {expandedSections.account ? (
+          <View style={styles.profileGroupContent}>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.account.name')}</Text>
+              <Text style={styles.profileInfoValue}>{store.name || t('common.not_set')}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.account.experience')}</Text>
+              <Text style={styles.profileInfoValue}>{store.experience || t('common.not_set')}</Text>
+            </View>
+            <TouchableOpacity style={styles.profileActionRow} onPress={handleDeleteAccount}>
+              <Text style={[styles.profileActionRowText, { color: themeColors.error }]}>{t('settings.account.delete')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileActionRow} onPress={handleLogout}>
+              <Text style={[styles.profileActionRowText, { color: themeColors.error }]}>{t('profile.menu.signout')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('appData')} activeOpacity={0.85}>
+          <Text style={styles.profileGroupHeaderText}>📊 {t('settings.section.data')}</Text>
+          <Text style={styles.profileGroupChevron}>{expandedSections.appData ? '▾' : '▸'}</Text>
+        </TouchableOpacity>
+        {expandedSections.appData ? (
+          <View style={styles.profileGroupContent}>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{voice.labels.activityLog}</Text>
+              <Text style={styles.profileInfoValue}>{`${storageStats.activityLogCount} / 500`}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{voice.labels.interactionHistory}</Text>
+              <Text style={styles.profileInfoValue}>{`${storageStats.interactionHistoryCount} / 100`}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{voice.labels.notesSaved}</Text>
+              <Text style={styles.profileInfoValue}>{storageStats.notesCount}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{t('settings.data.total_stars')}</Text>
+              <Text style={styles.profileInfoValue}>{`⭐ ${storageStats.totalStarsEarned}`}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.profileActionRow}
+              onPress={() => {
+                Alert.alert(t('settings.data.reset_confirm_title'), t('settings.data.reset_confirm_message'), [
+                  { text: t('common.cancel'), style: 'cancel' },
+                  { text: t('settings.data.reset_confirm_action'), style: 'destructive', onPress: () => store.resetOnboarding() },
+                ]);
+              }}
+            >
+              <Text style={[styles.profileActionRowText, { color: themeColors.error }]}>{t('settings.data.reset')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('about')} activeOpacity={0.85}>
+          <Text style={styles.profileGroupHeaderText}>ℹ️ {t('profile.menu.about')}</Text>
+          <Text style={styles.profileGroupChevron}>{expandedSections.about ? '▾' : '▸'}</Text>
+        </TouchableOpacity>
+        {expandedSections.about ? (
+          <View style={styles.profileGroupContent}>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowTerms(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.terms')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowPrivacy(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.privacy')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowAboutBlisse(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.about')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowContact(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.contact')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileActionRow} onPress={() => setShowIdeas(true)}>
+              <Text style={styles.profileActionRowText}>{t('profile.menu.ideas')}</Text>
+              <Text style={styles.profileActionRowArrow}>→</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileShareButton} onPress={() => { haptic.light(); void handleShareBlisse(); }}>
+              <Text style={styles.profileShareButtonText}>{voice.labels.shareBlisse}</Text>
+            </TouchableOpacity>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileInfoLabel}>{voice.labels.version}</Text>
+              <Text style={styles.profileInfoValue}>{t('profile.version')}</Text>
+            </View>
+          </View>
+        ) : null}
+      </View>
 
       {store.notes.length > 0 && (
         <View style={styles.notesSection}>
@@ -4968,42 +5500,6 @@ function ProfileScreen({ navigation }: any) {
           })}
         </View>
       )}
-
-      <View style={styles.menuSection}>
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowAboutBlisse(true)}>
-          <Text style={styles.menuItemText}>💞  {t('profile.menu.about')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowSettings(true)}>
-          <Text style={styles.menuItemText}>⚙️  {t('profile.menu.settings')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowIdeas(true)}>
-          <Text style={styles.menuItemText}>💡  {t('profile.menu.ideas')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowContact(true)}>
-          <Text style={styles.menuItemText}>📧  {t('profile.menu.contact')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowTerms(true)}>
-          <Text style={styles.menuItemText}>📜  {t('profile.menu.terms')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowPrivacy(true)}>
-          <Text style={styles.menuItemText}>🔐  {t('profile.menu.privacy')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.menuItem, styles.logoutMenuItem]} onPress={handleLogout}>
-          <Text style={[styles.menuItemText, { color: themeColors.error }]}>🚪  {t('profile.menu.signout')}</Text>
-          <Text style={styles.menuItemArrow}>→</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.versionText}>{t('profile.version')}</Text>
-
-      <AchievementsModal visible={showAchievements} onClose={() => setShowAchievements(false)} />
-      <InsightsModal visible={showInsights} onClose={() => setShowInsights(false)} />
       <SettingsModal visible={showSettings} onClose={() => setShowSettings(false)} navigation={navigation} />
       <TermsModal visible={showTerms} onClose={() => setShowTerms(false)} />
       <PrivacyModal visible={showPrivacy} onClose={() => setShowPrivacy(false)} />
@@ -5016,9 +5512,46 @@ function ProfileScreen({ navigation }: any) {
 // ============================================
 // DETAIL SCREENS
 // ============================================
+const normalizePairName = (value: string): string => (
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+);
+
+const openPairedContent = (navigation: any, name: string): void => {
+  const voice = getVoiceCopy(useStore.getState().language);
+  const normalizedName = normalizePairName(name);
+  const foreplayMatch = foreplayIdeas.find((entry) => normalizePairName(entry.name) === normalizedName);
+  if (foreplayMatch) {
+    navigation.push('ForeplayDetail', { item: foreplayMatch });
+    return;
+  }
+
+  const positionMatch = positions.find((entry) => normalizePairName(entry.name) === normalizedName);
+  if (positionMatch) {
+    navigation.push('PositionDetail', { position: positionMatch });
+    return;
+  }
+
+  Alert.alert(
+    pickVoiceLine(voice.empty.loading, `pair-search-title-${name}`),
+    `${voice.empty.exploreBody} "${name}"`,
+    [
+      { text: pickVoiceLine(voice.generic.no, `pair-search-no-${name}`), style: 'cancel' },
+      {
+        text: pickVoiceLine(voice.generic.continue, `pair-search-continue-${name}`),
+        onPress: () => navigation.navigate('MainTabs', { screen: 'Explore' }),
+      },
+    ]
+  );
+};
+
 function PositionDetailScreen({ route, navigation }: any) {
   const { position }: { position: Position } = route.params;
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const store = useStore();
   const isFavorite = store.favorites.includes(position.id);
   const isTried = store.tried.includes(position.id);
@@ -5044,7 +5577,7 @@ function PositionDetailScreen({ route, navigation }: any) {
     haptic.light();
     try {
       await Share.share({
-        message: `💑 Check this out: "${position.name}"\n\n"${position.vibe}"\n\n${position.description}\n\n🔥 Found on Blisse - let's try it tonight!`,
+        message: voice.share.position(position.name, APP_STORE_LINK),
       });
     } catch (error) {
       console.warn('Share error:', error);
@@ -5056,73 +5589,81 @@ function PositionDetailScreen({ route, navigation }: any) {
       <SafeAreaView style={styles.container} edges={['top']}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.detailScrollContent}>
           <BackButton onPress={() => navigation.goBack()} />
-          <View style={styles.detailHeader}>
-            <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
-              <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
-              <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
+          <SlideUp delay={0}>
+            <View style={styles.detailHeader}>
+              <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
+                <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
+                <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
+              </View>
+              <Text style={styles.detailTitle}>{position.name}</Text>
+              <Text style={styles.detailCategory}>{localizeTerm(position.category)} • {localizeTerm(position.difficulty)}</Text>
+              {!isTried && (
+                <View style={styles.detailStarHint}>
+                  <Text style={styles.detailStarHintText}>
+                    {position.difficulty === 'Advanced' ? t('detail.try_for_stars', { count: 5 }) : t('detail.try_for_stars', { count: 3 })}
+                  </Text>
+                </View>
+              )}
             </View>
-            <Text style={styles.detailTitle}>{position.name}</Text>
-            <Text style={styles.detailCategory}>{localizeTerm(position.category)} • {localizeTerm(position.difficulty)}</Text>
-            {!isTried && (
-              <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>
-                  {position.difficulty === 'Advanced' ? t('detail.try_for_stars', { count: 5 }) : t('detail.try_for_stars', { count: 3 })}
-                </Text>
+            <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{position.vibe}"</Text></View>
+            <CoachNoteSection contentType="position" item={position} />
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
+                <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
+                <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleFavorite(position.id); }}>
+                <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
+                <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
+                <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
+                <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
+              </TouchableOpacity>
+            </View>
+            {/* Share Button */}
+            <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+              <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
+            </TouchableOpacity>
+            {existingNote && (
+              <View style={styles.notePreviewDetail}>
+                <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
+                <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
               </View>
             )}
-          </View>
-          <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{position.vibe}"</Text></View>
-          <CoachNoteSection contentType="position" item={position} />
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
-              <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleFavorite(position.id); }}>
-              <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
-              <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
-            </TouchableOpacity>
-          </View>
-          {/* Share Button */}
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
-          </TouchableOpacity>
-          {existingNote && (
-            <View style={styles.notePreviewDetail}>
-              <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
-              <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
+              <Text style={styles.detailText}>{position.description}</Text>
             </View>
-          )}
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
-            <Text style={styles.detailText}>{position.description}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
-            <Text style={styles.detailText}>{position.howTo}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.why_it_works')}</Text>
-            <Text style={styles.detailText}>{position.whyItWorks}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
-            {position.tips.map((tip, index) => (
-              <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
-            ))}
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.good_for')}</Text>
-            <View style={styles.tagsContainer}>{position.goodFor.map((tag, index) => (<View key={index} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>))}</View>
-          </View>
-          <View style={[styles.detailSection, { marginBottom: 40 }]}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
-            <View style={styles.tagsContainer}>{position.pairsWellWith.map((item, index) => (<View key={index} style={[styles.tag, styles.tagOutline]}><Text style={styles.tagTextOutline}>{item}</Text></View>))}</View>
-          </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
+              <Text style={styles.detailText}>{position.howTo}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.why_it_works')}</Text>
+              <Text style={styles.detailText}>{position.whyItWorks}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
+              {position.tips.map((tip, index) => (
+                <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
+              ))}
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.good_for')}</Text>
+              <View style={styles.tagsContainer}>{position.goodFor.map((tag, index) => (<View key={index} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>))}</View>
+            </View>
+            <View style={[styles.detailSection, { marginBottom: 40 }]}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
+              <View style={styles.tagsContainer}>
+                {position.pairsWellWith.map((pairItem, index) => (
+                  <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => openPairedContent(navigation, pairItem)}>
+                    <Text style={styles.tagTextOutline}>{pairItem}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </SlideUp>
         </ScrollView>
         <NotesModal visible={showNotes} onClose={() => setShowNotes(false)} itemId={position.id} itemType="position" itemName={position.name} />
         <StarCelebrationModal visible={showCelebration} onClose={() => setShowCelebration(false)} stars={celebrationData.stars} achievements={celebrationData.achievements} />
@@ -5133,7 +5674,8 @@ function PositionDetailScreen({ route, navigation }: any) {
 
 function ForeplayDetailScreen({ route, navigation }: any) {
   const { item }: { item: ForeplayIdea } = route.params;
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const store = useStore();
   const isFavorite = store.favoriteForeplay.includes(item.id);
   const isTried = store.triedForeplay.includes(item.id);
@@ -5159,7 +5701,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
     haptic.light();
     try {
       await Share.share({
-        message: `💕 Check this out: "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse - let's try it!`,
+        message: voice.share.foreplay(item.name, APP_STORE_LINK),
       });
     } catch (error) {
       console.warn('Share error:', error);
@@ -5171,69 +5713,71 @@ function ForeplayDetailScreen({ route, navigation }: any) {
       <SafeAreaView style={styles.container} edges={['top']}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.detailScrollContent}>
           <BackButton onPress={() => navigation.goBack()} />
-          <View style={styles.detailHeader}>
-            <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
-              <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
-              <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
+          <SlideUp delay={0}>
+            <View style={styles.detailHeader}>
+              <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
+                <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
+                <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
+              </View>
+              <Text style={styles.detailTitle}>{item.name}</Text>
+              <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {localizeTerm(item.duration)}</Text>
+              {!isTried && (
+                <View style={styles.detailStarHint}>
+                  <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 2 })}</Text>
+                </View>
+              )}
             </View>
-            <Text style={styles.detailTitle}>{item.name}</Text>
-            <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {localizeTerm(item.duration)}</Text>
-            {!isTried && (
-              <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 2 })}</Text>
+            <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+            <CoachNoteSection contentType="foreplay" item={item} />
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
+                <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
+                <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }}>
+                <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
+                <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
+                <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
+                <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
+              </TouchableOpacity>
+            </View>
+            {/* Share Button */}
+            <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+              <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
+            </TouchableOpacity>
+            {existingNote && (
+              <View style={styles.notePreviewDetail}>
+                <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
+                <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
               </View>
             )}
-          </View>
-          <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-          <CoachNoteSection contentType="foreplay" item={item} />
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
-              <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }}>
-              <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
-              <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
-            </TouchableOpacity>
-          </View>
-          {/* Share Button */}
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
-          </TouchableOpacity>
-          {existingNote && (
-            <View style={styles.notePreviewDetail}>
-              <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
-              <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
+              <Text style={styles.detailText}>{item.description}</Text>
             </View>
-          )}
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
-            <Text style={styles.detailText}>{item.description}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
-            <Text style={styles.detailText}>{item.howTo}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
-            {item.tips.map((tip, index) => (
-              <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
-            ))}
-          </View>
-          <View style={[styles.detailSection, { marginBottom: 40 }]}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
-            <View style={styles.tagsContainer}>
-              {item.pairsWellWith.map((pos, index) => (
-                <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
-                  <Text style={styles.tagTextOutline}>{pos}</Text>
-                </TouchableOpacity>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
+              <Text style={styles.detailText}>{item.howTo}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
+              {item.tips.map((tip, index) => (
+                <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
               ))}
             </View>
-          </View>
+            <View style={[styles.detailSection, { marginBottom: 40 }]}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
+              <View style={styles.tagsContainer}>
+                {item.pairsWellWith.map((pairName, index) => (
+                  <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => openPairedContent(navigation, pairName)}>
+                    <Text style={styles.tagTextOutline}>{pairName}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </SlideUp>
         </ScrollView>
         <NotesModal visible={showNotes} onClose={() => setShowNotes(false)} itemId={item.id} itemType="foreplay" itemName={item.name} />
         <StarCelebrationModal visible={showCelebration} onClose={() => setShowCelebration(false)} stars={celebrationData.stars} achievements={celebrationData.achievements} />
@@ -5244,7 +5788,8 @@ function ForeplayDetailScreen({ route, navigation }: any) {
 
 function OralDetailScreen({ route, navigation }: any) {
   const { item }: { item: OralPlayIdea } = route.params;
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const store = useStore();
   const isFavorite = store.favoriteOral?.includes(item.id) || false;
   const isTried = store.triedOral?.includes(item.id) || false;
@@ -5270,7 +5815,7 @@ function OralDetailScreen({ route, navigation }: any) {
     haptic.light();
     try {
       await Share.share({
-        message: `👄 Check this out: "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse - interested?`,
+        message: voice.share.oral(item.name, APP_STORE_LINK),
       });
     } catch (error) {
       console.warn('Share error:', error);
@@ -5282,69 +5827,71 @@ function OralDetailScreen({ route, navigation }: any) {
       <SafeAreaView style={styles.container} edges={['top']}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.detailScrollContent}>
           <BackButton onPress={() => navigation.goBack()} />
-          <View style={styles.detailHeader}>
-            <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
-              <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
-              <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
+          <SlideUp delay={0}>
+            <View style={styles.detailHeader}>
+              <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color }]}>
+                <Text style={styles.detailMoodEmoji}>{mood?.emoji}</Text>
+                <Text style={styles.detailMoodLabel}>{localizeTerm(mood?.label || '')}</Text>
+              </View>
+              <Text style={styles.detailTitle}>{item.name}</Text>
+              <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual')}</Text>
+              {!isTried && (
+                <View style={styles.detailStarHint}>
+                  <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 2 })}</Text>
+                </View>
+              )}
             </View>
-            <Text style={styles.detailTitle}>{item.name}</Text>
-            <Text style={styles.detailCategory}>{localizeTerm(item.category)} • {item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual')}</Text>
-            {!isTried && (
-              <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 2 })}</Text>
+            <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+            <CoachNoteSection contentType="oral" item={item} />
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
+                <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
+                <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }}>
+                <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
+                <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
+                <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
+                <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
+              </TouchableOpacity>
+            </View>
+            {/* Share Button */}
+            <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+              <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
+            </TouchableOpacity>
+            {existingNote && (
+              <View style={styles.notePreviewDetail}>
+                <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
+                <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
               </View>
             )}
-          </View>
-          <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-          <CoachNoteSection contentType="oral" item={item} />
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
-              <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }}>
-              <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
-              <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
-            </TouchableOpacity>
-          </View>
-          {/* Share Button */}
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
-          </TouchableOpacity>
-          {existingNote && (
-            <View style={styles.notePreviewDetail}>
-              <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
-              <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
+              <Text style={styles.detailText}>{item.description}</Text>
             </View>
-          )}
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
-            <Text style={styles.detailText}>{item.description}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
-            <Text style={styles.detailText}>{item.howTo}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
-            {item.tips.map((tip, index) => (
-              <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
-            ))}
-          </View>
-          <View style={[styles.detailSection, { marginBottom: 40 }]}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
-            <View style={styles.tagsContainer}>
-              {item.pairsWellWith.map((pos, index) => (
-                <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
-                  <Text style={styles.tagTextOutline}>{pos}</Text>
-                </TouchableOpacity>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
+              <Text style={styles.detailText}>{item.howTo}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
+              {item.tips.map((tip, index) => (
+                <View key={index} style={styles.tipRow}><Text style={styles.tipBullet}>💡</Text><Text style={styles.tipText}>{tip}</Text></View>
               ))}
             </View>
-          </View>
+            <View style={[styles.detailSection, { marginBottom: 40 }]}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
+              <View style={styles.tagsContainer}>
+                {item.pairsWellWith.map((pairName, index) => (
+                  <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => openPairedContent(navigation, pairName)}>
+                    <Text style={styles.tagTextOutline}>{pairName}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </SlideUp>
         </ScrollView>
         <NotesModal visible={showNotes} onClose={() => setShowNotes(false)} itemId={item.id} itemType="oral" itemName={item.name} />
         <StarCelebrationModal visible={showCelebration} onClose={() => setShowCelebration(false)} stars={celebrationData.stars} achievements={celebrationData.achievements} />
@@ -5358,7 +5905,8 @@ function OralDetailScreen({ route, navigation }: any) {
 // ============================================
 function MassageDetailScreen({ route, navigation }: any) {
   const { item } = route.params as { item: MassageTechnique };
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const store = useStore();
   const mood = moods.find((m) => m.id === item.mood);
   const isFavorite = store.favoriteMassage.includes(item.id);
@@ -5384,7 +5932,7 @@ function MassageDetailScreen({ route, navigation }: any) {
     haptic.light();
     try {
       await Share.share({
-        message: `💆 Let's try this massage: "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse`,
+        message: voice.share.massage(item.name, APP_STORE_LINK),
       });
     } catch (error) {
       console.warn('Share error:', error);
@@ -5396,68 +5944,70 @@ function MassageDetailScreen({ route, navigation }: any) {
       <SafeAreaView style={styles.container} edges={['top']}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.detailScrollContent}>
           <BackButton onPress={() => navigation.goBack()} />
-          <View style={styles.detailHeader}>
-            <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
-              <Text style={styles.detailMoodEmoji}>💆</Text>
-              <Text style={styles.detailMoodLabel}>{localizeTerm(item.category)}</Text>
+          <SlideUp delay={0}>
+            <View style={styles.detailHeader}>
+              <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
+                <Text style={styles.detailMoodEmoji}>💆</Text>
+                <Text style={styles.detailMoodLabel}>{localizeTerm(item.category)}</Text>
+              </View>
+              <Text style={styles.detailTitle}>{item.name}</Text>
+              <Text style={styles.detailCategory}>{item.bodyArea} • {localizeTerm(item.duration)}</Text>
+              {!isTried && (
+                <View style={styles.detailStarHint}>
+                  <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 3 })}</Text>
+                </View>
+              )}
             </View>
-            <Text style={styles.detailTitle}>{item.name}</Text>
-            <Text style={styles.detailCategory}>{item.bodyArea} • {localizeTerm(item.duration)}</Text>
-            {!isTried && (
-              <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 3 })}</Text>
+            <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+            <CoachNoteSection contentType="massage" item={item} />
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
+                <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
+                <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }}>
+                <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
+                <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
+                <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
+                <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+              <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
+            </TouchableOpacity>
+            {existingNote && (
+              <View style={styles.notePreviewDetail}>
+                <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
+                <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
               </View>
             )}
-          </View>
-          <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-          <CoachNoteSection contentType="massage" item={item} />
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
-              <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }}>
-              <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
-              <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
-          </TouchableOpacity>
-          {existingNote && (
-            <View style={styles.notePreviewDetail}>
-              <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
-              <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
+              <Text style={styles.detailText}>{item.description}</Text>
             </View>
-          )}
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.what_is_it')}</Text>
-            <Text style={styles.detailText}>{item.description}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
-            <Text style={styles.detailText}>{item.howTo}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
-            {item.tips.map((tip, index) => (
-              <Text key={index} style={styles.detailTip}>• {tip}</Text>
-            ))}
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
-            <View style={styles.tagRow}>
-              {item.pairsWellWith.map((pos, index) => (
-                <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
-                  <Text style={styles.tagTextOutline}>{pos}</Text>
-                </TouchableOpacity>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to')}</Text>
+              <Text style={styles.detailText}>{item.howTo}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.tips')}</Text>
+              {item.tips.map((tip, index) => (
+                <Text key={index} style={styles.detailTip}>• {tip}</Text>
               ))}
             </View>
-          </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
+              <View style={styles.tagRow}>
+                {item.pairsWellWith.map((pairName, index) => (
+                  <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => openPairedContent(navigation, pairName)}>
+                    <Text style={styles.tagTextOutline}>{pairName}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </SlideUp>
         </ScrollView>
         <NotesModal visible={showNotes} onClose={() => setShowNotes(false)} itemId={item.id} itemType="massage" itemName={item.name} />
         <StarCelebrationModal visible={showCelebration} onClose={() => setShowCelebration(false)} stars={celebrationData.stars} achievements={celebrationData.achievements} />
@@ -5471,7 +6021,8 @@ function MassageDetailScreen({ route, navigation }: any) {
 // ============================================
 function RolePlayDetailScreen({ route, navigation }: any) {
   const { item } = route.params as { item: RolePlayScenario };
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
   const store = useStore();
   const mood = moods.find((m) => m.id === item.mood);
   const isFavorite = store.favoriteRoleplay.includes(item.id);
@@ -5497,7 +6048,7 @@ function RolePlayDetailScreen({ route, navigation }: any) {
     haptic.light();
     try {
       await Share.share({
-        message: `🎭 Want to try this with me? "${item.name}"\n\n"${item.vibe}"\n\n${item.description}\n\n🔥 Found on Blisse`,
+        message: voice.share.roleplay(item.name, APP_STORE_LINK),
       });
     } catch (error) {
       console.warn('Share error:', error);
@@ -5511,77 +6062,79 @@ function RolePlayDetailScreen({ route, navigation }: any) {
       <SafeAreaView style={styles.container} edges={['top']}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.detailScrollContent}>
           <BackButton onPress={() => navigation.goBack()} />
-          <View style={styles.detailHeader}>
-            <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
-              <Text style={styles.detailMoodEmoji}>🎭</Text>
-              <Text style={styles.detailMoodLabel}>{localizeTerm(item.category)}</Text>
-            </View>
-            <Text style={styles.detailTitle}>{item.name}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-              <Text style={styles.detailCategory}>{localizeTerm(item.category)} • </Text>
-              <View style={[styles.intensityBadge, { backgroundColor: intensityColor + '30' }]}>
-                <Text style={[styles.intensityText, { color: intensityColor }]}>{localizeTerm(item.intensity)}</Text>
+          <SlideUp delay={0}>
+            <View style={styles.detailHeader}>
+              <View style={[styles.detailMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
+                <Text style={styles.detailMoodEmoji}>🎭</Text>
+                <Text style={styles.detailMoodLabel}>{localizeTerm(item.category)}</Text>
               </View>
+              <Text style={styles.detailTitle}>{item.name}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                <Text style={styles.detailCategory}>{localizeTerm(item.category)} • </Text>
+                <View style={[styles.intensityBadge, { backgroundColor: intensityColor + '30' }]}>
+                  <Text style={[styles.intensityText, { color: intensityColor }]}>{localizeTerm(item.intensity)}</Text>
+                </View>
+              </View>
+              {!isTried && (
+                <View style={styles.detailStarHint}>
+                  <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 4 })}</Text>
+                </View>
+              )}
             </View>
-            {!isTried && (
-              <View style={styles.detailStarHint}>
-                <Text style={styles.detailStarHintText}>{t('detail.try_for_stars', { count: 4 })}</Text>
+            <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
+            <CoachNoteSection contentType="roleplay" item={item} />
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
+                <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
+                <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }}>
+                <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
+                <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
+                <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
+                <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+              <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
+            </TouchableOpacity>
+            {existingNote && (
+              <View style={styles.notePreviewDetail}>
+                <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
+                <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
               </View>
             )}
-          </View>
-          <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-          <CoachNoteSection contentType="roleplay" item={item} />
-          <View style={styles.actionRow}>
-            <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
-              <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
-              <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }}>
-              <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
-              <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtn, existingNote && styles.actionBtnNotes]} onPress={() => setShowNotes(true)}>
-              <Text style={styles.actionBtnIcon}>{existingNote ? '📝' : '✏️'}</Text>
-              <Text style={styles.actionBtnText}>{existingNote ? t('detail.actions.view_notes') : t('detail.actions.add_notes')}</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>{t('detail.actions.share_with_partner')}</Text>
-          </TouchableOpacity>
-          {existingNote && (
-            <View style={styles.notePreviewDetail}>
-              <Text style={styles.notePreviewRating}>{'⭐'.repeat(existingNote.rating)}</Text>
-              <Text style={styles.notePreviewText} numberOfLines={2}>{existingNote.text}</Text>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.scenario')}</Text>
+              <Text style={styles.detailText}>{item.description}</Text>
             </View>
-          )}
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.scenario')}</Text>
-            <Text style={styles.detailText}>{item.description}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.setup')}</Text>
-            <Text style={styles.detailText}>{item.setup}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to_play')}</Text>
-            <Text style={styles.detailText}>{item.howToPlay}</Text>
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.tips_for_success')}</Text>
-            {item.tips.map((tip, index) => (
-              <Text key={index} style={styles.detailTip}>• {tip}</Text>
-            ))}
-          </View>
-          <View style={styles.detailSection}>
-            <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
-            <View style={styles.tagRow}>
-              {item.pairsWellWith.map((pos, index) => (
-                <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => { const position = positions.find(p => p.name === pos); if (position) navigation.push('PositionDetail', { position }); }}>
-                  <Text style={styles.tagTextOutline}>{pos}</Text>
-                </TouchableOpacity>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.setup')}</Text>
+              <Text style={styles.detailText}>{item.setup}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.how_to_play')}</Text>
+              <Text style={styles.detailText}>{item.howToPlay}</Text>
+            </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.tips_for_success')}</Text>
+              {item.tips.map((tip, index) => (
+                <Text key={index} style={styles.detailTip}>• {tip}</Text>
               ))}
             </View>
-          </View>
+            <View style={styles.detailSection}>
+              <Text style={styles.detailSectionTitle}>{t('detail.sections.pairs_well_with')}</Text>
+              <View style={styles.tagRow}>
+                {item.pairsWellWith.map((pairName, index) => (
+                  <TouchableOpacity key={index} style={[styles.tag, styles.tagOutline]} onPress={() => openPairedContent(navigation, pairName)}>
+                    <Text style={styles.tagTextOutline}>{pairName}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </SlideUp>
         </ScrollView>
         <NotesModal visible={showNotes} onClose={() => setShowNotes(false)} itemId={item.id} itemType="roleplay" itemName={item.name} />
         <StarCelebrationModal visible={showCelebration} onClose={() => setShowCelebration(false)} stars={celebrationData.stars} achievements={celebrationData.achievements} />
@@ -6178,6 +6731,7 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
     const today = getDateKey(new Date());
     const previousLastLoginDate = useStore.getState().lastLoginDate;
     useStore.getState().checkLoginStreak();
+    useStore.getState().archiveOldStats();
 
     const currentState = useStore.getState();
     const shouldShowDailyBonus =
@@ -6501,6 +7055,7 @@ const styles = StyleSheet.create({
   collectionCard: { width: 188, minHeight: 118, backgroundColor: colors.card, borderRadius: 18, padding: 14, marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   collectionCardActive: { backgroundColor: 'rgba(168, 85, 247, 0.22)', borderColor: 'rgba(196, 128, 255, 0.7)' },
   collectionLockedCard: { backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.cardLight, paddingVertical: 14, paddingHorizontal: 14, alignItems: 'center' },
+  collectionLockedInlineCard: { marginTop: 10 },
   collectionLockedEmoji: { fontSize: 20, marginBottom: 4 },
   collectionLockedTitle: { fontSize: 13, fontWeight: '700', color: colors.text.primary, textAlign: 'center' },
   collectionLockedSubtitle: { marginTop: 4, fontSize: 12, color: colors.text.muted, textAlign: 'center' },
@@ -6519,12 +7074,20 @@ const styles = StyleSheet.create({
   sortButtonActive: { backgroundColor: colors.primary[500] },
   sortButtonText: { fontSize: 12, color: colors.text.muted },
   sortButtonTextActive: { color: colors.white, fontWeight: '600' },
+  sortMetaText: { fontSize: 12, color: colors.text.muted, marginBottom: 10 },
   categoryWrapper: { marginBottom: 12 },
   categoryScrollContent: { paddingRight: 20 },
   categoryChip: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, marginRight: 8 },
   categoryChipSelected: { backgroundColor: colors.primary[500] },
   categoryChipText: { color: colors.text.muted, fontSize: 14 },
   categoryChipTextSelected: { color: colors.white, fontWeight: '600' },
+  categoryChipCountText: { color: colors.text.muted, fontSize: 12 },
+  categoryChipCountTextSelected: { color: 'rgba(255,255,255,0.85)' },
+  favoritesQuickBar: { marginBottom: 12 },
+  favoritesQuickHeader: { fontSize: 13, color: colors.text.secondary, marginBottom: 8, fontWeight: '600' },
+  favoritesQuickScrollContent: { paddingRight: 20 },
+  favoriteQuickChip: { backgroundColor: colors.card, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8, marginRight: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  favoriteQuickChipText: { color: colors.text.primary, fontSize: 12, fontWeight: '600', maxWidth: 180 },
   positionGrid: { paddingHorizontal: 10, paddingBottom: 20 },
   positionRow: { justifyContent: 'space-between' },
   positionCard: { flex: 1, marginHorizontal: 6, backgroundColor: colors.card, borderRadius: 16, padding: 14, marginBottom: 12 },
@@ -6551,6 +7114,9 @@ const styles = StyleSheet.create({
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
   emptyTitle: { fontSize: 18, fontWeight: '600', color: colors.text.primary, marginBottom: 8 },
   emptySubtitle: { fontSize: 14, color: colors.text.muted },
+  exploreEmptyBody: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 20, maxWidth: 280, marginBottom: 14 },
+  emptyActionButton: { backgroundColor: colors.primary[500], borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10 },
+  emptyActionButtonText: { color: colors.white, fontSize: 13, fontWeight: '700' },
   viewToggleContainer: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: 12, padding: 4, marginBottom: 12 },
   viewToggleButton: { flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
   viewToggleButtonActive: { backgroundColor: colors.primary[500] },
@@ -6562,6 +7128,40 @@ const styles = StyleSheet.create({
   recentlyTriedName: { fontSize: 16, fontWeight: '600', color: colors.text.primary },
   recentlyTriedVibe: { fontSize: 12, color: colors.text.muted },
   recentlyTriedArrow: { fontSize: 18, color: colors.text.muted },
+  profileSectionCard: { backgroundColor: colors.card, borderRadius: 16, padding: 16, marginBottom: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  profileSectionHeading: { fontSize: 17, fontWeight: '700', color: colors.text.primary, marginBottom: 12 },
+  profileJourneyLevelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  profileJourneyLevelText: { fontSize: 16, fontWeight: '700' },
+  profileJourneyStarsText: { fontSize: 14, color: colors.gold, fontWeight: '700' },
+  profileJourneyProgressTrack: { height: 8, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 999, overflow: 'hidden' },
+  profileJourneyProgressFill: { height: '100%', backgroundColor: colors.primary[500], borderRadius: 999 },
+  profileJourneyProgressLabel: { marginTop: 8, fontSize: 12, color: colors.text.muted },
+  profileStatPillsRow: { flexDirection: 'row', marginBottom: 14 },
+  profileStatPill: { flex: 1, backgroundColor: colors.card, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', paddingHorizontal: 10, paddingVertical: 8, marginHorizontal: 4, alignItems: 'center' },
+  profileStatPillText: { fontSize: 12, color: colors.text.secondary, fontWeight: '600', textAlign: 'center' },
+  profileExploredLabel: { fontSize: 13, color: colors.text.secondary, marginBottom: 8 },
+  profileExploredTrack: { height: 6, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 999, overflow: 'hidden' },
+  profileExploredFill: { height: '100%', backgroundColor: colors.success, borderRadius: 999 },
+  profileStylePlaceholder: { fontSize: 14, color: colors.text.secondary, lineHeight: 20 },
+  profileStyleRow: { marginBottom: 10 },
+  profileStyleLabel: { fontSize: 13, color: colors.text.muted, marginBottom: 6 },
+  profileStyleValue: { fontSize: 14, color: colors.text.primary, fontWeight: '600' },
+  profileStyleChipRow: { flexDirection: 'row', flexWrap: 'wrap' },
+  profileStyleChip: { backgroundColor: 'rgba(168, 85, 247, 0.22)', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6, marginRight: 8, marginBottom: 6 },
+  profileStyleChipText: { fontSize: 12, color: colors.primary[400], fontWeight: '600' },
+  profileStyleSubtext: { marginTop: 8, fontSize: 12, color: colors.text.muted },
+  profileGroupHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  profileGroupHeaderText: { fontSize: 15, color: colors.text.primary, fontWeight: '600' },
+  profileGroupChevron: { fontSize: 16, color: colors.text.muted },
+  profileGroupContent: { paddingBottom: 10 },
+  profileInfoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6 },
+  profileInfoLabel: { fontSize: 13, color: colors.text.muted },
+  profileInfoValue: { fontSize: 13, color: colors.text.primary, fontWeight: '600' },
+  profileActionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
+  profileActionRowText: { fontSize: 14, color: colors.text.primary },
+  profileActionRowArrow: { fontSize: 16, color: colors.text.muted },
+  profileShareButton: { marginTop: 8, marginBottom: 8, backgroundColor: colors.primary[500], borderRadius: 12, paddingVertical: 10, paddingHorizontal: 14, alignItems: 'center' },
+  profileShareButtonText: { color: colors.white, fontSize: 13, fontWeight: '700' },
   profileHeader: { alignItems: 'center', paddingVertical: 24 },
   avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: colors.primary[500], justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
   avatarText: { fontSize: 32, fontWeight: '700', color: colors.white },

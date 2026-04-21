@@ -17,6 +17,7 @@ const RETRY_DELAY_MS = 700;
 const LANGUAGES = [
   { key: 'es', target: 'es' },
   { key: 'pt', target: 'pt-BR' },
+  { key: 'hi', target: 'hi' },
 ];
 
 const SOURCE_FILES = [
@@ -152,10 +153,11 @@ const translateWithRetry = async (fn) => {
 };
 
 const ensureCacheShape = (cache) => {
-  if (!cache || typeof cache !== 'object') return { es: {}, pt: {} };
+  if (!cache || typeof cache !== 'object') return { es: {}, pt: {}, hi: {} };
   return {
     es: cache.es && typeof cache.es === 'object' ? cache.es : {},
     pt: cache.pt && typeof cache.pt === 'object' ? cache.pt : {},
+    hi: cache.hi && typeof cache.hi === 'object' ? cache.hi : {},
   };
 };
 
@@ -164,7 +166,7 @@ const loadCache = async () => {
     const raw = await fs.readFile(CACHE_FILE, 'utf8');
     return ensureCacheShape(JSON.parse(raw));
   } catch (_error) {
-    return { es: {}, pt: {} };
+    return { es: {}, pt: {}, hi: {} };
   }
 };
 
