@@ -9,6 +9,7 @@ import { useThemeStore, getThemeColors, colors } from '@/store/useThemeStore';
 import { useAuth } from '@/services/auth';
 import { useSubscription } from '@/services/subscription';
 import { Analytics } from '@/services/analytics';
+import { isReviewerBypassEmail } from '@/services/reviewerAccess';
 import { getVoiceCopy } from '@/copy';
 import type { AppLanguage } from '@/i18n/translations';
 import type { PurchasesPackage } from 'react-native-purchases';
@@ -601,12 +602,8 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
   const { t } = useI18n();
   const store = useStore();
   const voice = useMemo(() => getVoiceCopy(store.language), [store.language]);
-  const { user, loading: authLoading, initError } = useAuth();
-  const reviewerBypassEmail = (process.env.EXPO_PUBLIC_REVIEW_BYPASS_EMAIL || '').trim().toLowerCase();
-  const isReviewerBypassUser =
-    Boolean(reviewerBypassEmail) &&
-    Boolean(user?.email) &&
-    user!.email!.trim().toLowerCase() === reviewerBypassEmail;
+  const { user, loading: authLoading, initError, isBypassSession } = useAuth();
+  const isReviewerBypassUser = isBypassSession || isReviewerBypassEmail(user?.email || null);
   const {
     enabled: billingEnabled,
     required: billingRequired,

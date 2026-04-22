@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { sound } from '@/services/audio';
+import { haptics } from '@/services/haptics';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy, pickVoiceLine } from '@/copy';
@@ -77,6 +78,7 @@ export function DailyBonusModal({ visible, onClose, ConfettiComponent }: DailyBo
     setIsClaiming(true);
     setShowConfetti(true);
     sound.celebration();
+    haptics.celebrate();
 
     setTimeout(() => {
       setShowConfetti(false);

@@ -5,7 +5,7 @@
  * This prevents native module crashes at app startup.
  */
 
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import * as SecureStore from 'expo-secure-store';
@@ -21,12 +21,26 @@ let _firebaseAuth: ReturnType<typeof getAuth> | null = null;
 let _firebaseDb: ReturnType<typeof getFirestore> | null = null;
 let _firebaseError: Error | null = null;
 
+const hasMinimumFirebaseConfig = (): boolean => (
+  Boolean(firebaseConfig.apiKey && firebaseConfig.appId && firebaseConfig.projectId)
+);
+
 export const getFirebaseApp = (): ReturnType<typeof initializeApp> | null => {
   if (_firebaseError) return null;
   if (_firebaseApp) return _firebaseApp;
 
+  if (!hasMinimumFirebaseConfig()) {
+    _firebaseError = new Error('firebase_config_missing');
+    console.error('Firebase app initialization error: missing apiKey/appId/projectId');
+    return null;
+  }
+
   try {
-    _firebaseApp = initializeApp(firebaseConfig);
+    if (getApps().length > 0) {
+      _firebaseApp = getApp();
+    } else {
+      _firebaseApp = initializeApp(firebaseConfig);
+    }
     return _firebaseApp;
   } catch (error) {
     console.error('Firebase app initialization error:', error);

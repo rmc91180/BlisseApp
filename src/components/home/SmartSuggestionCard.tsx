@@ -9,6 +9,7 @@ import {
   rolePlayScenarios,
 } from '@/content/localizedContent';
 import { sound } from '@/services/audio';
+import { haptics } from '@/services/haptics';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
@@ -83,6 +84,7 @@ export function SmartSuggestionCard({ recommendation, onPress, index }: SmartSug
   );
 
   const handlePress = () => {
+    haptics.openCard(`${recommendation.type}:${recommendation.item.id}`);
     sound.light();
     onPress();
   };

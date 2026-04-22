@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { sound } from '@/services/audio';
+import { haptics } from '@/services/haptics';
 import { resolveExperienceProfile } from '@/content/experienceProfiles';
 import {
   foreplayIdeas,
@@ -192,6 +193,7 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
     if (isSubmitting || !selectedReactionConfig) return;
     didSubmitRef.current = true;
     setIsSubmitting(true);
+    haptics.confirmAction();
 
     const state = useStore.getState();
     const triedSet: Record<SessionStepType, Set<number>> = {

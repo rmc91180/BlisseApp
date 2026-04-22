@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { sound } from '@/services/audio';
+import { haptics } from '@/services/haptics';
 import { FEATURE_UNLOCK_LABELS, type UnlockableFeature } from '@/constants/gamification';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
@@ -38,6 +39,7 @@ export function LevelUpModal({
     }
     setShowConfetti(true);
     sound.celebration();
+    haptics.celebrate();
   }, [visible]);
 
   if (!newLevel) return null;

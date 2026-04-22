@@ -78,7 +78,7 @@ import { useRecommendations } from '@/hooks/useRecommendations';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
-import { sound } from '@/services/audio';
+import { haptics } from '@/services/haptics';
 import { coachVoice } from '@/services/coachVoice';
 import { SubscriptionProvider } from '@/services/subscription';
 import { DailyBonusModal } from '@/components/DailyBonusModal';
@@ -125,11 +125,6 @@ const FEATURE_LOCK_REQUIREMENTS: Record<
   date_night_generator: { level: 4, stars: 150 },
   seasonal_content: { level: 5, stars: 300 },
 };
-
-// ============================================
-// HAPTIC FEEDBACK HELPER
-// ============================================
-const haptic = sound;
 
 // ============================================
 // ANIMATION COMPONENTS
@@ -269,8 +264,8 @@ function PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; on
         useNativeDriver: true,
       }),
     ]).start();
-    
-    haptic.light();
+
+    haptics.confirmAction();
     onPress();
   };
   
@@ -488,7 +483,7 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
 
   useEffect(() => {
     if (visible) {
-      haptic.celebration();
+      haptics.celebrate();
       setShowConfetti(true);
       // Play sounds based on what was earned
       if (achievements.length > 0) {
@@ -609,7 +604,7 @@ const PrimaryButton = ({ title, onPress, disabled = false }: { title: string; on
   const themeColors = getThemeColors(themeStore.currentTheme);
   
   return (
-    <TouchableOpacity onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.8} disabled={disabled} accessibilityRole="button" accessibilityLabel={title} accessibilityState={{ disabled }}>
+    <TouchableOpacity onPress={() => { onPress(); }} activeOpacity={0.8} disabled={disabled} accessibilityRole="button" accessibilityLabel={title} accessibilityState={{ disabled }}>
       <LinearGradient
         colors={disabled ? GRADIENT_PRESETS.disabled : [themeColors.primary[500], themeColors.primary[600]]}
         start={{ x: 0, y: 0 }}
@@ -625,7 +620,7 @@ const PrimaryButton = ({ title, onPress, disabled = false }: { title: string; on
 const BackButton = ({ onPress }: { onPress: () => void }) => {
   const { t } = useI18n();
   return (
-    <TouchableOpacity onPress={() => { haptic.light(); onPress(); }} style={styles.backButton} accessibilityRole="button" accessibilityLabel={t('common.back')}><Text style={styles.backButtonText}>← {t('common.back')}</Text></TouchableOpacity>
+    <TouchableOpacity onPress={() => { onPress(); }} style={styles.backButton} accessibilityRole="button" accessibilityLabel={t('common.back')}><Text style={styles.backButtonText}>← {t('common.back')}</Text></TouchableOpacity>
   );
 };
 
@@ -638,7 +633,6 @@ const LanguageQuickSwitcher = ({ compact = false }: { compact?: boolean }) => {
           key={item.code}
           style={[styles.quickLanguageButton, store.language === item.code && styles.quickLanguageButtonActive]}
           onPress={() => {
-            haptic.light();
             store.setLanguage(item.code);
           }}
           accessibilityRole="button"
@@ -654,14 +648,14 @@ const LanguageQuickSwitcher = ({ compact = false }: { compact?: boolean }) => {
 };
 
 const OptionCard = ({ title, subtitle, selected, onPress }: { title: string; subtitle?: string; selected: boolean; onPress: () => void }) => (
-  <TouchableOpacity style={[styles.optionCard, selected && styles.optionCardSelected]} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title} accessibilityState={{ selected }}>
+  <TouchableOpacity style={[styles.optionCard, selected && styles.optionCardSelected]} onPress={() => { onPress(); }} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title} accessibilityState={{ selected }}>
     <Text style={[styles.optionTitle, selected && styles.optionTitleSelected]}>{title}</Text>
     {subtitle && <Text style={styles.optionSubtitle}>{subtitle}</Text>}
   </TouchableOpacity>
 );
 
 const MultiSelectChip = ({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) => (
-  <TouchableOpacity style={[styles.chip, selected && styles.chipSelected]} onPress={() => { haptic.light(); onPress(); }} activeOpacity={0.7} accessibilityRole="checkbox" accessibilityLabel={label} accessibilityState={{ checked: selected }}>
+  <TouchableOpacity style={[styles.chip, selected && styles.chipSelected]} onPress={() => { onPress(); }} activeOpacity={0.7} accessibilityRole="checkbox" accessibilityLabel={label} accessibilityState={{ checked: selected }}>
     <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
   </TouchableOpacity>
 );
@@ -777,7 +771,7 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
   const isTried = store.tried.includes(position.id);
   const mood = moods.find((m) => m.id === position.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('position', position); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${position.name}, ${localizeTerm(position.category)}, ${localizeTerm(position.difficulty)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`position:${position.id}`); coachVoice.preloadNote('position', position); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${position.name}, ${localizeTerm(position.category)}, ${localizeTerm(position.difficulty)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -810,7 +804,7 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
   const isTried = store.triedForeplay.includes(item.id);
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('foreplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`foreplay:${item.id}`); coachVoice.preloadNote('foreplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -842,7 +836,7 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
   const mood = moods.find((m) => m.id === item.mood);
   const giverLabel = item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual');
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('oral', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`oral:${item.id}`); coachVoice.preloadNote('oral', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -873,7 +867,7 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
   const isTried = store.triedMassage?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('massage', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`massage:${item.id}`); coachVoice.preloadNote('massage', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>💆</Text>
@@ -905,7 +899,7 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
   const mood = moods.find((m) => m.id === item.mood);
   const intensityColor = item.intensity === 'Light' ? colors.success : item.intensity === 'Medium' ? colors.warning : colors.error;
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptic.light(); coachVoice.preloadNote('roleplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`roleplay:${item.id}`); coachVoice.preloadNote('roleplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>🎭</Text>
@@ -1136,7 +1130,6 @@ function LegalScreen({ navigation }: any) {
   
   const handleEnter = () => {
     store.agreeToTerms();
-    haptic.success();
     navigation.navigate('OnboardingPayoff');
   };
 
@@ -1372,10 +1365,8 @@ function AuthScreen({ navigation: _navigation }: any) {
     setError('');
     try {
       await signIn(normalizedEmail, password);
-      haptic.success();
       // Navigation handled by auth state change
     } catch (err: any) {
-      haptic.error();
       if (err.code === 'auth/invalid-email') {
         setError(authPack('validation', 'emailInvalid'));
       } else if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
@@ -1384,6 +1375,8 @@ function AuthScreen({ navigation: _navigation }: any) {
         setError(authPack('common', 'tooManyRequests'));
       } else if (err.code === 'auth/network-request-failed') {
         setError(authPack('common', 'networkError'));
+      } else if (err.code === 'auth/not-initialized' || err.code === 'auth/operation-not-allowed') {
+        setError(t('app.auth_unavailable'));
       } else {
         setError(authPack('common', 'error'));
       }
@@ -1418,16 +1411,16 @@ function AuthScreen({ navigation: _navigation }: any) {
     setError('');
     try {
       await signUp(normalizedEmail, password, name.trim());
-      haptic.success();
       // Navigation handled by auth state change
     } catch (err: any) {
-      haptic.error();
       if (err.code === 'auth/email-already-in-use') {
         setError(authPack('signup', 'emailAlreadyInUse'));
       } else if (err.code === 'auth/weak-password') {
         setError(authPack('validation', 'passwordTooShort'));
       } else if (err.code === 'auth/network-request-failed') {
         setError(authPack('common', 'networkError'));
+      } else if (err.code === 'auth/not-initialized' || err.code === 'auth/operation-not-allowed') {
+        setError(t('app.auth_unavailable'));
       } else {
         setError(authPack('common', 'error'));
       }
@@ -1450,15 +1443,15 @@ function AuthScreen({ navigation: _navigation }: any) {
     setError('');
     try {
       await resetPassword(normalizedEmail);
-      haptic.success();
       Alert.alert(authPack('common', 'success'), authPack('forgotPassword', 'emailSent'));
       setMode('signin');
     } catch (err: any) {
-      haptic.error();
       if (err.code === 'auth/user-not-found') {
         setError(authPack('forgotPassword', 'emailNotFound'));
       } else if (err.code === 'auth/network-request-failed') {
         setError(authPack('common', 'networkError'));
+      } else if (err.code === 'auth/not-initialized' || err.code === 'auth/operation-not-allowed') {
+        setError(t('app.auth_unavailable'));
       } else {
         setError(authPack('common', 'error'));
       }
@@ -1471,10 +1464,8 @@ function AuthScreen({ navigation: _navigation }: any) {
     setError('');
     try {
       await signInWithApple();
-      haptic.success();
-    } catch (err: any) {
+      } catch (err: any) {
       if (err.code !== 'ERR_CANCELED' && err.code !== 'ERR_REQUEST_CANCELED') {
-        haptic.error();
         setError(authPack('common', 'error'));
       }
     }
@@ -1645,7 +1636,6 @@ function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onCl
   const spinAnim = useState(new Animated.Value(0))[0];
 
   const spin = () => {
-    haptic.medium();
     setSpinning(true);
     setResult(null);
     spinAnim.setValue(0);
@@ -1656,8 +1646,7 @@ function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onCl
       if (spinType === 'all' || spinType === 'oral') pool = [...pool, ...oralPlayIdeas.map(o => ({ type: 'oral', item: o }))];
       setResult(pool[Math.floor(Math.random() * pool.length)]);
       setSpinning(false);
-      haptic.success();
-    });
+      });
   };
 
   const spinRotation = spinAnim.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '1080deg'] });
@@ -1682,7 +1671,7 @@ function SpinnerModal({ visible, onClose, navigation }: { visible: boolean; onCl
           <Text style={styles.modalSubtitle}>{t('spinner.subtitle')}</Text>
           <View style={styles.spinTypeContainer}>
             {(['all', 'position', 'foreplay', 'oral'] as const).map((type) => (
-              <TouchableOpacity key={type} style={[styles.spinTypeButton, spinType === type && styles.spinTypeButtonActive]} onPress={() => { haptic.light(); setSpinType(type); }}>
+              <TouchableOpacity key={type} style={[styles.spinTypeButton, spinType === type && styles.spinTypeButtonActive]} onPress={() => { setSpinType(type); }}>
                 <Text style={[styles.spinTypeText, spinType === type && styles.spinTypeTextActive]}>
                   {type === 'all' ? '🎲' : type === 'position' ? '💑' : type === 'foreplay' ? '💕' : '👄'}
                 </Text>
@@ -1725,7 +1714,6 @@ function DateNightModal({ visible, onClose, navigation }: { visible: boolean; on
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
 
   const generateDateNight = () => {
-    haptic.light();
     const mood = store.currentMood;
     const foreplayPool = mood ? foreplayIdeas.filter(f => f.mood === mood) : foreplayIdeas;
     const oralPool = mood ? oralPlayIdeas.filter(o => o.mood === mood) : oralPlayIdeas;
@@ -1826,7 +1814,6 @@ function ChallengeModal({ visible, onClose, navigation }: { visible: boolean; on
   const [celebrationData, setCelebrationData] = useState<{ stars: number; achievements: string[] }>({ stars: 0, achievements: [] });
 
   const generateChallenge = () => {
-    haptic.light();
     const types: ('position' | 'foreplay' | 'oral')[] = ['position', 'foreplay', 'oral'];
     const type = types[Math.floor(Math.random() * types.length)];
     let pool: { id: number }[];
@@ -1957,14 +1944,12 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
   }, [visible, itemId, itemType, store.notes]);
 
   const handleSave = () => {
-    haptic.success();
     if (existingNote) store.updateNote(existingNote.id, noteText, rating);
     else if (noteText.trim() || rating > 0) store.addNote({ type: itemType, itemId, text: noteText, rating });
     onClose();
   };
 
   const handleDelete = () => {
-    haptic.light();
     if (existingNote) store.deleteNote(existingNote.id);
     setNoteText('');
     setRating(0);
@@ -1983,7 +1968,7 @@ function NotesModal({ visible, onClose, itemId, itemType, itemName }: { visible:
             <Text style={styles.notesLabel}>{t('notes.rating')}</Text>
             <View style={styles.ratingContainer}>
               {[1, 2, 3, 4, 5].map((star) => (
-                <TouchableOpacity key={star} onPress={() => { haptic.light(); setRating(star); }}>
+                <TouchableOpacity key={star} onPress={() => { setRating(star); }}>
                   <Text style={styles.ratingStar}>{star <= rating ? '⭐' : '☆'}</Text>
                 </TouchableOpacity>
               ))}
@@ -2322,7 +2307,6 @@ function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { vis
 
   const handleSelectPlaylist = (playlist: MoodPlaylist) => {
     store.setCurrentMood(playlist.mood);
-    haptic.medium();
     onClose();
   };
 
@@ -2540,7 +2524,6 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
   const spinAnim = useState(new Animated.Value(0))[0];
 
   const spin = (type: 'truth' | 'dare' | 'random') => {
-    haptic.medium();
     setIsSpinning(true);
     
     Animated.sequence([
@@ -2554,8 +2537,7 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
       const randomItem = filtered[Math.floor(Math.random() * filtered.length)];
       setCurrentItem(randomItem);
       setIsSpinning(false);
-      haptic.success();
-    });
+      });
   };
 
   const intensityColors = { mild: colors.success, medium: colors.warning, spicy: colors.error, wild: colors.primary[500] };
@@ -2576,7 +2558,7 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
               <TouchableOpacity 
                 key={level} 
                 style={[styles.intensityOption, intensity === level && { backgroundColor: intensityColors[level] + '40', borderColor: intensityColors[level] }]}
-                onPress={() => { haptic.light(); setIntensity(level); }}
+                onPress={() => { setIntensity(level); }}
               >
                 <Text style={[styles.intensityOptionText, intensity === level && { color: intensityColors[level] }]}>
                   {level === 'mild' ? '😊' : level === 'medium' ? '😏' : level === 'spicy' ? '🔥' : '🌶️'} {t(`truth_dare.intensity.${level}`)}
@@ -2624,7 +2606,6 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
 function MusicPlaylistsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { t } = useI18n();
   const openPlaylist = (url: string) => {
-    haptic.light();
     Linking.openURL(url).catch(() => {
       Alert.alert(t('music.error_title'), t('music.error_message'));
     });
@@ -2689,7 +2670,6 @@ function ThemeSelector() {
               }
             ]}
             onPress={() => {
-              haptic.light();
               themeStore.setTheme(theme.id);
             }}
           >
@@ -2737,7 +2717,6 @@ function FontSizeSelector() {
               }
             ]}
             onPress={() => {
-              haptic.light();
               themeStore.setFontSize(size.id);
             }}
           >
@@ -2934,14 +2913,13 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
     setNewPin('');
     setConfirmPin('');
     setPinError('');
-    haptic.success();
     Alert.alert(t('settings.pin.set_success_title'), t('settings.pin.set_success_message'));
   };
 
   const handleRemovePin = () => {
     Alert.alert(t('settings.pin.remove_title'), t('settings.pin.remove_message'), [
       { text: t('common.cancel'), style: 'cancel' },
-      { text: t('settings.pin.remove_action'), style: 'destructive', onPress: () => { store.setPinCode(null); haptic.light(); } }
+      { text: t('settings.pin.remove_action'), style: 'destructive', onPress: () => { store.setPinCode(null); } }
     ]);
   };
 
@@ -2955,8 +2933,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
       }
     }
     store.setUseBiometrics(!store.useBiometrics);
-    haptic.light();
-  };
+    };
 
   const handleDeleteAccount = () => {
     Alert.alert(
@@ -2977,7 +2954,6 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
               store.resetOnboarding();
               await logout();
               onClose();
-              haptic.success();
               Alert.alert(t('settings.account.deleted_title'), t('settings.account.deleted_message'));
             } catch (error: any) {
               if (error?.code === 'auth/requires-recent-login') {
@@ -3079,8 +3055,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                     onPress={() => {
                       store.setLanguage(item.code);
                       setShowLanguageOptions(false);
-                      haptic.light();
-                    }}
+                      }}
                   >
                     <Text
                       style={[
@@ -3322,12 +3297,10 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
       });
 
       setSubmitted(true);
-      haptic.success();
       if (result.queued) {
         Alert.alert(t('contact.queued_title'), t('contact.queued_message'));
       }
     } catch (error) {
-      haptic.error();
       const description = error instanceof Error ? error.message : t('contact.error_message');
       Alert.alert(t('contact.error_title'), description);
     }
@@ -3381,7 +3354,7 @@ function ContactModal({ visible, onClose }: { visible: boolean; onClose: () => v
                 <TouchableOpacity 
                   key={item.type}
                   style={[styles.contactCategoryButton, category === item.type && styles.contactCategoryButtonActive]}
-                  onPress={() => { haptic.light(); setCategory(item.type); }}
+                  onPress={() => { setCategory(item.type); }}
                 >
                   <Text style={styles.contactCategoryEmoji}>{item.emoji}</Text>
                   <Text style={[styles.contactCategoryText, category === item.type && styles.contactCategoryTextActive]}>{item.label}</Text>
@@ -3447,12 +3420,10 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
       });
 
       setSubmitted(true);
-      haptic.success();
       if (result.queued) {
         Alert.alert(t('ideas.queued_title'), t('ideas.queued_message'));
       }
     } catch (error) {
-      haptic.error();
       const description = error instanceof Error ? error.message : t('ideas.error_message');
       Alert.alert(t('ideas.error_title'), description);
     }
@@ -3506,7 +3477,7 @@ function IdeasModal({ visible, onClose }: { visible: boolean; onClose: () => voi
                 <TouchableOpacity 
                   key={item.type}
                   style={[styles.ideaTypeButton, ideaType === item.type && styles.ideaTypeButtonActive]}
-                  onPress={() => { haptic.light(); setIdeaType(item.type); }}
+                  onPress={() => { setIdeaType(item.type); }}
                 >
                   <Text style={styles.ideaTypeEmoji}>{item.emoji}</Text>
                   <Text style={[styles.ideaTypeText, ideaType === item.type && styles.ideaTypeTextActive]}>{item.label}</Text>
@@ -3566,7 +3537,6 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
           fallbackLabel: t('lock.use_pin'),
         });
         if (result.success) {
-          haptic.success();
           onUnlock();
         }
       } catch (e) {
@@ -3599,18 +3569,15 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
   const handlePinEntry = (digit: string) => {
     if (lockoutUntil) return;
 
-    haptic.light();
     const newPin = enteredPin + digit;
     setEnteredPin(newPin);
     setError('');
     
     if (newPin.length === 4) {
       if (newPin === store.pinCode) {
-        haptic.success();
         setAttempts(0);
         onUnlock();
       } else {
-        haptic.error();
         const nextAttempts = attempts + 1;
         if (nextAttempts >= MAX_PIN_ATTEMPTS) {
           setLockoutUntil(Date.now() + PIN_LOCKOUT_MS);
@@ -3625,7 +3592,6 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
   };
 
   const handleDelete = () => {
-    haptic.light();
     setEnteredPin(p => p.slice(0, -1));
     setError('');
   };
@@ -3957,8 +3923,12 @@ function HomeScreen({
   const handleRecommendationPress = useCallback((recommendation: HomeRecommendation) => {
     const resolvedItem = resolveRecommendationItem(recommendation);
     const contentType = recommendation.type as InteractionEvent['contentType'];
+    const itemId = Number(resolvedItem?.id || recommendation.item.id || 0);
 
     trackRecommendationView(recommendation);
+    if (itemId) {
+      haptics.openCard(`${contentType}:${itemId}`);
+    }
     coachVoice.preloadNote(contentType, resolvedItem);
 
     if (contentType === 'position') {
@@ -4000,7 +3970,6 @@ function HomeScreen({
         <TouchableOpacity
           style={styles.trialBanner}
           onPress={() => {
-            haptic.light();
             onOpenPaywallModal?.();
           }}
           accessibilityRole="button"
@@ -4024,7 +3993,6 @@ function HomeScreen({
             <TouchableOpacity
               style={styles.tonightSessionButton}
               onPress={() => {
-                haptic.medium();
                 navigation.navigate('MoodCheckScreen');
               }}
               accessibilityRole="button"
@@ -4089,8 +4057,7 @@ function HomeScreen({
                 setShowSeasonal(true);
                 return;
               }
-              haptic.light();
-            }}
+              }}
             activeOpacity={0.8}
           >
             <Text style={styles.seasonalCardEmoji}>{currentSeason.emoji}</Text>
@@ -4148,8 +4115,7 @@ function HomeScreen({
               setShowDateNight(true);
               return;
             }
-            haptic.light();
-          }}
+            }}
         >
           <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🌙</Text>
@@ -4171,8 +4137,7 @@ function HomeScreen({
               setShowTruthOrDare(true);
               return;
             }
-            haptic.light();
-          }}
+            }}
         >
           <LinearGradient colors={[colors.error, '#ec4899']} style={styles.featureButtonGradient}>
             <Text style={styles.featureButtonEmoji}>🎲</Text>
@@ -4235,7 +4200,7 @@ function HomeScreen({
       <Text style={styles.sectionTitle}>{t('home.how_feeling')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.moodScroll} contentContainerStyle={styles.horizontalScrollContent}>
         {moods.map((mood) => (
-          <TouchableOpacity key={mood.id} style={[styles.moodChip, store.currentMood === mood.id && { backgroundColor: mood.color }]} onPress={() => { haptic.light(); store.setCurrentMood(store.currentMood === mood.id ? null : mood.id); }}>
+          <TouchableOpacity key={mood.id} style={[styles.moodChip, store.currentMood === mood.id && { backgroundColor: mood.color }]} onPress={() => { store.setCurrentMood(store.currentMood === mood.id ? null : mood.id); }}>
             <Text style={styles.moodChipText}>{mood.emoji} {localizeTerm(mood.label)}</Text>
           </TouchableOpacity>
         ))}
@@ -4793,7 +4758,12 @@ function ExploreScreen({ navigation }: any) {
   const newToYouCount = sortBy === 'newToYou' ? currentFilteredListCount : 0;
 
   const openFavoriteChip = useCallback((chip: { contentType: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'; item: any }) => {
-    haptic.light();
+    const itemId = Number(chip.item?.id || 0);
+    if (itemId) {
+      const keyPrefix = chip.contentType === 'positions' ? 'position' : chip.contentType;
+      haptics.openCard(`${keyPrefix}:${itemId}`);
+    }
+
     if (chip.contentType === 'positions') {
       coachVoice.preloadNote('position', chip.item);
       navigation.navigate('PositionDetail', { position: chip.item });
@@ -4819,7 +4789,6 @@ function ExploreScreen({ navigation }: any) {
   }, [navigation]);
 
   const clearExploreFilters = useCallback(() => {
-    haptic.light();
     setSearchQuery('');
     setSelectedCategory(null);
     setSelectedStarterPack(null);
@@ -4827,7 +4796,6 @@ function ExploreScreen({ navigation }: any) {
   }, []);
 
   const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => {
-    haptic.light();
     setContentType(type);
     setSelectedCategory(null);
     setSelectedStarterPack(null);
@@ -4887,7 +4855,6 @@ function ExploreScreen({ navigation }: any) {
           {selectedStarterPack ? (
             <TouchableOpacity
               onPress={() => {
-                haptic.light();
                 setSelectedStarterPack(null);
               }}
               hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
@@ -4904,7 +4871,6 @@ function ExploreScreen({ navigation }: any) {
                 key={pack.id}
                 style={[styles.collectionCard, isActive && styles.collectionCardActive]}
                 onPress={() => {
-                  haptic.light();
                   setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
                 }}
                 activeOpacity={0.9}
@@ -4930,7 +4896,7 @@ function ExploreScreen({ navigation }: any) {
       {/* Sort Options */}
       <View style={styles.sortContainer}>
         {(['all', 'newToYou', 'tried'] as const).map((option) => (
-          <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { haptic.light(); setSortBy(option); }}>
+          <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { setSortBy(option); }}>
             <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
               {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? '🆕 New to You' : `✓ ${t('explore.sort.tried')}`}
             </Text>
@@ -4943,11 +4909,11 @@ function ExploreScreen({ navigation }: any) {
 
       <View style={styles.categoryWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
-          <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => { haptic.light(); setSelectedCategory(null); }}>
+          <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(null); }}>
             <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>{t('common.all')}</Text>
           </TouchableOpacity>
           {currentCategories.map((cat) => (
-            <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { haptic.light(); setSelectedCategory(cat); }}>
+            <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(cat); }}>
               <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>
                 {localizeTerm(cat)}{' '}
                 <Text style={[styles.categoryChipCountText, selectedCategory === cat && styles.categoryChipCountTextSelected]}>
@@ -5043,10 +5009,10 @@ function FavoritesScreen({ navigation }: any) {
       
       {/* View Toggle */}
       <View style={styles.viewToggleContainer}>
-        <TouchableOpacity style={[styles.viewToggleButton, !showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { haptic.light(); setShowRecentlyTried(false); }}>
+        <TouchableOpacity style={[styles.viewToggleButton, !showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { setShowRecentlyTried(false); }}>
           <Text style={[styles.viewToggleText, !showRecentlyTried && styles.viewToggleTextActive]}>❤️ {t('favorites.favorites_toggle')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.viewToggleButton, showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { haptic.light(); setShowRecentlyTried(true); }}>
+        <TouchableOpacity style={[styles.viewToggleButton, showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { setShowRecentlyTried(true); }}>
           <Text style={[styles.viewToggleText, showRecentlyTried && styles.viewToggleTextActive]}>🕐 {t('favorites.recent_toggle')}</Text>
         </TouchableOpacity>
       </View>
@@ -5054,13 +5020,13 @@ function FavoritesScreen({ navigation }: any) {
       {!showRecentlyTried ? (
         <>
           <View style={styles.tripleToggleContainer}>
-            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'positions' && styles.tripleToggleButtonActive]} onPress={() => { haptic.light(); setContentType('positions'); }}>
+            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'positions' && styles.tripleToggleButtonActive]} onPress={() => { setContentType('positions'); }}>
               <Text style={[styles.tripleToggleButtonText, contentType === 'positions' && styles.tripleToggleButtonTextActive]}>{t('favorites.positions_count', { count: favoritePositions.length })}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'foreplay' && styles.tripleToggleButtonActive]} onPress={() => { haptic.light(); setContentType('foreplay'); }}>
+            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'foreplay' && styles.tripleToggleButtonActive]} onPress={() => { setContentType('foreplay'); }}>
               <Text style={[styles.tripleToggleButtonText, contentType === 'foreplay' && styles.tripleToggleButtonTextActive]}>{t('favorites.foreplay_count', { count: favoriteForeplayItems.length })}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'oral' && styles.tripleToggleButtonActive]} onPress={() => { haptic.light(); setContentType('oral'); }}>
+            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'oral' && styles.tripleToggleButtonActive]} onPress={() => { setContentType('oral'); }}>
               <Text style={[styles.tripleToggleButtonText, contentType === 'oral' && styles.tripleToggleButtonTextActive]}>{t('favorites.oral_count', { count: favoriteOralItems.length })}</Text>
             </TouchableOpacity>
           </View>
@@ -5093,7 +5059,6 @@ function FavoritesScreen({ navigation }: any) {
           ) : (
             recentlyTried.map((entry: any, index) => (
               <TouchableOpacity key={index} style={styles.recentlyTriedItem} onPress={() => {
-                haptic.light();
                 if (entry.type === 'position') navigation.navigate('PositionDetail', { position: entry.item });
                 else if (entry.type === 'foreplay') navigation.navigate('ForeplayDetail', { item: entry.item });
                 else navigation.navigate('OralDetail', { item: entry.item });
@@ -5172,7 +5137,6 @@ function ProfileScreen({ navigation }: any) {
             ? t('explore.type.roleplay')
             : t('common.not_set');
   const toggleSection = (section: keyof typeof expandedSections) => {
-    haptic.light();
     setExpandedSections((current) => ({
       ...current,
       [section]: !current[section],
@@ -5191,8 +5155,7 @@ function ProfileScreen({ navigation }: any) {
           onPress: async () => {
             try {
               await logout();
-              haptic.light();
-            } catch (error) {
+              } catch (error) {
               Alert.alert(t('common.error'), t('profile.signout.error'));
             }
           }
@@ -5219,7 +5182,6 @@ function ProfileScreen({ navigation }: any) {
               await deleteUser(user);
               store.resetOnboarding();
               await logout();
-              haptic.success();
               Alert.alert(t('settings.account.deleted_title'), t('settings.account.deleted_message'));
             } catch (error: any) {
               if (error?.code === 'auth/requires-recent-login') {
@@ -5474,7 +5436,7 @@ function ProfileScreen({ navigation }: any) {
               <Text style={styles.profileActionRowText}>{t('profile.menu.ideas')}</Text>
               <Text style={styles.profileActionRowArrow}>→</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.profileShareButton} onPress={() => { haptic.light(); void handleShareBlisse(); }}>
+            <TouchableOpacity style={styles.profileShareButton} onPress={() => { void handleShareBlisse(); }}>
               <Text style={styles.profileShareButtonText}>{voice.labels.shareBlisse}</Text>
             </TouchableOpacity>
             <View style={styles.profileInfoRow}>
@@ -5525,12 +5487,14 @@ const openPairedContent = (navigation: any, name: string): void => {
   const normalizedName = normalizePairName(name);
   const foreplayMatch = foreplayIdeas.find((entry) => normalizePairName(entry.name) === normalizedName);
   if (foreplayMatch) {
+    haptics.openCard(`foreplay:${foreplayMatch.id}`);
     navigation.push('ForeplayDetail', { item: foreplayMatch });
     return;
   }
 
   const positionMatch = positions.find((entry) => normalizePairName(entry.name) === normalizedName);
   if (positionMatch) {
+    haptics.openCard(`position:${positionMatch.id}`);
     navigation.push('PositionDetail', { position: positionMatch });
     return;
   }
@@ -5574,7 +5538,6 @@ function PositionDetailScreen({ route, navigation }: any) {
   };
 
   const handleShare = async () => {
-    haptic.light();
     try {
       await Share.share({
         message: voice.share.position(position.name, APP_STORE_LINK),
@@ -5612,7 +5575,7 @@ function PositionDetailScreen({ route, navigation }: any) {
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleFavorite(position.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleFavorite(position.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -5698,7 +5661,6 @@ function ForeplayDetailScreen({ route, navigation }: any) {
   };
 
   const handleShare = async () => {
-    haptic.light();
     try {
       await Share.share({
         message: voice.share.foreplay(item.name, APP_STORE_LINK),
@@ -5734,7 +5696,7 @@ function ForeplayDetailScreen({ route, navigation }: any) {
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleForeplayFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleForeplayFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -5812,7 +5774,6 @@ function OralDetailScreen({ route, navigation }: any) {
   };
 
   const handleShare = async () => {
-    haptic.light();
     try {
       await Share.share({
         message: voice.share.oral(item.name, APP_STORE_LINK),
@@ -5848,7 +5809,7 @@ function OralDetailScreen({ route, navigation }: any) {
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleOralFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleOralFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -5929,7 +5890,6 @@ function MassageDetailScreen({ route, navigation }: any) {
   };
 
   const handleShare = async () => {
-    haptic.light();
     try {
       await Share.share({
         message: voice.share.massage(item.name, APP_STORE_LINK),
@@ -5965,7 +5925,7 @@ function MassageDetailScreen({ route, navigation }: any) {
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleMassageFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleMassageFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -6045,7 +6005,6 @@ function RolePlayDetailScreen({ route, navigation }: any) {
   };
 
   const handleShare = async () => {
-    haptic.light();
     try {
       await Share.share({
         message: voice.share.roleplay(item.name, APP_STORE_LINK),
@@ -6088,7 +6047,7 @@ function RolePlayDetailScreen({ route, navigation }: any) {
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptic.light(); store.toggleRoleplayFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleRoleplayFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -7759,3 +7718,4 @@ const styles = StyleSheet.create({
   legalConfirmButton: { backgroundColor: colors.primary[500], paddingVertical: 16, borderRadius: 25, alignItems: 'center', marginTop: 12 },
   legalConfirmButtonText: { color: colors.white, fontSize: 16, fontWeight: '600' },
 });
+
