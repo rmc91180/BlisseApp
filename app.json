@@ -2,7 +2,7 @@
   "expo": {
     "name": "Blisse",
     "slug": "blisse",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "newArchEnabled": false,
@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.blisse.app",
-      "buildNumber": "27",
+      "buildNumber": "29",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "Use Face ID to unlock Blisse and keep your content private",
