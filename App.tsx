@@ -1335,6 +1335,9 @@ function AuthScreen({ navigation: _navigation }: any) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const emailInputRef = useRef<TextInput | null>(null);
+  const passwordInputRef = useRef<TextInput | null>(null);
+  const confirmPasswordInputRef = useRef<TextInput | null>(null);
   
   const { signIn, signUp, signInWithApple, resetPassword } = useAuth();
   const themeStore = useThemeStore();
@@ -1349,9 +1352,23 @@ function AuthScreen({ navigation: _navigation }: any) {
 
   const normalizeEmail = (value: string) => value.trim().toLowerCase();
   const hasNumber = (value: string) => /\d/.test(value);
+  const normalizedEmail = normalizeEmail(email);
+  const canSubmit = useMemo(() => {
+    if (mode === 'signin') return validateEmail(normalizedEmail) && password.length > 0;
+    if (mode === 'signup') {
+      return (
+        name.trim().length > 0 &&
+        validateEmail(normalizedEmail) &&
+        password.length >= 8 &&
+        hasNumber(password) &&
+        password === confirmPassword
+      );
+    }
+    return validateEmail(normalizedEmail);
+  }, [confirmPassword, mode, name, normalizedEmail, password]);
 
   const handleSignIn = async () => {
-    const normalizedEmail = normalizeEmail(email);
+    if (loading) return;
     if (!normalizedEmail || !password) {
       setError(authPack('validation', 'allFieldsRequired'));
       return;
@@ -1366,6 +1383,7 @@ function AuthScreen({ navigation: _navigation }: any) {
     try {
       await signIn(normalizedEmail, password);
       // Navigation handled by auth state change
+      return;
     } catch (err: any) {
       if (err.code === 'auth/invalid-email') {
         setError(authPack('validation', 'emailInvalid'));
@@ -1380,12 +1398,12 @@ function AuthScreen({ navigation: _navigation }: any) {
       } else {
         setError(authPack('common', 'error'));
       }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSignUp = async () => {
-    const normalizedEmail = normalizeEmail(email);
+    if (loading) return;
     if (!normalizedEmail || !password || !confirmPassword || !name.trim()) {
       setError(authPack('validation', 'allFieldsRequired'));
       return;
@@ -1412,6 +1430,7 @@ function AuthScreen({ navigation: _navigation }: any) {
     try {
       await signUp(normalizedEmail, password, name.trim());
       // Navigation handled by auth state change
+      return;
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
         setError(authPack('signup', 'emailAlreadyInUse'));
@@ -1424,12 +1443,12 @@ function AuthScreen({ navigation: _navigation }: any) {
       } else {
         setError(authPack('common', 'error'));
       }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleResetPassword = async () => {
-    const normalizedEmail = normalizeEmail(email);
+    if (loading) return;
     if (!normalizedEmail) {
       setError(authPack('validation', 'emailRequired'));
       return;
@@ -1445,6 +1464,7 @@ function AuthScreen({ navigation: _navigation }: any) {
       await resetPassword(normalizedEmail);
       Alert.alert(authPack('common', 'success'), authPack('forgotPassword', 'emailSent'));
       setMode('signin');
+      setLoading(false);
     } catch (err: any) {
       if (err.code === 'auth/user-not-found') {
         setError(authPack('forgotPassword', 'emailNotFound'));
@@ -1455,21 +1475,24 @@ function AuthScreen({ navigation: _navigation }: any) {
       } else {
         setError(authPack('common', 'error'));
       }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleAppleSignIn = async () => {
+    if (loading) return;
     setLoading(true);
     setError('');
     try {
       await signInWithApple();
-      } catch (err: any) {
+      setLoading(false);
+      return;
+    } catch (err: any) {
       if (err.code !== 'ERR_CANCELED' && err.code !== 'ERR_REQUEST_CANCELED') {
         setError(authPack('common', 'error'));
       }
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -1502,39 +1525,74 @@ function AuthScreen({ navigation: _navigation }: any) {
                 <TextInput
                   style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                   value={name}
-                  onChangeText={setName}
+                  onChangeText={(value) => {
+                    setName(value);
+                    if (error) setError('');
+                  }}
                   placeholder={uiPack('onboarding.name.placeholder')}
                   placeholderTextColor={themeColors.text.muted}
                   autoCapitalize="words"
+                  returnKeyType="next"
+                  onSubmitEditing={() => emailInputRef.current?.focus()}
                 />
               </View>
             )}
 
             <View style={styles.authInputContainer}>
               <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{authPack(modeScreen, 'email')}</Text>
-              <TextInput
-                style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
-                value={email}
-                onChangeText={setEmail}
-                placeholder={authPack(modeScreen, 'emailPlaceholder')}
-                placeholderTextColor={themeColors.text.muted}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            </View>
+                <TextInput
+                  ref={emailInputRef}
+                  style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
+                  value={email}
+                  onChangeText={(value) => {
+                    setEmail(value);
+                    if (error) setError('');
+                  }}
+                  placeholder={authPack(modeScreen, 'emailPlaceholder')}
+                  placeholderTextColor={themeColors.text.muted}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoComplete="email"
+                  textContentType="username"
+                  returnKeyType={mode === 'reset' ? 'done' : 'next'}
+                  onSubmitEditing={() => {
+                    if (mode === 'reset') {
+                      void handleResetPassword();
+                      return;
+                    }
+                    passwordInputRef.current?.focus();
+                  }}
+                  blurOnSubmit={mode === 'reset'}
+                />
+              </View>
 
             {mode !== 'reset' && (
               <View style={styles.authInputContainer}>
                 <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{authPack(modeScreen, 'password')}</Text>
                 <View style={styles.authPasswordContainer}>
                   <TextInput
+                    ref={passwordInputRef}
                     style={[styles.authInput, styles.authPasswordInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(value) => {
+                      setPassword(value);
+                      if (error) setError('');
+                    }}
                     placeholder={authPack(modeScreen, 'passwordPlaceholder')}
                     placeholderTextColor={themeColors.text.muted}
                     secureTextEntry={!showPassword}
+                    autoComplete={mode === 'signin' ? 'password' : 'new-password'}
+                    textContentType={mode === 'signin' ? 'password' : 'newPassword'}
+                    returnKeyType={mode === 'signup' ? 'next' : 'done'}
+                    onSubmitEditing={() => {
+                      if (mode === 'signup') {
+                        confirmPasswordInputRef.current?.focus();
+                        return;
+                      }
+                      void handleSignIn();
+                    }}
+                    blurOnSubmit={mode !== 'signup'}
                   />
                   <TouchableOpacity style={styles.authPasswordToggle} onPress={() => setShowPassword(!showPassword)}>
                     <Text style={{ color: themeColors.text.muted }}>{showPassword ? '🙈' : '👁️'}</Text>
@@ -1547,12 +1605,22 @@ function AuthScreen({ navigation: _navigation }: any) {
               <View style={styles.authInputContainer}>
                 <Text style={[styles.authInputLabel, { color: themeColors.text.secondary }]}>{authPack('signup', 'confirmPassword')}</Text>
                 <TextInput
+                  ref={confirmPasswordInputRef}
                   style={[styles.authInput, { backgroundColor: themeColors.card, color: themeColors.text.primary }]}
                   value={confirmPassword}
-                  onChangeText={setConfirmPassword}
+                  onChangeText={(value) => {
+                    setConfirmPassword(value);
+                    if (error) setError('');
+                  }}
                   placeholder={authPack('signup', 'confirmPasswordPlaceholder')}
                   placeholderTextColor={themeColors.text.muted}
                   secureTextEntry={!showPassword}
+                  autoComplete="new-password"
+                  textContentType="newPassword"
+                  returnKeyType="done"
+                  onSubmitEditing={() => {
+                    void handleSignUp();
+                  }}
                 />
               </View>
             )}
@@ -1566,7 +1634,7 @@ function AuthScreen({ navigation: _navigation }: any) {
             <TouchableOpacity
               style={[styles.authButton, loading && styles.authButtonDisabled]}
               onPress={mode === 'signin' ? handleSignIn : mode === 'signup' ? handleSignUp : handleResetPassword}
-              disabled={loading}
+              disabled={loading || !canSubmit}
             >
               <LinearGradient
                 colors={[themeColors.primary[500], themeColors.primary[600]]}

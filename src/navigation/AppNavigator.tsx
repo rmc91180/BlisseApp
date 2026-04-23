@@ -602,7 +602,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
   const { t } = useI18n();
   const store = useStore();
   const voice = useMemo(() => getVoiceCopy(store.language), [store.language]);
-  const { user, loading: authLoading, initError, isBypassSession } = useAuth();
+  const { user, loading: authLoading, initError, isBypassSession, retryInit } = useAuth();
   const isReviewerBypassUser = useMemo(() => {
     if (isBypassSession) return true;
     try {
@@ -673,7 +673,13 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
         <Text style={{ fontSize: 44, marginBottom: 16 }}>⚠️</Text>
         <Text style={{ color: themeColors.text.primary, fontSize: 22, fontWeight: '700', textAlign: 'center', marginBottom: 10 }}>{t('app.auth_unavailable')}</Text>
-        <Text style={{ color: themeColors.text.secondary, fontSize: 14, textAlign: 'center' }}>{initError}</Text>
+        <Text style={{ color: themeColors.text.secondary, fontSize: 14, textAlign: 'center', marginBottom: 16 }}>{initError}</Text>
+        <TouchableOpacity
+          style={{ backgroundColor: themeColors.primary[500], paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10 }}
+          onPress={retryInit}
+        >
+          <Text style={{ color: colors.white, fontSize: 14, fontWeight: '700' }}>{t('common.tryAgain')}</Text>
+        </TouchableOpacity>
       </View>
     );
   }

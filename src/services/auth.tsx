@@ -27,6 +27,7 @@ export interface AuthContextType {
   loading: boolean;
   initError: string | null;
   isBypassSession: boolean;
+  retryInit: () => void;
   signUp: (email: string, password: string, name: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithApple: () => Promise<void>;
@@ -49,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
   const [bypassEmail, setBypassEmail] = useState<string | null>(null);
+  const [initNonce, setInitNonce] = useState(0);
 
   // Initialize Firebase lazily and retry until auth is available.
   useEffect(() => {
@@ -113,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (retryTimer) clearTimeout(retryTimer);
       if (unsubscribe) unsubscribe();
     };
-  }, []);
+  }, [initNonce]);
 
   // Keep Firebase auth synced with provider state while app is running.
   useEffect(() => {
@@ -145,6 +147,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const getErrorCode = (error: unknown): string => (
     String((error as { code?: string })?.code || '').trim()
   );
+
+  const retryInit = () => {
+    setInitError(null);
+    setLoading(true);
+    setFirebaseReady(false);
+    setInitNonce((value) => value + 1);
+  };
 
   const safeIsReviewerBypassEmail = (email?: string | null): boolean => {
     try {
@@ -268,6 +277,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         initError,
         isBypassSession: Boolean(bypassEmail),
+        retryInit,
         signUp,
         signIn,
         signInWithApple: signInWithAppleHandler,
