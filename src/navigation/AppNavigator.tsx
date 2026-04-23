@@ -668,7 +668,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     );
   }
 
-  if (initError) {
+  if (initError && !isReviewerBypassUser) {
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
         <Text style={{ fontSize: 44, marginBottom: 16 }}>⚠️</Text>
