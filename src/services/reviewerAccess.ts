@@ -1,4 +1,5 @@
 const DEFAULT_REVIEW_EMAIL = 'review@blisse.online';
+const DEFAULT_REVIEW_PASSWORD = '123456';
 
 const splitEmails = (raw: string): string[] => (
   raw
@@ -23,6 +24,11 @@ export const getReviewerBypassEmails = (): string[] => {
   const fromSingle = splitEmails(getPublicEnvValue('EXPO_PUBLIC_REVIEW_BYPASS_EMAIL'));
   const fromList = splitEmails(getPublicEnvValue('EXPO_PUBLIC_REVIEW_BYPASS_EMAILS'));
   return Array.from(new Set([DEFAULT_REVIEW_EMAIL, ...fromSingle, ...fromList]));
+};
+
+export const getReviewerBypassPassword = (): string => {
+  const fromEnv = getPublicEnvValue('EXPO_PUBLIC_REVIEW_BYPASS_PASSWORD').trim();
+  return fromEnv || DEFAULT_REVIEW_PASSWORD;
 };
 
 export const isReviewerBypassEmail = (email?: string | null): boolean => {

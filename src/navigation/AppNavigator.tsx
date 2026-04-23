@@ -668,6 +668,14 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
     );
   }
 
+  if (!user) {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Auth" component={screens.AuthScreen} />
+      </Stack.Navigator>
+    );
+  }
+
   if (initError && !isReviewerBypassUser) {
     return (
       <View style={{ flex: 1, backgroundColor: themeColors.background.primary, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
@@ -681,14 +689,6 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
           <Text style={{ color: colors.white, fontSize: 14, fontWeight: '700' }}>{t('common.tryAgain')}</Text>
         </TouchableOpacity>
       </View>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Auth" component={screens.AuthScreen} />
-      </Stack.Navigator>
     );
   }
 

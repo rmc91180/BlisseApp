@@ -6624,48 +6624,52 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
     let isMounted = true;
 
     const initializeAppState = async () => {
-      // Wait for persisted store hydration first.
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      try {
+        // Wait for persisted store hydration first.
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Migrate existing PIN from legacy AsyncStorage state into secure storage once.
-      const currentPin = useStore.getState().pinCode;
-      const securePin = await loadPinFromSecureStorage();
-      if (currentPin && !securePin) {
-        await savePinToSecureStorage(currentPin);
-      } else if (!currentPin && securePin) {
-        useStore.getState().setPinCode(securePin);
-      } else if (currentPin && securePin && currentPin !== securePin) {
-        useStore.getState().setPinCode(securePin);
-      }
+        // Migrate existing PIN from legacy AsyncStorage state into secure storage once.
+        const currentPin = useStore.getState().pinCode;
+        const securePin = await loadPinFromSecureStorage();
+        if (currentPin && !securePin) {
+          await savePinToSecureStorage(currentPin);
+        } else if (!currentPin && securePin) {
+          useStore.getState().setPinCode(securePin);
+        } else if (currentPin && securePin && currentPin !== securePin) {
+          useStore.getState().setPinCode(securePin);
+        }
 
-      const appState = useStore.getState();
-      const baselineUnlocks = getUnlockedFeaturesForLevel(getLevel(appState.totalStars).level);
-      if (baselineUnlocks.some((feature) => !appState.unlockedFeatures.includes(feature))) {
-        useStore.setState({
-          unlockedFeatures: Array.from(new Set([...appState.unlockedFeatures, ...baselineUnlocks])),
-        });
-      }
-      Analytics.trackSessionStart(appState.interactionHistory.length === 0);
+        const appState = useStore.getState();
+        const baselineUnlocks = getUnlockedFeaturesForLevel(getLevel(appState.totalStars).level);
+        if (baselineUnlocks.some((feature) => !appState.unlockedFeatures.includes(feature))) {
+          useStore.setState({
+            unlockedFeatures: Array.from(new Set([...appState.unlockedFeatures, ...baselineUnlocks])),
+          });
+        }
+        Analytics.trackSessionStart(appState.interactionHistory.length === 0);
 
-      const todayKey = getDateKey(new Date());
-      const installDateKey = appState.firstOpenDate || todayKey;
-      if (!appState.firstOpenDate) {
-        appState.setFirstOpenDate(installDateKey);
-      }
+        const todayKey = getDateKey(new Date());
+        const installDateKey = appState.firstOpenDate || todayKey;
+        if (!appState.firstOpenDate) {
+          appState.setFirstOpenDate(installDateKey);
+        }
 
-      const totalActivities = appState.activityLog.length;
-      if (totalActivities > 0) {
-        const installDate = new Date(`${installDateKey}T00:00:00`);
-        const todayDate = new Date(`${todayKey}T00:00:00`);
-        const daysSinceInstall = Math.max(
-          0,
-          Math.floor((todayDate.getTime() - installDate.getTime()) / (1000 * 60 * 60 * 24))
-        );
-        Analytics.trackRetentionSignal(daysSinceInstall, totalActivities);
-      }
-
-      if (isMounted) {
-        setIsReady(true);
+        const totalActivities = appState.activityLog.length;
+        if (totalActivities > 0) {
+          const installDate = new Date(`${installDateKey}T00:00:00`);
+          const todayDate = new Date(`${todayKey}T00:00:00`);
+          const daysSinceInstall = Math.max(
+            0,
+            Math.floor((todayDate.getTime() - installDate.getTime()) / (1000 * 60 * 60 * 24))
+          );
+          Analytics.trackRetentionSignal(daysSinceInstall, totalActivities);
+        }
+      } catch (error) {
+        console.error('App initialization failed; continuing in safe mode:', error);
+      } finally {
+        if (isMounted) {
+          setIsReady(true);
+        }
       }
     };
 

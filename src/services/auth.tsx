@@ -3,7 +3,6 @@
  * Handles email/password and Apple Sign-In authentication.
  */
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -20,7 +19,7 @@ import {
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { getFirebaseAuth } from '@/services/firebase';
 import { AUTH_RETRY_DELAY_MS, AUTH_MAX_RETRIES, AUTH_SYNC_LOOP_MS } from '@/constants/appConfig';
-import { isReviewerBypassEmail, normalizeEmail } from '@/services/reviewerAccess';
+import { getReviewerBypassPassword, isReviewerBypassEmail, normalizeEmail } from '@/services/reviewerAccess';
 
 export interface AuthContextType {
   user: FirebaseUser | null;
@@ -44,7 +43,6 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const REVIEW_BYPASS_EMAIL_KEY = 'blisse-review-bypass-email-v1';
   const REVIEW_BYPASS_UID_PREFIX = 'review-bypass:';
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,21 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   // Initialize Firebase lazily and retry until auth is available.
-  useEffect(() => {
-    const restoreBypassSession = async () => {
-      try {
-        const stored = await AsyncStorage.getItem(REVIEW_BYPASS_EMAIL_KEY);
-        if (stored) {
-          setBypassEmail(stored);
-          setUser((current) => current || createBypassUser(stored));
-        }
-      } catch {
-        // Ignore storage read failures for auth bootstrap.
-      }
-    };
-    void restoreBypassSession();
-  }, []);
-
   useEffect(() => {
     let isMounted = true;
     let retryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -116,7 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const email = firebaseUser?.email ? normalizeEmail(firebaseUser.email) : null;
         if (email && safeIsReviewerBypassEmail(email)) {
           setBypassEmail(email);
-          void AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, email);
+        } else if (!email && !bypassEmailRef.current) {
+          setBypassEmail(null);
         }
         setLoading(false);
       }, (error) => {
@@ -202,17 +186,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string) => {
     const normalizedEmail = normalizeEmail(email);
     const isBypass = safeIsReviewerBypassEmail(normalizedEmail);
+    const bypassPassword = getReviewerBypassPassword();
+    const bypassPasswordMatches = password === bypassPassword;
 
     if (isBypass) {
       setBypassEmail(normalizedEmail);
-      await AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, normalizedEmail);
     }
 
     let auth: Auth;
     try {
       auth = await waitForAuth();
     } catch (error) {
-      if (isBypass) {
+      if (isBypass && bypassPasswordMatches) {
         setUser(createBypassUser(normalizedEmail));
         setInitError(null);
         setLoading(false);
@@ -231,7 +216,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         code === 'auth/invalid-credential' ||
         code === 'auth/invalid-login-credentials';
 
-      if (isBypass && canAttemptProvisioning) {
+      if (isBypass && bypassPasswordMatches && canAttemptProvisioning) {
         try {
           await createReviewerAccountIfMissing(normalizedEmail, password);
           await signInWithEmailAndPassword(auth, normalizedEmail, password);
@@ -241,7 +226,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      if (isBypass && code === 'auth/operation-not-allowed') {
+      if (isBypass && bypassPasswordMatches && code === 'auth/operation-not-allowed') {
         // Keep reviewer/test access available even if email-password provider
         // is disabled in Firebase for a given environment.
         try {
@@ -250,14 +235,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Ignore and rely on local bypass identity fallback below.
         }
         setBypassEmail(normalizedEmail);
-        await AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, normalizedEmail);
         setUser(createBypassUser(normalizedEmail));
         setInitError(null);
         setLoading(false);
         return;
       }
 
-      if (isBypass) {
+      if (isBypass && bypassPasswordMatches) {
         // Last-resort reviewer path:
         // allow app access even when provider config is temporarily broken.
         try {
@@ -266,7 +250,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Ignore and rely on local bypass identity fallback below.
         }
         setBypassEmail(normalizedEmail);
-        await AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, normalizedEmail);
         setUser(createBypassUser(normalizedEmail));
         setInitError(null);
         setLoading(false);
@@ -312,7 +295,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setUser(null);
     setBypassEmail(null);
-    await AsyncStorage.removeItem(REVIEW_BYPASS_EMAIL_KEY);
   };
 
   const resetPassword = async (email: string) => {

@@ -176,6 +176,179 @@ const getMonthIndex = (month: string): number => {
   return year * 12 + (monthNumber - 1);
 };
 
+const asString = (value: unknown, fallback = ''): string => (
+  typeof value === 'string' ? value : fallback
+);
+
+const asStringOrNull = (value: unknown): string | null => (
+  typeof value === 'string' ? value : null
+);
+
+const asBoolean = (value: unknown, fallback = false): boolean => (
+  typeof value === 'boolean' ? value : fallback
+);
+
+const asFiniteNumber = (value: unknown, fallback = 0): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const asNumberArray = (value: unknown): number[] => (
+  Array.isArray(value)
+    ? value.filter((entry): entry is number => typeof entry === 'number' && Number.isFinite(entry))
+    : []
+);
+
+const asStringArray = (value: unknown): string[] => (
+  Array.isArray(value)
+    ? value.filter((entry): entry is string => typeof entry === 'string')
+    : []
+);
+
+const asObjectArray = <T>(value: unknown): T[] => (
+  Array.isArray(value)
+    ? value.filter((entry): entry is T => Boolean(entry && typeof entry === 'object'))
+    : []
+);
+
+const sanitizeLanguage = (value: unknown): AppLanguage => (
+  value === 'es' || value === 'pt' || value === 'hi' ? value : 'en'
+);
+
+const sanitizeLearningPreferences = (value: unknown): UserPreferences => {
+  if (!value || typeof value !== 'object') {
+    return DEFAULT_PREFERENCES;
+  }
+
+  const prefs = value as Partial<UserPreferences>;
+  return {
+    ...DEFAULT_PREFERENCES,
+    ...prefs,
+    categoryScores: typeof prefs.categoryScores === 'object' && prefs.categoryScores ? prefs.categoryScores : DEFAULT_PREFERENCES.categoryScores,
+    moodScores: typeof prefs.moodScores === 'object' && prefs.moodScores ? prefs.moodScores : DEFAULT_PREFERENCES.moodScores,
+    difficultyScores: typeof prefs.difficultyScores === 'object' && prefs.difficultyScores ? prefs.difficultyScores : DEFAULT_PREFERENCES.difficultyScores,
+    contentTypeScores: {
+      ...DEFAULT_PREFERENCES.contentTypeScores,
+      ...(prefs.contentTypeScores || {}),
+    },
+    experienceScores: {
+      effort: {
+        ...DEFAULT_PREFERENCES.experienceScores.effort,
+        ...(prefs.experienceScores?.effort || {}),
+      },
+      energy: {
+        ...DEFAULT_PREFERENCES.experienceScores.energy,
+        ...(prefs.experienceScores?.energy || {}),
+      },
+      connection: {
+        ...DEFAULT_PREFERENCES.experienceScores.connection,
+        ...(prefs.experienceScores?.connection || {}),
+      },
+      novelty: {
+        ...DEFAULT_PREFERENCES.experienceScores.novelty,
+        ...(prefs.experienceScores?.novelty || {}),
+      },
+      controlBalance: {
+        ...DEFAULT_PREFERENCES.experienceScores.controlBalance,
+        ...(prefs.experienceScores?.controlBalance || {}),
+      },
+    },
+    sequenceScores: {
+      step1: {
+        ...DEFAULT_PREFERENCES.sequenceScores.step1,
+        ...(prefs.sequenceScores?.step1 || {}),
+      },
+      step2: {
+        ...DEFAULT_PREFERENCES.sequenceScores.step2,
+        ...(prefs.sequenceScores?.step2 || {}),
+      },
+      step3: {
+        ...DEFAULT_PREFERENCES.sequenceScores.step3,
+        ...(prefs.sequenceScores?.step3 || {}),
+      },
+    },
+    recentExperienceClusters: asStringArray(prefs.recentExperienceClusters).slice(0, 12),
+    preferredTimeOfDay: prefs.preferredTimeOfDay ?? null,
+    avgSessionLength: asFiniteNumber(prefs.avgSessionLength, 0),
+    favoriteToTriedRatio: asFiniteNumber(prefs.favoriteToTriedRatio, 0),
+    lastUpdated: asString(prefs.lastUpdated, new Date().toISOString()),
+  };
+};
+
+const sanitizePersistedState = (persistedState: Partial<UserState>, version: number): Partial<UserState> => {
+  const state: Partial<UserState> = { ...persistedState };
+  const earnedAchievements = asStringArray(state.earnedAchievements);
+  const rawUnlockedFeatures = Array.isArray(state.unlockedFeatures)
+    ? state.unlockedFeatures.filter(
+      (feature): feature is UnlockableFeature =>
+        typeof feature === 'string' && (ALL_UNLOCKABLE_FEATURES as string[]).includes(feature)
+    )
+    : null;
+
+  state.name = asString(state.name, '');
+  state.relationshipType = asStringOrNull(state.relationshipType);
+  state.interests = asStringArray(state.interests);
+  state.experience = asStringOrNull(state.experience);
+  state.hasCompletedOnboarding = asBoolean(state.hasCompletedOnboarding, false);
+  state.hasSeenTutorial = asBoolean(state.hasSeenTutorial, false);
+  state.currentMood = asStringOrNull(state.currentMood);
+  state.favorites = asNumberArray(state.favorites);
+  state.tried = asNumberArray(state.tried);
+  state.favoriteForeplay = asNumberArray(state.favoriteForeplay);
+  state.triedForeplay = asNumberArray(state.triedForeplay);
+  state.favoriteOral = asNumberArray(state.favoriteOral);
+  state.triedOral = asNumberArray(state.triedOral);
+  state.favoriteMassage = asNumberArray(state.favoriteMassage);
+  state.triedMassage = asNumberArray(state.triedMassage);
+  state.favoriteRoleplay = asNumberArray(state.favoriteRoleplay);
+  state.triedRoleplay = asNumberArray(state.triedRoleplay);
+  state.notes = asObjectArray<Note>(state.notes);
+  state.currentChallenge = (state.currentChallenge && typeof state.currentChallenge === 'object')
+    ? state.currentChallenge
+    : null;
+  state.completedChallenges = asObjectArray<Challenge>(state.completedChallenges);
+  state.totalStars = asFiniteNumber(state.totalStars, 0);
+  state.activityLog = asObjectArray<ActivityLog>(state.activityLog).slice(-500);
+  state.earnedAchievements = earnedAchievements;
+  state.monthlyStats = asObjectArray<MonthlyStats>(state.monthlyStats);
+  state.archivedMonthlyStats = asObjectArray<MonthlyStats>(state.archivedMonthlyStats);
+  state.currentStreak = asFiniteNumber(state.currentStreak, 0);
+  state.lastActivityDate = asStringOrNull(state.lastActivityDate);
+  state.dateNightsCompleted = asFiniteNumber(state.dateNightsCompleted, 0);
+  state.pendingLevelUp = null;
+
+  if (rawUnlockedFeatures) {
+    state.unlockedFeatures = Array.from(new Set(rawUnlockedFeatures));
+  } else if (version < 2) {
+    state.unlockedFeatures = earnedAchievements.length > 5 ? [...ALL_UNLOCKABLE_FEATURES] : [];
+  } else {
+    state.unlockedFeatures = getUnlockedFeaturesForLevel(1);
+  }
+
+  state.weeklyGoals = asObjectArray<WeeklyGoal>(state.weeklyGoals);
+  state.weeklyGoalsStartDate = asStringOrNull(state.weeklyGoalsStartDate);
+  state.lastLoginDate = asStringOrNull(state.lastLoginDate);
+  state.loginStreak = asFiniteNumber(state.loginStreak, 0);
+  state.dailyBonusClaimed = asBoolean(state.dailyBonusClaimed, false);
+  state.firstOpenDate = asStringOrNull(state.firstOpenDate);
+
+  state.pinCode = asStringOrNull(state.pinCode);
+  state.useBiometrics = asBoolean(state.useBiometrics, false);
+  state.language = sanitizeLanguage(state.language);
+  state.notificationsEnabled = asBoolean(state.notificationsEnabled, true);
+  state.dailyJokeNotificationsEnabled = asBoolean(state.dailyJokeNotificationsEnabled, true);
+  state.dailyStreakNotificationsEnabled = asBoolean(state.dailyStreakNotificationsEnabled, true);
+  state.reactivationNotificationsEnabled = asBoolean(state.reactivationNotificationsEnabled, true);
+  state.hasAgreedToTerms = asBoolean(state.hasAgreedToTerms, false);
+  state.agreedToTermsDate = asStringOrNull(state.agreedToTermsDate);
+
+  state.learningPreferences = sanitizeLearningPreferences(state.learningPreferences);
+  state.interactionHistory = asObjectArray<InteractionEvent>(state.interactionHistory).slice(-100);
+  state.userPlaylists = asObjectArray<UserPlaylist>(state.userPlaylists);
+
+  return state;
+};
+
 export const useStore = create<UserState>()(
   persist(
     (set, get) => ({
@@ -908,48 +1081,14 @@ export const useStore = create<UserState>()(
       storage: createJSONStorage(() => AsyncStorage),
       version: 2,
       migrate: (persistedState, version) => {
-        const state = (persistedState || {}) as Partial<UserState>;
-
-        if (!Array.isArray(state.activityLog)) {
-          state.activityLog = [];
-        } else if (state.activityLog.length > 500) {
-          state.activityLog = state.activityLog.slice(-500);
-        }
-
-        if (!Array.isArray(state.interactionHistory)) {
-          state.interactionHistory = [];
-        } else if (state.interactionHistory.length > 100) {
-          state.interactionHistory = state.interactionHistory.slice(-100);
-        }
-
-        if (!Array.isArray(state.archivedMonthlyStats)) {
-          state.archivedMonthlyStats = [];
-        }
-
-        if (version < 2 && !Array.isArray(state.unlockedFeatures)) {
-          const earnedCount = Array.isArray(state.earnedAchievements) ? state.earnedAchievements.length : 0;
-          state.unlockedFeatures = earnedCount > 5 ? [...ALL_UNLOCKABLE_FEATURES] : [];
-        }
-
-        if (typeof state.firstOpenDate === 'undefined') {
-          state.firstOpenDate = null;
-        }
-
-        if (!state.learningPreferences) {
-          state.learningPreferences = DEFAULT_PREFERENCES;
-        } else if (!state.learningPreferences.sequenceScores) {
-          state.learningPreferences = {
-            ...DEFAULT_PREFERENCES,
-            ...state.learningPreferences,
-            experienceScores: {
-              ...DEFAULT_PREFERENCES.experienceScores,
-              ...state.learningPreferences.experienceScores,
-            },
-            sequenceScores: DEFAULT_PREFERENCES.sequenceScores,
-          };
-        }
-
-        return state;
+        return sanitizePersistedState((persistedState || {}) as Partial<UserState>, version);
+      },
+      merge: (persistedState, currentState) => {
+        const sanitized = sanitizePersistedState((persistedState || {}) as Partial<UserState>, 2);
+        return {
+          ...(currentState as UserState),
+          ...sanitized,
+        };
       },
       partialize: (state) => {
         return {

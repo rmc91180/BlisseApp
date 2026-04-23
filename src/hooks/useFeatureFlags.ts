@@ -8,10 +8,18 @@ export const useFeatureFlags = () => {
     let mounted = true;
 
     const hydrate = async () => {
-      const first = await getFeatureFlags(false);
-      if (mounted) setFlags(first);
-      const fresh = await getFeatureFlags(true);
-      if (mounted) setFlags(fresh);
+      try {
+        const first = await getFeatureFlags(false);
+        if (mounted) setFlags(first);
+        const fresh = await getFeatureFlags(true);
+        if (mounted) setFlags(fresh);
+      } catch (error) {
+        // Never fail app startup if remote flags or cache read has issues.
+        console.error('Feature flag hydration failed:', error);
+        if (mounted) {
+          setFlags(getDefaultFeatureFlags());
+        }
+      }
     };
 
     void hydrate();
