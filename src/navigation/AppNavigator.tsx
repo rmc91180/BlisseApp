@@ -603,7 +603,15 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
   const store = useStore();
   const voice = useMemo(() => getVoiceCopy(store.language), [store.language]);
   const { user, loading: authLoading, initError, isBypassSession } = useAuth();
-  const isReviewerBypassUser = isBypassSession || isReviewerBypassEmail(user?.email || null);
+  const isReviewerBypassUser = useMemo(() => {
+    if (isBypassSession) return true;
+    try {
+      return isReviewerBypassEmail(user?.email || null);
+    } catch (error) {
+      console.error('Reviewer bypass email check failed in navigator:', error);
+      return false;
+    }
+  }, [isBypassSession, user?.email]);
   const {
     enabled: billingEnabled,
     required: billingRequired,

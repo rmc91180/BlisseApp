@@ -9,9 +9,19 @@ const splitEmails = (raw: string): string[] => (
 
 export const normalizeEmail = (email: string): string => email.trim().toLowerCase();
 
+const getPublicEnvValue = (key: string): string => {
+  try {
+    const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+    const value = env?.[key];
+    return typeof value === 'string' ? value : '';
+  } catch {
+    return '';
+  }
+};
+
 export const getReviewerBypassEmails = (): string[] => {
-  const fromSingle = splitEmails(process.env.EXPO_PUBLIC_REVIEW_BYPASS_EMAIL || '');
-  const fromList = splitEmails(process.env.EXPO_PUBLIC_REVIEW_BYPASS_EMAILS || '');
+  const fromSingle = splitEmails(getPublicEnvValue('EXPO_PUBLIC_REVIEW_BYPASS_EMAIL'));
+  const fromList = splitEmails(getPublicEnvValue('EXPO_PUBLIC_REVIEW_BYPASS_EMAILS'));
   return Array.from(new Set([DEFAULT_REVIEW_EMAIL, ...fromSingle, ...fromList]));
 };
 
@@ -20,4 +30,3 @@ export const isReviewerBypassEmail = (email?: string | null): boolean => {
   const normalized = normalizeEmail(email);
   return getReviewerBypassEmails().includes(normalized);
 };
-

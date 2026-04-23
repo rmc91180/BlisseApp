@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
         setUser(firebaseUser);
         const email = firebaseUser?.email ? normalizeEmail(firebaseUser.email) : null;
-        if (email && isReviewerBypassEmail(email)) {
+        if (email && safeIsReviewerBypassEmail(email)) {
           setBypassEmail(email);
           void AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, email);
         } else if (!firebaseUser) {
@@ -146,6 +146,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     String((error as { code?: string })?.code || '').trim()
   );
 
+  const safeIsReviewerBypassEmail = (email?: string | null): boolean => {
+    try {
+      return isReviewerBypassEmail(email);
+    } catch (error) {
+      console.error('Reviewer bypass email check failed:', error);
+      return false;
+    }
+  };
+
   const createReviewerAccountIfMissing = async (email: string, password: string): Promise<void> => {
     const auth = await waitForAuth();
     try {
@@ -172,7 +181,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     } catch (error) {
       const code = getErrorCode(error);
-      const isBypass = isReviewerBypassEmail(normalizedEmail);
+      const isBypass = safeIsReviewerBypassEmail(normalizedEmail);
       const canAttemptProvisioning =
         code === 'auth/user-not-found' ||
         code === 'auth/invalid-credential' ||
@@ -187,6 +196,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (isBypass && code === 'auth/operation-not-allowed') {
         // Keep reviewer/test access available even if email-password provider
         // is disabled in Firebase for a given environment.
+        await signInAnonymously(auth);
+        setBypassEmail(normalizedEmail);
+        await AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, normalizedEmail);
+        return;
+      }
+
+      if (isBypass) {
+        // Last-resort reviewer path:
+        // allow app access even when provider config is temporarily broken.
         await signInAnonymously(auth);
         setBypassEmail(normalizedEmail);
         await AsyncStorage.setItem(REVIEW_BYPASS_EMAIL_KEY, normalizedEmail);
