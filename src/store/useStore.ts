@@ -29,7 +29,7 @@ import {
   generateWeeklyGoals,
   type UnlockableFeature,
 } from '@/constants/gamification';
-import { buildExperienceClusterKey, resolveExperienceProfile } from '@/content/experienceProfiles';
+import { resolveExperienceProfile } from '@/content/experienceProfiles';
 import { detectPlatform, MAX_USER_PLAYLISTS } from '@/content/seasonal';
 import { positions, foreplayIdeas, oralPlayIdeas, massageTechniques, rolePlayScenarios } from '@/content/localizedContent';
 import { moods, categories } from '@/content/positions';
@@ -952,19 +952,21 @@ export const useStore = create<UserState>()(
           timestamp: new Date().toISOString(),
         };
 
-        // Update preferences based on this interaction
-        const updatedPrefs = SmartLearning.updatePreferences(
-          state.learningPreferences,
-          fullEvent
-        );
-
-        // Keep last 100 interactions for history
         const updatedHistory = [...state.interactionHistory, fullEvent].slice(-100);
-
-        set({
-          learningPreferences: updatedPrefs,
+        const updates: Partial<UserState> = {
           interactionHistory: updatedHistory,
-        });
+        };
+
+        // Passive impressions are useful history, but they should not reshuffle
+        // recommendations during the render that displayed them.
+        if (event.type !== 'view') {
+          updates.learningPreferences = SmartLearning.updatePreferences(
+            state.learningPreferences,
+            fullEvent
+          );
+        }
+
+        set(updates);
 
         // Track in analytics
         Analytics.trackContentTried(
@@ -998,7 +1000,7 @@ export const useStore = create<UserState>()(
 
       getSmartRecommendations: (count = 5) => {
         const state = get();
-        const recommendations = SmartLearning.getRecommendations(
+        return SmartLearning.getRecommendations(
           state.learningPreferences,
           {
             positions,
@@ -1021,24 +1023,6 @@ export const useStore = create<UserState>()(
           },
           count
         );
-        const updatedClusters = [...state.learningPreferences.recentExperienceClusters];
-        recommendations.forEach((recommendation) => {
-          const profile = resolveExperienceProfile(recommendation.type as InteractionEvent['contentType'], {
-            id: Number(recommendation.item?.id || 0),
-            category: recommendation.item?.category,
-            mood: recommendation.item?.mood,
-            difficulty: recommendation.item?.difficulty,
-            duration: recommendation.item?.duration,
-          });
-          updatedClusters.unshift(buildExperienceClusterKey(profile));
-        });
-        set({
-          learningPreferences: {
-            ...state.learningPreferences,
-            recentExperienceClusters: updatedClusters.slice(0, 12),
-          },
-        });
-        return recommendations;
       },
 
       getUserPreferenceSummary: () => {
