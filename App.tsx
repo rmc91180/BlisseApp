@@ -3979,21 +3979,16 @@ function HomeScreen({
     });
   }, [resolveRecommendationItem, store]);
 
-  useEffect(() => {
-    recommendations.forEach((recommendation) => {
-      const recommendationKey = `${recommendation.type}:${recommendation.item.id}`;
-      if (trackedRecommendationImpressionsRef.current.has(recommendationKey)) return;
-      trackedRecommendationImpressionsRef.current.add(recommendationKey);
-      trackRecommendationView(recommendation);
-    });
-  }, [recommendations, trackRecommendationView]);
-
   const handleRecommendationPress = useCallback((recommendation: HomeRecommendation) => {
+    const recommendationKey = `${recommendation.type}:${recommendation.item.id}`;
     const resolvedItem = resolveRecommendationItem(recommendation);
     const contentType = recommendation.type as InteractionEvent['contentType'];
     const itemId = Number(resolvedItem?.id || recommendation.item.id || 0);
 
-    trackRecommendationView(recommendation);
+    if (!trackedRecommendationImpressionsRef.current.has(recommendationKey)) {
+      trackedRecommendationImpressionsRef.current.add(recommendationKey);
+      trackRecommendationView(recommendation);
+    }
     if (itemId) {
       haptics.openCard(`${contentType}:${itemId}`);
     }
@@ -6529,10 +6524,10 @@ function AnalyticsFlusher() {
 }
 
 // Error Boundary Component
-class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: Error | null}> {
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean, error: Error | null, recoveryAttempted: boolean}> {
   constructor(props: {children: React.ReactNode}) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, recoveryAttempted: false };
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -6541,6 +6536,25 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('App Error:', error, errorInfo);
+
+    if (!this.state.recoveryAttempted) {
+      try {
+        useStore.setState({
+          hasCompletedOnboarding: false,
+          pendingLevelUp: null,
+          currentChallenge: null,
+          weeklyGoals: [],
+          pinCode: null,
+          unlockedFeatures: getUnlockedFeaturesForLevel(1),
+        });
+      } catch (recoveryError) {
+        console.error('App recovery failed:', recoveryError);
+      }
+
+      setTimeout(() => {
+        this.setState({ hasError: false, error: null, recoveryAttempted: true });
+      }, 100);
+    }
   }
 
   render() {

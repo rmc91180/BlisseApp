@@ -56,13 +56,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     bypassEmailRef.current = bypassEmail;
   }, [bypassEmail]);
 
-  const createBypassUser = (email: string): FirebaseUser => (
-    ({
-      uid: `${REVIEW_BYPASS_UID_PREFIX}${email}`,
+  const createBypassUser = (email: string): FirebaseUser => {
+    const uid = `${REVIEW_BYPASS_UID_PREFIX}${email}`;
+    return ({
+      uid,
       email,
+      emailVerified: true,
       isAnonymous: true,
-    } as unknown as FirebaseUser)
-  );
+      displayName: 'Blisse Review',
+      photoURL: null,
+      phoneNumber: null,
+      providerId: 'password',
+      providerData: [],
+      metadata: {
+        creationTime: undefined,
+        lastSignInTime: undefined,
+      },
+      tenantId: null,
+      refreshToken: '',
+      delete: async () => undefined,
+      getIdToken: async () => `review-bypass-token-${uid}`,
+      getIdTokenResult: async () => ({
+        token: `review-bypass-token-${uid}`,
+        authTime: new Date().toISOString(),
+        issuedAtTime: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        signInProvider: 'review-bypass',
+        signInSecondFactor: null,
+        claims: {},
+      }),
+      reload: async () => undefined,
+      toJSON: () => ({ uid, email, isAnonymous: true, emailVerified: true }),
+    } as unknown as FirebaseUser);
+  };
 
   // Initialize Firebase lazily and retry until auth is available.
   useEffect(() => {

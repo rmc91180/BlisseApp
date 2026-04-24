@@ -333,6 +333,9 @@ const sanitizePersistedState = (persistedState: Partial<UserState>, version: num
   state.firstOpenDate = asStringOrNull(state.firstOpenDate);
 
   state.pinCode = asStringOrNull(state.pinCode);
+  if (state.pinCode && !/^\d{4}$/.test(state.pinCode)) {
+    state.pinCode = null;
+  }
   state.useBiometrics = asBoolean(state.useBiometrics, false);
   state.language = sanitizeLanguage(state.language);
   state.notificationsEnabled = asBoolean(state.notificationsEnabled, true);
@@ -345,6 +348,14 @@ const sanitizePersistedState = (persistedState: Partial<UserState>, version: num
   state.learningPreferences = sanitizeLearningPreferences(state.learningPreferences);
   state.interactionHistory = asObjectArray<InteractionEvent>(state.interactionHistory).slice(-100);
   state.userPlaylists = asObjectArray<UserPlaylist>(state.userPlaylists);
+
+  const hasRequiredOnboardingState =
+    state.hasAgreedToTerms &&
+    Boolean(state.relationshipType) &&
+    Boolean(state.experience);
+  if (state.hasCompletedOnboarding && !hasRequiredOnboardingState) {
+    state.hasCompletedOnboarding = false;
+  }
 
   return state;
 };
@@ -1063,12 +1074,12 @@ export const useStore = create<UserState>()(
     {
       name: 'blisse-storage',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 2,
+      version: 3,
       migrate: (persistedState, version) => {
         return sanitizePersistedState((persistedState || {}) as Partial<UserState>, version);
       },
       merge: (persistedState, currentState) => {
-        const sanitized = sanitizePersistedState((persistedState || {}) as Partial<UserState>, 2);
+        const sanitized = sanitizePersistedState((persistedState || {}) as Partial<UserState>, 3);
         return {
           ...(currentState as UserState),
           ...sanitized,

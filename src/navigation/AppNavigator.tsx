@@ -535,6 +535,7 @@ function MainTabs({
   showTrialBanner: boolean;
 }) {
   const { t } = useI18n();
+  const HomeScreenComponent = screens.HomeScreen;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -556,7 +557,7 @@ function MainTabs({
         options={{ tabBarLabel: t('tabs.home'), tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} /> }}
       >
         {(props: any) => (
-          <screens.HomeScreen
+          <HomeScreenComponent
             {...props}
             trialDaysRemaining={trialDaysRemaining}
             showTrialBanner={showTrialBanner}

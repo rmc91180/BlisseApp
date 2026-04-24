@@ -184,9 +184,20 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setActionError(null);
     };
 
-    Purchases.addCustomerInfoUpdateListener(listener);
+    try {
+      Purchases.addCustomerInfoUpdateListener(listener);
+    } catch (error) {
+      console.error('RevenueCat listener registration failed:', error);
+      setActionError('Billing service is currently unavailable. Please try again.');
+      return;
+    }
+
     return () => {
-      Purchases.removeCustomerInfoUpdateListener(listener);
+      try {
+        Purchases.removeCustomerInfoUpdateListener(listener);
+      } catch (error) {
+        console.error('RevenueCat listener cleanup failed:', error);
+      }
     };
   }, [enabled]);
 
