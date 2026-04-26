@@ -969,10 +969,10 @@
         "hi": "Dark"
       },
       "system": {
-        "en": "System",
-        "es": "Sistema",
-        "pt-BR": "Sistema",
-        "hi": "System"
+        "en": "Device",
+        "es": "Dispositivo",
+        "pt-BR": "Dispositivo",
+        "hi": "Device"
       }
     }
   },

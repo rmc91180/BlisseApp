@@ -27,7 +27,7 @@ export const positions: Position[] = [
     description: "An empowering position where she sits on top, facing her partner, controlling the pace and depth.",
     howTo: "He lies on his back. She straddles him, sitting upright or leaning forward. She controls all movement - pace, depth, and angle.",
     whyItWorks: "This position puts her in complete control, which can be incredibly empowering and arousing for both. It allows for deep penetration and easy access for additional stimulation.",
-    tips: ["Try circular motions", "Lean forward or back to change sensations", "He can hold her hips to guide", "Make eye contact for added intensity"],
+    tips: ["Try circular motions", "Lean forward or back to change sensations", "He can hold her hips for rhythm", "Make eye contact for added intensity"],
     pairsWellWith: ["Chest caressing", "Hand holding", "Verbal encouragement"],
     goodFor: ["Her pleasure", "Control", "Visual connection"]
   },
@@ -51,13 +51,13 @@ export const positions: Position[] = [
     category: "Woman on Top",
     mood: "commanding",
     difficulty: "Beginner",
-    vibe: "Teasing control and performance",
+    vibe: "Teasing control and showy heat",
     description: "She's on top, sitting upright and moving in a grinding, dancing motion.",
     howTo: "He sits against headboard or chair back. She straddles him and uses grinding, circular motions rather than up-and-down. Think of it as dancing on his lap.",
     whyItWorks: "This is as much about the visual and the tease as the sensation. She controls everything while putting on a show.",
     tips: ["Make eye contact", "Touch yourself while moving", "Use your hands on his chest for leverage", "Build anticipation by teasing"],
     pairsWellWith: ["Strip tease", "Music", "Dirty talk"],
-    goodFor: ["Her control", "Performance", "Building anticipation"]
+    goodFor: ["Her control", "Showy heat", "Building anticipation"]
   },
   {
     id: 4,
@@ -165,9 +165,9 @@ export const positions: Position[] = [
     difficulty: "Intermediate",
     vibe: "Rocking back and forth",
     description: "She's on top and rocks forward and back rather than up and down.",
-    howTo: "In cowgirl, instead of bouncing, she rocks her hips forward and back like a seesaw. He can hold her hips to help guide.",
+    howTo: "In cowgirl, instead of bouncing, she rocks her hips forward and back like a seesaw. He can hold her hips to stay with the rhythm.",
     whyItWorks: "The rocking motion creates friction against her clitoris while providing stimulation for him. Great for her pleasure.",
-    tips: ["Focus on grinding forward", "Great for clitoral stimulation", "He can help guide the motion", "Very sustainable movement"],
+    tips: ["Focus on grinding forward", "Great for clitoral stimulation", "He can stay with the motion", "Very sustainable movement"],
     pairsWellWith: ["Her orgasm focus", "Extended sessions", "Clitoral stimulation"],
     goodFor: ["Her pleasure", "Clitoral stimulation", "Less tiring"]
   },
@@ -297,7 +297,7 @@ export const positions: Position[] = [
     description: "Her legs are raised past her head as he enters from above, folding her nearly in half.",
     howTo: "She lies back and brings her legs up and back toward her head. He kneels before her and enters. The more flexible she is, the more options.",
     whyItWorks: "Extreme depth is possible in this position. It creates intense sensations but requires flexibility and trust.",
-    tips: ["Only for the flexible", "Go slowly - it's deep", "She should guide the pace", "Stop immediately if uncomfortable"],
+    tips: ["Only for the flexible", "Go slowly - it's deep", "She sets the pace", "Stop immediately if uncomfortable"],
     pairsWellWith: ["Stretching first", "Trust", "Communication"],
     goodFor: ["Maximum depth", "Adventurous couples", "Flexibility"]
   },
@@ -339,7 +339,7 @@ export const positions: Position[] = [
     description: "Modified missionary where he rides high, allowing his pelvis to grind against her clitoris.",
     howTo: "In missionary, he shifts his body upward so his pelvis is higher than usual. Instead of thrusting, he grinds and rocks. His pubic bone stimulates her clitoris.",
     whyItWorks: "This technique is specifically designed for her orgasm. The grinding provides clitoral stimulation during penetration.",
-    tips: ["Grinding, not thrusting", "He rides high on her body", "She can guide him to the right spot", "Very effective for her orgasm"],
+    tips: ["Grinding, not thrusting", "He rides high on her body", "She can show him the right spot", "Very effective for her orgasm"],
     pairsWellWith: ["Her orgasm focus", "Slow rhythm", "Extended pleasure"],
     goodFor: ["Her pleasure", "Clitoral stimulation", "Orgasm"]
   },
@@ -769,7 +769,7 @@ export const positions: Position[] = [
     difficulty: "Beginner",
     vibe: "Primal intensity and deep sensation",
     description: "She's on hands and knees, he kneels behind and enters from behind.",
-    howTo: "She positions on hands and knees. He kneels behind, holding her hips for guidance and control.",
+    howTo: "She positions on hands and knees. He kneels behind, holding her hips for rhythm and control.",
     whyItWorks: "This position allows for deep penetration and gives him full control of rhythm and depth. Many find the angle provides intense sensations.",
     tips: ["Arch back more or less to adjust angle", "Pillows under knees for comfort", "She can lower to forearms", "Reach around for additional stimulation"],
     pairsWellWith: ["Hair play", "Back caressing", "Verbal connection"],
@@ -1547,7 +1547,7 @@ export const positions: Position[] = [
     description: "Slow, gentle missionary for sleepy morning connection.",
     howTo: "Classic missionary but very slow and gentle. Eyes half open. Lots of soft kisses. No rush, no intensity - just connection.",
     whyItWorks: "Face-to-face intimacy first thing. Gentle start to the day. Connects you before the world intrudes.",
-    tips: ["Very slow and gentle", "Morning breath kisses are fine", "Focus on connection", "No performance pressure"],
+    tips: ["Very slow and gentle", "Morning breath kisses are fine", "Focus on connection", "Nothing to prove"],
     pairsWellWith: ["Missionary", "Morning intimacy", "Gentle sex"],
     goodFor: ["Mornings", "Connection", "Gentle intimacy"]
   },
@@ -1989,7 +1989,7 @@ export const positions: Position[] = [
     whyItWorks: "Puts her confidence on display. He gets a show. She feels powerful.",
     tips: ["Sit tall and confident", "Touch yourself", "Let him watch", "Own it"],
     pairsWellWith: ["Cowgirl", "The Goddess", "Her confidence"],
-    goodFor: ["Her confidence", "His visual pleasure", "Performance"]
+    goodFor: ["Her confidence", "His visual pleasure", "Being seen"]
   },
   {
     id: 138,
@@ -2015,9 +2015,9 @@ export const positions: Position[] = [
     description: "Positions that would look good on camera - you can film or just enjoy the visual.",
     howTo: "Position as if a camera was capturing it. Angles that look good from outside. Whether you film or not, the awareness changes things.",
     whyItWorks: "Thinking about how it looks changes the experience. Heightened awareness.",
-    tips: ["Only film with consent", "Even without filming, the awareness helps", "Think about angles", "Performing is fun"],
-    pairsWellWith: ["The Photographer roleplay", "Visual positions", "Performance"],
-    goodFor: ["Visual awareness", "Performing", "Looking good"]
+    tips: ["Only film with consent", "Even without filming, the awareness helps", "Think about angles", "Being seen can be fun"],
+    pairsWellWith: ["The Photographer roleplay", "Visual positions", "Being seen"],
+    goodFor: ["Visual awareness", "Being seen", "Looking good"]
   },
   {
     id: 140,
@@ -2235,7 +2235,7 @@ export const positions: Position[] = [
     description: "She sits on top and moves in slow, deliberate circular motions, focusing on grinding rather than bouncing.",
     howTo: "She sits on top, sitting fully upright. Instead of up-and-down, she moves her hips in slow, wide circles. The focus is on sustained contact and grinding pressure.",
     whyItWorks: "The grinding motion maintains constant contact, providing steady stimulation. The slow pace builds arousal gradually and deeply.",
-    tips: ["Wide circles feel different than tight ones", "Press down firmly as you rotate", "Vary the speed gradually", "He can guide with hands on hips"],
+    tips: ["Wide circles feel different than tight ones", "Press down firmly as you rotate", "Vary the speed gradually", "His hands on hips can keep the rhythm close"],
     pairsWellWith: ["Hand holding", "Eye contact", "Gentle music"],
     goodFor: ["Sustained stimulation", "Intimacy", "Building slowly"]
   },
@@ -2845,7 +2845,7 @@ export const positions: Position[] = [
     description: "In rear entry, she reaches one arm back to hold his hip, neck, or hand, maintaining physical connection.",
     howTo: "In standard kneeling rear entry, she reaches one arm back to grab his thigh, hold his hand, or touch his hip. This twist of her upper body adds connection to the position.",
     whyItWorks: "The reach-back adds an intimate touch to a position that can feel disconnected. The physical link transforms rear entry into something more connected.",
-    tips: ["Even just holding hands changes the feeling", "She can guide his pace this way", "The twist adds slight tightness", "Eye contact becomes possible with the turn"],
+    tips: ["Even just holding hands changes the feeling", "She can shape his pace this way", "The twist adds slight tightness", "Eye contact becomes possible with the turn"],
     pairsWellWith: ["Hand holding", "Pace guiding", "Connected intimacy"],
     goodFor: ["Connected rear entry", "Hand holding", "Pace control"]
   },
@@ -2916,7 +2916,7 @@ export const positions: Position[] = [
     vibe: "No effort, no rush, nowhere to be",
     description: "The laziest possible position - both on your sides, minimal movement, maximum comfort, zero urgency.",
     howTo: "Both lie on your sides in whatever configuration feels most natural. Move as little as possible. Focus on the feeling of connection rather than building toward anything. Stay as long as you want.",
-    whyItWorks: "Removing all pressure and urgency lets you focus entirely on sensation and connection. There's no performance, no goal - just being together.",
+    whyItWorks: "With pressure and urgency gone, sensation and connection can take up the whole room. No goal - just being together.",
     tips: ["There's no wrong way to do this", "Less movement is more", "Stay here for as long as feels good", "No goal other than connection"],
     pairsWellWith: ["Sunday mornings", "No alarm clock", "Coffee in bed after"],
     goodFor: ["Zero pressure", "Deep connection", "Lazy mornings"]
@@ -3287,10 +3287,10 @@ export const positions: Position[] = [
     difficulty: "Intermediate",
     vibe: "Folded in for a deeper line",
     description: "A compact face-to-face setup where her knees come in closer, creating a tighter shape and a more direct angle.",
-    howTo: "She lies on her back and brings her knees in toward her chest. He stays above her and moves slowly at first, letting the tighter position guide the pace and depth.",
+    howTo: "She lies on her back and brings her knees in toward her chest. He stays above her and moves slowly at first, letting the tighter position shape the pace and depth.",
     whyItWorks: "The folded shape creates a stronger angle and a more focused sensation, but it still feels intimate because your faces and torsos stay close.",
     tips: ["Start gently before increasing depth", "A pillow can make the fold more comfortable", "She can hold behind her knees or his arms", "Pause often and check comfort"],
-    pairsWellWith: ["Trust", "Slow buildup", "Verbal guidance"],
+    pairsWellWith: ["Trust", "Slow buildup", "Verbal cues"],
     goodFor: ["Deeper angle", "Compact positioning", "Focused intensity"]
   },
   {
@@ -3331,7 +3331,7 @@ export const positions: Position[] = [
     description: "A rear-entry variation built around a shorter, more playful rhythm and a little more bounce in the movement.",
     howTo: "Set up in a stable rear-entry position, then shorten the movement and keep the rhythm quick but controlled. Let the pace feel playful rather than rough.",
     whyItWorks: "Not every rear-entry position has to feel heavy or intense. This one works because the shorter rhythm can feel energetic, teasing, and surprisingly connected.",
-    tips: ["Stability matters more than speed", "Shorter motion usually feels better here", "Hands on hips help guide the rhythm", "Slow down anytime it stops feeling playful"],
+    tips: ["Stability matters more than speed", "Shorter motion usually feels better here", "Hands on hips can hold the rhythm", "Slow down anytime it stops feeling playful"],
     pairsWellWith: ["Verbal teasing", "Back touch", "Building momentum"],
     goodFor: ["Rhythm play", "Rear-entry variety", "Energetic sessions"]
   },

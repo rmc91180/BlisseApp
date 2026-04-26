@@ -158,7 +158,7 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
   'One whispered line + one dangerously daring smile.',
   'Truth, dare, or kiss — pick any, we\'re doing all three anyway.',
   'Longer kisses, shorter excuses — new official ratio.',
-  'The audience demanded an encore performance.',
+  'The audience asked for an encore.',
   'It was clearly trying to say: save room for dessert round two.',
   'It wanted to be fully appreciated before it inevitably gets smudged.',
   'Same heartbeat, same delicious kind of trouble.',

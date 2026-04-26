@@ -129,7 +129,7 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Anonymous Analytics',
-        body: 'We use PostHog for anonymous, aggregated analytics to improve the App. This includes:\n- Which features are most popular\n- General usage patterns\n- App performance metrics\n\nWe disable person profiling and send only sanitized event metadata. We do not send free-text notes or contact messages to analytics.',
+        body: 'We use PostHog for anonymous, aggregated analytics to improve the App. This includes:\n- Which areas people use\n- General usage patterns\n- App health metrics\n\nWe disable person profiling and send only sanitized event metadata. We do not send free-text notes or contact messages to analytics.',
       },
       {
         heading: 'Information We NEVER Collect',
@@ -184,7 +184,7 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: 'Our story and vibe',
-        body: 'No judgment. No performance pressure. Just warm connection, a little mischief, and a lot of heart. We designed Blisse to feel like a supportive, playful companion for real couples with real schedules.',
+        body: 'No judgment. Nothing to prove. Just warm connection, a little mischief, and a lot of heart. We designed Blisse to feel like a supportive, playful companion for real couples with real schedules.',
       },
       {
         heading: 'Community and feedback',

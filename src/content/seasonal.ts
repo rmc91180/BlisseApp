@@ -108,7 +108,7 @@ const _SEASONAL_THEMES_EN: SeasonalTheme[] = [
     [202, 206, 208, 211],
     [401, 406, 414],
     ['challenge', 'spin', 'truth_or_dare'],
-    ['Make one playful relationship resolution together', 'Plan a midnight-style countdown kiss even if it is not midnight', 'Pick one new thing to try this month', 'Treat tonight like a soft reset, not a performance'],
+    ['Make one playful relationship resolution together', 'Plan a midnight-style countdown kiss even if it is not midnight', 'Pick one new thing to try this month', 'Treat tonight like a soft reset, with nothing to prove'],
   ),
   createTheme(
     'valentines',
@@ -462,7 +462,7 @@ const _SEASONAL_THEMES_HI: SeasonalTheme[] = [
     [204, 206, 211, 212],
     [406, 410, 415],
     ['date_night', 'spin', 'challenge'],
-    ['धीरे और सम्मान के साथ शाम का स्वर सेट करें', 'एक-दूसरे के लिए gratitude बोलें', 'रोमांस को gesture-led रखें, performance-led नहीं', 'रात को intention और softness से भरें'],
+    ['धीरे और सम्मान के साथ शाम का स्वर सेट करें', 'एक-दूसरे के लिए gratitude बोलें', 'रोमांस को gestures और softness में रखें', 'रात को intention और softness से भरें'],
   ),
   createTheme(
     'diwali',
@@ -593,7 +593,7 @@ const _TRUTH_OR_DARE_EN: TruthOrDareItem[] = [
   { id: 120, type: 'dare', intensity: 'medium', text: "Kiss my neck for 30 seconds, no hands." },
   { id: 121, type: 'dare', intensity: 'medium', text: "Undress down to a comfortable layer while maintaining eye contact." },
   { id: 122, type: 'dare', intensity: 'medium', text: "Give me a slow, teasing upper-thigh kiss and stop early." },
-  { id: 123, type: 'dare', intensity: 'medium', text: "Let me guide your hand across my waist and back for 30 seconds." },
+  { id: 123, type: 'dare', intensity: 'medium', text: "Let me place your hand across my waist and back for 30 seconds." },
   { id: 124, type: 'dare', intensity: 'medium', text: "Blindfold me and kiss any part of my body except my lips, three kisses." },
   { id: 125, type: 'dare', intensity: 'medium', text: "Sit on my lap facing me and sway slowly for 30 seconds." },
   { id: 126, type: 'dare', intensity: 'medium', text: "Recreate the most dramatic movie kiss scene you can think of." },
@@ -606,7 +606,7 @@ const _TRUTH_OR_DARE_EN: TruthOrDareItem[] = [
   // SPICY DARES
   { id: 133, type: 'dare', intensity: 'spicy', text: "Remove one outer layer and then kiss me for 20 seconds." },
   { id: 134, type: 'dare', intensity: 'spicy', text: "Kiss along my neck and collarbone for 30 seconds." },
-  { id: 135, type: 'dare', intensity: 'spicy', text: "Let me guide your wrists while we kiss for 20 seconds." },
+  { id: 135, type: 'dare', intensity: 'spicy', text: "Let me hold your wrists while we kiss for 20 seconds." },
   { id: 136, type: 'dare', intensity: 'spicy', text: "Give me a lap dance for 30 seconds, music optional." },
   { id: 137, type: 'dare', intensity: 'spicy', text: "Use an ice cube to trace a slow line down my arm or shoulder." },
   { id: 138, type: 'dare', intensity: 'spicy', text: "Straddle my lap fully clothed and hold eye contact for 20 seconds." },

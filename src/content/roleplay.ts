@@ -100,7 +100,7 @@ export const rolePlayScenarios: RolePlayScenario[] = [
   },
   {
     id: 407,
-    name: "After-Hours Performance Review",
+    name: "After-Hours Office Spark",
     category: "Fantasy",
     mood: "commanding",
     intensity: "Medium",
@@ -299,7 +299,7 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     mood: "flowing",
     intensity: "Light",
     vibe: "Swaying together until the world fades away",
-    description: "Put on your favorite slow songs, hold each other close, and let the music guide your bodies. No agenda, just presence.",
+    description: "Put on your favorite slow songs, hold each other close, and let the music move your bodies. No agenda, just presence.",
     setup: "Clear a small space in your living room. Dim the lights or use candles. Queue up a playlist of slow, romantic songs. One partner extends a hand and asks the other to dance.",
     howToPlay: "Hold each other close and sway. Whisper in each other's ears. Let your hands explore naturally as the songs play. Stay slow — the restraint builds desire. Let each song bring you closer until dancing is no longer enough.",
     tips: ["Pick songs that are meaningful to your relationship", "No phones once the music starts", "Let the tempo dictate your pace — slower is better", "Eye contact between songs is powerful"],
@@ -337,15 +337,15 @@ export const rolePlayScenarios: RolePlayScenario[] = [
   },
   {
     id: 424,
-    name: "Personal Trainer",
+    name: "Stretch Partner",
     category: "Fantasy",
     mood: "dynamic",
     intensity: "Medium",
     vibe: "Sweaty workout turns steamy",
-    description: "One partner is a personal trainer pushing the other through a workout. The physical exertion and closeness leads somewhere unexpected.",
-    setup: "Wear workout clothes. Clear a space. The 'trainer' has a plan: stretches, bodyweight exercises, hands-on form corrections. Have water and towels handy.",
-    howToPlay: "The trainer guides exercises with lots of hands-on corrections. 'Deeper squat — let me spot you.' Stretching gets intimate. Hands linger longer than professional. The cool-down becomes a warm-up for something else entirely.",
-    tips: ["The physical touch during 'corrections' is the spark", "Both of you will actually get a little warmed up", "Tight workout clothes help the visual", "The trainer's confidence is attractive — own it"],
+    description: "One partner turns a simple stretch into something close, warm, and unexpectedly charged.",
+    setup: "Wear workout clothes. Clear a space. Start with stretches, slow bodyweight moves, and hands-on closeness. Have water and towels handy.",
+    howToPlay: "Move through stretches with plenty of touch. 'A little lower — let me spot you.' Hands linger longer than necessary. The cool-down becomes a warm-up for something else entirely.",
+    tips: ["The physical touch is the spark", "Both of you will actually get a little warmed up", "Tight workout clothes help the visual", "A little confidence is attractive — own it"],
     pairsWellWith: ["Standing positions", "The Wheelbarrow", "Against the Wall"]
   },
   {

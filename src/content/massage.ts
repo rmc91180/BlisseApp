@@ -322,7 +322,7 @@ export const massageTechniques: MassageTechnique[] = [
     duration: "Quick",
     bodyArea: "Abdomen",
     vibe: "Calming the core, quieting the mind",
-    description: "A gentle abdominal massage synchronized with your partner's breathing that calms the nervous system and fosters deep trust.",
+    description: "A gentle abdominal massage synchronized with your partner's breathing that settles the body and builds deep trust.",
     howTo: "Place warm hands on their belly. Feel their breath rise and fall. Begin slow clockwise circles in rhythm with their exhale. Keep pressure feather-light and gradually widen the circles to include the sides of the torso.",
     tips: ["Never press deeply on the abdomen", "Match their breathing rhythm exactly", "Clockwise follows the direction of digestion", "This is deeply vulnerable — maintain a calm presence"],
     pairsWellWith: ["Scalp Serenity", "Face & Jaw Release", "Mindful connection"]
@@ -460,7 +460,7 @@ export const massageTechniques: MassageTechnique[] = [
     duration: "Medium",
     bodyArea: "Torso & Ribs",
     vibe: "Long glides timed to each exhale",
-    description: "A torso massage guided by breath, where each stroke follows the exhale and turns simple touch into something calm and deeply charged.",
+    description: "A torso massage shaped by breath, where each stroke follows the exhale and turns simple touch into something calm and deeply charged.",
     howTo: "Have your partner lie on their back or side. Place warm hands at the ribs or sides of the waist. As they exhale, glide slowly downward or outward with full palms. Reset softly during the inhale. Repeat until both of you settle into the same tempo.",
     tips: ["Do not rush the inhale-exhale rhythm", "The side ribs are often more sensitive than expected", "A pause with still hands can be just as powerful as movement", "This works best when the room is quiet and the pace stays slow"],
     pairsWellWith: ["Belly Breathing Massage", "The Whisper Touch", "Slow-build foreplay"]

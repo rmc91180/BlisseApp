@@ -7,7 +7,7 @@
  * - Every item should feel playful, safe, and explicitly consensual
  * - Aim for at least one practical tip, one emotional tip, and one flirty tip
  * - Include pairings that drive discovery across categories
- * - Tone stays warm and cheeky, never clinical or judgmental
+ * - Tone stays warm and cheeky, never detached or judgmental
  */
 import { Dimensions } from 'react-native';
 import { ContentCatalog, getLocalizedContentCatalog } from '@/i18n/localizedContent';

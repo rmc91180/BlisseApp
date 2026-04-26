@@ -489,8 +489,8 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
         welcomeExisting: 'Ya dentro · Iniciar sesión',
       },
       paywall: {
-        title: 'Su toolkit en versión full',
-        subtitle: 'Únanse a miles de parejas subiendo la chispa.',
+        title: 'Más espacio para jugar',
+        subtitle: 'Todo lo que necesitan para noches como esta.',
         featureIdeas: '🌸 400+ ideas, posiciones y date nights',
         featureChallenges: '🎯 Dares semanales y picks de esta noche',
         featurePrivacy: '🔒 Privado · Sin anuncios · Cancela cuando quieras',
@@ -529,29 +529,28 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
         ],
       },
       coach: {
-        systemPrompt: `You are a warm, playful voice for couples.
-Your tone is flirty, light, personal, and never clinical or judgmental.
-Write a brief note in 2-3 sentences max.
-Never lecture. Never explain systems. Never use pressure or guilt.
-Speak directly to both people together as "you two".`,
+        systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
+The tone is warm, light, optional, flirty, and never detached or judgmental.
+Keep it to 2-3 sentences.
+Do not explain why anything works.
+Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Speak to both people together as "you two", gently and casually.`,
         fallbackNotes: [
-          'Ustedes dos ya están en sintonía. Déjenlo fácil y cerca.',
-          'Vayan lento o rápido, pero háganlo a su manera.',
-          'No hace falta perfección. Solo presencia.',
-          'Sigan el momento que les saque una sonrisa.',
+          'Ustedes dos ya están en sintonía. Fácil y cerca alcanza.',
+          'Lento, rápido, o en algún punto medio. A su manera cuenta.',
+          'No hace falta perfección. Estar aquí juntos ya es mucho.',
+          'Una sonrisa también puede ser un buen lugar para quedarse.',
           'Esta noche es de ustedes. Nada más.',
-          'Ya tienen la chispa. Solo déjenla crecer.',
-          'Quédense donde se siente bien.',
-          'Confíen en su ritmo.',
+          'La chispa ya está. Puede quedarse suave.',
+          'Donde se siente bien, hay espacio para quedarse.',
+          'Su ritmo puede ser exactamente este.',
         ],
-        userPrompt: (contentType, item) => `Write a brief flirty note for this activity:
+        userPrompt: (contentType, item) => `A little context for the note:
 Name: ${item.name}
 Type: ${contentType}
 Vibe: ${item.vibe || 'Warm and connecting'}
-Why it works: ${item.whyItWorks || item.description || 'It helps you two feel closer'}
 Category: ${item.category || 'General'}
 
-The note should feel like a close friend cheering them on.
 Write the final note in Spanish.`,
       },
     };
@@ -792,8 +791,8 @@ Write the final note in Spanish.`,
         welcomeExisting: 'Já por aqui · Entrar',
       },
       paywall: {
-        title: 'Toolkit completo do casal',
-        subtitle: 'Juntem-se a milhares de casais acendendo a faísca.',
+        title: 'Mais espaço para brincar',
+        subtitle: 'Tudo que vocês precisam para noites assim.',
         featureIdeas: '🌸 400+ ideias, posições e date nights',
         featureChallenges: '🎯 Dares semanais e picks da noite',
         featurePrivacy: '🔒 Privado · Sem anúncios · Cancele quando quiser',
@@ -832,29 +831,28 @@ Write the final note in Spanish.`,
         ],
       },
       coach: {
-        systemPrompt: `You are a warm, playful voice for couples.
-Your tone is flirty, light, personal, and never clinical or judgmental.
-Write a brief note in 2-3 sentences max.
-Never lecture. Never explain systems. Never use pressure or guilt.
-Speak directly to both people together as "you two".`,
+        systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
+The tone is warm, light, optional, flirty, and never detached or judgmental.
+Keep it to 2-3 sentences.
+Do not explain why anything works.
+Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Speak to both people together as "you two", gently and casually.`,
         fallbackNotes: [
-          'Vocês já estão em sintonia. Deixem leve e perto.',
-          'Devagar ou rápido, do jeito de vocês.',
-          'Não precisa perfeição. Só presença.',
-          'Sigam o momento que faz sorrir.',
+          'Vocês já estão em sintonia. Leve e perto já basta.',
+          'Devagar, rápido, ou no meio do caminho. Do jeito de vocês conta.',
+          'Não precisa perfeição. Estar aqui juntos já é muito.',
+          'Um sorriso também pode ser um bom lugar pra ficar.',
           'Hoje é noite de vocês.',
-          'A faísca já existe. Só deixem crescer.',
-          'Fiquem onde bate gostoso.',
-          'Confiem no ritmo de vocês.',
+          'A faísca já existe. Ela pode ficar suave.',
+          'Onde bate gostoso, cabe ficar mais um pouco.',
+          'O ritmo de vocês pode ser exatamente esse.',
         ],
-        userPrompt: (contentType, item) => `Write a brief flirty note for this activity:
+        userPrompt: (contentType, item) => `A little context for the note:
 Name: ${item.name}
 Type: ${contentType}
 Vibe: ${item.vibe || 'Warm and connecting'}
-Why it works: ${item.whyItWorks || item.description || 'It helps you two feel closer'}
 Category: ${item.category || 'General'}
 
-The note should feel like a close friend cheering them on.
 Write the final note in Brazilian Portuguese.`,
       },
     };
@@ -871,7 +869,7 @@ Write the final note in Brazilian Portuguese.`,
       origin: {
         subtitle: 'साथ में आज की vibe ढूंढने का नरम तरीका।',
         whyTitle: 'हमने इसे क्यों बनाया',
-        whyBody: 'हम चाहते थे कि कपल्स इसे खोलें और उन्हें analyze, guide या test जैसा महसूस न हो।',
+        whyBody: 'हम चाहते थे कि कपल्स इसे खोलें और उन्हें analyze, manage या test जैसा महसूस न हो।',
         forTitle: 'यह किसलिए है',
         forBody: 'Blisse खेल, नज़दीकी, flirt और उस छोटी चिंगारी के लिए है, बिना पहले सब कुछ समझाने की ज़रूरत के।',
         howTitle: 'इसे कैसे इस्तेमाल करें',
@@ -1095,8 +1093,8 @@ Write the final note in Brazilian Portuguese.`,
         welcomeExisting: 'पहले से यहां · Sign In',
       },
       paywall: {
-        title: 'Your couples toolkit, unlocked',
-        subtitle: 'हज़ारों कपल्स के साथ अपनी चिंगारी बढ़ाएं।',
+        title: 'साथ खेलने की और जगह',
+        subtitle: 'ऐसी रातों के लिए सब कुछ, आराम से।',
         featureIdeas: '🌸 400+ ideas, positions और date nights',
         featureChallenges: '🎯 Weekly dares और tonight picks',
         featurePrivacy: '🔒 Private · No ads · Cancel anytime',
@@ -1135,29 +1133,28 @@ Write the final note in Brazilian Portuguese.`,
         ],
       },
       coach: {
-        systemPrompt: `You are a warm, playful voice for couples.
-Your tone is flirty, light, personal, and never clinical or judgmental.
-Write a brief note in 2-3 sentences max.
-Never lecture. Never explain systems. Never use pressure or guilt.
-Speak directly to both people together as "you two".`,
+        systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
+The tone is warm, light, optional, flirty, and never detached or judgmental.
+Keep it to 2-3 sentences.
+Do not explain why anything works.
+Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Speak to both people together as "you two", gently and casually.`,
         fallbackNotes: [
-          'आप दोनों पहले से sync में हैं। बस flow रहने दें।',
-          'धीरे या तेज़, जैसा सही लगे वैसा करें।',
-          'परफेक्ट होने की जरूरत नहीं। बस मौजूद रहें।',
-          'जो पल मुस्कुराए, वहीं थोड़ी देर ठहरें।',
+          'आप दोनों पहले से sync में हैं। हल्का और करीब काफी है।',
+          'धीमा, तेज़, या बीच में कहीं। आपका तरीका ही सही है।',
+          'परफेक्ट होने की जरूरत नहीं। साथ होना ही काफी है।',
+          'एक मुस्कान भी ठहरने की अच्छी जगह हो सकती है।',
           'आज की रात आपकी है।',
-          'चिंगारी पहले से है। बस उसे बढ़ने दें।',
-          'जहां अच्छा लगे, वहीं रहें।',
-          'अपनी लय पर भरोसा रखें।',
+          'चिंगारी पहले से है। वह नरम भी रह सकती है।',
+          'जहां अच्छा लगे, वहां थोड़ी जगह और है।',
+          'आपकी लय जैसी है, वैसी ही प्यारी है।',
         ],
-        userPrompt: (contentType, item) => `Write a brief flirty note for this activity:
+        userPrompt: (contentType, item) => `A little context for the note:
 Name: ${item.name}
 Type: ${contentType}
 Vibe: ${item.vibe || 'Warm and connecting'}
-Why it works: ${item.whyItWorks || item.description || 'It helps you two feel closer'}
 Category: ${item.category || 'General'}
 
-The note should feel like a close friend cheering them on.
 Write the final note in Hindi.`,
       },
     };
@@ -1397,8 +1394,8 @@ Write the final note in Hindi.`,
       welcomeExisting: 'Already in · Sign In',
     },
     paywall: {
-      title: 'Your couples toolkit, unlocked',
-      subtitle: 'Join thousands of couples turning up the spark.',
+      title: 'More room to play, together',
+      subtitle: 'Everything you need for nights like this.',
       featureIdeas: '🌸 400+ ideas, positions and date nights',
       featureChallenges: '🎯 Weekly dares and tonight picks',
       featurePrivacy: '🔒 Private · No ads · Cancel anytime',
@@ -1437,29 +1434,28 @@ Write the final note in Hindi.`,
       ],
     },
     coach: {
-      systemPrompt: `You are a warm, playful voice for couples.
-Your tone is flirty, light, personal, and never clinical or judgmental.
-Write a brief note in 2-3 sentences max.
-Never lecture. Never explain systems. Never use pressure or guilt.
-Speak directly to both people together as "you two".`,
+      systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
+The tone is warm, light, optional, flirty, and never detached or judgmental.
+Keep it to 2-3 sentences.
+Do not explain why anything works.
+Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Speak to both people together as "you two", gently and casually.`,
       fallbackNotes: [
-        'You two are already in sync. Keep it easy and close.',
-        'Take it slow, take it fast, take it your way.',
-        'No perfect needed tonight. Just presence.',
-        'Follow the moments that make you both smile.',
-        'Tonight is yours. Keep it playful.',
-        'You already have the spark. Let it land.',
-        'Stay where it feels good.',
-        'Trust your rhythm.',
+        'You two are already in sync. Easy and close is enough.',
+        'Slow, fast, or somewhere in between. Your way counts.',
+        'No perfect needed tonight. Being here together is plenty.',
+        'A shared smile is a good place to linger.',
+        'Tonight is yours. Play can stay light.',
+        'The spark is already here. Let it stay soft.',
+        'Where it feels good, there is room to linger.',
+        'Your rhythm can be exactly what it is.',
       ],
-      userPrompt: (contentType, item) => `Write a brief flirty note for this activity:
+      userPrompt: (contentType, item) => `A little context for the note:
 Name: ${item.name}
 Type: ${contentType}
 Vibe: ${item.vibe || 'Warm and connecting'}
-Why it works: ${item.whyItWorks || item.description || 'It helps you two feel closer'}
 Category: ${item.category || 'General'}
 
-The note should feel like a close friend cheering them on.
 Write the final note in English.`,
     },
   };

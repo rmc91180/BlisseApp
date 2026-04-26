@@ -4649,7 +4649,7 @@ function ExploreScreen({ navigation }: any) {
         icon: '🤝',
         title: t('explore.collections.foreplay.guided_intimacy.title'),
         subtitle: t('explore.collections.foreplay.guided_intimacy.subtitle'),
-        itemNames: ['Mutual Exploration', 'Guided Hands', 'Show Me Slower', 'Mirror Flirt'],
+        itemNames: ['Mutual Exploration', 'Warm Hands', 'Show Me Slower', 'Mirror Flirt'],
       },
     ],
     oral: [

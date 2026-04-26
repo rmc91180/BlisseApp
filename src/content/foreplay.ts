@@ -81,10 +81,10 @@ export const foreplayIdeas: ForeplayIdea[] = [
     category: "Touch",
     mood: "blossoming",
     duration: "Extended",
-    vibe: "Learning each other's bodies",
+    vibe: "Getting to know each other's bodies",
     description: "Take turns showing each other exactly how you like to be touched.",
-    howTo: "One partner guides the other's hand, showing pressure, speed, and location preferences. Then switch. No assumptions - direct instruction.",
-    tips: ["This is about learning, not performance", "Be specific with guidance", "Positive feedback helps", "Try things you've never mentioned before"],
+    howTo: "One partner places the other's hand where it feels good, showing pressure, speed, and location. Then switch. No assumptions - just a clear little signal.",
+    tips: ["This is about presence, not pressure", "Clear signals can feel sweet", "A warm yes helps", "Try things you have not mentioned before"],
     pairsWellWith: ["Face-Off", "The Spider", "The Lotus"]
   },
   {
@@ -244,7 +244,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     vibe: "Using vibrations on unexpected places",
     description: "Using a vibrator or massager on non-obvious body parts.",
     howTo: "Use a vibrator on unexpected areas - neck, inner arms, feet, scalp, back of knees. Explore what feels good where.",
-    tips: ["Start on low settings", "Explore non-obvious areas", "Back of neck feels amazing", "Let them guide you to favorite spots"],
+    tips: ["Start on low settings", "Explore non-obvious areas", "Back of neck feels amazing", "Let them show you favorite spots"],
     pairsWellWith: ["Exploration", "Toys", "Building arousal"]
   },
   {
@@ -256,7 +256,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     vibe: "Nails lightly dragging on skin",
     description: "Using fingernails to lightly scratch and drag across skin.",
     howTo: "With light pressure, drag fingernails across back, arms, thighs. Vary patterns. Watch for their response to know how much pressure.",
-    tips: ["Light pressure - don't break skin", "Back responds well", "Watch their reaction for pressure guidance", "Alternating with soft touch amplifies it"],
+    tips: ["Light pressure - don't break skin", "Back responds well", "Let their reaction shape the pressure", "Alternating with soft touch amplifies it"],
     pairsWellWith: ["Passionate positions", "During sex", "Back scratching"]
   },
   {
@@ -465,9 +465,9 @@ export const foreplayIdeas: ForeplayIdea[] = [
     category: "Connection",
     mood: "dynamic",
     duration: "Medium",
-    vibe: "Letting rhythm guide you",
+    vibe: "Letting rhythm move you",
     description: "Put on music and move together - not formal dancing, just letting bodies respond to rhythm.",
-    howTo: "Choose music with a good beat. Move together however feels natural. Let the rhythm guide your bodies. Transition from dancing to touching.",
+    howTo: "Choose music with a good beat. Move together however feels natural. Let the rhythm move your bodies. Transition from dancing to touching.",
     tips: ["Choose music you both like", "No 'right way' to move", "Let hands explore while moving", "Different tempos create different moods"],
     pairsWellWith: ["Standing positions", "The Chairman", "Cowgirl"]
   },
@@ -555,7 +555,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     duration: "Extended",
     vibe: "Curated sounds for the mood",
     description: "Create and play a playlist specifically for intimacy.",
-    howTo: "Create a playlist of songs that put you both in the mood. Let it play in the background. Let the music guide the rhythm and mood.",
+    howTo: "Create a playlist of songs that put you both in the mood. Let it play in the background. Let the music shape the rhythm and mood.",
     tips: ["Create it together or surprise them", "Consider the tempo arc", "Long enough to not repeat", "Volume low enough to talk"],
     pairsWellWith: ["Any position", "Dancing first", "Setting the mood"]
   },
@@ -654,7 +654,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     mood: "blossoming",
     duration: "Extended",
     vibe: "Charting every hidden pleasure point",
-    description: "Systematically explore your partner's entire body using a single fingertip, noting every spot that earns a response.",
+    description: "Explore your partner's body with one fingertip, lingering on every spot that earns a response.",
     howTo: "Starting at the crown of the head, glide one fingertip down the body in a slow, intentional path. When your partner reacts - a gasp, a shift, goosebumps - linger there. Mentally 'map' every responsive zone for future visits.",
     tips: ["Use only one fingertip for precision", "Announce each new area softly", "Revisit their favorite spots at the end", "Keep a mental tally and share notes afterward"],
     pairsWellWith: ["Mutual Exploration", "Feather Touch", "The Lotus"]
@@ -744,7 +744,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     vibe: "A shiver-inducing surprise",
     description: "Use a handheld fan or gentle blowing to send cool air across your partner's skin, especially after warming them up.",
     howTo: "After kissing or warming an area with your hands, blow a stream of cool air across the wet or warm skin. Use a small fan for a steadier breeze. Focus on the neck, stomach, and inner arms.",
-    tips: ["Works best on slightly damp skin", "Alternate between warm breath and cool air", "A folding fan adds a playful prop element", "Watch for goosebumps as your guide"],
+    tips: ["Works best on slightly damp skin", "Alternate between warm breath and cool air", "A folding fan adds a playful prop element", "Goosebumps can show you where to linger"],
     pairsWellWith: ["Ice & Heat Play", "Temperature Contrast", "Feather Touch"]
   },
   {
@@ -947,7 +947,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     duration: "Extended",
     vibe: "Classic warmth and slow indulgence",
     description: "Build a fire - real or electric - pour wine, and let the flickering warmth set the pace for a slow, indulgent evening.",
-    howTo: "Light a fireplace or set up an electric fire. Arrange blankets and pillows on the floor nearby. Pour two glasses of wine. Lie together in the glow and let the warmth, light, and taste guide you into each other.",
+    howTo: "Light a fireplace or set up an electric fire. Arrange blankets and pillows on the floor nearby. Pour two glasses of wine. Lie together in the glow and let the warmth, light, and taste pull you closer.",
     tips: ["Keep the fire as the only light source", "A sheepskin rug elevates the experience", "Sip slowly - this is about savoring", "Feed each other small bites between kisses"],
     pairsWellWith: ["Candlelit Room", "Slow Dancing", "Living Room Picnic"]
   },
@@ -987,7 +987,7 @@ export const foreplayIdeas: ForeplayIdea[] = [
     duration: "Quick",
     vibe: "No talking, just attention",
     description: "Set a short timer and see how much you can communicate with touch, eye contact, and expression alone - no words allowed.",
-    howTo: "Set a timer for three to five minutes. During that time, you cannot speak. Use only touch, kisses, body language, and eye contact to guide each other and build the mood.",
+    howTo: "Set a timer for three to five minutes. During that time, you cannot speak. Use only touch, kisses, body language, and eye contact to find each other and build the mood.",
     tips: ["The silence makes every reaction feel bigger", "A grin counts as communication", "Eye contact does a lot of work here", "A short timer keeps it playful instead of awkward"],
     pairsWellWith: ["The Staring Contest", "The Mirror Exercise", "Anticipation Texts"]
   },
@@ -997,10 +997,10 @@ export const foreplayIdeas: ForeplayIdea[] = [
     category: "Connection",
     mood: "blossoming",
     duration: "Medium",
-    vibe: "Teaching each other through pace",
-    description: "One partner guides the other toward the exact slower pace that feels best, turning feedback into something intimate instead of clinical.",
-    howTo: "Choose one kind of touch or kiss. The receiving partner gives only gentle pace guidance: slower, stay, softer, more. The giving partner adjusts in real time. Then switch roles and repeat.",
-    tips: ["Keep the guidance short and warm", "This is about learning, not correcting", "Going slower than you think usually helps", "A single repeated touch works better than constant variety"],
+    vibe: "Finding the pace together",
+    description: "One partner helps the other find the slower pace that feels best, turning tiny cues into something intimate and easy.",
+    howTo: "Choose one kind of touch or kiss. The receiving partner uses only gentle pace words: slower, stay, softer, more. The giving partner follows the moment. Then switch roles and repeat.",
+    tips: ["Keep the cues short and warm", "This is about closeness, not correction", "A slower pace can feel delicious", "A single repeated touch can beat constant variety"],
     pairsWellWith: ["Mutual Exploration", "The Roadmap", "Synchronized Breathing"]
   },
   {
@@ -1053,14 +1053,14 @@ export const foreplayIdeas: ForeplayIdea[] = [
   },
   {
     id: 184,
-    name: "Guided Hands",
+    name: "Warm Hands",
     category: "Connection",
     mood: "blossoming",
     duration: "Medium",
-    vibe: "Teaching each other through touch instead of explanation",
-    description: "One partner places their hands over the other's and quietly guides the exact pressure, pace, and pathway that feels best.",
-    howTo: "Sit or lie close together. The receiving partner places their hands over the giver's and guides them slowly - across the waist, inner thighs, chest, neck, or wherever the moment leads. After a few minutes, switch roles.",
-    tips: ["Guide warmly, not critically", "Small adjustments are enough", "Switch before anyone feels self-conscious", "Wonderful for building trust and clarity"],
+    vibe: "Finding each other through touch instead of explanation",
+    description: "One partner places their hands over the other's and quietly shows the pressure, pace, and pathway that feels best.",
+    howTo: "Sit or lie close together. The receiving partner places their hands over the giver's and moves with them slowly - across the waist, inner thighs, chest, neck, or wherever the moment leads. After a few minutes, switch roles.",
+    tips: ["Keep it warm, not critical", "Small adjustments are enough", "Switch before anyone feels self-conscious", "Wonderful for building trust and clarity"],
     pairsWellWith: ["Show Me Slower", "Mutual Exploration", "The Roadmap"]
   },
   {

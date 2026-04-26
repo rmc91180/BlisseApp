@@ -24,7 +24,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     vibe: "Taking all the time in the world",
     description: "Extremely slow, deliberate oral attention that builds arousal in waves and keeps both of you locked in.",
     howTo: "Start with kisses on inner thighs. Take at least 5 minutes before reaching the most sensitive areas. Use flat, slow tongue movements. No rushing.",
-    tips: ["Set aside at least 20 minutes", "Tease the surrounding areas first", "Vary pressure but keep it slow", "Let her guide you with sounds"],
+    tips: ["Set aside at least 20 minutes", "Tease the surrounding areas first", "Vary pressure but keep it slow", "Let her sounds shape the pace"],
     pairsWellWith: ["The Slow Melt", "Cowgirl", "The Lotus"]
   },
   {
@@ -48,7 +48,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     vibe: "She sits, he worships",
     description: "She sits on the edge of a chair or bed while he kneels to please her, with full control in her hands.",
     howTo: "She sits comfortably on a chair or bed edge. He kneels between her legs. She can lean back, grab his hair, or direct his movements.",
-    tips: ["Use pillows for his knees", "She can use hands to guide", "The chair height matters", "She sets the pace and pressure"],
+    tips: ["Use pillows for his knees", "She can use hands to show what feels good", "The chair height matters", "She sets the pace and pressure"],
     pairsWellWith: ["The Chairman", "Cowgirl", "Commanding moods"]
   },
   {
@@ -81,10 +81,10 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     category: "For Her",
     mood: "blossoming",
     giver: "him",
-    vibe: "Following her guidance exactly",
-    description: "She provides explicit verbal direction on exactly what feels good - he follows precisely.",
-    howTo: "She tells him exactly what to do - location, pressure, speed. He follows instructions without improvising. This is about her pleasure.",
-    tips: ["She should be specific: 'higher', 'slower', 'more pressure'", "No ego - follow the roadmap", "This is incredibly intimate", "Great for learning her body"],
+    vibe: "Following her cues exactly",
+    description: "She names exactly what feels good, and he stays with her cues.",
+    howTo: "She shares what feels good - location, pressure, speed. He stays with that without improvising. This is about her pleasure.",
+    tips: ["Specific can be sexy: 'higher', 'slower', 'more pressure'", "No ego - just the roadmap", "This is incredibly intimate", "A sweet way to know her body"],
     pairsWellWith: ["Mutual Exploration", "Face-Off", "Communication-focused intimacy"]
   },
   {
@@ -132,7 +132,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     vibe: "She takes position on top",
     description: "She sits on his face, giving her control over pressure and position.",
     howTo: "He lies on his back. She straddles his face, lowering herself to his mouth. She controls the pressure and movement.",
-    tips: ["She can control the pressure", "He can hold her hips to guide", "She can face either direction", "Very empowering for her"],
+    tips: ["She can control the pressure", "He can hold her hips for rhythm", "She can face either direction", "Very empowering for her"],
     pairsWellWith: ["Cowgirl", "Her control", "Commanding positions"]
   },
   {
@@ -472,7 +472,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     vibe: "Enveloping warmth and soft intention",
     description: "Taking him into the warmth of your mouth slowly and holding him there — focusing on warmth, softness, and gentle suction rather than movement.",
     howTo: "Take him in slowly and simply hold him in your warm mouth without moving. Apply gentle suction. Let him feel the warmth envelope him. After a long pause, begin very slow movements, keeping everything soft and unhurried.",
-    tips: ["The stillness at the start is surprisingly powerful", "Sip warm water beforehand for extra warmth", "Hum softly while holding still for added sensation", "This is about presence, not performance"],
+    tips: ["The stillness at the start is surprisingly powerful", "Sip warm water beforehand for extra warmth", "Hum softly while holding still for added sensation", "This is about presence, not proving anything"],
     pairsWellWith: ["Morning intimacy", "Slow Mo", "Deep connection"]
   },
   {
@@ -548,7 +548,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     vibe: "Heightened senses through darkness",
     description: "One partner is blindfolded while receiving oral, amplifying every sensation. Then the blindfold trades to the other partner for their turn.",
     howTo: "Blindfold one partner and give them oral — without sight, every touch is magnified. After their turn, trade the blindfold. The previously blindfolded partner now gives while the other wears it. Both experience the heightened vulnerability of receiving without seeing.",
-    tips: ["A silk scarf or sleep mask works perfectly", "The blindfolded person should verbalize what they feel — it guides the giver", "Surprise them with unexpected pauses and changes in technique", "The anticipation of not knowing what comes next is half the thrill"],
+    tips: ["A silk scarf or sleep mask works perfectly", "The blindfolded person can say what they feel so the giver can stay close", "Surprise them with unexpected pauses and changes in technique", "The anticipation of not knowing what comes next is half the thrill"],
     pairsWellWith: ["Sensory play", "Trust building", "The Edge Player"]
   },
   {
@@ -558,9 +558,9 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     mood: "unified",
     giver: "both",
     vibe: "Exploring every direction together",
-    description: "A guided exploration game where each partner directs the other using compass directions — north, south, east, west — to navigate exactly where attention should go.",
+    description: "A playful exploration game where each partner uses compass directions — north, south, east, west — to show where attention feels best.",
     howTo: "Take turns giving oral while the receiver calls out compass directions: 'north' for higher, 'south' for lower, 'east' and 'west' for lateral movement. Add 'stay' when the spot is perfect. It turns communication into a playful, intuitive game.",
-    tips: ["This gamifies communication without making it clinical", "Add 'deeper' and 'softer' for pressure guidance", "'Stay' is the most important direction — honor it", "Switch roles so both learn to navigate each other's landscape"],
+    tips: ["This keeps communication playful and light", "Add 'deeper' and 'softer' for pressure cues", "'Stay' is the most important direction — honor it", "Switch roles so both can explore each other's landscape"],
     pairsWellWith: ["The Roadmap", "Communication", "Mutual Exploration"]
   },
   {
@@ -693,10 +693,10 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     category: "For Him",
     mood: "blossoming",
     giver: "her",
-    vibe: "Seated comfort with easy guidance",
-    description: "He sits back comfortably while she stays close enough to read every reaction and let his guidance feel natural, not clinical.",
-    howTo: "Seat him on the edge of the bed, couch, or a stable chair with his feet planted. She settles in close and keeps one hand free so he can guide with taps, pressure, or a hand on her shoulder without breaking the rhythm.",
-    tips: ["A seated receiver is easier to read", "Light guidance is usually enough", "This is great for learning what works quickly", "Keep eye contact in the pauses"],
+    vibe: "Seated comfort with easy cues",
+    description: "He sits back comfortably while she stays close enough to read every reaction and let his cues feel natural.",
+    howTo: "Seat him on the edge of the bed, couch, or a stable chair with his feet planted. She settles in close and keeps one hand free so he can cue with taps, pressure, or a hand on her shoulder without breaking the rhythm.",
+    tips: ["A seated receiver is easier to read", "Light cues are usually enough", "This can make the rhythm easy to find", "Keep eye contact in the pauses"],
     pairsWellWith: ["The Chair Lean", "The Twist", "Learning together"]
   },
   {
