@@ -15,6 +15,7 @@ import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
 import type { ContentType } from '@/types/app';
+import type { AppLanguage } from '@/i18n/translations';
 
 type Recommendation = {
   type: ContentType;
@@ -55,47 +56,39 @@ const resolveMoodIdFromCatalog = (
   return rolePlayScenarios.find((e) => e.id === itemId)?.mood;
 };
 
-const resolveSuggestionWhy = (recommendation: Recommendation): string => {
-  const lines = (() => {
-    switch (recommendation.type) {
-      case 'foreplay':
-        return [
-          'A good way to ease into things.',
-          'Soft, close, and easy to start.',
-          'Nice and unhurried.',
-        ];
-      case 'oral':
-        return [
-          'This one usually lands really well.',
-          'Comfortable, familiar, and fun.',
-          'A good rhythm builder.',
-        ];
-      case 'massage':
-        return [
-          'Perfect for slowing things down.',
-          'Helps you both settle in.',
-          'Very grounding tonight.',
-        ];
-      case 'position':
-        return [
-          'Fits the energy you picked.',
-          'Easy to slip into.',
-          'Feels natural here.',
-        ];
-      case 'roleplay':
-        return [
-          'A little playful, a little bold.',
-          'Light fun with a spark.',
-          'Just enough edge.',
-        ];
-      default:
-        return [
-          'Feels right for this mood.',
-          'This one tends to click.',
-          'A good fit for tonight.',
-        ];
-    }
-  })();
+const SUGGESTION_WHY: Record<AppLanguage, Record<ContentType, string[]>> = {
+  en: {
+    foreplay: ['A good way to ease into things.', 'Soft, close, and easy to start.', 'Nice and unhurried.'],
+    oral: ['This one usually lands really well.', 'Comfortable, familiar, and fun.', 'A good rhythm builder.'],
+    massage: ['Perfect for slowing things down.', 'Helps you both settle in.', 'Very grounding tonight.'],
+    position: ['Fits the energy you picked.', 'Easy to slip into.', 'Feels natural here.'],
+    roleplay: ['A little playful, a little bold.', 'Light fun with a spark.', 'Just enough edge.'],
+  },
+  es: {
+    foreplay: ['Una forma linda de entrar en clima.', 'Suave, cerca y fácil de empezar.', 'Rico y sin apuro.'],
+    oral: ['Esto suele sentirse muy bien.', 'Cómodo, familiar y divertido.', 'Buen ritmo para encenderse.'],
+    massage: ['Perfecto para bajar el ritmo.', 'Los ayuda a acomodarse juntos.', 'Muy aterrizado para esta noche.'],
+    position: ['Va con la energía que eligieron.', 'Fácil de entrar.', 'Se siente natural acá.'],
+    roleplay: ['Un poco juguetón, un poco atrevido.', 'Diversión ligera con chispa.', 'El borde justo.'],
+  },
+  pt: {
+    foreplay: ['Um jeito gostoso de entrar no clima.', 'Suave, perto e fácil de começar.', 'Bom e sem pressa.'],
+    oral: ['Esse costuma bater muito bem.', 'Confortável, familiar e divertido.', 'Um bom ritmo pra aquecer.'],
+    massage: ['Perfeito pra desacelerar.', 'Ajuda vocês a chegarem juntos.', 'Bem gostoso pra hoje.'],
+    position: ['Combina com a energia que vocês escolheram.', 'Fácil de entrar.', 'Fica natural aqui.'],
+    roleplay: ['Um pouco brincalhão, um pouco ousado.', 'Diversão leve com faísca.', 'Na medida certa.'],
+  },
+  hi: {
+    foreplay: ['मूड में आने का अच्छा तरीका।', 'नरम, करीब और आसान शुरुआत।', 'आराम से, बिना जल्दी।'],
+    oral: ['ये अक्सर अच्छा लगता है।', 'Comfortable, familiar और fun।', 'गर्मी बनाने की अच्छी लय।'],
+    massage: ['धीमा होने के लिए perfect।', 'आप दोनों को साथ settle होने देता है।', 'आज रात के लिए बहुत grounded।'],
+    position: ['आपने जो energy चुनी, उससे match करता है।', 'इसमें आना आसान है।', 'यहां natural लगता है।'],
+    roleplay: ['थोड़ा playful, थोड़ा bold।', 'हल्का मज़ा, थोड़ी spark।', 'बस सही edge।'],
+  },
+};
+
+const resolveSuggestionWhy = (recommendation: Recommendation, language: AppLanguage): string => {
+  const lines = SUGGESTION_WHY[language]?.[recommendation.type] || SUGGESTION_WHY.en[recommendation.type];
 
   const index =
     typeof recommendation.item?.id === 'number'
@@ -202,7 +195,7 @@ export function SmartSuggestionCard({
             style={[styles.reason, { color: themeColors.primary[400] }]}
             numberOfLines={2}
           >
-            🌸 {resolveSuggestionWhy(recommendation)}
+            🌸 {resolveSuggestionWhy(recommendation, language)}
           </Text>
         </View>
 

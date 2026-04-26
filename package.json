@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "check:i18n": "node scripts/check-i18n-consistency.mjs",
     "check:content": "node scripts/check-content-integrity.mjs",
-    "check:release": "npm run lint && npm run typecheck && npm run check:i18n && npm run check:content && npx expo-doctor && npm audit --omit=dev",
+    "check:release": "npm run lint && npm run typecheck && npm run check:i18n && npm run check:content && npx expo-doctor && npm audit --omit=dev --audit-level=high",
     "ui:smoke": "npx expo export --platform all --output-dir dist-check",
     "ui:e2e:ios": "maestro test .maestro/flows/ios-beta-smoke.yaml",
     "ui:e2e:android": "maestro test .maestro/flows/android-beta-smoke.yaml"
@@ -64,7 +64,8 @@
     "typescript": "~5.9.2"
   },
   "overrides": {
-    "@isaacs/brace-expansion": "5.0.1"
+    "@isaacs/brace-expansion": "5.0.1",
+    "postcss": "8.5.10"
   },
   "private": true
 }

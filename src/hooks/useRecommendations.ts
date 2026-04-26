@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useStore } from '@/store/useStore';
 import { buildMoodBalancedSuggestions } from '@/services/moodSuggestions';
+import { useI18n } from '@/hooks/useI18n';
 import type { ContentType } from '@/types/app';
 
 type Recommendation = {
@@ -51,13 +52,14 @@ export function useRecommendations(): { recommendations: Recommendation[]; isFir
   const learningPreferences = useStore((state) => state.learningPreferences);
   const interactionCount = useStore((state) => state.interactionHistory.length);
   const currentMood = useStore((state) => state.currentMood);
+  const { language } = useI18n();
   const isFirstTime = interactionCount < 3;
 
   const recommendations = useMemo<Recommendation[]>(() => {
     if (!currentMood) return [];
 
     const source = useStore.getState().getSmartRecommendations(80);
-    const next = buildMoodBalancedSuggestions(currentMood, source, 4);
+    const next = buildMoodBalancedSuggestions(currentMood, source, 4, undefined, language);
     if (next.length > 0) {
       return next.map((entry) => ({
         type: entry.type as ContentType,
@@ -71,7 +73,7 @@ export function useRecommendations(): { recommendations: Recommendation[]; isFir
       item: entry.item,
       reason: entry.reason,
     }));
-  }, [currentMood, learningPreferences]);
+  }, [currentMood, language, learningPreferences]);
 
   return { recommendations, isFirstTime };
 }

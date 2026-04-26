@@ -10,10 +10,30 @@ export type VoiceCopyPack = {
     primaryCTA: VoiceLineSet;
     secondaryCTA: VoiceLineSet;
   };
+  origin: {
+    subtitle: VoiceLine;
+    whyTitle: VoiceLine;
+    whyBody: VoiceLine;
+    forTitle: VoiceLine;
+    forBody: VoiceLine;
+    howTitle: VoiceLine;
+    howBody: VoiceLine;
+    cta: VoiceLine;
+    backCta: VoiceLine;
+  };
   home: {
     header: VoiceLineSet;
     helper: VoiceLineSet;
     pickedForTonight: VoiceLine;
+    vibeQuestion: VoiceLine;
+    setTonightVibe: VoiceLine;
+    vibeHelper: VoiceLine;
+    exploreFreely: VoiceLine;
+    suggestionsExplainerSelected: VoiceLine;
+    suggestionsExplainerEmpty: VoiceLine;
+    whyWeMadeThis: VoiceLine;
+    quietWinsHidden: VoiceLine;
+    quietWinsShown: VoiceLine;
     moods: {
       easy: VoiceLineSet;
       slow: VoiceLineSet;
@@ -118,6 +138,12 @@ export type VoiceCopyPack = {
   moodCheck: {
     header: VoiceLine;
     subheader: VoiceLine;
+    helper: VoiceLine;
+    refineTitle: VoiceLine;
+    energySoft: VoiceLine;
+    energyPlayful: VoiceLine;
+    paceShort: VoiceLine;
+    paceUnfold: VoiceLine;
     cta: VoiceLine;
     ctaA11y: VoiceLine;
   };
@@ -236,10 +262,30 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
         primaryCTA: ['Comenzar', 'Vamos', 'Entrar'],
         secondaryCTA: ['Ya estuve aquí', 'De vuelta'],
       },
+      origin: {
+        subtitle: 'Una forma más suave de encontrar la vibra juntos.',
+        whyTitle: 'Por qué lo hicimos',
+        whyBody: 'Queríamos algo que una pareja pudiera abrir sin sentirse observada, dirigida ni puesta a prueba.',
+        forTitle: 'Para qué sirve',
+        forBody: 'Blisse es para jugar, acercarse, coquetear y prender una chispa sin tener que hablarlo todo primero.',
+        howTitle: 'Cómo usarlo',
+        howBody: 'Pongan la vibra que se sienta real. Tomen una idea, salten otra, cambien de opinión cuando quieran. Su ritmo es el ritmo correcto.',
+        cta: 'Empecemos',
+        backCta: 'Volver a Blisse',
+      },
       home: {
         header: ['Vibra de esta noche', 'Pongan el mood', 'Su tipo de noche'],
         helper: ['Sin reglas. Solo elijan.', 'Vayan con lo que se siente bien.', 'Sin presión.'],
-        pickedForTonight: '✨ Hecho para esta noche',
+        pickedForTonight: 'Sugerencias para esta noche',
+        vibeQuestion: '¿Qué quieren hacer ahora?',
+        setTonightVibe: 'Pongan la vibra de esta noche',
+        vibeHelper: 'Pongan primero la vibra de esta noche. Lo demás puede ir fácil.',
+        exploreFreely: 'Explorar libremente',
+        suggestionsExplainerSelected: 'Todo lo de abajo va con esta vibra.',
+        suggestionsExplainerEmpty: 'Pongan una vibra primero; lo demás sigue.',
+        whyWeMadeThis: 'Por qué hicimos esto',
+        quietWinsHidden: 'Pequeños momentos y chispas guardadas',
+        quietWinsShown: 'Ocultar los pequeños momentos',
         moods: {
           easy: ['Fácil y cerca', 'Sin esfuerzo', 'Solo relajarse'],
           slow: ['Lento y rico', 'Sin apuro', 'Suavecito'],
@@ -344,6 +390,12 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
       moodCheck: {
         header: 'Así va esta noche',
         subheader: 'Elijan su energía. Todo lo demás fluye.',
+        helper: 'Elijan lo que se siente real. Pueden cambiar de idea cuando quieran.',
+        refineTitle: '¿Un ajuste chiquito?',
+        energySoft: 'Energía suave',
+        energyPlayful: 'Más juguetón',
+        paceShort: 'Corto y rico',
+        paceUnfold: 'Que se despliegue',
         cta: 'Vamos',
         ctaA11y: 'Armar sesión',
       },
@@ -513,10 +565,30 @@ Write the final note in Spanish.`,
         primaryCTA: ['Começar', 'Vamos', 'Entrar'],
         secondaryCTA: ['Já estive aqui', 'De volta'],
       },
+      origin: {
+        subtitle: 'Um jeito mais leve de encontrar a vibe juntos.',
+        whyTitle: 'Por que criamos isso',
+        whyBody: 'Queríamos algo que um casal pudesse abrir sem se sentir observado, conduzido ou colocado à prova.',
+        forTitle: 'Pra que serve',
+        forBody: 'Blisse é pra brincar, chegar perto, flertar e acender uma faísca sem precisar conversar tudo antes.',
+        howTitle: 'Como usar',
+        howBody: 'Escolham a vibe que parece verdadeira. Peguem uma ideia, pulem outra, mudem de ideia quando quiserem. O ritmo certo é o de vocês.',
+        cta: 'Vamos começar',
+        backCta: 'Voltar ao Blisse',
+      },
       home: {
         header: ['Vibe da noite', 'Definam o clima', 'Noite com a cara de vocês'],
         helper: ['Sem regra. Só escolham.', 'Vão no que bate gostoso.', 'Sem pressão.'],
-        pickedForTonight: '✨ Feito pra hoje',
+        pickedForTonight: 'Sugestões pra hoje',
+        vibeQuestion: 'O que vocês querem fazer agora?',
+        setTonightVibe: 'Definir a vibe da noite',
+        vibeHelper: 'Definam primeiro a vibe da noite. O resto pode ficar leve.',
+        exploreFreely: 'Explorar livremente',
+        suggestionsExplainerSelected: 'Tudo abaixo combina com essa vibe.',
+        suggestionsExplainerEmpty: 'Escolham uma vibe primeiro; o resto acompanha.',
+        whyWeMadeThis: 'Por que criamos isso',
+        quietWinsHidden: 'Pequenas faíscas guardadas',
+        quietWinsShown: 'Esconder as pequenas faíscas',
         moods: {
           easy: ['Leve e perto', 'Sem esforço', 'Só relaxar'],
           slow: ['Devagar e quente', 'Sem correria', 'No ritmo certo'],
@@ -621,6 +693,12 @@ Write the final note in Spanish.`,
       moodCheck: {
         header: 'A noite começa aqui',
         subheader: 'Escolham a energia. O resto encaixa.',
+        helper: 'Escolham o que parece verdadeiro. Vocês podem mudar de ideia quando quiserem.',
+        refineTitle: 'Um ajuste rapidinho?',
+        energySoft: 'Energia suave',
+        energyPlayful: 'Mais brincalhão',
+        paceShort: 'Curto e gostoso',
+        paceUnfold: 'Deixar acontecer',
         cta: 'Bora',
         ctaA11y: 'Montar sessão',
       },
@@ -790,10 +868,30 @@ Write the final note in Brazilian Portuguese.`,
         primaryCTA: ['शुरू करें', 'चलें', 'अभी शुरू'],
         secondaryCTA: ['मैं पहले से यहां हूं', 'फिर से आए हैं'],
       },
+      origin: {
+        subtitle: 'साथ में आज की vibe ढूंढने का नरम तरीका।',
+        whyTitle: 'हमने इसे क्यों बनाया',
+        whyBody: 'हम चाहते थे कि कपल्स इसे खोलें और उन्हें analyze, guide या test जैसा महसूस न हो।',
+        forTitle: 'यह किसलिए है',
+        forBody: 'Blisse खेल, नज़दीकी, flirt और उस छोटी चिंगारी के लिए है, बिना पहले सब कुछ समझाने की ज़रूरत के।',
+        howTitle: 'इसे कैसे इस्तेमाल करें',
+        howBody: 'जो vibe सच लगे उसे चुनें। एक idea लें, दूसरा छोड़ दें, जब चाहें मन बदलें। आपकी pace ही सही pace है।',
+        cta: 'चलो शुरू करें',
+        backCta: 'Blisse पर वापस',
+      },
       home: {
         header: ['आज रात की vibe', 'मूड सेट करें', 'आज की रात आपकी तरह'],
         helper: ['कोई नियम नहीं। बस चुनें।', 'जो सही लगे वही चुनें।', 'कोई दबाव नहीं।'],
-        pickedForTonight: '✨ आज रात के लिए चुना गया',
+        pickedForTonight: 'आज रात की suggestions',
+        vibeQuestion: 'अभी आप क्या करना चाहते हैं?',
+        setTonightVibe: 'आज रात की vibe सेट करें',
+        vibeHelper: 'पहले आज रात की vibe सेट करें। बाकी सब आसान रह सकता है।',
+        exploreFreely: 'आराम से explore करें',
+        suggestionsExplainerSelected: 'नीचे सब इसी vibe से match करता है।',
+        suggestionsExplainerEmpty: 'पहले vibe चुनें; बाकी सब अपने-आप flow करेगा।',
+        whyWeMadeThis: 'हमने यह क्यों बनाया',
+        quietWinsHidden: 'छोटी sparks और saved moments',
+        quietWinsShown: 'छोटी sparks छुपाएं',
         moods: {
           easy: ['आसान और करीब', 'बिना मेहनत', 'बस रिलैक्स'],
           slow: ['धीमा और गहरा', 'आराम से', 'बहुत नरम'],
@@ -898,6 +996,12 @@ Write the final note in Brazilian Portuguese.`,
       moodCheck: {
         header: 'आज रात का मूड सेट करें',
         subheader: 'अपनी ऊर्जा चुनें। बाकी खुद फ्लो करेगा।',
+        helper: 'जो सच लगे वही चुनें। जब चाहें मन बदल सकते हैं।',
+        refineTitle: 'एक छोटा सा tune-up?',
+        energySoft: 'नरम energy',
+        energyPlayful: 'थोड़ा playful',
+        paceShort: 'छोटा और sweet',
+        paceUnfold: 'धीरे-धीरे खुलने दें',
         cta: 'चलें',
         ctaA11y: 'सेशन बनाएं',
       },
@@ -1066,10 +1170,30 @@ Write the final note in Hindi.`,
       primaryCTA: ['Get started', 'Let us go', 'Jump in'],
       secondaryCTA: ['I have been here before', 'Back again'],
     },
+    origin: {
+      subtitle: 'A softer way to find your mood together.',
+      whyTitle: 'Why we built this',
+      whyBody: 'We wanted something couples could open without feeling studied, managed, or put on the spot.',
+      forTitle: 'What it is for',
+      forBody: 'Blisse is here for play, closeness, flirting, and those nights when you want a little spark but not a whole conversation first.',
+      howTitle: 'How to use it',
+      howBody: 'Pick the vibe that feels true. Take one idea, skip another, change your mind whenever. Your pace is the right pace.',
+      cta: 'Let us begin',
+      backCta: 'Back to Blisse',
+    },
     home: {
       header: ['Tonight\'s vibe', 'Set the mood', 'Your kind of night'],
       helper: ['No rules. Just pick.', 'Go with what feels right.', 'No pressure.'],
       pickedForTonight: 'Tonight\'s suggestions',
+      vibeQuestion: 'What do you want to do right now?',
+      setTonightVibe: 'Set tonight\'s vibe',
+      vibeHelper: 'Set tonight\'s vibe first. The rest can stay easy.',
+      exploreFreely: 'Explore freely',
+      suggestionsExplainerSelected: 'Everything below is picked to match this vibe.',
+      suggestionsExplainerEmpty: 'Pick a vibe first — everything else follows.',
+      whyWeMadeThis: 'Why we made this',
+      quietWinsHidden: 'Little wins and saved sparks',
+      quietWinsShown: 'Hide the little wins',
       moods: {
         easy: ['Easy and close', 'No effort', 'Just relax'],
         slow: ['Slow burn', 'Take it slow', 'Nice and easy'],
@@ -1174,6 +1298,12 @@ Write the final note in Hindi.`,
     moodCheck: {
       header: 'Tonight\'s vibe',
       subheader: 'Set tonight\'s vibe. We will keep it easy from there.',
+      helper: 'Pick what feels true. You can change your mind anytime.',
+      refineTitle: 'A tiny tune-up?',
+      energySoft: 'Soft energy',
+      energyPlayful: 'More playful',
+      paceShort: 'Short and sweet',
+      paceUnfold: 'Let it unfold',
       cta: 'Let\'s go',
       ctaA11y: 'Let us go',
     },

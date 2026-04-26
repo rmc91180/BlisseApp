@@ -129,7 +129,7 @@ export function TonightSessionScreen({
 
   const generateSession = useCallback((): SessionStep[] => {
     const recommendations = getSmartRecommendations(80);
-    const balanced = buildMoodSessionSteps(selectedMood, recommendations, refinement);
+    const balanced = buildMoodSessionSteps(selectedMood, recommendations, refinement, language);
     return balanced.slice(0, 4).map((suggestion, index) => ({
       number: (index + 1) as SessionStep['number'],
       label: index === 0 ? copy.start : index === balanced.length - 1 ? copy.finish : copy.move,
@@ -141,6 +141,7 @@ export function TonightSessionScreen({
     copy.move,
     copy.start,
     getSmartRecommendations,
+    language,
     refinement,
     selectedMood,
   ]);

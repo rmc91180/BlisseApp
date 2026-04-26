@@ -947,28 +947,28 @@ function OriginScreen({ navigation, route }: any) {
       <View style={styles.originHero}>
         <Text style={styles.originEmoji}>🌸</Text>
         <Text style={styles.titleLarge}>{voice.labels.brandName}</Text>
-        <Text style={styles.originSubtitle}>A softer way to find your mood together.</Text>
+        <Text style={styles.originSubtitle}>{voice.origin.subtitle}</Text>
       </View>
       <View style={styles.originSection}>
-        <Text style={styles.originSectionTitle}>Why we built this</Text>
+        <Text style={styles.originSectionTitle}>{voice.origin.whyTitle}</Text>
         <Text style={styles.originBody}>
-          We wanted something couples could open without feeling studied, managed, or put on the spot.
+          {voice.origin.whyBody}
         </Text>
       </View>
       <View style={styles.originSection}>
-        <Text style={styles.originSectionTitle}>What it is for</Text>
+        <Text style={styles.originSectionTitle}>{voice.origin.forTitle}</Text>
         <Text style={styles.originBody}>
-          Blisse is here for play, closeness, flirting, and those nights when you want a little spark but not a whole conversation first.
+          {voice.origin.forBody}
         </Text>
       </View>
       <View style={styles.originSection}>
-        <Text style={styles.originSectionTitle}>How to use it</Text>
+        <Text style={styles.originSectionTitle}>{voice.origin.howTitle}</Text>
         <Text style={styles.originBody}>
-          Pick the vibe that feels true. Take one idea, skip another, change your mind whenever. Your pace is the right pace.
+          {voice.origin.howBody}
         </Text>
       </View>
       <View style={styles.buttons}>
-        <PrimaryButton title={fromSettings ? 'Back to Blisse' : 'Let us begin'} onPress={handleContinue} />
+        <PrimaryButton title={fromSettings ? voice.origin.backCta : voice.origin.cta} onPress={handleContinue} />
       </View>
     </ScreenWrapper>
   );
@@ -4092,7 +4092,7 @@ function HomeScreen({
           onPress={() => navigation.navigate('Origin', { fromSettings: true })}
           accessibilityRole="button"
         >
-          <Text style={styles.originLinkText}>Why we made this</Text>
+          <Text style={styles.originLinkText}>{voice.home.whyWeMadeThis}</Text>
         </TouchableOpacity>
       </View>
 
@@ -4113,10 +4113,10 @@ function HomeScreen({
 
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
         <View style={styles.vibePanel}>
-          <Text style={styles.vibePanelEyebrow}>What do you want to do right now?</Text>
-          <Text style={styles.vibePanelTitle}>Set tonight's vibe</Text>
+          <Text style={styles.vibePanelEyebrow}>{voice.home.vibeQuestion}</Text>
+          <Text style={styles.vibePanelTitle}>{voice.home.setTonightVibe}</Text>
           <Text style={styles.vibePanelBody}>
-            Set tonight's vibe first. The rest can stay easy.
+            {voice.home.vibeHelper}
           </Text>
           <View style={styles.vibeGrid}>
             {MOOD_PLAYLISTS.map((mood) => {
@@ -4148,7 +4148,7 @@ function HomeScreen({
               onPress={() => navigation.navigate('MoodCheckScreen', selectedMoodContext ? { mood: selectedMoodContext } : undefined)}
               accessibilityRole="button"
             >
-              <Text style={styles.homePrimaryChoiceText}>Set tonight's vibe</Text>
+              <Text style={styles.homePrimaryChoiceText}>{voice.home.setTonightVibe}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.homeSecondaryChoice}
@@ -4158,7 +4158,7 @@ function HomeScreen({
               }}
               accessibilityRole="button"
             >
-              <Text style={styles.homeSecondaryChoiceText}>Explore freely</Text>
+              <Text style={styles.homeSecondaryChoiceText}>{voice.home.exploreFreely}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -4167,12 +4167,12 @@ function HomeScreen({
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
         <View style={styles.tonightSuggestionHeader}>
           <Text style={styles.sectionTitle}>
-            Tonight's suggestions
+            {voice.home.pickedForTonight}
           </Text>
           <Text style={styles.tonightMoodCopy}>
             {selectedMoodContext
-              ? 'Everything below is picked to match this vibe.'
-              : 'Pick a vibe first — everything else follows.'}
+              ? voice.home.suggestionsExplainerSelected
+              : voice.home.suggestionsExplainerEmpty}
           </Text>
         </View>
         {selectedMoodContext && recommendations.length > 0 ? (
@@ -4313,7 +4313,7 @@ function HomeScreen({
       {featureFlags.enableWeeklyRecap && showQuietWins && (
         <View style={styles.weeklyRecapCard}>
           <View style={styles.weeklyRecapHeader}>
-            <Text style={styles.weeklyRecapTitle}>Little wins</Text>
+            <Text style={styles.weeklyRecapTitle}>{voice.progress.cardTitle}</Text>
             <TouchableOpacity onPress={() => setShowInsights(true)} accessibilityRole="button" accessibilityLabel={t('home.weekly_recap.open_insights')}>
               <Text style={styles.weeklyRecapAction}>{t('home.weekly_recap.open_insights')}</Text>
             </TouchableOpacity>
@@ -4346,7 +4346,7 @@ function HomeScreen({
         activeOpacity={0.85}
       >
         <Text style={styles.quietWinsToggleText}>
-          {showQuietWins ? 'Hide the little wins' : 'Little wins and saved sparks'}
+          {showQuietWins ? voice.home.quietWinsShown : voice.home.quietWinsHidden}
         </Text>
       </TouchableOpacity>
 
@@ -4388,7 +4388,7 @@ function HomeScreen({
       {/* Weekly Goals Preview */}
       {store.weeklyGoals.length > 0 && (
         <TouchableOpacity style={styles.weeklyGoalsPreview} onPress={() => setShowWeeklyGoals(true)}>
-          <Text style={styles.weeklyGoalsPreviewTitle}>Little wins</Text>
+          <Text style={styles.weeklyGoalsPreviewTitle}>{voice.progress.cardTitle}</Text>
           <View style={styles.weeklyGoalsPreviewProgress}>
             {store.weeklyGoals.map((goal, index) => (
               <View key={index} style={[styles.weeklyGoalDot, goal.completed && styles.weeklyGoalDotComplete]} />

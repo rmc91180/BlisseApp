@@ -73,7 +73,7 @@ export function MoodCheckScreen({ navigation, route }: MoodCheckScreenProps) {
             {voice.moodCheck.header}
           </Text>
           <Text style={[styles.subheader, { color: themeColors.text.secondary }]}>
-            Pick what feels true. You can change your mind anytime.
+            {voice.moodCheck.helper}
           </Text>
         </View>
 
@@ -106,19 +106,19 @@ export function MoodCheckScreen({ navigation, route }: MoodCheckScreenProps) {
 
         {selectedMood ? (
           <View style={styles.refineBlock}>
-            <Text style={[styles.refineTitle, { color: themeColors.text.primary }]}>A tiny tune-up?</Text>
+            <Text style={[styles.refineTitle, { color: themeColors.text.primary }]}>{voice.moodCheck.refineTitle}</Text>
             <View style={styles.refineRow}>
               <TouchableOpacity
                 style={[styles.refineChip, { borderColor: energy === 'soft' ? selectedMood.color : themeColors.cardLight }]}
                 onPress={() => setEnergy((value) => (value === 'soft' ? null : 'soft'))}
               >
-                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>Soft energy</Text>
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>{voice.moodCheck.energySoft}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.refineChip, { borderColor: energy === 'bright' ? selectedMood.color : themeColors.cardLight }]}
                 onPress={() => setEnergy((value) => (value === 'bright' ? null : 'bright'))}
               >
-                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>More playful</Text>
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>{voice.moodCheck.energyPlayful}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.refineRow}>
@@ -126,13 +126,13 @@ export function MoodCheckScreen({ navigation, route }: MoodCheckScreenProps) {
                 style={[styles.refineChip, { borderColor: pace === 'short' ? selectedMood.color : themeColors.cardLight }]}
                 onPress={() => setPace((value) => (value === 'short' ? null : 'short'))}
               >
-                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>Short and sweet</Text>
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>{voice.moodCheck.paceShort}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.refineChip, { borderColor: pace === 'unfold' ? selectedMood.color : themeColors.cardLight }]}
                 onPress={() => setPace((value) => (value === 'unfold' ? null : 'unfold'))}
               >
-                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>Let it unfold</Text>
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>{voice.moodCheck.paceUnfold}</Text>
               </TouchableOpacity>
             </View>
           </View>

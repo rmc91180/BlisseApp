@@ -1146,10 +1146,10 @@
       "hi": "Your Session"
     },
     "startTimer": {
-        "en": "Let's begin",
-      "es": "Iniciar Sesión",
-      "pt-BR": "Iniciar Sessão",
-      "hi": "Start Session"
+      "en": "Let's begin",
+      "es": "Vamos",
+      "pt-BR": "Vamos começar",
+      "hi": "चलो शुरू करें"
     }
   },
   "ideas": {
