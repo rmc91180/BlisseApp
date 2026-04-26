@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
 import { moods } from '@/content/positions';
 import {
   positions,
@@ -8,8 +9,8 @@ import {
   massageTechniques,
   rolePlayScenarios,
 } from '@/content/localizedContent';
+
 import { sound } from '@/services/audio';
-import { haptics } from '@/services/haptics';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
@@ -31,32 +32,89 @@ interface SmartSuggestionCardProps {
   recommendation: Recommendation;
   onPress: () => void;
   index: number;
-}
+};
 
-const resolveMoodIdFromCatalog = (recommendation: Recommendation): string | undefined => {
+const resolveMoodIdFromCatalog = (
+  recommendation: Recommendation
+): string | undefined => {
   const itemId = recommendation.item?.id;
   if (!itemId) return undefined;
 
   if (recommendation.type === 'position') {
-    return positions.find((entry) => entry.id === itemId)?.mood;
+    return positions.find((e) => e.id === itemId)?.mood;
   }
   if (recommendation.type === 'foreplay') {
-    return foreplayIdeas.find((entry) => entry.id === itemId)?.mood;
+    return foreplayIdeas.find((e) => e.id === itemId)?.mood;
   }
   if (recommendation.type === 'oral') {
-    return oralPlayIdeas.find((entry) => entry.id === itemId)?.mood;
+    return oralPlayIdeas.find((e) => e.id === itemId)?.mood;
   }
   if (recommendation.type === 'massage') {
-    return massageTechniques.find((entry) => entry.id === itemId)?.mood;
+    return massageTechniques.find((e) => e.id === itemId)?.mood;
   }
-  return rolePlayScenarios.find((entry) => entry.id === itemId)?.mood;
+  return rolePlayScenarios.find((e) => e.id === itemId)?.mood;
 };
 
-export function SmartSuggestionCard({ recommendation, onPress, index }: SmartSuggestionCardProps) {
+const resolveSuggestionWhy = (recommendation: Recommendation): string => {
+  const lines = (() => {
+    switch (recommendation.type) {
+      case 'foreplay':
+        return [
+          'A good way to ease into things.',
+          'Soft, close, and easy to start.',
+          'Nice and unhurried.',
+        ];
+      case 'oral':
+        return [
+          'This one usually lands really well.',
+          'Comfortable, familiar, and fun.',
+          'A good rhythm builder.',
+        ];
+      case 'massage':
+        return [
+          'Perfect for slowing things down.',
+          'Helps you both settle in.',
+          'Very grounding tonight.',
+        ];
+      case 'position':
+        return [
+          'Fits the energy you picked.',
+          'Easy to slip into.',
+          'Feels natural here.',
+        ];
+      case 'roleplay':
+        return [
+          'A little playful, a little bold.',
+          'Light fun with a spark.',
+          'Just enough edge.',
+        ];
+      default:
+        return [
+          'Feels right for this mood.',
+          'This one tends to click.',
+          'A good fit for tonight.',
+        ];
+    }
+  })();
+
+  const index =
+    typeof recommendation.item?.id === 'number'
+      ? recommendation.item.id % lines.length
+      : 0;
+
+  return lines[index];
+};
+
+export function SmartSuggestionCard({
+  recommendation,
+  onPress,
+  index,
+}: SmartSuggestionCardProps) {
   const themeStore = useThemeStore();
   const { language } = useI18n();
   const voice = useMemo(() => getVoiceCopy(language), [language]);
   const themeColors = getThemeColors(themeStore.currentTheme);
+
   const opacity = useRef(new Animated.Value(0)).current;
   const translateX = useRef(new Animated.Value(26)).current;
 
@@ -77,14 +135,17 @@ export function SmartSuggestionCard({ recommendation, onPress, index }: SmartSug
     ]).start();
   }, [index, opacity, translateX]);
 
-  const moodId = recommendation.item?.mood || resolveMoodIdFromCatalog(recommendation);
+  const moodId =
+    recommendation.item?.mood ?? resolveMoodIdFromCatalog(recommendation);
+
   const moodColor = useMemo(
-    () => moods.find((entry) => entry.id === moodId)?.color || themeColors.primary[500],
+    () =>
+      moods.find((m) => m.id === moodId)?.color ??
+      themeColors.primary[500],
     [moodId, themeColors.primary]
   );
 
   const handlePress = () => {
-    haptics.openCard(`${recommendation.type}:${recommendation.item.id}`);
     sound.light();
     onPress();
   };
@@ -106,26 +167,48 @@ export function SmartSuggestionCard({ recommendation, onPress, index }: SmartSug
 
         <View style={styles.content}>
           <View style={styles.headerRow}>
-            <Text style={[styles.name, { color: themeColors.text.primary }]} numberOfLines={1}>
+            <Text
+              style={[styles.name, { color: themeColors.text.primary }]}
+              numberOfLines={1}
+            >
               {recommendation.item.name}
             </Text>
-            <View style={[styles.badge, { backgroundColor: `${themeColors.primary[500]}30` }]}>
-              <Text style={[styles.badgeText, { color: themeColors.primary[400] }]}>
+
+            <View
+              style={[
+                styles.badge,
+                { backgroundColor: `${themeColors.primary[500]}30` },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.badgeText,
+                  { color: themeColors.primary[400] },
+                ]}
+              >
                 {voice.suggestion.badge[recommendation.type]}
               </Text>
             </View>
           </View>
 
-          <Text style={[styles.vibe, { color: themeColors.text.muted }]} numberOfLines={2}>
-            {recommendation.item.vibe || voice.suggestion.fallbackVibe}
+          <Text
+            style={[styles.vibe, { color: themeColors.text.muted }]}
+            numberOfLines={2}
+          >
+            {recommendation.item.vibe ?? voice.suggestion.fallbackVibe}
           </Text>
 
-          <Text style={[styles.reason, { color: themeColors.primary[400] }]} numberOfLines={2}>
-            🌸 {recommendation.reason}
+          <Text
+            style={[styles.reason, { color: themeColors.primary[400] }]}
+            numberOfLines={2}
+          >
+            🌸 {resolveSuggestionWhy(recommendation)}
           </Text>
         </View>
 
-        <Text style={[styles.arrow, { color: themeColors.text.secondary }]}>→</Text>
+        <Text style={[styles.arrow, { color: themeColors.text.secondary }]}>
+          →
+        </Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -188,4 +271,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
 });
-

@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MOOD_PLAYLISTS } from '@/constants/gamification';
 import type { MoodPlaylist } from '@/types/app';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
+import { useStore } from '@/store/useStore';
 import { sound } from '@/services/audio';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
@@ -17,20 +18,30 @@ import { getVoiceCopy } from '@/copy';
 interface MoodCheckScreenProps {
   navigation: {
     navigate: (screen: string, params?: Record<string, unknown>) => void;
+    goBack?: () => void;
+  };
+  route?: {
+    params?: {
+      mood?: MoodPlaylist;
+    };
   };
 }
 
-export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
+export function MoodCheckScreen({ navigation, route }: MoodCheckScreenProps) {
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
   const { language } = useI18n();
-  const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
+  const store = useStore();
+  const [selectedMoodId, setSelectedMoodId] = useState<string | null>(route?.params?.mood?.id || null);
+  const [energy, setEnergy] = useState<'soft' | 'bright' | null>(null);
+  const [pace, setPace] = useState<'short' | 'unfold' | null>(null);
   const voice = getVoiceCopy(language);
 
   const selectedMood = MOOD_PLAYLISTS.find((mood) => mood.id === selectedMoodId) || null;
 
   const handleSelectMood = (mood: MoodPlaylist) => {
     setSelectedMoodId(mood.id);
+    store.setCurrentMood(mood.mood);
     sound.light();
   };
 
@@ -39,6 +50,10 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
     navigation.navigate('TonightSessionScreen', {
       mood: selectedMood,
       moodId: selectedMood.id,
+      refinement: {
+        energy: energy || undefined,
+        pace: pace || undefined,
+      },
     });
   };
 
@@ -48,9 +63,17 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
       style={styles.gradient}
     >
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        {navigation.goBack ? (
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack?.()} accessibilityRole="button">
+            <Text style={[styles.backText, { color: themeColors.text.secondary }]}>←</Text>
+          </TouchableOpacity>
+        ) : null}
         <View style={styles.headerBlock}>
           <Text style={[styles.header, { color: themeColors.text.primary }]}>
             {voice.moodCheck.header}
+          </Text>
+          <Text style={[styles.subheader, { color: themeColors.text.secondary }]}>
+            Pick what feels true. You can change your mind anytime.
           </Text>
         </View>
 
@@ -80,6 +103,40 @@ export function MoodCheckScreen({ navigation }: MoodCheckScreenProps) {
             );
           })}
         </View>
+
+        {selectedMood ? (
+          <View style={styles.refineBlock}>
+            <Text style={[styles.refineTitle, { color: themeColors.text.primary }]}>A tiny tune-up?</Text>
+            <View style={styles.refineRow}>
+              <TouchableOpacity
+                style={[styles.refineChip, { borderColor: energy === 'soft' ? selectedMood.color : themeColors.cardLight }]}
+                onPress={() => setEnergy((value) => (value === 'soft' ? null : 'soft'))}
+              >
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>Soft energy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.refineChip, { borderColor: energy === 'bright' ? selectedMood.color : themeColors.cardLight }]}
+                onPress={() => setEnergy((value) => (value === 'bright' ? null : 'bright'))}
+              >
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>More playful</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.refineRow}>
+              <TouchableOpacity
+                style={[styles.refineChip, { borderColor: pace === 'short' ? selectedMood.color : themeColors.cardLight }]}
+                onPress={() => setPace((value) => (value === 'short' ? null : 'short'))}
+              >
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>Short and sweet</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.refineChip, { borderColor: pace === 'unfold' ? selectedMood.color : themeColors.cardLight }]}
+                onPress={() => setPace((value) => (value === 'unfold' ? null : 'unfold'))}
+              >
+                <Text style={[styles.refineChipText, { color: themeColors.text.secondary }]}>Let it unfold</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : null}
 
         <TouchableOpacity
           style={[
@@ -121,10 +178,22 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   headerBlock: {
-    flex: 0.34,
+    flex: 0.28,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 4,
+    marginLeft: -8,
+  },
+  backText: {
+    fontSize: 28,
+    fontWeight: '700',
   },
   header: {
     fontSize: 34,
@@ -132,12 +201,46 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
   },
+  subheader: {
+    marginTop: 10,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
   grid: {
-    flex: 0.5,
+    flex: 0.42,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignContent: 'space-between',
+  },
+  refineBlock: {
+    marginTop: 6,
+    marginBottom: 10,
+  },
+  refineTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  refineRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 8,
+  },
+  refineChip: {
+    flex: 1,
+    minHeight: 40,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  refineChipText: {
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   card: {
     width: '48%',

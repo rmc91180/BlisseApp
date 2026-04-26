@@ -419,7 +419,24 @@ export const useStore = create<UserState>()(
       setExperience: (exp) => set({ experience: exp }),
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
       completeTutorial: () => set({ hasSeenTutorial: true }),
-      setCurrentMood: (mood) => set({ currentMood: mood }),
+      setCurrentMood: (mood) => {
+        const state = get();
+        if (!mood) {
+          set({ currentMood: null });
+          return;
+        }
+        set({
+          currentMood: mood,
+          learningPreferences: {
+            ...state.learningPreferences,
+            moodScores: {
+              ...state.learningPreferences.moodScores,
+              [mood]: Math.min(100, (state.learningPreferences.moodScores[mood] || 50) + 12),
+            },
+            lastUpdated: new Date().toISOString(),
+          },
+        });
+      },
       onLevelUp: (newLevel) => {
         const state = get();
         const targetUnlocks = getUnlockedFeaturesForLevel(newLevel.level);
@@ -968,9 +985,9 @@ export const useStore = create<UserState>()(
           interactionHistory: updatedHistory,
         };
 
-        // Passive impressions are useful history, but they should not reshuffle
-        // recommendations during the render that displayed them.
-        if (event.type !== 'view') {
+        // Passive impressions stay quiet. Intentional opens are allowed to shape
+        // the next suggestions.
+        if (event.type !== 'view' || event.opened) {
           updates.learningPreferences = SmartLearning.updatePreferences(
             state.learningPreferences,
             fullEvent

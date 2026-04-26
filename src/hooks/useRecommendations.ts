@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useStore } from '@/store/useStore';
+import { buildMoodBalancedSuggestions } from '@/services/moodSuggestions';
 import type { ContentType } from '@/types/app';
 
 type Recommendation = {
@@ -49,21 +50,28 @@ const STARTER_RECOMMENDATIONS: Recommendation[] = [
 export function useRecommendations(): { recommendations: Recommendation[]; isFirstTime: boolean } {
   const learningPreferences = useStore((state) => state.learningPreferences);
   const interactionCount = useStore((state) => state.interactionHistory.length);
+  const currentMood = useStore((state) => state.currentMood);
   const isFirstTime = interactionCount < 3;
 
   const recommendations = useMemo<Recommendation[]>(() => {
-    const firstTime = useStore.getState().interactionHistory.length < 3;
-    if (firstTime) {
-      return STARTER_RECOMMENDATIONS;
+    if (!currentMood) return [];
+
+    const source = useStore.getState().getSmartRecommendations(80);
+    const next = buildMoodBalancedSuggestions(currentMood, source, 4);
+    if (next.length > 0) {
+      return next.map((entry) => ({
+        type: entry.type as ContentType,
+        item: entry.item,
+        reason: entry.reason,
+      }));
     }
 
-    const next = useStore.getState().getSmartRecommendations(3);
-    return next.map((entry) => ({
+    return STARTER_RECOMMENDATIONS.filter((entry) => entry.item.mood === currentMood).map((entry) => ({
       type: entry.type as ContentType,
       item: entry.item,
       reason: entry.reason,
     }));
-  }, [learningPreferences]);
+  }, [currentMood, learningPreferences]);
 
   return { recommendations, isFirstTime };
 }

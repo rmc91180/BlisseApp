@@ -1,8 +1,8 @@
 import { Platform, Vibration } from 'react-native';
 
 export const HAPTIC = {
-  SOFT: 'soft',
-  CONFIRM: 'confirm',
+  REVEAL: 'reveal',
+  COMPLETE: 'complete',
   CELEBRATE: 'celebrate',
 } as const;
 
@@ -10,8 +10,8 @@ type HapticIntent = typeof HAPTIC[keyof typeof HAPTIC];
 
 const MIN_GLOBAL_GAP_MS = 160;
 const INTENT_COOLDOWN_MS: Record<HapticIntent, number> = {
-  [HAPTIC.SOFT]: 280,
-  [HAPTIC.CONFIRM]: 420,
+  [HAPTIC.REVEAL]: 700,
+  [HAPTIC.COMPLETE]: 900,
   [HAPTIC.CELEBRATE]: 900,
 };
 
@@ -43,15 +43,15 @@ const triggerIntent = (intent: HapticIntent): void => {
   if (!canTrigger(intent)) return;
 
   try {
-    if (intent === HAPTIC.SOFT) {
-      Vibration.vibrate(10);
+    if (intent === HAPTIC.REVEAL) {
+      Vibration.vibrate(14);
       return;
     }
-    if (intent === HAPTIC.CONFIRM) {
-      Vibration.vibrate(16);
+    if (intent === HAPTIC.COMPLETE) {
+      Vibration.vibrate([0, 18, 42, 22]);
       return;
     }
-    Vibration.vibrate([0, 24, 36, 32]);
+    Vibration.vibrate([0, 20, 48, 26]);
   } catch {
     // Haptics are optional enhancement; never break UI flow.
   }
@@ -71,10 +71,16 @@ export const haptics = {
 
     revealedCardKeys.add(key);
     trimRevealCache();
-    triggerIntent(HAPTIC.SOFT);
+    triggerIntent(HAPTIC.REVEAL);
   },
   confirmAction: (): void => {
-    triggerIntent(HAPTIC.CONFIRM);
+    // Basic taps and saves should stay quiet.
+  },
+  reveal: (): void => {
+    triggerIntent(HAPTIC.REVEAL);
+  },
+  complete: (): void => {
+    triggerIntent(HAPTIC.COMPLETE);
   },
   celebrate: (): void => {
     triggerIntent(HAPTIC.CELEBRATE);
@@ -87,4 +93,3 @@ export const haptics = {
     lastIntentFireAt.clear();
   },
 };
-

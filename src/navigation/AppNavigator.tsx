@@ -36,6 +36,7 @@ export interface AppNavigatorScreens {
   PreferencesScreen: ScreenComponent;
   ExperienceLevelScreen: ScreenComponent;
   LegalScreen: ScreenComponent;
+  OriginScreen: ScreenComponent;
   OnboardingPayoffScreen: ScreenComponent;
   SignInScreen: ScreenComponent;
 }
@@ -585,8 +586,10 @@ function MainTabs({
 }
 
 function OnboardingStack({ screens }: { screens: AppNavigatorScreens }) {
+  const hasSeenOrigin = useStore((state) => state.hasSeenTutorial);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!hasSeenOrigin ? <Stack.Screen name="Origin" component={screens.OriginScreen} /> : null}
       <Stack.Screen name="Welcome" component={screens.WelcomeScreen} />
       <Stack.Screen name="NameInput" component={screens.NameInputScreen} />
       <Stack.Screen name="RelationshipType" component={screens.RelationshipTypeScreen} />
@@ -753,6 +756,7 @@ export function RootAppNavigator({ screens }: { screens: AppNavigatorScreens }) 
         )}
       </Stack.Screen>
       <Stack.Screen name="PaywallModal" component={SubscriptionPaywallScreen} initialParams={{ trigger: 'manual' }} options={{ presentation: 'modal' }} />
+      <Stack.Screen name="Origin" component={screens.OriginScreen} />
       <Stack.Screen name="MoodCheckScreen" component={screens.MoodCheckScreen} />
       <Stack.Screen name="TonightSessionScreen" component={screens.TonightSessionScreen} />
       <Stack.Screen name="SessionRatingScreen" component={screens.SessionRatingScreen} />

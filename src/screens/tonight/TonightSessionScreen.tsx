@@ -14,20 +14,14 @@ import { sound } from '@/services/audio';
 import { haptics } from '@/services/haptics';
 import { MOOD_PLAYLISTS } from '@/constants/gamification';
 import { resolveExperienceProfile } from '@/content/experienceProfiles';
+import { buildMoodSessionSteps, type MoodRefinement } from '@/services/moodSuggestions';
 import type { MoodPlaylist, SessionLearningFeedback } from '@/types/app';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
-import {
-  foreplayIdeas,
-  massageTechniques,
-  positions,
-  rolePlayScenarios,
-} from '@/content/localizedContent';
-
-type SessionStepType = 'foreplay' | 'position' | 'massage' | 'roleplay';
+type SessionStepType = 'foreplay' | 'oral' | 'position' | 'massage' | 'roleplay';
 
 interface SessionStep {
-  number: 1 | 2 | 3;
+  number: 1 | 2 | 3 | 4;
   label: string;
   type: SessionStepType;
   item: any;
@@ -40,29 +34,15 @@ interface TonightSessionScreenProps {
   route?: {
     params?: {
       mood?: MoodPlaylist;
+      refinement?: MoodRefinement;
     };
   };
   mood?: MoodPlaylist;
 }
 
-const normalizeExperience = (experience: string | null): 'Beginner' | 'Intermediate' | 'Advanced' => {
-  const key = (experience || 'beginner').toLowerCase();
-  if (key === 'advanced') return 'Advanced';
-  if (key === 'intermediate') return 'Intermediate';
-  return 'Beginner';
-};
-
-const shuffle = <T,>(input: T[]): T[] => {
-  const array = [...input];
-  for (let i = array.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
 const getBadgeText = (step: SessionStep): string => {
   if (step.type === 'foreplay') return step.item.duration || 'Quick';
+  if (step.type === 'oral') return step.item.duration || step.item.category || 'Touch';
   if (step.type === 'position') return step.item.difficulty || 'Beginner';
   if (step.type === 'massage') return step.item.duration || step.item.category || 'Relaxed';
   return step.item.intensity || 'Roleplay';
@@ -76,8 +56,6 @@ export function TonightSessionScreen({
   const { language } = useI18n();
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
-  const experience = useStore((state) => state.experience);
-  const learningPreferences = useStore((state) => state.learningPreferences);
   const getSmartRecommendations = useStore((state) => state.getSmartRecommendations);
   const trackSessionFeedback = useStore((state) => state.trackSessionFeedback);
   const [regenerateCount, setRegenerateCount] = useState(0);
@@ -97,8 +75,7 @@ export function TonightSessionScreen({
   const voice = useMemo(() => getVoiceCopy(language), [language]);
   const copy = voice.sessionPlan;
   const vibeLine = copy.coachIntro[selectedMood.id] || copy.coachIntro.romantic || '';
-  const targetDifficulty = normalizeExperience(experience);
-  const step3SequenceScores = learningPreferences.sequenceScores.step3;
+  const refinement = route?.params?.refinement;
 
   const getStepKey = useCallback((step: SessionStep) => (
     `${step.type}:${Number(step.item?.id || step.number)}`
@@ -151,105 +128,21 @@ export function TonightSessionScreen({
   }, [getStepKey]);
 
   const generateSession = useCallback((): SessionStep[] => {
-    const recommendations = getSmartRecommendations(5);
-    const moodMatchedRecommendations = recommendations.filter(
-      (recommendation) => recommendation.item?.mood === selectedMood.mood
-    );
-    const recommendationPool =
-      moodMatchedRecommendations.length > 0 ? moodMatchedRecommendations : recommendations;
-
-    const used = new Set<string>();
-    const reserve = (type: SessionStepType, item: any) => {
-      if (!item?.id) return;
-      used.add(`${type}:${item.id}`);
-    };
-    const isUnused = (type: SessionStepType, item: any) => !used.has(`${type}:${item.id}`);
-
-    const pickRecommended = (
-      type: SessionStepType,
-      predicate?: (item: any) => boolean
-    ) => {
-      const matches = shuffle(
-        recommendationPool
-          .filter((recommendation) => recommendation.type === type)
-          .map((recommendation) => recommendation.item)
-      );
-      return matches.find((item) => isUnused(type, item) && (!predicate || predicate(item))) || null;
-    };
-
-    const pickFallback = (
-      type: SessionStepType,
-      source: any[],
-      predicate?: (item: any) => boolean
-    ) => {
-      const moodFiltered = source.filter((item) => item.mood === selectedMood.mood);
-      const pool = moodFiltered.length > 0 ? moodFiltered : source;
-      const shuffled = shuffle(pool);
-      return shuffled.find((item) => isUnused(type, item) && (!predicate || predicate(item))) || null;
-    };
-
-    const pickItem = (
-      type: SessionStepType,
-      source: any[],
-      predicate?: (item: any) => boolean
-    ) => {
-      const recommended = pickRecommended(type, predicate);
-      if (recommended) return recommended;
-
-      const fallback = pickFallback(type, source, predicate);
-      if (fallback) return fallback;
-
-      const nonDuplicate = source.find((item) => isUnused(type, item) && (!predicate || predicate(item)));
-      if (nonDuplicate) return nonDuplicate;
-
-      return source.find((item) => isUnused(type, item)) || source[0];
-    };
-
-    const stepOneItem = pickItem(
-      'foreplay',
-      foreplayIdeas,
-      (item) => item.duration === 'Quick' || item.duration === 'Medium'
-    );
-    reserve('foreplay', stepOneItem);
-
-    const stepTwoItem = pickItem(
-      'position',
-      positions,
-      (item) => (item.difficulty || '').toLowerCase() === targetDifficulty.toLowerCase()
-    );
-    reserve('position', stepTwoItem);
-
-    const stepThreeType: SessionStepType =
-      selectedMood.id === 'romantic'
-        ? 'massage'
-        : selectedMood.id === 'adventurous' || selectedMood.id === 'passionate'
-          ? 'roleplay'
-          : ((step3SequenceScores.foreplay || 50) >= (step3SequenceScores.position || 50) ? 'foreplay' : 'position');
-
-    const stepThreeItem =
-      stepThreeType === 'massage'
-        ? pickItem('massage', massageTechniques)
-        : stepThreeType === 'roleplay'
-          ? pickItem('roleplay', rolePlayScenarios)
-          : stepThreeType === 'foreplay'
-            ? pickItem('foreplay', foreplayIdeas)
-            : pickItem('position', positions);
-
-    return [
-      { number: 1, label: copy.start, type: 'foreplay', item: stepOneItem },
-      { number: 2, label: copy.move, type: 'position', item: stepTwoItem },
-      { number: 3, label: copy.finish, type: stepThreeType, item: stepThreeItem },
-    ];
+    const recommendations = getSmartRecommendations(80);
+    const balanced = buildMoodSessionSteps(selectedMood, recommendations, refinement);
+    return balanced.slice(0, 4).map((suggestion, index) => ({
+      number: (index + 1) as SessionStep['number'],
+      label: index === 0 ? copy.start : index === balanced.length - 1 ? copy.finish : copy.move,
+      type: suggestion.type as SessionStepType,
+      item: suggestion.item,
+    }));
   }, [
     copy.finish,
     copy.move,
     copy.start,
     getSmartRecommendations,
-    selectedMood.id,
-    selectedMood.mood,
-    step3SequenceScores.foreplay,
-    step3SequenceScores.position,
-    targetDifficulty,
+    refinement,
+    selectedMood,
   ]);
 
   useEffect(() => {
@@ -296,6 +189,10 @@ export function TonightSessionScreen({
       navigation.navigate('MassageDetail', { item: step.item });
       return;
     }
+    if (step.type === 'oral') {
+      navigation.navigate('OralDetail', { item: step.item });
+      return;
+    }
     navigation.navigate('RolePlayDetail', { item: step.item });
   };
 
@@ -305,6 +202,9 @@ export function TonightSessionScreen({
       style={styles.gradient}
     >
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('MainTabs')} accessibilityRole="button">
+          <Text style={[styles.backText, { color: themeColors.text.secondary }]}>←</Text>
+        </TouchableOpacity>
         <Text style={[styles.vibeLine, { color: themeColors.text.secondary }]}>{vibeLine}</Text>
 
         <ScrollView style={styles.scroll} contentContainerStyle={styles.flowList} showsVerticalScrollIndicator={false}>
@@ -389,6 +289,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingBottom: 20,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: -8,
+  },
+  backText: {
+    fontSize: 28,
+    fontWeight: '700',
   },
   vibeLine: {
     marginTop: 8,

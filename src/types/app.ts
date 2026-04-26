@@ -252,7 +252,7 @@ export interface InteractionEvent {
   difficulty?: string;
   rating?: number;
   experienceProfile?: ExperienceProfile;
-  sequencePosition?: 1 | 2 | 3;
+  sequencePosition?: 1 | 2 | 3 | 4;
   timeSpentSeconds?: number;
   opened?: boolean;
   skipped?: boolean;
@@ -264,7 +264,7 @@ export interface InteractionEvent {
 export type SessionReactionEmoji = '🔥' | '💜' | '😐';
 
 export interface SessionStepFeedbackSignal {
-  sequencePosition: 1 | 2 | 3;
+  sequencePosition: 1 | 2 | 3 | 4;
   contentType: ContentType;
   itemId: number;
   category?: string;

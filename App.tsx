@@ -80,6 +80,7 @@ import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
 import { haptics } from '@/services/haptics';
 import { coachVoice } from '@/services/coachVoice';
+import { getMoodContext } from '@/services/moodSuggestions';
 import { SubscriptionProvider } from '@/services/subscription';
 import { DailyBonusModal } from '@/components/DailyBonusModal';
 import { LevelUpModal } from '@/components/LevelUpModal';
@@ -926,6 +927,53 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
 // ============================================
 // ONBOARDING SCREENS
 // ============================================
+function OriginScreen({ navigation, route }: any) {
+  const { language } = useI18n();
+  const voice = useMemo(() => getVoiceCopy(language), [language]);
+  const store = useStore();
+  const fromSettings = Boolean(route?.params?.fromSettings);
+  const handleContinue = () => {
+    store.completeTutorial();
+    if (fromSettings) {
+      navigation.goBack?.();
+      return;
+    }
+    navigation.navigate('Welcome');
+  };
+
+  return (
+    <ScreenWrapper scroll>
+      {fromSettings ? <BackButton onPress={() => navigation.goBack?.()} /> : null}
+      <View style={styles.originHero}>
+        <Text style={styles.originEmoji}>🌸</Text>
+        <Text style={styles.titleLarge}>{voice.labels.brandName}</Text>
+        <Text style={styles.originSubtitle}>A softer way to find your mood together.</Text>
+      </View>
+      <View style={styles.originSection}>
+        <Text style={styles.originSectionTitle}>Why we built this</Text>
+        <Text style={styles.originBody}>
+          We wanted something couples could open without feeling studied, managed, or put on the spot.
+        </Text>
+      </View>
+      <View style={styles.originSection}>
+        <Text style={styles.originSectionTitle}>What it is for</Text>
+        <Text style={styles.originBody}>
+          Blisse is here for play, closeness, flirting, and those nights when you want a little spark but not a whole conversation first.
+        </Text>
+      </View>
+      <View style={styles.originSection}>
+        <Text style={styles.originSectionTitle}>How to use it</Text>
+        <Text style={styles.originBody}>
+          Pick the vibe that feels true. Take one idea, skip another, change your mind whenever. Your pace is the right pace.
+        </Text>
+      </View>
+      <View style={styles.buttons}>
+        <PrimaryButton title={fromSettings ? 'Back to Blisse' : 'Let us begin'} onPress={handleContinue} />
+      </View>
+    </ScreenWrapper>
+  );
+}
+
 function WelcomeScreen({ navigation }: any) {
   const { authPack, language } = useI18n();
   const voice = useMemo(() => getVoiceCopy(language), [language]);
@@ -3747,6 +3795,8 @@ function HomeScreen({
   const [showWeeklyGoals, setShowWeeklyGoals] = useState(false);
   const [showPlaylists, setShowPlaylists] = useState(false);
   const [showRecommendations, setShowRecommendations] = useState(false);
+  const [showExploreExtras, setShowExploreExtras] = useState(false);
+  const [showQuietWins, setShowQuietWins] = useState(false);
   const trackedRecommendationImpressionsRef = useRef<Set<string>>(new Set());
   const [showSeasonal, setShowSeasonal] = useState(false);
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
@@ -3757,6 +3807,15 @@ function HomeScreen({
   
   const currentHour = new Date().getHours();
   const homeDisplayName = store.name || t('home.there');
+  const selectedMoodContext = useMemo(() => getMoodContext(store.currentMood), [store.currentMood]);
+  const selectedMoodValue = selectedMoodContext?.mood || store.currentMood;
+  const handleHomeMoodSelect = useCallback((mood: MoodPlaylist) => {
+    const nextMood = selectedMoodValue === mood.mood ? null : mood.mood;
+    store.setCurrentMood(nextMood);
+    if (nextMood) {
+      Analytics.trackFeatureUsed(`mood_selected_${nextMood}`);
+    }
+  }, [selectedMoodValue, store]);
   const homeGreetingCopy = currentHour >= 6 && currentHour <= 11
     ? {
       headline: voice.home.greeting.morning(homeDisplayName),
@@ -3976,6 +4035,7 @@ function HomeScreen({
       category: typeof resolvedItem?.category === 'string' ? resolvedItem.category : undefined,
       mood: typeof resolvedItem?.mood === 'string' ? resolvedItem.mood : undefined,
       difficulty,
+      opened: true,
     });
   }, [resolveRecommendationItem, store]);
 
@@ -4027,6 +4087,13 @@ function HomeScreen({
           </TouchableOpacity>
         </View>
         <LanguageQuickSwitcher compact />
+        <TouchableOpacity
+          style={styles.originLink}
+          onPress={() => navigation.navigate('Origin', { fromSettings: true })}
+          accessibilityRole="button"
+        >
+          <Text style={styles.originLinkText}>Why we made this</Text>
+        </TouchableOpacity>
       </View>
 
       {showTrialBanner && trialDaysRemaining > 0 ? (
@@ -4045,45 +4112,149 @@ function HomeScreen({
       ) : null}
 
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
-        <View style={styles.tonightCard}>
-          <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.tonightGradient}>
-            <Text style={styles.tonightLabel}>{voice.home.tonightSession.label}</Text>
-            <Text style={styles.tonightTitle}>{voice.home.tonightSession.title}</Text>
-            <Text style={styles.tonightSubtitle}>{voice.home.tonightSession.subtitle}</Text>
-            <Text style={styles.tonightTeaser}>
-              {voice.home.tonightSession.teaser}
-            </Text>
+        <View style={styles.vibePanel}>
+          <Text style={styles.vibePanelEyebrow}>What do you want to do right now?</Text>
+          <Text style={styles.vibePanelTitle}>Set tonight's vibe</Text>
+          <Text style={styles.vibePanelBody}>
+            Set tonight's vibe first. The rest can stay easy.
+          </Text>
+          <View style={styles.vibeGrid}>
+            {MOOD_PLAYLISTS.map((mood) => {
+              const selected = selectedMoodValue === mood.mood;
+              return (
+                <TouchableOpacity
+                  key={mood.id}
+                  style={[
+                    styles.vibeMoodButton,
+                    selected && { backgroundColor: mood.color, borderColor: mood.color },
+                  ]}
+                  onPress={() => handleHomeMoodSelect(mood)}
+                  activeOpacity={0.88}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  accessibilityLabel={mood.name}
+                >
+                  <Text style={styles.vibeMoodEmoji}>{mood.emoji}</Text>
+                  <Text style={[styles.vibeMoodLabel, selected && styles.vibeMoodLabelSelected]} numberOfLines={2}>
+                    {mood.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <View style={styles.homeChoiceRow}>
             <TouchableOpacity
-              style={styles.tonightSessionButton}
+              style={styles.homePrimaryChoice}
+              onPress={() => navigation.navigate('MoodCheckScreen', selectedMoodContext ? { mood: selectedMoodContext } : undefined)}
+              accessibilityRole="button"
+            >
+              <Text style={styles.homePrimaryChoiceText}>Set tonight's vibe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.homeSecondaryChoice}
               onPress={() => {
-                navigation.navigate('MoodCheckScreen');
+                Analytics.trackFeatureUsed('home_explore_freely');
+                setShowExploreExtras((value) => !value);
               }}
               accessibilityRole="button"
-              accessibilityLabel={voice.home.tonightSession.cta}
             >
-              <Text style={styles.tonightSessionButtonText}>{voice.home.tonightSession.cta}</Text>
+              <Text style={styles.homeSecondaryChoiceText}>Explore freely</Text>
             </TouchableOpacity>
-          </LinearGradient>
+          </View>
         </View>
       </Animated.View>
 
-      {/* ── Tonight Suggestions ── */}
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
-        <Text style={styles.sectionTitle}>{voice.home.pickedForTonight}</Text>
-        {recommendations.map((recommendation, index) => (
-          <ScaleIn key={`${recommendation.type}-${recommendation.item.id}-${index}`} delay={index * 80}>
-            <SmartSuggestionCard
-              recommendation={recommendation}
-              index={index}
-              onPress={() => handleRecommendationPress(recommendation)}
-            />
-          </ScaleIn>
-        ))}
+        <View style={styles.tonightSuggestionHeader}>
+          <Text style={styles.sectionTitle}>
+            Tonight's suggestions
+          </Text>
+          <Text style={styles.tonightMoodCopy}>
+            {selectedMoodContext
+              ? 'Everything below is picked to match this vibe.'
+              : 'Pick a vibe first — everything else follows.'}
+          </Text>
+        </View>
+        {selectedMoodContext && recommendations.length > 0 ? (
+          recommendations.map((recommendation, index) => (
+            <ScaleIn key={`${recommendation.type}-${recommendation.item.id}-${index}`} delay={index * 80}>
+              <SmartSuggestionCard
+                recommendation={recommendation}
+                index={index}
+                onPress={() => handleRecommendationPress(recommendation)}
+              />
+            </ScaleIn>
+          ))
+        ) : null}
       </Animated.View>
 
-      <SlideUp delay={0}>
-        <WeeklyGoalsCard />
-      </SlideUp>
+      {showExploreExtras ? (
+        <Animated.View style={{ opacity: actionsAnim, transform: [{ translateY: actionsTranslateY }] }}>
+          <View style={styles.featureButtonsRow}>
+            <TouchableOpacity
+              style={styles.featureButton}
+              onPress={() => {
+                if (dateNightUnlocked) {
+                  setShowDateNight(true);
+                  return;
+                }
+                }}
+            >
+              <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.featureButtonGradient}>
+                <Text style={styles.featureButtonEmoji}>🌙</Text>
+                <Text style={styles.featureButtonText}>{dateNightUnlocked ? t('home.feature.date_night') : '🔒 Reach Level 4'}</Text>
+                <Text style={styles.featureButtonSubtext}>{dateNightUnlocked ? t('home.quality.romance') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars)}/${FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars} ⭐`}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.featureButton} onPress={() => setShowSpinner(true)}>
+              <LinearGradient colors={GRADIENT_PRESETS.warm} style={styles.featureButtonGradient}>
+                <Text style={styles.featureButtonEmoji}>🎰</Text>
+                <Text style={styles.featureButtonText}>{t('home.feature.spin')}</Text>
+                <Text style={styles.featureButtonSubtext}>{t('home.quality.playful')}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.featureButton}
+              onPress={() => {
+                if (truthOrDareUnlocked) {
+                  setShowTruthOrDare(true);
+                  return;
+                }
+                }}
+            >
+              <LinearGradient colors={[colors.error, '#ec4899']} style={styles.featureButtonGradient}>
+                <Text style={styles.featureButtonEmoji}>🎲</Text>
+                <Text style={styles.featureButtonText}>{truthOrDareUnlocked ? t('home.feature.truth_dare') : '🔒 Reach Level 3'}</Text>
+                <Text style={styles.featureButtonSubtext}>{truthOrDareUnlocked ? t('home.quality.truth_dare') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars)}/${FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars} ⭐`}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.featureButtonsRow}>
+            <TouchableOpacity style={styles.featureButton} onPress={() => setShowPlaylists(true)}>
+              <LinearGradient colors={GRADIENT_PRESETS.pinkRose} style={styles.featureButtonGradient}>
+                <Text style={styles.featureButtonEmoji}>🎭</Text>
+                <Text style={styles.featureButtonText}>{t('home.feature.moods')}</Text>
+                <Text style={styles.featureButtonSubtext}>{t('home.quality.moods')}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.featureButton} onPress={() => setShowMusic(true)}>
+              <LinearGradient colors={['#1DB954', colors.green]} style={styles.featureButtonGradient}>
+                <Text style={styles.featureButtonEmoji}>🎵</Text>
+                <Text style={styles.featureButtonText}>{t('home.feature.music')}</Text>
+                <Text style={styles.featureButtonSubtext}>{t('home.quality.music')}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.featureButton} onPress={() => setShowRecommendations(true)}>
+              <LinearGradient colors={GRADIENT_PRESETS.blueViolet} style={styles.featureButtonGradient}>
+                <Text style={styles.featureButtonEmoji}>💡</Text>
+                <Text style={styles.featureButtonText}>{t('home.feature.for_you')}</Text>
+                <Text style={styles.featureButtonSubtext}>{t('home.quality.for_you')}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      ) : null}
 
       {/* ── Daily Joke & Seasonal ── */}
       <Animated.View style={{ opacity: suggestionsAnim, transform: [{ translateY: suggestionsTranslateY }] }}>
@@ -4099,6 +4270,7 @@ function HomeScreen({
                 style={styles.dailyJokeRevealButton}
                 onPress={() => {
                   setShowDailyPunchline(true);
+                  haptics.reveal();
                   Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
                 }}
               >
@@ -4138,10 +4310,10 @@ function HomeScreen({
         )}
       </Animated.View>
 
-      {featureFlags.enableWeeklyRecap && (
+      {featureFlags.enableWeeklyRecap && showQuietWins && (
         <View style={styles.weeklyRecapCard}>
           <View style={styles.weeklyRecapHeader}>
-            <Text style={styles.weeklyRecapTitle}>📈 {t('home.weekly_recap.title')}</Text>
+            <Text style={styles.weeklyRecapTitle}>Little wins</Text>
             <TouchableOpacity onPress={() => setShowInsights(true)} accessibilityRole="button" accessibilityLabel={t('home.weekly_recap.open_insights')}>
               <Text style={styles.weeklyRecapAction}>{t('home.weekly_recap.open_insights')}</Text>
             </TouchableOpacity>
@@ -4168,109 +4340,18 @@ function HomeScreen({
         </View>
       )}
 
-      {/* ── Feature Buttons — intimate / fun first ── */}
-      <Animated.View style={{ opacity: actionsAnim, transform: [{ translateY: actionsTranslateY }] }}>
-      <View style={styles.featureButtonsRow}>
-        <TouchableOpacity
-          style={styles.featureButton}
-          onPress={() => {
-            if (dateNightUnlocked) {
-              setShowDateNight(true);
-              return;
-            }
-            }}
-        >
-          <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🌙</Text>
-            <Text style={styles.featureButtonText}>{dateNightUnlocked ? t('home.feature.date_night') : '🔒 Reach Level 4'}</Text>
-            <Text style={styles.featureButtonSubtext}>{dateNightUnlocked ? t('home.quality.romance') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars)}/${FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars} ⭐`}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowSpinner(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.warm} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🎰</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.spin')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.playful')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.featureButton}
-          onPress={() => {
-            if (truthOrDareUnlocked) {
-              setShowTruthOrDare(true);
-              return;
-            }
-            }}
-        >
-          <LinearGradient colors={[colors.error, '#ec4899']} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🎲</Text>
-            <Text style={styles.featureButtonText}>{truthOrDareUnlocked ? t('home.feature.truth_dare') : '🔒 Reach Level 3'}</Text>
-            <Text style={styles.featureButtonSubtext}>{truthOrDareUnlocked ? t('home.quality.truth_dare') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars)}/${FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars} ⭐`}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.quietWinsToggle}
+        onPress={() => setShowQuietWins((value) => !value)}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.quietWinsToggleText}>
+          {showQuietWins ? 'Hide the little wins' : 'Little wins and saved sparks'}
+        </Text>
+      </TouchableOpacity>
 
-      <View style={styles.featureButtonsRow}>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowPlaylists(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.pinkRose} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🎭</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.moods')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.moods')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowMusic(true)}>
-          <LinearGradient colors={['#1DB954', colors.green]} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🎵</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.music')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.music')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowRecommendations(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.blueViolet} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>💡</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.for_you')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.for_you')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.featureButtonsRow}>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowChallenge(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.cyanGreen} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🎯</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.challenge')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.challenge')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowWeeklyGoals(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.success} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>📋</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.goals')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.goals')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.featureButton} onPress={() => setShowAchievements(true)}>
-          <LinearGradient colors={GRADIENT_PRESETS.amberGold} style={styles.featureButtonGradient}>
-            <Text style={styles.featureButtonEmoji}>🏆</Text>
-            <Text style={styles.featureButtonText}>{t('home.feature.trophies')}</Text>
-            <Text style={styles.featureButtonSubtext}>{t('home.quality.trophies')}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-      </Animated.View>
-
-      {/* ── Mood Picker ── */}
-      <Text style={styles.sectionTitle}>{t('home.how_feeling')}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.moodScroll} contentContainerStyle={styles.horizontalScrollContent}>
-        {moods.map((mood) => (
-          <TouchableOpacity key={mood.id} style={[styles.moodChip, store.currentMood === mood.id && { backgroundColor: mood.color }]} onPress={() => { store.setCurrentMood(store.currentMood === mood.id ? null : mood.id); }}>
-            <Text style={styles.moodChipText}>{mood.emoji} {localizeTerm(mood.label)}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* ── Progress & Gamification (lower priority, below the fun stuff) ── */}
-      {/* Level Progress Card */}
+      {showQuietWins ? (
+      <>
       <TouchableOpacity style={styles.levelCard} onPress={() => setShowInsights(true)} activeOpacity={0.8}>
         <View style={styles.levelHeader}>
           <Text style={styles.levelEmoji}>{currentLevel.emoji}</Text>
@@ -4307,7 +4388,7 @@ function HomeScreen({
       {/* Weekly Goals Preview */}
       {store.weeklyGoals.length > 0 && (
         <TouchableOpacity style={styles.weeklyGoalsPreview} onPress={() => setShowWeeklyGoals(true)}>
-          <Text style={styles.weeklyGoalsPreviewTitle}>📋 {t('home.weekly_goals')}</Text>
+          <Text style={styles.weeklyGoalsPreviewTitle}>Little wins</Text>
           <View style={styles.weeklyGoalsPreviewProgress}>
             {store.weeklyGoals.map((goal, index) => (
               <View key={index} style={[styles.weeklyGoalDot, goal.completed && styles.weeklyGoalDotComplete]} />
@@ -4355,6 +4436,8 @@ function HomeScreen({
         <View style={styles.statCard}><Text style={styles.statNumber}>{store.favorites.length + store.favoriteForeplay.length + store.favoriteOral.length + store.favoriteMassage.length + store.favoriteRoleplay.length}</Text><Text style={styles.statLabel}>{t('stats.favorites')}</Text></View>
         <View style={styles.statCard}><Text style={styles.statNumber}>{positions.length + foreplayIdeas.length + oralPlayIdeas.length + massageTechniques.length + rolePlayScenarios.length}</Text><Text style={styles.statLabel}>{t('stats.total')}</Text></View>
       </View>
+      </>
+      ) : null}
 
       <SpinnerModal visible={showSpinner} onClose={() => setShowSpinner(false)} navigation={navigation} />
       <DateNightModal visible={showDateNight} onClose={() => setShowDateNight(false)} navigation={navigation} />
@@ -6859,6 +6942,7 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
               PreferencesScreen,
               ExperienceLevelScreen,
               LegalScreen,
+              OriginScreen,
               OnboardingPayoffScreen,
               SignInScreen,
             }}
@@ -6995,8 +7079,16 @@ const styles = StyleSheet.create({
   checkboxChecked: { backgroundColor: colors.primary[500], borderColor: colors.primary[500] },
   checkmark: { color: colors.white, fontSize: 14, fontWeight: '700' },
   checkboxText: { flex: 1, color: colors.text.primary, fontSize: 14, lineHeight: 20 },
+  originHero: { alignItems: 'center', paddingTop: 28, paddingBottom: 18 },
+  originEmoji: { fontSize: 64, marginBottom: 10 },
+  originSubtitle: { color: colors.text.secondary, fontSize: 16, lineHeight: 22, textAlign: 'center', marginTop: 8, paddingHorizontal: 14 },
+  originSection: { backgroundColor: colors.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.cardLight },
+  originSectionTitle: { color: colors.text.primary, fontSize: 17, fontWeight: '800', marginBottom: 6 },
+  originBody: { color: colors.text.secondary, fontSize: 14, lineHeight: 21 },
   homeHeader: { paddingTop: 10, marginBottom: 16 },
   homeHeaderTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  originLink: { alignSelf: 'flex-start', marginTop: 8, paddingVertical: 4 },
+  originLinkText: { color: colors.primary[400], fontSize: 12, fontWeight: '700' },
   trialBanner: {
     height: 36,
     borderRadius: 10,
@@ -7059,6 +7151,52 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
+  vibePanel: {
+    backgroundColor: colors.card,
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.primary[500] + '44',
+  },
+  vibePanelEyebrow: { color: colors.primary[400], fontSize: 12, fontWeight: '700', marginBottom: 6 },
+  vibePanelTitle: { color: colors.text.primary, fontSize: 28, lineHeight: 34, fontWeight: '800', marginBottom: 6 },
+  vibePanelBody: { color: colors.text.secondary, fontSize: 14, lineHeight: 20, marginBottom: 14 },
+  vibeGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 12 },
+  vibeMoodButton: {
+    width: '48%',
+    minHeight: 72,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    backgroundColor: colors.background.secondary,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    marginBottom: 10,
+    justifyContent: 'center',
+  },
+  vibeMoodEmoji: { fontSize: 24, marginBottom: 4 },
+  vibeMoodLabel: { color: colors.text.primary, fontSize: 13, lineHeight: 17, fontWeight: '700' },
+  vibeMoodLabelSelected: { color: colors.white },
+  homeChoiceRow: { flexDirection: 'row', gap: 10 },
+  homePrimaryChoice: { flex: 1.2, minHeight: 48, borderRadius: 14, backgroundColor: colors.primary[500], alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
+  homePrimaryChoiceText: { color: colors.white, fontSize: 14, fontWeight: '800', textAlign: 'center' },
+  homeSecondaryChoice: { flex: 1, minHeight: 48, borderRadius: 14, backgroundColor: colors.cardLight, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
+  homeSecondaryChoiceText: { color: colors.text.primary, fontSize: 14, fontWeight: '700', textAlign: 'center' },
+  tonightSuggestionHeader: { marginBottom: 6 },
+  tonightMoodCopy: { color: colors.text.secondary, fontSize: 13, lineHeight: 18, marginTop: -6, marginBottom: 10 },
+  quietWinsToggle: {
+    minHeight: 44,
+    borderRadius: 14,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
+    paddingHorizontal: 14,
+  },
+  quietWinsToggleText: { color: colors.text.secondary, fontSize: 13, fontWeight: '700' },
   newBadge: { backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, alignSelf: 'flex-start', marginTop: 12 },
   newBadgeText: { color: colors.white, fontSize: 12, fontWeight: '600' },
   featureButtonsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },

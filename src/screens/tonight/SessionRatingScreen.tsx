@@ -16,6 +16,7 @@ import { resolveExperienceProfile } from '@/content/experienceProfiles';
 import {
   foreplayIdeas,
   massageTechniques,
+  oralPlayIdeas,
   positions,
   rolePlayScenarios,
 } from '@/content/localizedContent';
@@ -23,11 +24,11 @@ import type { MoodPlaylist, SessionLearningFeedback, SessionReactionEmoji } from
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy, pickVoiceLine } from '@/copy';
 
-type SessionStepType = 'foreplay' | 'position' | 'massage' | 'roleplay';
+type SessionStepType = 'foreplay' | 'oral' | 'position' | 'massage' | 'roleplay';
 type ReactionKey = 'hot' | 'warm' | 'neutral';
 
 interface SessionStep {
-  number: 1 | 2 | 3;
+  number: 1 | 2 | 3 | 4;
   label: string;
   type: SessionStepType;
   item: {
@@ -74,12 +75,13 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
   const fallbackSteps = useMemo<SessionStep[]>(() => [
     { number: 1, label: copy.fallbackStartLabel, type: 'foreplay', item: foreplayIdeas[0] },
     { number: 2, label: copy.fallbackMoveLabel, type: 'position', item: positions[0] },
-    { number: 3, label: copy.fallbackFinishLabel, type: 'massage', item: massageTechniques[0] || rolePlayScenarios[0] },
+    { number: 3, label: copy.fallbackFinishLabel, type: 'oral', item: oralPlayIdeas[0] },
+    { number: 4, label: copy.fallbackFinishLabel, type: 'massage', item: massageTechniques[0] || rolePlayScenarios[0] },
   ], [copy.fallbackFinishLabel, copy.fallbackMoveLabel, copy.fallbackStartLabel]);
 
   const sessionSteps = useMemo(() => {
     const incoming = route?.params?.steps || [];
-    return incoming.length >= 3 ? incoming.slice(0, 3) : fallbackSteps;
+    return incoming.length >= 3 ? incoming.slice(0, 4) : fallbackSteps;
   }, [fallbackSteps, route?.params?.steps]);
 
   const [selectedReaction, setSelectedReaction] = useState<ReactionKey | null>(null);
@@ -175,6 +177,7 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
     if (triedSet[type].has(itemId)) return;
     if (type === 'position') store.markTried(itemId);
     if (type === 'foreplay') store.markForeplayTried(itemId);
+    if (type === 'oral') store.markOralTried(itemId);
     if (type === 'massage') store.markMassageTried(itemId);
     if (type === 'roleplay') store.markRoleplayTried(itemId);
     triedSet[type].add(itemId);
@@ -184,6 +187,7 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
     if (favoriteSet[type].has(itemId)) return;
     if (type === 'position') store.toggleFavorite(itemId);
     if (type === 'foreplay') store.toggleForeplayFavorite(itemId);
+    if (type === 'oral') store.toggleOralFavorite(itemId);
     if (type === 'massage') store.toggleMassageFavorite(itemId);
     if (type === 'roleplay') store.toggleRoleplayFavorite(itemId);
     favoriteSet[type].add(itemId);
@@ -193,19 +197,21 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
     if (isSubmitting || !selectedReactionConfig) return;
     didSubmitRef.current = true;
     setIsSubmitting(true);
-    haptics.confirmAction();
+    haptics.complete();
 
     const state = useStore.getState();
     const triedSet: Record<SessionStepType, Set<number>> = {
       position: new Set(state.tried),
       foreplay: new Set(state.triedForeplay),
       massage: new Set(state.triedMassage),
+      oral: new Set(state.triedOral),
       roleplay: new Set(state.triedRoleplay),
     };
     const favoriteSet: Record<SessionStepType, Set<number>> = {
       position: new Set(state.favorites),
       foreplay: new Set(state.favoriteForeplay),
       massage: new Set(state.favoriteMassage),
+      oral: new Set(state.favoriteOral),
       roleplay: new Set(state.favoriteRoleplay),
     };
 
@@ -252,6 +258,9 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
       <View style={[styles.glow, styles.glowBottom, { backgroundColor: themeColors.primary[400] + '16' }]} />
 
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('TonightSessionScreen', route?.params || {})} accessibilityRole="button">
+          <Text style={[styles.backText, { color: themeColors.text.secondary }]}>←</Text>
+        </TouchableOpacity>
         <Animated.Text style={[styles.heroEmoji, { transform: [{ scale: pulse }] }]}>🌸</Animated.Text>
         <Text style={[styles.title, { color: themeColors.text.primary }]}>{copy.title}</Text>
         <Text style={[styles.subtitle, { color: themeColors.text.secondary }]}>{copy.emojiPrompt}</Text>
@@ -330,6 +339,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     justifyContent: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 56,
+    left: 12,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  backText: {
+    fontSize: 28,
+    fontWeight: '700',
   },
   glow: {
     position: 'absolute',
