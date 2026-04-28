@@ -195,7 +195,7 @@ const asFiniteNumber = (value: unknown, fallback = 0): number => {
 
 const asNumberArray = (value: unknown): number[] => (
   Array.isArray(value)
-    ? value.filter((entry): entry is number => typeof entry === 'number' && Number.isFinite(entry))
+    ? Array.from(new Set(value.filter((entry): entry is number => typeof entry === 'number' && Number.isFinite(entry))))
     : []
 );
 
@@ -214,6 +214,13 @@ const asObjectArray = <T>(value: unknown): T[] => (
 const sanitizeLanguage = (value: unknown): AppLanguage => (
   value === 'es' || value === 'pt' || value === 'hi' ? value : 'en'
 );
+
+const toggleNumberInSet = (values: number[], id: number): number[] => {
+  const uniqueValues = Array.from(new Set(values));
+  return uniqueValues.includes(id)
+    ? uniqueValues.filter((value) => value !== id)
+    : [...uniqueValues, id];
+};
 
 const sanitizeLearningPreferences = (value: unknown): UserPreferences => {
   if (!value || typeof value !== 'object') {
@@ -468,7 +475,7 @@ export const useStore = create<UserState>()(
 
       toggleFavorite: (id) => {
         const favs = get().favorites;
-        set({ favorites: favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id] });
+        set({ favorites: toggleNumberInSet(favs, id) });
       },
       markTried: (id) => {
         const tried = get().tried;
@@ -476,7 +483,7 @@ export const useStore = create<UserState>()(
       },
       toggleForeplayFavorite: (id) => {
         const favs = get().favoriteForeplay;
-        set({ favoriteForeplay: favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id] });
+        set({ favoriteForeplay: toggleNumberInSet(favs, id) });
       },
       markForeplayTried: (id) => {
         const tried = get().triedForeplay;
@@ -484,7 +491,7 @@ export const useStore = create<UserState>()(
       },
       toggleOralFavorite: (id) => {
         const favs = get().favoriteOral;
-        set({ favoriteOral: favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id] });
+        set({ favoriteOral: toggleNumberInSet(favs, id) });
       },
       markOralTried: (id) => {
         const tried = get().triedOral;
@@ -492,7 +499,7 @@ export const useStore = create<UserState>()(
       },
       toggleMassageFavorite: (id) => {
         const favs = get().favoriteMassage;
-        set({ favoriteMassage: favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id] });
+        set({ favoriteMassage: toggleNumberInSet(favs, id) });
       },
       markMassageTried: (id) => {
         const tried = get().triedMassage;
@@ -500,7 +507,7 @@ export const useStore = create<UserState>()(
       },
       toggleRoleplayFavorite: (id) => {
         const favs = get().favoriteRoleplay;
-        set({ favoriteRoleplay: favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id] });
+        set({ favoriteRoleplay: toggleNumberInSet(favs, id) });
       },
       markRoleplayTried: (id) => {
         const tried = get().triedRoleplay;

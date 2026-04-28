@@ -11,7 +11,6 @@ import { MOOD_PLAYLISTS } from '@/constants/gamification';
 import type { MoodPlaylist } from '@/types/app';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useStore } from '@/store/useStore';
-import { sound } from '@/services/audio';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
 
@@ -42,7 +41,6 @@ export function MoodCheckScreen({ navigation, route }: MoodCheckScreenProps) {
   const handleSelectMood = (mood: MoodPlaylist) => {
     setSelectedMoodId(mood.id);
     store.setCurrentMood(mood.mood);
-    sound.light();
   };
 
   const handleContinue = () => {

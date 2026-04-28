@@ -115,7 +115,7 @@ Notifications.setNotificationHandler({
 
 const { width } = Dimensions.get('window');
 const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
-const APP_STORE_LINK = 'https://apps.apple.com/app/id0000000000';
+const APP_STORE_LINK = 'https://apps.apple.com/app/id6758679457';
 
 const FEATURE_LOCK_REQUIREMENTS: Record<
   'starter_pack_collections' | 'truth_or_dare' | 'date_night_generator' | 'seasonal_content',
@@ -370,111 +370,6 @@ function _ShimmerEffect({ width: w, height: h, style }: { width: number; height:
 }
 
 // ============================================
-// SOUND EFFECTS SYSTEM (Lazy loaded to prevent startup crashes)
-// ============================================
-const sounds = {
-  soundRef: null as any,
-  _audioModule: null as any,
-
-  async getAudio() {
-    if (!this._audioModule) {
-      try {
-        const { Audio } = await import('expo-av');
-        this._audioModule = Audio;
-      } catch (e) {
-        console.warn('Failed to load Audio module:', e);
-        return null;
-      }
-    }
-    return this._audioModule;
-  },
-
-  // Play a celebratory chime for stars
-  async playStarChime() {
-    try {
-      const Audio = await this.getAudio();
-      if (!Audio) return;
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false });
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3' }, // Short success chime
-        { shouldPlay: true, volume: 0.5 }
-      );
-      this.soundRef = sound;
-      sound.setOnPlaybackStatusUpdate((status: any) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync();
-        }
-      });
-    } catch (e) {
-      console.warn('Sound play error:', e);
-    }
-  },
-
-  // Play achievement unlocked fanfare
-  async playAchievement() {
-    try {
-      const Audio = await this.getAudio();
-      if (!Audio) return;
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false });
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: 'https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3' }, // Achievement fanfare
-        { shouldPlay: true, volume: 0.6 }
-      );
-      this.soundRef = sound;
-      sound.setOnPlaybackStatusUpdate((status: any) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync();
-        }
-      });
-    } catch (e) {
-      console.warn('Sound play error:', e);
-    }
-  },
-
-  // Play level up celebration
-  async playLevelUp() {
-    try {
-      const Audio = await this.getAudio();
-      if (!Audio) return;
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false });
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: 'https://assets.mixkit.co/active_storage/sfx/1997/1997-preview.mp3' }, // Level up sound
-        { shouldPlay: true, volume: 0.6 }
-      );
-      this.soundRef = sound;
-      sound.setOnPlaybackStatusUpdate((status: any) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync();
-        }
-      });
-    } catch (e) {
-      console.warn('Sound play error:', e);
-    }
-  },
-
-  // Play daily bonus coin sound
-  async playBonus() {
-    try {
-      const Audio = await this.getAudio();
-      if (!Audio) return;
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false });
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: 'https://assets.mixkit.co/active_storage/sfx/888/888-preview.mp3' }, // Coin/bonus sound
-        { shouldPlay: true, volume: 0.5 }
-      );
-      this.soundRef = sound;
-      sound.setOnPlaybackStatusUpdate((status: any) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync();
-        }
-      });
-    } catch (e) {
-      console.warn('Sound play error:', e);
-    }
-  },
-};
-
-// ============================================
 // STAR CELEBRATION MODAL
 // ============================================
 function StarCelebrationModal({ visible, onClose, stars, achievements }: { visible: boolean; onClose: () => void; stars: number; achievements: string[] }) {
@@ -486,12 +381,6 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
     if (visible) {
       haptics.celebrate();
       setShowConfetti(true);
-      // Play sounds based on what was earned
-      if (achievements.length > 0) {
-        sounds.playAchievement();
-      } else {
-        sounds.playStarChime();
-      }
       Animated.spring(scaleAnim, { toValue: 1, tension: 50, friction: 7, useNativeDriver: true }).start();
     } else {
       scaleAnim.setValue(0);
@@ -4154,13 +4043,34 @@ function HomeScreen({
               style={styles.homeSecondaryChoice}
               onPress={() => {
                 Analytics.trackFeatureUsed('home_explore_freely');
-                setShowExploreExtras((value) => !value);
+                navigation.navigate('Explore');
               }}
               accessibilityRole="button"
             >
               <Text style={styles.homeSecondaryChoiceText}>{voice.home.exploreFreely}</Text>
             </TouchableOpacity>
           </View>
+          {selectedMoodContext ? (
+            <View style={styles.vibeEnhancements}>
+              <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.title')}</Text>
+              <View style={styles.vibeEnhancementRow}>
+                <TouchableOpacity
+                  style={styles.vibeEnhancementButton}
+                  onPress={() => setShowMusic(true)}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.vibeEnhancementText}>{t('home.vibe_enhancements.music')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.vibeEnhancementButton}
+                  onPress={() => Alert.alert(t('home.ritual.title'), t('home.ritual.body'))}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.vibeEnhancementText}>{t('home.vibe_enhancements.ritual')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : null}
         </View>
       </Animated.View>
 
@@ -4198,11 +4108,12 @@ function HomeScreen({
                   setShowDateNight(true);
                   return;
                 }
+                setShowInsights(true);
                 }}
             >
               <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.featureButtonGradient}>
                 <Text style={styles.featureButtonEmoji}>🌙</Text>
-                <Text style={styles.featureButtonText}>{dateNightUnlocked ? t('home.feature.date_night') : '🔒 Reach Level 4'}</Text>
+                <Text style={styles.featureButtonText}>{dateNightUnlocked ? t('home.feature.date_night') : t('home.locked.level', { level: FEATURE_LOCK_REQUIREMENTS.date_night_generator.level })}</Text>
                 <Text style={styles.featureButtonSubtext}>{dateNightUnlocked ? t('home.quality.romance') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars)}/${FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars} ⭐`}</Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -4220,11 +4131,12 @@ function HomeScreen({
                   setShowTruthOrDare(true);
                   return;
                 }
+                setShowInsights(true);
                 }}
             >
               <LinearGradient colors={[colors.error, '#ec4899']} style={styles.featureButtonGradient}>
                 <Text style={styles.featureButtonEmoji}>🎲</Text>
-                <Text style={styles.featureButtonText}>{truthOrDareUnlocked ? t('home.feature.truth_dare') : '🔒 Reach Level 3'}</Text>
+                <Text style={styles.featureButtonText}>{truthOrDareUnlocked ? t('home.feature.truth_dare') : t('home.locked.level', { level: FEATURE_LOCK_REQUIREMENTS.truth_or_dare.level })}</Text>
                 <Text style={styles.featureButtonSubtext}>{truthOrDareUnlocked ? t('home.quality.truth_dare') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars)}/${FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars} ⭐`}</Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -4292,6 +4204,7 @@ function HomeScreen({
                 setShowSeasonal(true);
                 return;
               }
+              setShowInsights(true);
               }}
             activeOpacity={0.8}
           >
@@ -7178,6 +7091,37 @@ const styles = StyleSheet.create({
   vibeMoodEmoji: { fontSize: 24, marginBottom: 4 },
   vibeMoodLabel: { color: colors.text.primary, fontSize: 13, lineHeight: 17, fontWeight: '700' },
   vibeMoodLabelSelected: { color: colors.white },
+  vibeEnhancements: {
+    marginTop: 2,
+    marginBottom: 12,
+  },
+  vibeEnhancementsTitle: {
+    color: colors.text.muted,
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  vibeEnhancementRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  vibeEnhancementButton: {
+    flex: 1,
+    minHeight: 42,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    backgroundColor: colors.background.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  vibeEnhancementText: {
+    color: colors.text.primary,
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
   homeChoiceRow: { flexDirection: 'row', gap: 10 },
   homePrimaryChoice: { flex: 1.2, minHeight: 48, borderRadius: 14, backgroundColor: colors.primary[500], alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   homePrimaryChoiceText: { color: colors.white, fontSize: 14, fontWeight: '800', textAlign: 'center' },
@@ -7942,4 +7886,3 @@ const styles = StyleSheet.create({
   legalConfirmButton: { backgroundColor: colors.primary[500], paddingVertical: 16, borderRadius: 25, alignItems: 'center', marginTop: 12 },
   legalConfirmButtonText: { color: colors.white, fontSize: 16, fontWeight: '600' },
 });
-

@@ -9,7 +9,6 @@ import {
   massageTechniques,
   rolePlayScenarios,
 } from '@/content/localizedContent';
-import { sound } from '@/services/audio';
 import { Analytics } from '@/services/analytics';
 import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
@@ -158,7 +157,6 @@ export function OnboardingPayoffScreen() {
   }, [buttonOpacity, buttonTranslateY, cardAnims, headerOpacity, subheaderOpacity, valueRowOpacity]);
 
   const handleBegin = () => {
-    sound.success();
     store.completeOnboarding();
   };
 

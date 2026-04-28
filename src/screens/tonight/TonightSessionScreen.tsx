@@ -10,7 +10,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
-import { sound } from '@/services/audio';
 import { haptics } from '@/services/haptics';
 import { MOOD_PLAYLISTS } from '@/constants/gamification';
 import { resolveExperienceProfile } from '@/content/experienceProfiles';
@@ -177,7 +176,6 @@ export function TonightSessionScreen({
     if (itemId) {
       haptics.openCard(`${step.type}:${itemId}`);
     }
-    sound.light();
     if (step.type === 'position') {
       navigation.navigate('PositionDetail', { position: step.item });
       return;
@@ -237,7 +235,6 @@ export function TonightSessionScreen({
           <TouchableOpacity
             style={[styles.regenerateButton, { borderColor: themeColors.cardLight, backgroundColor: themeColors.card }]}
             onPress={() => {
-              sound.light();
               openedStepKeysRef.current = new Set();
               setRegenerateCount((value) => value + 1);
             }}
@@ -251,7 +248,6 @@ export function TonightSessionScreen({
             style={styles.ctaWrapper}
             onPress={() => {
               didAdvanceRef.current = true;
-              sound.medium();
               navigation.navigate('SessionRatingScreen', {
                 mood: selectedMood,
                 steps,

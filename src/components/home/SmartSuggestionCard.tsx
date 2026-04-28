@@ -10,7 +10,6 @@ import {
   rolePlayScenarios,
 } from '@/content/localizedContent';
 
-import { sound } from '@/services/audio';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy } from '@/copy';
@@ -80,10 +79,10 @@ const SUGGESTION_WHY: Record<AppLanguage, Record<ContentType, string[]>> = {
   },
   hi: {
     foreplay: ['मूड में आने का अच्छा तरीका।', 'नरम, करीब और आसान शुरुआत।', 'आराम से, बिना जल्दी।'],
-    oral: ['ये अक्सर अच्छा लगता है।', 'Comfortable, familiar और fun।', 'गर्मी बनाने की अच्छी लय।'],
-    massage: ['धीमा होने के लिए perfect।', 'आप दोनों को साथ settle होने देता है।', 'आज रात के लिए बहुत grounded।'],
-    position: ['आपने जो energy चुनी, उससे match करता है।', 'इसमें आना आसान है।', 'यहां natural लगता है।'],
-    roleplay: ['थोड़ा playful, थोड़ा bold।', 'हल्का मज़ा, थोड़ी spark।', 'बस सही edge।'],
+    oral: ['ये अक्सर अच्छा लगता है।', 'आरामदेह, जाना-पहचाना और मज़ेदार।', 'गर्मी बनाने की अच्छी लय।'],
+    massage: ['धीमा होने के लिए बिल्कुल सही।', 'आप दोनों को साथ ठहरने देता है।', 'आज रात के लिए बहुत स्थिर।'],
+    position: ['आपने जो ऊर्जा चुनी, उससे मेल खाता है।', 'इसमें आना आसान है।', 'यहाँ सहज लगता है।'],
+    roleplay: ['थोड़ा खेलता हुआ, थोड़ा साहसी।', 'हल्का मज़ा, थोड़ी चिंगारी।', 'बस उतनी ही धार।'],
   },
 };
 
@@ -138,16 +137,11 @@ export function SmartSuggestionCard({
     [moodId, themeColors.primary]
   );
 
-  const handlePress = () => {
-    sound.light();
-    onPress();
-  };
-
   return (
     <Animated.View style={{ opacity, transform: [{ translateX }] }}>
       <TouchableOpacity
         activeOpacity={0.9}
-        onPress={handlePress}
+        onPress={onPress}
         style={[
           styles.card,
           {

@@ -3,7 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { useI18n } from '@/hooks/useI18n';
-import { sound } from '@/services/audio';
 import { haptics } from '@/services/haptics';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { getVoiceCopy, pickVoiceLine } from '@/copy';
@@ -44,7 +43,6 @@ export function WeeklyGoalsCard() {
     }
 
     if (hasNewCompletion) {
-      sound.celebration();
       haptics.celebrate();
     }
   }, [store.weeklyGoals]);
@@ -65,7 +63,6 @@ export function WeeklyGoalsCard() {
 
   const handleGoalPress = (goalId: string, completed: boolean) => {
     if (completed) return;
-    sound.light();
     setTooltipGoalId(goalId);
   };
 
@@ -86,7 +83,6 @@ export function WeeklyGoalsCard() {
         </View>
         <TouchableOpacity
           onPress={() => {
-            sound.light();
             setExpanded((value) => !value);
           }}
           style={styles.chevronButton}

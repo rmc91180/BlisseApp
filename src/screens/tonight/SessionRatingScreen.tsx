@@ -10,7 +10,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
-import { sound } from '@/services/audio';
 import { haptics } from '@/services/haptics';
 import { resolveExperienceProfile } from '@/content/experienceProfiles';
 import {
@@ -240,7 +239,6 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
     });
 
     store.checkAndAwardAchievements();
-    sound.celebration();
 
     if (navigation.popToTop) {
       navigation.popToTop();
@@ -279,7 +277,6 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
                   },
                 ]}
                 onPress={() => {
-                  sound.light();
                   setSelectedReaction(reaction.key);
                 }}
                 activeOpacity={0.85}
@@ -300,7 +297,6 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
             <TouchableOpacity
               style={[styles.secondaryButton, { borderColor: themeColors.cardLight, backgroundColor: themeColors.card }]}
               onPress={() => {
-                sound.light();
                 setSaveWorked((value) => !value);
               }}
               activeOpacity={0.9}
