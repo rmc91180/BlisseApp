@@ -656,7 +656,7 @@ const _CURATED_PLAYLISTS_EN: PlaylistLink[] = [
     mood: "passionate",
     spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO",
     appleMusicUrl: "https://music.apple.com/us/search?term=late%20night%20vibes%20playlist",
-    description: "Sultry, late-night vibes",
+    description: "Sultry tracks for late nights",
   },
   {
     name: "Chill & Intimate",

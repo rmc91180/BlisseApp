@@ -2545,49 +2545,6 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
 }
 
 // ============================================
-// MUSIC PLAYLISTS MODAL (Enhanced)
-// ============================================
-function MusicPlaylistsModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
-  const { t } = useI18n();
-  const openPlaylist = (url: string) => {
-    Linking.openURL(url).catch(() => {
-      Alert.alert(t('music.error_title'), t('music.error_message'));
-    });
-  };
-
-  return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { maxHeight: '85%' }]}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{t('music.title')}</Text>
-            <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
-          </View>
-          <Text style={styles.modalSubtitle}>{t('music.subtitle')}</Text>
-          
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {CURATED_PLAYLISTS.map((playlist, index) => (
-              <View key={index} style={styles.musicPlaylistCard}>
-                <Text style={styles.musicPlaylistName}>{playlist.name}</Text>
-                <Text style={styles.musicPlaylistDesc}>{playlist.description}</Text>
-                <View style={styles.musicButtonsRow}>
-                  <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#1DB954' }]} onPress={() => openPlaylist(playlist.spotifyUrl)}>
-                    <Text style={styles.musicButtonText}>{t('music.spotify')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#FA243C' }]} onPress={() => openPlaylist(playlist.appleMusicUrl)}>
-                    <Text style={styles.musicButtonText}>{t('music.apple_music')}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-// ============================================
 // SETTINGS MODAL
 // ============================================
 // ============================================
@@ -3628,7 +3585,6 @@ function HomeScreen({
   const trackedRecommendationImpressionsRef = useRef<Set<string>>(new Set());
   const [showSeasonal, setShowSeasonal] = useState(false);
   const [showTruthOrDare, setShowTruthOrDare] = useState(false);
-  const [showMusic, setShowMusic] = useState(false);
   const [dailyJokeDateKey, setDailyJokeDateKey] = useState(getDateKey(new Date()));
   const [dailyJokeBank, setDailyJokeBank] = useState<DailyJokeBank | null>(null);
   const [showDailyPunchline, setShowDailyPunchline] = useState(false);
@@ -3637,6 +3593,19 @@ function HomeScreen({
   const homeDisplayName = store.name || t('home.there');
   const selectedMoodContext = useMemo(() => getMoodContext(store.currentMood), [store.currentMood]);
   const selectedMoodValue = selectedMoodContext?.mood || store.currentMood;
+  const tonightPlaylist = useMemo(() => {
+    if (!selectedMoodContext) return null;
+    const playlistMoodByMoodId: Record<string, string> = {
+      romantic: 'romantic',
+      passionate: 'passionate',
+      playful: 'playful',
+      adventurous: 'dynamic',
+      relaxed: 'relaxed',
+      quickie: 'passionate',
+    };
+    const targetMood = playlistMoodByMoodId[selectedMoodContext.id] || selectedMoodContext.mood;
+    return CURATED_PLAYLISTS.find((playlist) => playlist.mood === targetMood) || null;
+  }, [selectedMoodContext]);
   const handleHomeMoodSelect = useCallback((mood: MoodPlaylist) => {
     const nextMood = selectedMoodValue === mood.mood ? null : mood.mood;
     store.setCurrentMood(nextMood);
@@ -3923,10 +3892,6 @@ function HomeScreen({
         >
           <Text style={styles.originLinkText}>{voice.home.whyWeMadeThis}</Text>
         </TouchableOpacity>
-        <View style={styles.dailyRitualCard}>
-          <Text style={styles.dailyRitualText}>{dailyRitualLine}</Text>
-          <Text style={styles.dailyRitualPrivacy}>{voice.home.privacyLine}</Text>
-        </View>
       </View>
 
       {showTrialBanner && trialDaysRemaining > 0 ? (
@@ -3975,43 +3940,28 @@ function HomeScreen({
               );
             })}
           </View>
-          <View style={styles.homeChoiceRow}>
-            <TouchableOpacity
-              style={styles.homePrimaryChoice}
-              onPress={() => navigation.navigate('MoodCheckScreen', selectedMoodContext ? { mood: selectedMoodContext } : undefined)}
-              accessibilityRole="button"
-            >
-              <Text style={styles.homePrimaryChoiceText}>{voice.home.setTonightVibe}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.homeSecondaryChoice}
-              onPress={() => {
-                Analytics.trackFeatureUsed('home_explore_freely');
-                navigation.navigate('Explore');
-              }}
-              accessibilityRole="button"
-            >
-              <Text style={styles.homeSecondaryChoiceText}>{voice.home.exploreFreely}</Text>
-            </TouchableOpacity>
-          </View>
           {selectedMoodContext ? (
-            <View style={styles.vibeEnhancements}>
-              <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.title')}</Text>
-              <View style={styles.vibeEnhancementRow}>
-                <TouchableOpacity
-                  style={styles.vibeEnhancementButton}
-                  onPress={() => setShowMusic(true)}
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.vibeEnhancementText}>{t('home.vibe_enhancements.music')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.vibeEnhancementButton}
-                  onPress={() => Alert.alert(t('home.ritual.title'), t('home.ritual.body'))}
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.vibeEnhancementText}>{t('home.vibe_enhancements.ritual')}</Text>
-                </TouchableOpacity>
+            <View
+              style={[
+                styles.vibeEnhancements,
+                {
+                  borderColor: selectedMoodContext.color + '55',
+                  backgroundColor: selectedMoodContext.color + '12',
+                },
+              ]}
+            >
+              {tonightPlaylist ? (
+                <View style={styles.vibeEnhancementInlineItem}>
+                  <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.music')}</Text>
+                  <Text style={styles.vibeEnhancementText}>{tonightPlaylist.name}</Text>
+                  <Text style={styles.vibeEnhancementBody}>{tonightPlaylist.description}</Text>
+                </View>
+              ) : null}
+              <View style={styles.vibeEnhancementInlineDivider} />
+              <View style={styles.vibeEnhancementInlineItem}>
+                <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.ritual')}</Text>
+                <Text style={styles.vibeEnhancementText}>{dailyRitualLine}</Text>
+                <Text style={styles.vibeEnhancementBody}>{t('home.ritual.body')}</Text>
               </View>
             </View>
           ) : null}
@@ -4094,7 +4044,7 @@ function HomeScreen({
                 <Text style={styles.featureButtonSubtext}>{t('home.quality.moods')}</Text>
               </LinearGradient>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.featureButton} onPress={() => setShowMusic(true)}>
+            <TouchableOpacity style={styles.featureButton} onPress={() => navigation.navigate('Explore')}>
               <LinearGradient colors={['#1DB954', colors.green]} style={styles.featureButtonGradient}>
                 <Text style={styles.featureButtonEmoji}>🎵</Text>
                 <Text style={styles.featureButtonText}>{t('home.feature.music')}</Text>
@@ -4313,7 +4263,6 @@ function HomeScreen({
         onOpenSpinner={() => setShowSpinner(true)}
       />
       <TruthOrDareModal visible={showTruthOrDare} onClose={() => setShowTruthOrDare(false)} />
-      <MusicPlaylistsModal visible={showMusic} onClose={() => setShowMusic(false)} />
     </ScreenWrapper>
   );
 }
@@ -4324,6 +4273,7 @@ function ExploreScreen({ navigation }: any) {
   const [selectedStarterPack, setSelectedStarterPack] = useState<string | null>(null);
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'>('positions');
   const [sortBy, setSortBy] = useState<'all' | 'newToYou' | 'tried'>('all');
+  const [showBrowseTools, setShowBrowseTools] = useState(false);
   const [forYouItemNames, setForYouItemNames] = useState<string[]>([]);
   const store = useStore();
   const { language, t, localizeTerm } = useI18n();
@@ -4590,10 +4540,10 @@ function ExploreScreen({ navigation }: any) {
     [forYouItemNames, t, voice.home.forYouSubtitle]
   );
   const visibleStarterPacks = useMemo(
-    () => starterPacksUnlocked
+    () => starterPacksUnlocked && showBrowseTools
       ? [forYouStarterPack, ...currentStarterPacks]
       : [forYouStarterPack],
-    [currentStarterPacks, forYouStarterPack, starterPacksUnlocked]
+    [currentStarterPacks, forYouStarterPack, showBrowseTools, starterPacksUnlocked]
   );
   const activeStarterPack = visibleStarterPacks.find((pack) => pack.id === selectedStarterPack) ?? null;
 
@@ -4748,17 +4698,6 @@ function ExploreScreen({ navigation }: any) {
     return result;
   }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedRoleplay]);
 
-  const currentFilteredListCount = contentType === 'positions'
-    ? filteredPositions.length
-    : contentType === 'foreplay'
-      ? filteredForeplay.length
-      : contentType === 'oral'
-        ? filteredOral.length
-        : contentType === 'massage'
-          ? filteredMassage.length
-          : filteredRoleplay.length;
-  const newToYouCount = sortBy === 'newToYou' ? currentFilteredListCount : 0;
-
   const openFavoriteChip = useCallback((chip: { contentType: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'; item: any }) => {
     const itemId = Number(chip.item?.id || 0);
     if (chip.contentType === 'positions') {
@@ -4791,6 +4730,22 @@ function ExploreScreen({ navigation }: any) {
     setSelectedStarterPack(null);
     setSortBy('all');
   }, []);
+
+  const toggleBrowseTools = useCallback(() => {
+    setShowBrowseTools((current) => {
+      const next = !current;
+      if (!next) clearExploreFilters();
+      return next;
+    });
+  }, [clearExploreFilters]);
+
+  const openExplorePlaylist = useCallback(async (url: string) => {
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert(t('music.error_title'), t('music.error_message'));
+    }
+  }, [t]);
 
   const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => {
     setContentType(type);
@@ -4837,15 +4792,6 @@ function ExploreScreen({ navigation }: any) {
         </ScrollView>
       </View>
 
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onClear={() => setSearchQuery('')}
-        placeholder={t('explore.search_placeholder', {
-          type: translateUi(language, getContentTypeKey(contentType)).toLowerCase(),
-        })}
-      />
-
       <View style={styles.collectionSection}>
         <View style={styles.collectionHeader}>
           <Text style={styles.collectionTitle}>{t('explore.collections.title')}</Text>
@@ -4879,7 +4825,7 @@ function ExploreScreen({ navigation }: any) {
             );
           })}
         </ScrollView>
-        {!starterPacksUnlocked ? (
+        {!starterPacksUnlocked && showBrowseTools ? (
           <View style={[styles.collectionLockedCard, styles.collectionLockedInlineCard]}>
             <Text style={styles.collectionLockedEmoji}>🔒</Text>
             <Text style={styles.collectionLockedTitle}>{voice.labels.collectionLevel2Lock}</Text>
@@ -4889,57 +4835,99 @@ function ExploreScreen({ navigation }: any) {
           </View>
         ) : null}
       </View>
-      
-      {/* Sort Options */}
-      <View style={styles.sortContainer}>
-        {(['all', 'newToYou', 'tried'] as const).map((option) => (
-          <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { setSortBy(option); }}>
-            <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
-              {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? `🆕 ${t('explore.sort.new_to_you')}` : `✓ ${t('explore.sort.tried')}`}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      {sortBy === 'newToYou' ? (
-        <Text style={styles.sortMetaText}>{`${newToYouCount} new ideas`}</Text>
-      ) : null}
 
-      <View style={styles.categoryWrapper}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
-          <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(null); }}>
-            <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>{t('common.all')}</Text>
-          </TouchableOpacity>
-          {currentCategories.map((cat) => (
-            <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(cat); }}>
-              <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>
-                {localizeTerm(cat)}{' '}
-                <Text style={[styles.categoryChipCountText, selectedCategory === cat && styles.categoryChipCountTextSelected]}>
-                  ({categoryCounts[cat] || 0})
-                </Text>
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-      {currentFavoriteChips.length >= 3 ? (
-        <View style={styles.favoritesQuickBar}>
-          <Text style={styles.favoritesQuickHeader}>
-            {`❤️ Your saved ${contentType === 'positions' ? 'positions' : 'ideas'}`}
-          </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.favoritesQuickScrollContent}>
-            {currentFavoriteChips.map((chip) => (
-              <TouchableOpacity
-                key={`${chip.contentType}-${chip.item.id}`}
-                style={styles.favoriteQuickChip}
-                onPress={() => openFavoriteChip(chip)}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.favoriteQuickChipText} numberOfLines={1}>
-                  {chip.item.name}
+      <TouchableOpacity
+        style={styles.exploreDepthToggle}
+        onPress={toggleBrowseTools}
+        activeOpacity={0.85}
+        accessibilityRole="button"
+      >
+        <Text style={styles.exploreDepthToggleText}>
+          {showBrowseTools ? t('explore.browse_less') : t('explore.browse_more')}
+        </Text>
+      </TouchableOpacity>
+      
+      {showBrowseTools ? (
+        <View style={styles.exploreAdvancedControls}>
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+            placeholder={t('explore.search_placeholder', {
+              type: translateUi(language, getContentTypeKey(contentType)).toLowerCase(),
+            })}
+          />
+
+          <View style={styles.sortContainer}>
+            {(['all', 'newToYou', 'tried'] as const).map((option) => (
+              <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { setSortBy(option); }}>
+                <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
+                  {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? `🆕 ${t('explore.sort.new_to_you')}` : `✓ ${t('explore.sort.tried')}`}
                 </Text>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </View>
+
+          <View style={styles.categoryWrapper}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
+              <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(null); }}>
+                <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>{t('common.all')}</Text>
+              </TouchableOpacity>
+              {currentCategories.map((cat) => (
+                <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(cat); }}>
+                  <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>
+                    {localizeTerm(cat)}{' '}
+                    <Text style={[styles.categoryChipCountText, selectedCategory === cat && styles.categoryChipCountTextSelected]}>
+                      ({categoryCounts[cat] || 0})
+                    </Text>
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+
+          {currentFavoriteChips.length >= 3 ? (
+            <View style={styles.favoritesQuickBar}>
+              <Text style={styles.favoritesQuickHeader}>
+                {contentType === 'positions' ? t('explore.saved.positions') : t('explore.saved.ideas')}
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.favoritesQuickScrollContent}>
+                {currentFavoriteChips.map((chip) => (
+                  <TouchableOpacity
+                    key={`${chip.contentType}-${chip.item.id}`}
+                    style={styles.favoriteQuickChip}
+                    onPress={() => openFavoriteChip(chip)}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.favoriteQuickChipText} numberOfLines={1}>
+                      {chip.item.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          ) : null}
+
+          <View style={styles.exploreMusicSection}>
+            <Text style={styles.collectionTitle}>{t('home.feature.music')}</Text>
+            <Text style={styles.exploreMusicSubtitle}>{t('music.subtitle')}</Text>
+            {CURATED_PLAYLISTS.map((playlist) => (
+              <View key={playlist.mood} style={styles.exploreMusicCard}>
+                <View style={styles.exploreMusicCopy}>
+                  <Text style={styles.musicPlaylistName}>{playlist.name}</Text>
+                  <Text style={styles.musicPlaylistDesc}>{playlist.description}</Text>
+                </View>
+                <View style={styles.musicButtonsRow}>
+                  <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#1DB954' }]} onPress={() => openExplorePlaylist(playlist.spotifyUrl)}>
+                    <Text style={styles.musicButtonText}>{t('music.spotify')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#FA243C' }]} onPress={() => openExplorePlaylist(playlist.appleMusicUrl)}>
+                    <Text style={styles.musicButtonText}>{t('music.apple_music')}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
         </View>
       ) : null}
       {contentType === 'positions' && (
@@ -6936,8 +6924,17 @@ const styles = StyleSheet.create({
   originBody: { color: colors.text.secondary, fontSize: 14, lineHeight: 21 },
   homeHeader: { paddingTop: 10, marginBottom: 16 },
   homeHeaderTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  originLink: { alignSelf: 'flex-start', marginTop: 8, paddingVertical: 4 },
-  originLinkText: { color: colors.primary[400], fontSize: 12, fontWeight: '700' },
+  originLink: {
+    alignSelf: 'flex-start',
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.primary[500] + '44',
+    backgroundColor: colors.primary[500] + '14',
+  },
+  originLinkText: { color: colors.primary[400], fontSize: 14, fontWeight: '800' },
   dailyRitualCard: {
     marginTop: 10,
     borderRadius: 14,
@@ -7050,34 +7047,29 @@ const styles = StyleSheet.create({
   vibeMoodLabelSelected: { color: colors.white },
   vibeEnhancements: {
     marginTop: 2,
-    marginBottom: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
   vibeEnhancementsTitle: {
     color: colors.text.muted,
     fontSize: 12,
     fontWeight: '700',
-    marginBottom: 8,
+    marginBottom: 5,
   },
-  vibeEnhancementRow: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  vibeEnhancementButton: {
-    flex: 1,
-    minHeight: 42,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.cardLight,
-    backgroundColor: colors.background.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
+  vibeEnhancementInlineItem: { marginBottom: 2 },
+  vibeEnhancementInlineDivider: { height: 1, backgroundColor: 'rgba(255,255,255,0.08)', marginVertical: 10 },
   vibeEnhancementText: {
     color: colors.text.primary,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
-    textAlign: 'center',
+  },
+  vibeEnhancementBody: {
+    color: colors.text.secondary,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 3,
   },
   homeChoiceRow: { flexDirection: 'row', gap: 10 },
   homePrimaryChoice: { flex: 1.2, minHeight: 48, borderRadius: 14, backgroundColor: colors.primary[500], alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
@@ -7131,6 +7123,19 @@ const styles = StyleSheet.create({
   clearButton: { padding: 4 },
   clearButtonText: { color: colors.text.muted, fontSize: 16 },
   exploreHeader: { paddingTop: 10, marginBottom: 16 },
+  exploreDepthToggle: {
+    minHeight: 42,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    backgroundColor: colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
+    paddingHorizontal: 14,
+  },
+  exploreDepthToggleText: { color: colors.text.secondary, fontSize: 13, fontWeight: '700' },
+  exploreAdvancedControls: { marginBottom: 2 },
   collectionSection: { marginBottom: 14 },
   collectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   collectionTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary },
@@ -7158,7 +7163,6 @@ const styles = StyleSheet.create({
   sortButtonActive: { backgroundColor: colors.primary[500] },
   sortButtonText: { fontSize: 12, color: colors.text.muted },
   sortButtonTextActive: { color: colors.white, fontWeight: '600' },
-  sortMetaText: { fontSize: 12, color: colors.text.muted, marginBottom: 10 },
   categoryWrapper: { marginBottom: 12 },
   categoryScrollContent: { paddingRight: 20 },
   categoryChip: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, marginRight: 8 },
@@ -7172,6 +7176,17 @@ const styles = StyleSheet.create({
   favoritesQuickScrollContent: { paddingRight: 20 },
   favoriteQuickChip: { backgroundColor: colors.card, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8, marginRight: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
   favoriteQuickChipText: { color: colors.text.primary, fontSize: 12, fontWeight: '600', maxWidth: 180 },
+  exploreMusicSection: { marginTop: 2, marginBottom: 14 },
+  exploreMusicSubtitle: { color: colors.text.muted, fontSize: 12, lineHeight: 17, marginTop: 4, marginBottom: 10 },
+  exploreMusicCard: {
+    backgroundColor: colors.card,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    padding: 12,
+    marginBottom: 10,
+  },
+  exploreMusicCopy: { marginBottom: 10 },
   positionGrid: { paddingHorizontal: 10, paddingBottom: 20 },
   positionRow: { justifyContent: 'space-between' },
   positionCard: { flex: 1, marginHorizontal: 6, backgroundColor: colors.card, borderRadius: 16, padding: 14, marginBottom: 12 },

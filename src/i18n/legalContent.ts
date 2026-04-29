@@ -516,7 +516,7 @@ const PT_CONTENT: LegalLocaleContent = {
     ],
   },
   about: {
-    title: 'Por que criamos o Blisse',
+    title: 'Why Blisse',
     subtitle: 'De Tammy e Mark, casados há 20 anos, para casais reais',
     intro: [
       'Somos Tammy e Mark. Depois de 20 anos de casamento, aprendemos que a conexão cresce quando existe intenção, leveza e curiosidade.',

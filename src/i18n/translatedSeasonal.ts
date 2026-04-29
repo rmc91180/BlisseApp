@@ -272,12 +272,12 @@ export const CURATED_PLAYLIST_STRINGS_PT: Array<{ name: string; description: str
 ];
 
 export const CURATED_PLAYLIST_STRINGS_HI: Array<{ name: string; description: string }> = [
-  { name: 'रोमांटिक इवनिंग', description: 'धीमे और रोमांटिक पलों के लिए कोमल, अंतरंग ट्रैक' },
-  { name: 'सेंसुअल और स्लो', description: 'जुनूनी जुड़ाव के लिए R&B स्लो जैम्स' },
-  { name: 'आफ्टर डार्क', description: 'रात देर की मादक वाइब्स' },
-  { name: 'चिल और अंतरंग', description: 'आरामदायक अंतरंगता के लिए सॉफ्ट बीट्स' },
-  { name: 'स्पाइसी लैटिन', description: 'माहौल गर्म करने के लिए गर्म लैटिन रिदम्स' },
-  { name: 'इलेक्ट्रिक एनर्जी', description: 'रोमांचक रातों के लिए हाई-एनर्जी ट्रैक' },
+  { name: 'रोमांटिक शाम', description: 'धीमे और रोमांटिक पलों के लिए कोमल संगीत' },
+  { name: 'मादक और धीमा', description: 'जुनूनी जुड़ाव के लिए धीमा संगीत' },
+  { name: 'रात के बाद', description: 'देर रात के लिए मादक धुनें' },
+  { name: 'शांत और अंतरंग', description: 'आरामदायक नज़दीकी के लिए नरम ताल' },
+  { name: 'लैटिन गर्माहट', description: 'माहौल गर्म करने वाली लैटिन लय' },
+  { name: 'ऊर्जावान रात', description: 'रोमांचक रातों के लिए तेज़ ऊर्जा वाला संगीत' },
 ];
 
 // ============================================
