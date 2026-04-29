@@ -2059,10 +2059,6 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
   const store = useStore();
   const currentMonth = getCurrentMonth();
   const currentMonthStats = store.monthlyStats.find(m => m.month === currentMonth);
-  const lastMonthDate = new Date();
-  lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
-  const lastMonth = lastMonthDate.toISOString().slice(0, 7);
-  const lastMonthStats = store.monthlyStats.find(m => m.month === lastMonth);
   const favoritesCount = store.favorites.length
     + store.favoriteForeplay.length
     + store.favoriteOral.length
@@ -2070,22 +2066,6 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
     + store.favoriteRoleplay.length;
   const notesCount = store.notes.length;
   const playlistsCount = store.userPlaylists.length;
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-  const activeDays7d = new Set(
-    store.activityLog
-      .filter((activity) => new Date(activity.date) >= sevenDaysAgo)
-      .map((activity) => getDateKey(new Date(activity.date)))
-  ).size;
-  const lastActivityDate = store.activityLog.length
-    ? new Date(store.activityLog[store.activityLog.length - 1].date)
-    : null;
-  const daysSinceLastActivity = lastActivityDate
-    ? Math.max(0, Math.floor((Date.now() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24)))
-    : null;
-  const weeklyGoalsCompletion = store.weeklyGoals.length
-    ? Math.round((store.weeklyGoals.filter((goal) => goal.completed).length / store.weeklyGoals.length) * 100)
-    : 0;
 
   const formatMonth = (monthStr: string) => {
     const [year, month] = monthStr.split('-');
@@ -2103,7 +2083,7 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { maxHeight: '90%' }]}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>📊 {t('profile.insights')}</Text>
+            <Text style={styles.modalTitle}>🌸 {t('profile.insights')}</Text>
             <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -2124,33 +2104,6 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
                   <Text style={styles.insightStatLabel}>{t('insights.new_things')}</Text>
                 </View>
               </View>
-            </View>
-
-            {/* Comparison */}
-            {lastMonthStats && (
-              <View style={styles.comparisonCard}>
-                <Text style={styles.comparisonTitle}>{t('insights.vs_last_month')}</Text>
-                <View style={styles.comparisonRow}>
-                  <Text style={styles.comparisonLabel}>{t('insights.sessions')}:</Text>
-                  <Text style={[styles.comparisonValue, (currentMonthStats?.totalSessions || 0) > lastMonthStats.totalSessions ? styles.comparisonUp : styles.comparisonDown]}>
-                    {(currentMonthStats?.totalSessions || 0) >= lastMonthStats.totalSessions ? '↑' : '↓'} {Math.abs((currentMonthStats?.totalSessions || 0) - lastMonthStats.totalSessions)}
-                  </Text>
-                </View>
-                <View style={styles.comparisonRow}>
-                  <Text style={styles.comparisonLabel}>{t('insights.stars_short')}:</Text>
-                  <Text style={[styles.comparisonValue, (currentMonthStats?.starsEarned || 0) > lastMonthStats.starsEarned ? styles.comparisonUp : styles.comparisonDown]}>
-                    {(currentMonthStats?.starsEarned || 0) >= lastMonthStats.starsEarned ? '↑' : '↓'} {Math.abs((currentMonthStats?.starsEarned || 0) - lastMonthStats.starsEarned)}
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {/* Streak */}
-            <View style={styles.streakCard}>
-              <Text style={styles.streakEmoji}>🔥</Text>
-              <Text style={styles.streakNumber}>{store.currentStreak}</Text>
-              <Text style={styles.streakLabel}>{t('insights.week_streak')}</Text>
-              {store.currentStreak >= 2 && <Text style={styles.streakMessage}>{t('insights.keep_going')}</Text>}
             </View>
 
             {/* All Time Stats */}
@@ -2188,21 +2141,6 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
                 <Text style={styles.comparisonValue}>{playlistsCount}</Text>
               </View>
 
-              <Text style={[styles.comparisonTitle, { marginTop: 12 }]}>{t('insights.retention')}</Text>
-              <View style={styles.comparisonRow}>
-                <Text style={styles.comparisonLabel}>{t('insights.active_days_7d')}:</Text>
-                <Text style={styles.comparisonValue}>{activeDays7d}</Text>
-              </View>
-              <View style={styles.comparisonRow}>
-                <Text style={styles.comparisonLabel}>{t('insights.days_since_last_activity')}:</Text>
-                <Text style={styles.comparisonValue}>
-                  {daysSinceLastActivity === null ? t('insights.never') : daysSinceLastActivity}
-                </Text>
-              </View>
-              <View style={styles.comparisonRow}>
-                <Text style={styles.comparisonLabel}>{t('insights.weekly_goal_completion')}:</Text>
-                <Text style={styles.comparisonValue}>{weeklyGoalsCompletion}%</Text>
-              </View>
             </View>
 
             {/* Recent Activity */}
@@ -2373,7 +2311,7 @@ function RecommendationsModal({ visible, onClose, navigation }: { visible: boole
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
   
-  // Get smart recommendations from the learning system
+  // Gather the quiet picks for tonight.
   const smartRecs = useMemo(() => {
     return store.getSmartRecommendations(10);
   }, [store]);
@@ -3756,6 +3694,10 @@ function HomeScreen({
     () => Math.max(0, getDayOfYear(new Date(`${dailyJokeDateKey}T12:00:00`)) - 1),
     [dailyJokeDateKey]
   );
+  const dailyRitualLine = useMemo(
+    () => pickVoiceLine(voice.home.dailyRitual, `daily-ritual-${dailyJokeDateKey}-${language}`),
+    [dailyJokeDateKey, language, voice.home.dailyRitual]
+  );
   const seasonalHook = useMemo(() => {
     void language;
     const hooks = currentSeason ? SEASONAL_HOOK_LINES[currentSeason.id] : null;
@@ -3983,6 +3925,10 @@ function HomeScreen({
         >
           <Text style={styles.originLinkText}>{voice.home.whyWeMadeThis}</Text>
         </TouchableOpacity>
+        <View style={styles.dailyRitualCard}>
+          <Text style={styles.dailyRitualText}>{dailyRitualLine}</Text>
+          <Text style={styles.dailyRitualPrivacy}>{voice.home.privacyLine}</Text>
+        </View>
       </View>
 
       {showTrialBanner && trialDaysRemaining > 0 ? (
@@ -4308,7 +4254,7 @@ function HomeScreen({
             ))}
           </View>
           <Text style={styles.weeklyGoalsPreviewText}>
-            {store.weeklyGoals.filter(g => g.completed).length}/{store.weeklyGoals.length} {t('common.done')}
+            {pickVoiceLine(voice.progress.encouragement, `weekly-goals-preview-${language}`)}
           </Text>
         </TouchableOpacity>
       )}
@@ -7002,6 +6948,27 @@ const styles = StyleSheet.create({
   homeHeaderTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   originLink: { alignSelf: 'flex-start', marginTop: 8, paddingVertical: 4 },
   originLinkText: { color: colors.primary[400], fontSize: 12, fontWeight: '700' },
+  dailyRitualCard: {
+    marginTop: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    backgroundColor: colors.card,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  dailyRitualText: {
+    color: colors.text.primary,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '700',
+  },
+  dailyRitualPrivacy: {
+    color: colors.text.muted,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 4,
+  },
   trialBanner: {
     height: 36,
     borderRadius: 10,

@@ -226,7 +226,7 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
       store.addNote({
         type: step.type,
         itemId,
-        text: `Afterglow ${selectedReactionConfig.emoji}`,
+        text: `${reactionCopy || copy.coachBody} ${selectedReactionConfig.emoji}`,
         rating: selectedReactionConfig.rating,
       });
     });
@@ -321,6 +321,9 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
                 <Text style={styles.doneCtaText}>{copy.doneSimple}</Text>
               </LinearGradient>
             </TouchableOpacity>
+            <Text style={[styles.afterglowCloser, { color: themeColors.text.muted }]}>
+              {copy.fallbackCloser}
+            </Text>
           </>
         ) : null}
       </SafeAreaView>
@@ -424,5 +427,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '700',
+  },
+  afterglowCloser: {
+    marginTop: 12,
+    fontSize: 13,
+    lineHeight: 19,
+    textAlign: 'center',
   },
 });
