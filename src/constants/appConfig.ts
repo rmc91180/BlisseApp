@@ -134,7 +134,7 @@ export const TONIGHT_SUGGESTION_TEASERS = createLocalizedArrayProxy<string>({
 const _LEVEL_MOTIVATOR_LINES_EN: string[] = [
   'Every star makes the next dare a little better.',
   'You two are building trust, play, and momentum together.',
-  'Progress is attractive. Keep going, lovebirds.',
+  'What felt good is worth returning to, lovebirds.',
   'From New Sparks to Eternal Flame, one playful step at a time.',
   'You are not just leveling up the app. You are leveling up us.',
 ];

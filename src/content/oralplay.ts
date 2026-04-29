@@ -155,7 +155,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     giver: "him",
     vibe: "Waking her up gently",
     description: "Waking her up with gentle oral - a surprise that starts the day beautifully.",
-    howTo: "While she's still asleep or just waking, begin with gentle kisses working toward oral. Progress slowly as she becomes aware.",
+    howTo: "While she's still asleep or just waking, begin with gentle kisses working toward oral. Move slowly as she becomes aware.",
     tips: ["Start very gently", "Let her wake naturally", "Morning = take your time", "Best with established partners who've discussed this"],
     pairsWellWith: ["Spooning", "Morning intimacy", "Lazy positions"]
   },
@@ -243,7 +243,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     giver: "her",
     vibe: "A gentle wake-up call",
     description: "Waking him up with slow, gentle oral.",
-    howTo: "While he's still asleep or just waking, begin with gentle kisses and light touch. Progress to slow oral as he becomes aware.",
+    howTo: "While he's still asleep or just waking, begin with gentle kisses and light touch. Move into slow oral as he becomes aware.",
     tips: ["Start very gently", "Let him wake naturally", "Morning = take your time", "Best with established consent"],
     pairsWellWith: ["Spooning", "Lazy Dog", "Morning intimacy"]
   },
@@ -367,7 +367,7 @@ export const oralPlayIdeas: OralPlayIdea[] = [
     giver: "both",
     vibe: "Watching each other self-pleasure orally",
     description: "Each person demonstrates on themselves (hand) while other watches.",
-    howTo: "While not technically oral, each shows the other what they like by demonstrating on their own hand. Teaching through showing.",
+    howTo: "While not technically oral, each shows the other what they like by demonstrating on their own hand. Learning through showing.",
     tips: ["Show don't tell", "Demonstrate pressure, speed, technique", "Then try on each other", "Great for learning preferences"],
     pairsWellWith: ["Learning each other", "Communication", "Improvement"]
   },

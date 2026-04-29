@@ -226,7 +226,7 @@ export function SessionRatingScreen({ navigation, route }: SessionRatingScreenPr
       store.addNote({
         type: step.type,
         itemId,
-        text: `${reactionCopy || copy.coachBody} ${selectedReactionConfig.emoji}`,
+        text: `${reactionCopy || copy.noteBody} ${selectedReactionConfig.emoji}`,
         rating: selectedReactionConfig.rating,
       });
     });

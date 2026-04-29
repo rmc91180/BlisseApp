@@ -94,7 +94,7 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     vibe: "Being directed and admired",
     description: "One is a photographer, the other is the model. Direction meets desire.",
     setup: "Set up a 'photo shoot' area. Have a phone or camera (doesn't have to be on). One directs poses. The poses get increasingly intimate.",
-    howToPlay: "Start with innocent poses. 'Give me more.' 'That's perfect.' 'Now show me...' The photographer directs increasingly revealing poses. Things progress.",
+    howToPlay: "Start with innocent poses. 'Give me more.' 'That's perfect.' 'Now show me...' The photographer directs increasingly revealing poses. Things unfold.",
     tips: ["Give genuine compliments", "Direction is part of the play", "The camera can be real or prop", "It's about being watched and admired"],
     pairsWellWith: ["Mirror positions", "The Vanity", "Visual positions"]
   },
@@ -120,7 +120,7 @@ export const rolePlayScenarios: RolePlayScenario[] = [
     vibe: "Professional touch becomes personal",
     description: "One plays a massage therapist. The massage becomes... unprofessional.",
     setup: "Set up a massage table (or bed). Have oils ready. One partner lies down covered by sheets. The 'therapist' is dressed professionally.",
-    howToPlay: "Start with a legitimate massage. Hands wander. 'Is this okay?' The sheet gets moved. Things progress beyond professional.",
+    howToPlay: "Start with a legitimate massage. Hands wander. 'Is this okay?' The sheet gets moved. Things move beyond professional.",
     tips: ["Start with real massage techniques", "Build tension slowly", "The 'asking permission' adds to it", "Professional becomes intimate"],
     pairsWellWith: ["Massage techniques", "Lazy Dog", "Spooning"]
   },

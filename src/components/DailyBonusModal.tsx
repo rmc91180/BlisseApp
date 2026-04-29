@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
-import { haptics } from '@/services/haptics';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy, pickVoiceLine } from '@/copy';
@@ -76,7 +75,6 @@ export function DailyBonusModal({ visible, onClose, ConfettiComponent }: DailyBo
     setClaimedAmount(claimed);
     setIsClaiming(true);
     setShowConfetti(true);
-    haptics.celebrate();
 
     setTimeout(() => {
       setShowConfetti(false);

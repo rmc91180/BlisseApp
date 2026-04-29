@@ -108,7 +108,7 @@ export const positions: Position[] = [
     mood: "unified",
     difficulty: "Beginner",
     vibe: "Teamwork on top",
-    description: "Classic cowgirl but he actively helps by holding her hips and guiding movement.",
+    description: "Classic cowgirl but he actively helps by holding her hips and matching movement.",
     howTo: "She's in cowgirl position. He holds her hips firmly and helps lift and lower her, taking some of the effort off her legs.",
     whyItWorks: "Combines her control with his assistance. Less tiring for her while maintaining the cowgirl benefits.",
     tips: ["He matches her rhythm", "Great when she gets tired", "He can control speed this way", "Communication about pace helps"],
@@ -1573,9 +1573,9 @@ export const positions: Position[] = [
     difficulty: "Beginner",
     vibe: "Waking them up with pleasure",
     description: "Gently waking your partner with intimate touch that leads to more.",
-    howTo: "While they're still asleep or just waking, start with gentle touch. Progress slowly as they wake. They wake to pleasure.",
+    howTo: "While they're still asleep or just waking, start with gentle touch. Move slowly as they wake. They wake to pleasure.",
     whyItWorks: "Waking to pleasure is incredible. The transition from sleep to arousal is unique.",
-    tips: ["Start very gently", "Only with pre-established consent", "Let them wake naturally", "Progress slowly"],
+    tips: ["Start very gently", "Only with pre-established consent", "Let them wake naturally", "Move slowly"],
     pairsWellWith: ["Spooning", "Oral play", "Gentle positions"],
     goodFor: ["Surprise pleasure", "Morning intimacy", "Established couples"]
   },
@@ -2846,7 +2846,7 @@ export const positions: Position[] = [
     howTo: "In standard kneeling rear entry, she reaches one arm back to grab his thigh, hold his hand, or touch his hip. This twist of her upper body adds connection to the position.",
     whyItWorks: "The reach-back adds an intimate touch to a position that can feel disconnected. The physical link transforms rear entry into something more connected.",
     tips: ["Even just holding hands changes the feeling", "She can shape his pace this way", "The twist adds slight tightness", "Eye contact becomes possible with the turn"],
-    pairsWellWith: ["Hand holding", "Pace guiding", "Connected intimacy"],
+    pairsWellWith: ["Hand holding", "Shared pacing", "Connected intimacy"],
     goodFor: ["Connected rear entry", "Hand holding", "Pace control"]
   },
   {

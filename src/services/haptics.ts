@@ -49,11 +49,6 @@ const triggerIntent = (intent: HapticIntent): void => {
 };
 
 export const haptics = {
-  openCard: (_key?: string): void => undefined,
-  confirmAction: (): void => {
-    // Basic taps and saves should stay quiet.
-  },
-  reveal: (): void => undefined,
   complete: (): void => {
     triggerIntent(HAPTIC.COMPLETE);
   },

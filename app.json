@@ -78,12 +78,6 @@
       "expo-secure-store",
       "expo-notifications",
       [
-        "expo-av",
-        {
-          "microphonePermission": false
-        }
-      ],
-      [
         "expo-build-properties",
         {
           "ios": {

@@ -62,7 +62,7 @@ const EN_CONTENT: LegalLocaleContent = {
       },
       {
         heading: '7. Health and Safety Disclaimer',
-        body: 'The App and its content are provided for informational and entertainment purposes only. They do not constitute medical, mental health, therapy, relationship, or other professional advice. Always use your own judgment, respect your physical limits, and consult a qualified professional where appropriate.',
+        body: 'The App and its content are provided for informational and entertainment purposes only. They are not a substitute for medical, mental health, therapy, relationship, or other professional care. Always use your own judgment, respect your physical limits, and consult a qualified professional where appropriate.',
       },
       {
         heading: '8. Third-Party Services and Platform Terms',

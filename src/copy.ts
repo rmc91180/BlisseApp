@@ -86,7 +86,7 @@ export type VoiceCopyPack = {
   detail: {
     opener: VoiceLineSet;
     closer: VoiceLineSet;
-    coachTitle: VoiceLine;
+    noteTitle: VoiceLine;
   };
   empty: {
     loading: VoiceLineSet;
@@ -151,7 +151,7 @@ export type VoiceCopyPack = {
   };
   sessionPlan: {
     progress: VoiceLine;
-    coachTitle: VoiceLine;
+    noteTitle: VoiceLine;
     details: VoiceLine;
     openAction: VoiceLine;
     tryAction: VoiceLine;
@@ -164,7 +164,7 @@ export type VoiceCopyPack = {
     finish: VoiceLine;
     fallbackName: VoiceLine;
     fallbackVibe: VoiceLine;
-    coachIntro: Record<string, VoiceLine>;
+    openingNote: Record<string, VoiceLine>;
   };
   sessionRating: {
     progress: VoiceLine;
@@ -186,8 +186,8 @@ export type VoiceCopyPack = {
     fallbackStartLabel: VoiceLine;
     fallbackMoveLabel: VoiceLine;
     fallbackFinishLabel: VoiceLine;
-    coachLabel: VoiceLine;
-    coachBody: VoiceLine;
+    noteLabel: VoiceLine;
+    noteBody: VoiceLine;
     remember: VoiceLine;
     optional: VoiceLine;
     feelNow: VoiceLine;
@@ -248,7 +248,7 @@ export type VoiceCopyPack = {
     reactivationTitle: VoiceLine;
     reactivationBodies: VoiceLineSet;
   };
-  coach: {
+  sharedNotes: {
     systemPrompt: VoiceLine;
     fallbackNotes: VoiceLineSet;
     userPrompt: (contentType: string, item: { name: string; vibe?: string; whyItWorks?: string; description?: string; category?: string }) => string;
@@ -344,7 +344,7 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
       detail: {
         opener: ['Tómense su tiempo.', 'Sin apuro. Que suba.', 'Pónganse cómodos.', 'Disfruten esto.', 'Vayan lento si quieren.'],
         closer: ['Quédense ahí.', 'Dejen que pase.', 'Ya lo tienen.'],
-        coachTitle: 'Para ustedes 🌸',
+        noteTitle: 'Para ustedes 🌸',
       },
       empty: {
         loading: ['Calentando…', 'Denos un segundo.', 'Ya casi.'],
@@ -409,7 +409,7 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
       },
       sessionPlan: {
         progress: 'Paso 2 de 3',
-        coachTitle: 'Nota para esta noche',
+        noteTitle: 'Nota para esta noche',
         details: 'Abrir',
         openAction: 'Abrir',
         tryAction: 'Probar',
@@ -422,7 +422,7 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
         finish: 'Terminen con...',
         fallbackName: 'Algo nuevo',
         fallbackVibe: 'Una opción elegida para esta noche.',
-        coachIntro: {
+        openingNote: {
           romantic: 'Lento, cerca, sin prisa.',
           passionate: 'Calor alto desde el inicio.',
           playful: 'Ligero, travieso, y a reír.',
@@ -451,8 +451,8 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
         fallbackStartLabel: 'Empiecen con...',
         fallbackMoveLabel: 'Sigan con...',
         fallbackFinishLabel: 'Terminen con...',
-        coachLabel: 'Para ustedes 🌸',
-        coachBody: 'Guarden lo que se sintió rico. Eso vuelve fácil.',
+        noteLabel: 'Para ustedes 🌸',
+        noteBody: 'Guarden lo que se sintió rico. Eso vuelve fácil.',
         remember: 'Para guardar',
         optional: 'Opcional',
         feelNow: 'Ahora mismo',
@@ -536,12 +536,12 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
           'Su lugar quedó guardado. Vuelvan cuando quieran.',
         ],
       },
-      coach: {
+      sharedNotes: {
         systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
 The tone is warm, light, optional, flirty, and never detached or judgmental.
 Keep it to 2-3 sentences.
 Do not explain why anything works.
-Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Do not pressure, guilt, create urgency, or use improvement framing.
 Speak to both people together as "you two", gently and casually.`,
         fallbackNotes: [
           'Ustedes dos ya están en sintonía. Fácil y cerca alcanza.',
@@ -652,7 +652,7 @@ Write the final note in Spanish.`,
       detail: {
         opener: ['Curtam com calma.', 'Sem pressa. Deixa crescer.', 'Cheguem perto.', 'Aproveitem isso.', 'Vão devagar se quiserem.'],
         closer: ['Fiquem nisso.', 'Deixem acontecer.', 'Vocês têm isso.'],
-        coachTitle: 'Pra vocês 🌸',
+        noteTitle: 'Pra vocês 🌸',
       },
       empty: {
         loading: ['Aquecendo…', 'Um segundinho.', 'Quase lá.'],
@@ -717,7 +717,7 @@ Write the final note in Spanish.`,
       },
       sessionPlan: {
         progress: 'Passo 2 de 3',
-        coachTitle: 'Nota para hoje',
+        noteTitle: 'Nota para hoje',
         details: 'Abrir',
         openAction: 'Abrir',
         tryAction: 'Tenta essa',
@@ -730,7 +730,7 @@ Write the final note in Spanish.`,
         finish: 'Finalizem com...',
         fallbackName: 'Algo novo',
         fallbackVibe: 'Uma escolha pensada para hoje à noite.',
-        coachIntro: {
+        openingNote: {
           romantic: 'Devagar, perto e gostoso.',
           passionate: 'Calor lá em cima desde já.',
           playful: 'Leve, divertido, sem peso.',
@@ -759,8 +759,8 @@ Write the final note in Spanish.`,
         fallbackStartLabel: 'Comecem com...',
         fallbackMoveLabel: 'Sigam para...',
         fallbackFinishLabel: 'Finalizem com...',
-        coachLabel: 'Pra vocês 🌸',
-        coachBody: 'Guardem o que bateu gostoso. Depois fica fácil repetir.',
+        noteLabel: 'Pra vocês 🌸',
+        noteBody: 'Guardem o que bateu gostoso. Depois fica fácil repetir.',
         remember: 'Pra guardar',
         optional: 'Opcional',
         feelNow: 'Agora',
@@ -844,12 +844,12 @@ Write the final note in Spanish.`,
           'O lugar de vocês está guardado. Voltem quando quiserem.',
         ],
       },
-      coach: {
+      sharedNotes: {
         systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
 The tone is warm, light, optional, flirty, and never detached or judgmental.
 Keep it to 2-3 sentences.
 Do not explain why anything works.
-Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Do not pressure, guilt, create urgency, or use improvement framing.
 Speak to both people together as "you two", gently and casually.`,
         fallbackNotes: [
           'Vocês já estão em sintonia. Leve e perto já basta.',
@@ -876,28 +876,28 @@ Write the final note in Brazilian Portuguese.`,
     return {
       entry: {
         headline: ['और करीब आइए।', 'यहीं से मज़ा शुरू होता है।', 'सबसे अच्छा हिस्सा यहीं है।', 'दिन का सबसे प्यारा पल।'],
-        subline: ['सोचना नहीं। बस महसूस करना।', 'मूड सेट करें।', 'बस फ्लो में जाएं।', 'आराम से।'],
+        subline: ['सोचना नहीं। बस महसूस करना।', 'माहौल बनाएँ।', 'बस बहाव में जाएँ।', 'आराम से।'],
         primaryCTA: ['शुरू करें', 'चलें', 'अभी शुरू'],
         secondaryCTA: ['मैं पहले से यहां हूं', 'फिर से आए हैं'],
       },
       origin: {
-        subtitle: 'साथ में आज की vibe ढूंढने का नरम तरीका।',
+        subtitle: 'साथ में आज का माहौल ढूंढने का नरम तरीका।',
         whyTitle: 'हमने इसे क्यों बनाया',
-        whyBody: 'हम चाहते थे कि कपल्स इसे खोलें और उन्हें analyze, manage या test जैसा महसूस न हो।',
+        whyBody: 'हम चाहते थे कि जोड़े इसे खोलें और उन्हें जाँचे या सँभाले जाने जैसा महसूस न हो।',
         forTitle: 'यह किसलिए है',
-        forBody: 'Blisse खेल, नज़दीकी, flirt और उस छोटी चिंगारी के लिए है, बिना पहले सब कुछ समझाने की ज़रूरत के।',
+        forBody: 'Blisse खेल, नज़दीकी और उस छोटी चिंगारी के लिए है, बिना पहले सब कुछ समझाने की ज़रूरत के।',
         howTitle: 'इसे कैसे इस्तेमाल करें',
-        howBody: 'जो vibe सच लगे उसे चुनें। एक idea लें, दूसरा छोड़ दें, जब चाहें मन बदलें। आपकी pace ही सही pace है।',
+        howBody: 'जो माहौल सच लगे उसे चुनें। एक बात लें, दूसरी छोड़ दें, जब चाहें मन बदलें। आपकी लय ही सही लय है।',
         cta: 'चलो शुरू करें',
         backCta: 'Blisse पर वापस',
       },
       home: {
-        header: ['आज रात का माहौल', 'मूड सेट करें', 'आज की रात आपकी तरह'],
+        header: ['आज रात का माहौल', 'माहौल बनाएँ', 'आज की रात आपकी तरह'],
         helper: ['कोई नियम नहीं। बस चुनें।', 'जो सही लगे वही चुनें।', 'कोई दबाव नहीं।'],
         pickedForTonight: 'आज रात की बातें',
         vibeQuestion: 'अभी आप क्या करना चाहते हैं?',
-        setTonightVibe: 'आज रात का माहौल सेट करें',
-        vibeHelper: 'पहले आज रात का माहौल सेट करें। बाकी सब आसान रह सकता है।',
+        setTonightVibe: 'आज रात का माहौल बनाएँ',
+        vibeHelper: 'पहले आज रात का माहौल बनाएँ। बाकी सब आसान रह सकता है।',
         exploreFreely: 'आराम से खोजें',
         suggestionsExplainerSelected: 'नीचे सब इसी माहौल से मेल खाता है।',
         suggestionsExplainerEmpty: 'पहले माहौल चुनें; बाकी सब साथ चलेगा।',
@@ -911,29 +911,29 @@ Write the final note in Brazilian Portuguese.`,
         quietWinsHidden: 'जो पल अच्छे लगे',
         quietWinsShown: 'इन पलों को पास रखें',
         moods: {
-          easy: ['आसान और करीब', 'बिना मेहनत', 'बस रिलैक्स'],
+          easy: ['आसान और करीब', 'बिना मेहनत', 'बस आराम'],
           slow: ['धीमा और गहरा', 'आराम से', 'बहुत नरम'],
-          playful: ['चलो खेलें', 'थोड़ा मज़ा', 'फ्लर्ट मूड'],
-          change: ['कुछ बदलें', 'कुछ नया', 'मूड बदलें'],
-          surprise: ['सरप्राइज दें', 'आप चुनें', 'मैं तैयार हूं'],
+          playful: ['चलो खेलें', 'थोड़ा मज़ा', 'चुलबुला माहौल'],
+          change: ['कुछ बदलें', 'कुछ नया', 'माहौल बदलें'],
+          surprise: ['चौंकाएँ', 'आप चुनें', 'मैं तैयार हूं'],
         },
         greeting: {
-          morning: (name) => `गुड मॉर्निंग, ${name} ☀️`,
-          morningContext: 'दिन की शुरुआत थोड़ी कनेक्शन से करें।',
-          afternoon: (name) => `हे ${name} 👋`,
-          afternoonContext: 'आज रात के लिए मूड बनाइए।',
-          evening: (name) => `गुड ईवनिंग, ${name} 🌙`,
+          morning: (name) => `सुप्रभात, ${name} ☀️`,
+          morningContext: 'दिन की शुरुआत थोड़ी नज़दीकी से करें।',
+          afternoon: (name) => `नमस्ते ${name} 👋`,
+          afternoonContext: 'आज रात के लिए माहौल बनाइए।',
+          evening: (name) => `शुभ संध्या, ${name} 🌙`,
           eveningContext: 'आज रात अच्छी लग रही है।',
           night: (name) => `अभी जाग रहे हैं, ${name} 🌸`,
-          nightContext: 'नो जजमेंट। हमारे पास ideas हैं।',
+          nightContext: 'कोई निर्णय नहीं। कुछ बातें रखी हैं।',
         },
-        trialBanner: (days) => `✨ फ्री ट्रायल · ${days} दिन बाकी — चिंगारी अनलॉक रखें`,
+        trialBanner: (days) => `✨ मुफ़्त आज़माइश · ${days} दिन बाकी — चिंगारी खुली रखें`,
         tonightSession: {
-          label: 'आज की सेशन',
-          title: '3 आसान और गर्म स्टेप्स',
-          subtitle: 'Mood → Flow → Glow',
-          teaser: 'कम मेहनत। ज्यादा केमिस्ट्री।',
-          cta: 'सेशन शुरू करें →',
+          label: 'आज का साथ',
+          title: '3 आसान और गर्म कदम',
+          subtitle: 'माहौल → बहाव → चमक',
+          teaser: 'कम मेहनत। ज़्यादा नज़दीकी।',
+          cta: 'शुरू करें →',
         },
         forYouSubtitle: 'बिल्कुल आप दोनों जैसा',
         profile: {
@@ -946,27 +946,27 @@ Write the final note in Brazilian Portuguese.`,
       },
       suggestion: {
         titleFallback: ['ये आपको बुला रहा है।', 'ये सही लग रहा है।', 'बहुत आपकी तरह।', 'ठीक वहीं जहां पसंद है।', 'आसान। अपना। अच्छा।'],
-        reason: ['आपको धीमा और करीब पसंद है।', 'ये आपकी vibe में बैठता है।', 'आप बार-बार यहां लौटते हैं।', 'ये अक्सर सही hit करता है।', 'आपकी ही frequency।'],
+        reason: ['आपको धीमा और करीब पसंद है।', 'ये आपके माहौल में बैठता है।', 'आप बार-बार यहां लौटते हैं।', 'ये अक्सर सही लगता है।', 'आपकी ही लय।'],
         badge: {
-          position: '✨ Position',
-          foreplay: '✨ Foreplay',
-          oral: '✨ Oral',
-          massage: '✨ Massage',
-          roleplay: '✨ Roleplay',
+          position: '✨ मुद्राएँ',
+          foreplay: '✨ पूर्वरंग',
+          oral: '✨ मुख-आधारित खेल',
+          massage: '✨ मालिश',
+          roleplay: '✨ भूमिका-अभिनय',
         },
-        cta: ['चलो', 'ट्राई करें', 'यहीं से शुरू'],
+        cta: ['चलो', 'आज़माएँ', 'यहीं से शुरू'],
         fallbackVibe: 'नरम, गर्म और आसान।',
       },
       detail: {
         opener: ['आराम से करें।', 'कोई जल्दी नहीं। बनने दें।', 'पास आएं।', 'इसे महसूस करें।', 'धीरे जाएं अगर चाहें।'],
         closer: ['यहीं रहें।', 'इसे होने दें।', 'आप कर लेंगे।'],
-        coachTitle: 'आप दोनों के लिए 🌸',
+        noteTitle: 'आप दोनों के लिए 🌸',
       },
       empty: {
-        loading: ['वार्म हो रहा है…', 'एक सेकंड दें।', 'बस आ गया।'],
+        loading: ['तैयार हो रहा है…', 'एक पल दें।', 'बस आ गया।'],
         nothingYet: ['आसान से शुरू करें।', 'धीरे-धीरे चलते हैं।', 'शुरुआत के लिए बढ़िया जगह।'],
-        exploreBody: 'फिल्टर हटाएं या नई vibe के लिए टैब बदलें।',
-        clearFilters: 'फिल्टर साफ करें',
+        exploreBody: 'छँटाई हटाएं या नए माहौल के लिए दूसरा टैब चुनें।',
+        clearFilters: 'छँटाई साफ करें',
       },
       progress: {
         header: ['यह सप्ताह', 'अभी'],
@@ -980,7 +980,7 @@ Write the final note in Brazilian Portuguese.`,
       },
       return: {
         welcomeBack: ['फिर मिलकर अच्छा लगा।', 'और के लिए वापस आए हैं।', 'सही समय पर आए।'],
-        easeBack: ['धीरे से शुरू करें।', 'इसे आसान रखें।', 'किसी familiar चीज़ से शुरू करें।'],
+        easeBack: ['धीरे से शुरू करें।', 'इसे आसान रखें।', 'किसी जानी-पहचानी बात से शुरू करें।'],
       },
       generic: {
         yes: ['हाँ', 'ज़रूर', 'क्यों नहीं'],
@@ -993,16 +993,16 @@ Write the final note in Brazilian Portuguese.`,
         appDataTitle: 'ऐप डेटा',
         activityLog: 'सहेजे हुए पल',
         interactionHistory: 'जो आपने छुआ',
-        notesSaved: 'सेव की गई नोट्स',
-        totalStarsEarned: 'कुल स्टार्स',
-        collectionLevel2Lock: 'और पैक्स लेवल 2 पर खुलेंगे',
-        profileEnergy: 'एनर्जी:',
-        profileType: 'टाइप:',
-        shareBlisse: 'Blisse किसी और कपल के साथ शेयर करें',
+        notesSaved: 'सहेजे हुए नोट',
+        totalStarsEarned: 'कुल सितारे',
+        collectionLevel2Lock: 'और संग्रह स्तर 2 पर खुलेंगे',
+        profileEnergy: 'ऊर्जा:',
+        profileType: 'तरह:',
+        shareBlisse: 'Blisse किसी और जोड़े के साथ साझा करें',
         version: 'वर्ज़न',
-        levelUpTitle: 'लेवल अप',
-        levelUpUnlockedNow: 'अब अनलॉक हुआ',
-        levelUpClaim: 'रिवार्ड लें →',
+        levelUpTitle: 'नया स्तर',
+        levelUpUnlockedNow: 'अब खुला',
+        levelUpClaim: 'इनाम लें →',
       },
       dailyBonus: {
         title: 'आज का छोटा-सा ख्याल',
@@ -1012,25 +1012,25 @@ Write the final note in Brazilian Portuguese.`,
         caption: 'कल अलग महसूस हो सकता है। आपकी जगह यहीं रहेगी।',
       },
       moodCheck: {
-        header: 'आज रात का मूड सेट करें',
-        subheader: 'अपनी ऊर्जा चुनें। बाकी खुद फ्लो करेगा।',
+        header: 'आज रात का माहौल बनाएँ',
+        subheader: 'अपनी ऊर्जा चुनें। बाकी अपने-आप बहने दें।',
         helper: 'जो सच लगे वही चुनें। जब चाहें मन बदल सकते हैं।',
-        refineTitle: 'एक छोटा सा tune-up?',
-        energySoft: 'नरम energy',
-        energyPlayful: 'थोड़ा playful',
-        paceShort: 'छोटा और sweet',
+        refineTitle: 'एक छोटा-सा बदलाव?',
+        energySoft: 'नरम ऊर्जा',
+        energyPlayful: 'थोड़ा चुलबुला',
+        paceShort: 'छोटा और प्यारा',
         paceUnfold: 'धीरे-धीरे खुलने दें',
         cta: 'चलें',
-        ctaA11y: 'सेशन बनाएं',
+        ctaA11y: 'आज का साथ बनाएँ',
       },
       sessionPlan: {
         progress: 'चरण 2 में से 3',
-        coachTitle: 'आज की नोट',
+        noteTitle: 'आज की बात',
         details: 'खोलें',
         openAction: 'खोलें',
-        tryAction: 'इसे ट्राय करें',
-        regenerate: 'मूड बदलें 🔀',
-        regenerateA11y: 'सेशन फिर बनाएं',
+        tryAction: 'इसे आज़माएँ',
+        regenerate: 'माहौल बदलें 🔀',
+        regenerateA11y: 'आज का साथ फिर बनाएँ',
         cta: 'ठीक है →',
         ctaA11y: 'हम तैयार हैं, चलें',
         start: 'शुरुआत करें...',
@@ -1038,7 +1038,7 @@ Write the final note in Brazilian Portuguese.`,
         finish: 'अंत करें...',
         fallbackName: 'कुछ नया',
         fallbackVibe: 'आज रात के लिए एक चुना हुआ विकल्प।',
-        coachIntro: {
+        openingNote: {
           romantic: 'धीमा, करीब, और नरम।',
           passionate: 'शुरू से ही गर्म।',
           playful: 'हल्का और मस्ती वाला।',
@@ -1051,83 +1051,83 @@ Write the final note in Brazilian Portuguese.`,
         progress: 'चरण 3 में से 3',
         title: 'ये था...',
         subtitle: 'ज़्यादा मत सोचिए',
-        emojiPrompt: 'एक vibe चुनें',
+        emojiPrompt: 'एक एहसास चुनें',
         microcopy: {
-          hot: ['वाह. ये बहुत अच्छा था.', 'हाँ, ये तो कमाल था.'],
-          warm: ['नरम और करीब. अच्छा लगा.', 'आराम से, सही vibe में.'],
-          neutral: ['ठीक है. अगली बार और मज़ा आएगा.', 'कोई बात नहीं. खेल जारी रखें.'],
+          hot: ['वाह। ये बहुत अच्छा था।', 'हाँ, ये तो कमाल था।'],
+          warm: ['नरम और करीब। अच्छा लगा।', 'आराम से, सही एहसास में।'],
+          neutral: ['ठीक है। अगली बार और मज़ा आएगा।', 'कोई बात नहीं। खेल जारी रखें।'],
         },
         reactionA11y: {
           hot: 'तीव्र लगा',
           warm: 'करीब लगा',
-          neutral: 'न्यूट्रल लगा',
+          neutral: 'सामान्य लगा',
         },
         doneSimple: 'हो गया',
         saveWorked: 'यह पल सहेजें ❤️',
         fallbackStartLabel: 'शुरुआत करें...',
         fallbackMoveLabel: 'फिर आगे बढ़ें...',
         fallbackFinishLabel: 'अंत करें...',
-        coachLabel: 'आप दोनों के लिए 🌸',
-        coachBody: 'जो सही लगा उसे सेव करें। वही फिर सबसे अच्छा लगेगा।',
+        noteLabel: 'आप दोनों के लिए 🌸',
+        noteBody: 'जो सही लगा उसे सहेजें। वही फिर सबसे अच्छा लगेगा।',
         remember: 'याद रखने के लिए',
         optional: 'वैकल्पिक',
         feelNow: 'अभी',
-        tried: 'सबको tried मार्क करें ✓',
-        saveFavorites: 'फेवरेट सेव करें ❤️',
-        rateOnly: 'सिर्फ रेट करें और बंद करें',
-        chooseRating: 'आगे बढ़ने के लिए रेटिंग चुनें',
+        tried: 'सबको आज़माया हुआ रखें ✓',
+        saveFavorites: 'पसंदीदा सहेजें ❤️',
+        rateOnly: 'सिर्फ भाव चुनें और बंद करें',
+        chooseRating: 'आगे बढ़ने के लिए एक भाव चुनें',
         starsEarnedTitle: (count) => `${count} ⭐ सहेजे गए`,
         starsEarnedSubtitle: 'थोड़ी गर्माहट सहेजी गई',
-        achievements: 'नई बैज',
-        noAchievements: 'आज नया बैज नहीं। फिर भी कुछ अच्छा रह गया।',
+        achievements: 'नए चिह्न',
+        noAchievements: 'आज नया चिह्न नहीं। फिर भी कुछ अच्छा रह गया।',
         done: 'आज के लिए पूरा →',
-        rateA11y: (value) => `${value} स्टार रेटिंग दें`,
+        rateA11y: (value) => `${value} सितारे चुनें`,
         fallbackCloser: 'अभी आपको हमारी ज़रूरत नहीं। अब एक-दूसरे का साथ लें।',
-        postMood: 'सेशन के बाद',
+        postMood: 'साथ के बाद',
       },
       sessionClosers: {
         romantic: 'आज आपने गर्माहट चुनी। इसे पास रखें।',
         passionate: 'ये आग आप दोनों पर खूब जंचती है।',
         playful: 'हंसी भी चिंगारी बढ़ाती है।',
-        adventurous: 'आपने बोल्ड चुना और करीब रहे। कमाल।',
-        relaxed: 'आराम और कनेक्शन। यही सही है।',
+        adventurous: 'आपने कुछ साहसी चुना और करीब रहे। कमाल।',
+        relaxed: 'आराम और जुड़ाव। यही सही है।',
         quickie: 'कम समय, बड़ी रात।',
       },
       onboarding: {
         namePreview: (name) => `हे ${name} — आज रात खूबसूरत बनाते हैं 👋`,
-        payoffHeader: (name) => `आज रात के लिए तैयार, ${name || 'you two'} 👋`,
+        payoffHeader: (name) => `आज रात के लिए तैयार, ${name || 'आप दोनों'} 👋`,
         payoffSubline: {
-          deepConnection: 'आपको धीमा, करीब और real पसंद है। परफेक्ट।',
+          deepConnection: 'आपको धीमा, करीब और सच्चा पसंद है। बिल्कुल सही।',
           spiceThingsUp: 'आप नई गर्माहट चाहते हैं। आज रात बढ़िया रहेगी।',
-          adventurous: 'आपको edge पसंद है। ये खूब जमेगा।',
+          adventurous: 'आपको थोड़ा साहस पसंद है। ये खूब जमेगा।',
           quickies: 'जब तेज़ चाहिए, वही सही होता है।',
           default: 'आप आए। यही सबसे अच्छी शुरुआत है।',
         },
-        payoffValueIdeas: (count) => `${count}+ आइडियाज़`,
-        payoffValueChallenges: 'चैलेंज',
-        payoffValueDateNights: 'डेट नाइट्स',
-        payoffUnlock: 'Unlock to play →',
-        payoffCta: "Let's Begin →",
-        payoffCancel: 'कभी भी cancel करें · कोई commitment नहीं',
-        welcomeSubtitle: 'मूड सेट करें। अब अच्छा शुरू होता है।',
-        welcomeExisting: 'पहले से यहां · Sign In',
+        payoffValueIdeas: (count) => `${count}+ सुझाव`,
+        payoffValueChallenges: 'चुनौतियाँ',
+        payoffValueDateNights: 'साथ की रातें',
+        payoffUnlock: 'खेलने के लिए खोलें →',
+        payoffCta: 'शुरू करें →',
+        payoffCancel: 'कभी भी रद्द करें · कोई बंधन नहीं',
+        welcomeSubtitle: 'माहौल बनाएँ। अब अच्छा शुरू होता है।',
+        welcomeExisting: 'पहले से यहां · प्रवेश करें',
       },
       paywall: {
         title: 'साथ खेलने की और जगह',
         subtitle: 'ऐसी रातों के लिए सब कुछ, आराम से।',
-        featureIdeas: '🌸 400+ ideas, positions और date nights',
-        featureChallenges: '🎯 Weekly dares और tonight picks',
-        featurePrivacy: '🔒 Private · No ads · Cancel anytime',
-        primaryCta: 'Start My Subscription →',
+        featureIdeas: '🌸 400+ सुझाव, मुद्राएँ और साथ की रातें',
+        featureChallenges: '🎯 साप्ताहिक शरारतें और आज रात की पसंदें',
+        featurePrivacy: '🔒 निजी · विज्ञापन नहीं · कभी भी रद्द करें',
+        primaryCta: 'सदस्यता शुरू करें →',
         contact: 'हम असली लोग हैं। कभी भी संपर्क करें।',
       },
       share: {
         appReferral: (link) => `हम Blisse के साथ अपनी रातें और करीब बनाते हैं 🌸 ${link}`,
-        position: (name, link) => `आज हमने ${name} ट्राय किया — Blisse पर मिला 🌸 ${link}`,
-        foreplay: (name, link) => `Blisse का यह आइडिया हमारी शाम बदल गया: ${name} ✨ ${link}`,
-        oral: (name, link) => `आज हमने यह आइडिया ट्राय किया: ${name} 👄 Blisse 🌸 ${link}`,
-        massage: (name, link) => `इस मसाज ने पूरी vibe बदल दी: ${name} 💆 Blisse 🌸 ${link}`,
-        roleplay: (name, link) => `आज हमने यह roleplay किया: ${name} 🎭 Blisse 🌸 ${link}`,
+        position: (name, link) => `आज हमने ${name} आज़माया — Blisse पर मिला 🌸 ${link}`,
+        foreplay: (name, link) => `Blisse का यह सुझाव हमारी शाम बदल गया: ${name} ✨ ${link}`,
+        oral: (name, link) => `आज हमने यह सुझाव आज़माया: ${name} 👄 Blisse 🌸 ${link}`,
+        massage: (name, link) => `इस मालिश ने पूरा माहौल बदल दिया: ${name} 💆 Blisse 🌸 ${link}`,
+        roleplay: (name, link) => `आज हमने यह भूमिका-अभिनय किया: ${name} 🎭 Blisse 🌸 ${link}`,
       },
       notifications: {
         dailyTease: [
@@ -1152,15 +1152,15 @@ Write the final note in Brazilian Portuguese.`,
           'आपकी जगह सुरक्षित है। जब चाहें लौट आएं।',
         ],
       },
-      coach: {
+      sharedNotes: {
         systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
 The tone is warm, light, optional, flirty, and never detached or judgmental.
 Keep it to 2-3 sentences.
 Do not explain why anything works.
-Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Do not pressure, guilt, create urgency, or use improvement framing.
 Speak to both people together as "you two", gently and casually.`,
         fallbackNotes: [
-          'आप दोनों पहले से sync में हैं। हल्का और करीब काफी है।',
+          'आप दोनों पहले से तालमेल में हैं। हल्का और करीब काफी है।',
           'धीमा, तेज़, या बीच में कहीं। आपका तरीका ही सही है।',
           'परफेक्ट होने की जरूरत नहीं। साथ होना ही काफी है।',
           'एक मुस्कान भी ठहरने की अच्छी जगह हो सकती है।',
@@ -1242,7 +1242,7 @@ Write the final note in Hindi.`,
         teaser: 'Low effort, warm chemistry, and no pressure.',
         cta: 'Let\'s begin →',
       },
-      forYouSubtitle: 'Very your vibe',
+      forYouSubtitle: 'Things you tend to come back to.',
       profile: {
         rhythmHeading: 'What feels like you',
         ideasPlayed: (count) => `${count} moments saved`,
@@ -1267,7 +1267,7 @@ Write the final note in Hindi.`,
     detail: {
       opener: ['Take your time with this one.', 'No rush. Let it build.', 'Settle in.', 'Enjoy this.', 'Go slow if you want.'],
       closer: ['Stay here if it feels good.', 'Let it unfold.', 'Follow what feels warm.'],
-      coachTitle: 'For you two 🌸',
+      noteTitle: 'For you two 🌸',
     },
     empty: {
       loading: ['Warming up…', 'Give us a second.', 'Almost there.'],
@@ -1332,7 +1332,7 @@ Write the final note in Hindi.`,
     },
     sessionPlan: {
       progress: '',
-      coachTitle: 'Tonight\'s note',
+      noteTitle: 'Tonight\'s note',
       details: 'Open',
       openAction: 'Take a look',
       tryAction: 'Try this',
@@ -1345,7 +1345,7 @@ Write the final note in Hindi.`,
       finish: 'Finish with...',
       fallbackName: 'Something new',
       fallbackVibe: 'This could fit tonight.',
-      coachIntro: {
+      openingNote: {
         romantic: 'Slow, close, and warm tonight.',
         passionate: 'Heat first. No waiting.',
         playful: 'Keep it fun and flirty.',
@@ -1374,8 +1374,8 @@ Write the final note in Hindi.`,
       fallbackStartLabel: 'Begin with...',
       fallbackMoveLabel: 'Move into...',
       fallbackFinishLabel: 'Finish with...',
-      coachLabel: 'For you two 🌸',
-      coachBody: 'Keep the moments that felt good. They can come back whenever you want.',
+      noteLabel: 'For you two 🌸',
+      noteBody: 'Keep the moments that felt good. They can come back whenever you want.',
       remember: 'Keep this',
       optional: 'Optional',
       feelNow: 'Right now',
@@ -1459,12 +1459,12 @@ Write the final note in Hindi.`,
         'Your spot is saved. Come back anytime.',
       ],
     },
-    coach: {
+    sharedNotes: {
       systemPrompt: `You are writing a short, warm note meant for two people sharing a moment together.
 The tone is warm, light, optional, flirty, and never detached or judgmental.
 Keep it to 2-3 sentences.
 Do not explain why anything works.
-Do not give advice, teach, pressure, guilt, urgency, or improvement framing.
+Do not pressure, guilt, create urgency, or use improvement framing.
 Speak to both people together as "you two", gently and casually.`,
       fallbackNotes: [
         'You two are already in sync. Easy and close is enough.',

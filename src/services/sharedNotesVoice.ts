@@ -3,9 +3,9 @@ import { getCurrentLanguage } from '@/i18n/languageGetter';
 import type { AppLanguage } from '@/i18n/translations';
 import { getVoiceCopy } from '@/copy';
 
-type CoachContentType = 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
+type SharedNoteContentType = 'position' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
 
-interface CoachItem {
+interface SharedNoteItem {
   id: number;
   name: string;
   vibe?: string;
@@ -20,11 +20,11 @@ const MAX_TOKENS = 150;
 
 const inflightRequests = new Map<string, Promise<string>>();
 
-const buildCacheKey = (language: AppLanguage, contentType: CoachContentType, itemId: number) =>
-  `coach_note_${language}_${contentType}_${itemId}`;
+const buildCacheKey = (language: AppLanguage, contentType: SharedNoteContentType, itemId: number) =>
+  `shared_note_${language}_${contentType}_${itemId}`;
 
 const pickFallback = (language: AppLanguage, itemId: number): string => {
-  const localizedFallbacks = getVoiceCopy(language).coach.fallbackNotes;
+  const localizedFallbacks = getVoiceCopy(language).sharedNotes.fallbackNotes;
   const index = Math.abs(itemId) % localizedFallbacks.length;
   return localizedFallbacks[index];
 };
@@ -44,10 +44,10 @@ const extractMessage = (payload: any): string | null => {
   return null;
 };
 
-const requestCoachNote = async (
+const requestSharedNote = async (
   language: AppLanguage,
-  contentType: CoachContentType,
-  item: CoachItem
+  contentType: SharedNoteContentType,
+  item: SharedNoteItem
 ): Promise<string> => {
   const apiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
   if (!apiKey) {
@@ -64,8 +64,8 @@ const requestCoachNote = async (
       model: MODEL,
       max_tokens: MAX_TOKENS,
       messages: [
-        { role: 'system', content: getVoiceCopy(language).coach.systemPrompt },
-        { role: 'user', content: getVoiceCopy(language).coach.userPrompt(contentType, item) },
+        { role: 'system', content: getVoiceCopy(language).sharedNotes.systemPrompt },
+        { role: 'user', content: getVoiceCopy(language).sharedNotes.userPrompt(contentType, item) },
       ],
     }),
   });
@@ -77,13 +77,13 @@ const requestCoachNote = async (
   const payload = await response.json();
   const note = extractMessage(payload);
   if (!note) {
-    throw new Error('Coach note missing from response');
+    throw new Error('Shared note missing from response');
   }
 
   return note;
 };
 
-const loadOrGenerateNote = async (contentType: CoachContentType, item: CoachItem): Promise<string> => {
+const loadOrGenerateNote = async (contentType: SharedNoteContentType, item: SharedNoteItem): Promise<string> => {
   const language = getCurrentLanguage();
   const cacheKey = buildCacheKey(language, contentType, item.id);
   const cached = await AsyncStorage.getItem(cacheKey);
@@ -92,7 +92,7 @@ const loadOrGenerateNote = async (contentType: CoachContentType, item: CoachItem
   }
 
   try {
-    const generated = await requestCoachNote(language, contentType, item);
+    const generated = await requestSharedNote(language, contentType, item);
     await AsyncStorage.setItem(cacheKey, generated);
     return generated;
   } catch {
@@ -102,8 +102,8 @@ const loadOrGenerateNote = async (contentType: CoachContentType, item: CoachItem
   }
 };
 
-export const coachVoice = {
-  async getNote(contentType: CoachContentType, item: CoachItem): Promise<string> {
+export const sharedNotesVoice = {
+  async getNote(contentType: SharedNoteContentType, item: SharedNoteItem): Promise<string> {
     const language = getCurrentLanguage();
     const cacheKey = buildCacheKey(language, contentType, item.id);
     const existing = inflightRequests.get(cacheKey);
@@ -116,7 +116,7 @@ export const coachVoice = {
     return request;
   },
 
-  preloadNote(contentType: CoachContentType, item: CoachItem): void {
+  preloadNote(contentType: SharedNoteContentType, item: SharedNoteItem): void {
     void this.getNote(contentType, item);
   },
 };

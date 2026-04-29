@@ -419,8 +419,8 @@ export const foreplayIdeas: ForeplayIdea[] = [
     duration: "Medium",
     vibe: "Building anticipation through movement",
     description: "Put on romantic music and dance together, letting the closeness build tension.",
-    howTo: "Choose slow, romantic music. Hold each other close. Let hands wander naturally. Make eye contact. Let the dance progress wherever it leads.",
-    tips: ["Create a playlist in advance", "Dim the lights", "No phones or distractions", "Let it progress naturally"],
+    howTo: "Choose slow, romantic music. Hold each other close. Let hands wander naturally. Make eye contact. Let the dance go wherever it leads.",
+    tips: ["Create a playlist in advance", "Dim the lights", "No phones or distractions", "Let it unfold naturally"],
     pairsWellWith: ["The Ballet Dancer", "Standing Ovation", "Face-Off"]
   },
   {

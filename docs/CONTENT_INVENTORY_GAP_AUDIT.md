@@ -355,12 +355,12 @@ Recommended additions:
 - no-hands anticipation prompt
 - timer-based tension builder
 
-#### C. Mutual guidance / feedback-loop foreplay
+#### C. Mutual feedback / feedback-loop foreplay
 This is strong for app differentiation.
 Recommended additions:
 - show me slower
 - redirection game
-- two-minute teaching round
+- two-minute showing round
 - favorite touch replay
 - yes / more / there prompts
 
@@ -379,7 +379,7 @@ Some copy still feels:
 ### Spanish observations
 Spanish is generally in decent shape, but some lines still feel slightly stiff or over-literal.
 Examples of patterns to smooth:
-- instructional imperatives that sound translated rather than conversational
+- overly direct imperatives that sound translated rather than conversational
 - repetition of phrasing like `quédate aquí` in contexts where a more natural phrasing would read better
 - some title choices feel serviceable rather than native and sexy/playful
 
@@ -430,7 +430,7 @@ Recommended first batch: add 8-12 new foreplay ideas.
 Focus on:
 - setting
 - countdown/anticipation
-- mutual guidance
+- mutual feedback
 
 ### Phase 4: Localization polish
 Run a dedicated pass on:

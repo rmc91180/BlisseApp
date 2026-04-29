@@ -10,7 +10,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '@/store/useStore';
 import { getThemeColors, useThemeStore } from '@/store/useThemeStore';
-import { haptics } from '@/services/haptics';
 import { MOOD_PLAYLISTS } from '@/constants/gamification';
 import { resolveExperienceProfile } from '@/content/experienceProfiles';
 import { buildMoodSessionSteps, type MoodRefinement } from '@/services/moodSuggestions';
@@ -73,7 +72,7 @@ export function TonightSessionScreen({
   }, [moodProp, route?.params?.mood]);
   const voice = useMemo(() => getVoiceCopy(language), [language]);
   const copy = voice.sessionPlan;
-  const vibeLine = copy.coachIntro[selectedMood.id] || copy.coachIntro.romantic || '';
+  const vibeLine = copy.openingNote[selectedMood.id] || copy.openingNote.romantic || '';
   const refinement = route?.params?.refinement;
 
   const getStepKey = useCallback((step: SessionStep) => (
@@ -173,9 +172,6 @@ export function TonightSessionScreen({
   const handleViewDetails = (step: SessionStep) => {
     openedStepKeysRef.current.add(getStepKey(step));
     const itemId = Number(step.item?.id || 0);
-    if (itemId) {
-      haptics.openCard(`${step.type}:${itemId}`);
-    }
     if (step.type === 'position') {
       navigation.navigate('PositionDetail', { position: step.item });
       return;

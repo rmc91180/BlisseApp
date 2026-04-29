@@ -184,7 +184,7 @@ const _DAILY_JOKE_PUNCHLINES_EN: string[] = [
   'Because it found a better use for our attention span.',
   'That self-control officially clocked out first.',
   'Because oversized comfort sometimes comes with undersized patience.',
-  'One soft kiss too many and bedtime lost all authority.',
+  'One soft kiss too many and bedtime lost all power.',
   'Because one perfect spot deserves repeat business.',
   'A harmless timer… with wildly unharmless consequences.',
   'Because soft lighting loves a confident decision.',

@@ -72,7 +72,7 @@ Use the following table when completing Play Console.
 | App interactions / Product interaction | Yes | No | Required | Analytics, Personalization | No | Anonymous/sanitized interaction events |
 | Other user-generated content | Yes | No | Optional | App functionality | Potentially Yes | Only when user explicitly submits a support/idea message via Formspree |
 
-## Detailed guidance by category
+## Detailed notes by category
 
 ### 1. Email address
 - **Collected:** Yes

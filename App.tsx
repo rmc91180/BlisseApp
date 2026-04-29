@@ -79,7 +79,7 @@ import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
 import { haptics } from '@/services/haptics';
-import { coachVoice } from '@/services/coachVoice';
+import { sharedNotesVoice } from '@/services/sharedNotesVoice';
 import { getMoodContext } from '@/services/moodSuggestions';
 import { SubscriptionProvider } from '@/services/subscription';
 import { DailyBonusModal } from '@/components/DailyBonusModal';
@@ -266,7 +266,6 @@ function PulseHeart({ filled, onPress, size = 24, color }: { filled: boolean; on
       }),
     ]).start();
 
-    haptics.confirmAction();
     onPress();
   };
   
@@ -379,7 +378,9 @@ function StarCelebrationModal({ visible, onClose, stars, achievements }: { visib
 
   useEffect(() => {
     if (visible) {
-      haptics.celebrate();
+      if (achievements.length > 0) {
+        haptics.celebrate();
+      }
       setShowConfetti(true);
       Animated.spring(scaleAnim, { toValue: 1, tension: 50, friction: 7, useNativeDriver: true }).start();
     } else {
@@ -567,7 +568,7 @@ const _StarBadge = ({ count }: { count: number }) => (
   </View>
 );
 
-function CoachNoteSection({
+function SharedNoteSection({
   contentType,
   item,
 }: {
@@ -587,7 +588,7 @@ function CoachNoteSection({
   const shimmer = useRef(new Animated.Value(-1)).current;
   const themeStore = useThemeStore();
   const themeColors = getThemeColors(themeStore.currentTheme);
-  const coachTitle = language === 'es'
+  const noteTitle = language === 'es'
     ? 'Para ustedes 🌸'
     : language === 'pt'
       ? 'Pra vocês 🌸'
@@ -599,7 +600,7 @@ function CoachNoteSection({
     let active = true;
     setLoading(true);
 
-    void coachVoice.getNote(contentType, item).then((value) => {
+    void sharedNotesVoice.getNote(contentType, item).then((value) => {
       if (!active) return;
       setNote(value);
       setLoading(false);
@@ -632,13 +633,13 @@ function CoachNoteSection({
   });
 
   return (
-    <View style={[styles.coachNoteCard, { backgroundColor: themeColors.card, borderColor: themeColors.cardLight }]}>
-      <Text style={[styles.coachNoteTitle, { color: themeColors.primary[400] }]}>{coachTitle}</Text>
+    <View style={[styles.sharedNoteCard, { backgroundColor: themeColors.card, borderColor: themeColors.cardLight }]}>
+      <Text style={[styles.sharedNoteTitle, { color: themeColors.primary[400] }]}>{noteTitle}</Text>
       {loading ? (
-        <View style={styles.coachSkeletonWrap}>
-          <View style={[styles.coachSkeletonLine, { width: '95%', backgroundColor: themeColors.cardLight }]} />
-          <View style={[styles.coachSkeletonLine, { width: '78%', backgroundColor: themeColors.cardLight }]} />
-          <Animated.View style={[styles.coachShimmer, { transform: [{ translateX: shimmerTranslateX }] }]}>
+        <View style={styles.sharedNoteSkeletonWrap}>
+          <View style={[styles.sharedNoteSkeletonLine, { width: '95%', backgroundColor: themeColors.cardLight }]} />
+          <View style={[styles.sharedNoteSkeletonLine, { width: '78%', backgroundColor: themeColors.cardLight }]} />
+          <Animated.View style={[styles.sharedNoteShimmer, { transform: [{ translateX: shimmerTranslateX }] }]}>
             <LinearGradient
               colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.16)', 'rgba(255,255,255,0)']}
               start={{ x: 0, y: 0 }}
@@ -648,7 +649,7 @@ function CoachNoteSection({
           </Animated.View>
         </View>
       ) : (
-        <Text style={[styles.coachNoteText, { color: themeColors.text.muted }]}>{note}</Text>
+        <Text style={[styles.sharedNoteText, { color: themeColors.text.muted }]}>{note}</Text>
       )}
     </View>
   );
@@ -661,7 +662,7 @@ const PositionCard = ({ position, onPress }: { position: Position; onPress: () =
   const isTried = store.tried.includes(position.id);
   const mood = moods.find((m) => m.id === position.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`position:${position.id}`); coachVoice.preloadNote('position', position); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${position.name}, ${localizeTerm(position.category)}, ${localizeTerm(position.difficulty)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { sharedNotesVoice.preloadNote('position', position); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${position.name}, ${localizeTerm(position.category)}, ${localizeTerm(position.difficulty)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -694,7 +695,7 @@ const ForeplayCard = ({ item, onPress }: { item: ForeplayIdea; onPress: () => vo
   const isTried = store.triedForeplay.includes(item.id);
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`foreplay:${item.id}`); coachVoice.preloadNote('foreplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { sharedNotesVoice.preloadNote('foreplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -726,7 +727,7 @@ const OralPlayCard = ({ item, onPress }: { item: OralPlayIdea; onPress: () => vo
   const mood = moods.find((m) => m.id === item.mood);
   const giverLabel = item.giver === 'him' ? localizeTerm('He gives') : item.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual');
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`oral:${item.id}`); coachVoice.preloadNote('oral', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { sharedNotesVoice.preloadNote('oral', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>{mood?.emoji}</Text>
@@ -757,7 +758,7 @@ const MassageCard = ({ item, onPress }: { item: MassageTechnique; onPress: () =>
   const isTried = store.triedMassage?.includes(item.id) || false;
   const mood = moods.find((m) => m.id === item.mood);
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`massage:${item.id}`); coachVoice.preloadNote('massage', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { sharedNotesVoice.preloadNote('massage', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>💆</Text>
@@ -789,7 +790,7 @@ const RolePlayCard = ({ item, onPress }: { item: RolePlayScenario; onPress: () =
   const mood = moods.find((m) => m.id === item.mood);
   const intensityColor = item.intensity === 'Light' ? colors.success : item.intensity === 'Medium' ? colors.warning : colors.error;
   return (
-    <TouchableOpacity style={styles.positionCard} onPress={() => { haptics.openCard(`roleplay:${item.id}`); coachVoice.preloadNote('roleplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
+    <TouchableOpacity style={styles.positionCard} onPress={() => { sharedNotesVoice.preloadNote('roleplay', item); onPress(); }} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`${item.name}, ${localizeTerm(item.category)}`}>
       <View style={styles.cardHeader}>
         <View style={[styles.positionMoodBadge, { backgroundColor: mood?.color || colors.primary[500] }]}>
           <Text style={styles.positionMoodEmoji}>🎭</Text>
@@ -2106,7 +2107,7 @@ function InsightsModal({ visible, onClose }: { visible: boolean; onClose: () => 
               </View>
             </View>
 
-            {/* All Time Stats */}
+            {/* All-time moments */}
             <View style={styles.insightCard}>
               <Text style={styles.insightCardTitle}>{t('insights.all_time')}</Text>
               <View style={styles.insightStatsRow}>
@@ -2201,7 +2202,7 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
           </View>
           <Text style={styles.modalSubtitle}>{t('weekly_goals.subtitle')}</Text>
           
-          {/* Progress Bar */}
+          {/* Moment completion */}
           <View style={styles.weeklyProgressContainer}>
             <View style={styles.weeklyProgressBar}>
               <View style={[styles.weeklyProgressFill, { width: `${(completedCount / Math.max(totalGoals, 1)) * 100}%` }]} />
@@ -2903,7 +2904,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
                 try {
                   await logout();
                 } catch (_) {
-                  // Ignore logout failure and still show re-auth guidance.
+                  // Ignore logout failure and still show re-auth help.
                 }
                 onClose();
                 Alert.alert(t('settings.account.reauth_title'), t('settings.account.reauth_message'));
@@ -3880,10 +3881,7 @@ function HomeScreen({
       trackedRecommendationImpressionsRef.current.add(recommendationKey);
       trackRecommendationView(recommendation);
     }
-    if (itemId) {
-      haptics.openCard(`${contentType}:${itemId}`);
-    }
-    coachVoice.preloadNote(contentType, resolvedItem);
+    sharedNotesVoice.preloadNote(contentType, resolvedItem);
 
     if (contentType === 'position') {
       navigation.navigate('PositionDetail', { position: resolvedItem });
@@ -4128,7 +4126,6 @@ function HomeScreen({
                 style={styles.dailyJokeRevealButton}
                 onPress={() => {
                   setShowDailyPunchline(true);
-                  haptics.reveal();
                   Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
                 }}
               >
@@ -4276,7 +4273,7 @@ function HomeScreen({
         </TouchableOpacity>
       )}
 
-      {/* Quick Stats Row */}
+      {/* Quick moments row */}
       <View style={styles.quickStatsRow}>
         <TouchableOpacity style={styles.quickStatCard} onPress={() => setShowAchievements(true)}>
           <Text style={styles.quickStatEmoji}>🏆</Text>
@@ -4504,10 +4501,10 @@ function ExploreScreen({ navigation }: any) {
         itemNames: ['Couch Cocoon', 'Cuddling with Intent', 'Undressing Ritual', 'Pillow Fort Date'],
       },
       {
-        id: 'guided-intimacy',
+        id: 'shared-intimacy',
         icon: '🤝',
-        title: t('explore.collections.foreplay.guided_intimacy.title'),
-        subtitle: t('explore.collections.foreplay.guided_intimacy.subtitle'),
+        title: t('explore.collections.foreplay.shared_intimacy.title'),
+        subtitle: t('explore.collections.foreplay.shared_intimacy.subtitle'),
         itemNames: ['Mutual Exploration', 'Warm Hands', 'Show Me Slower', 'Mirror Flirt'],
       },
     ],
@@ -4586,11 +4583,11 @@ function ExploreScreen({ navigation }: any) {
     () => ({
       id: 'for-you',
       icon: '✨',
-      title: 'For You',
-      subtitle: 'Very your vibe',
+      title: t('home.feature.for_you'),
+      subtitle: voice.home.forYouSubtitle,
       itemNames: forYouItemNames,
     }),
-    [forYouItemNames]
+    [forYouItemNames, t, voice.home.forYouSubtitle]
   );
   const visibleStarterPacks = useMemo(
     () => starterPacksUnlocked
@@ -4764,32 +4761,27 @@ function ExploreScreen({ navigation }: any) {
 
   const openFavoriteChip = useCallback((chip: { contentType: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'; item: any }) => {
     const itemId = Number(chip.item?.id || 0);
-    if (itemId) {
-      const keyPrefix = chip.contentType === 'positions' ? 'position' : chip.contentType;
-      haptics.openCard(`${keyPrefix}:${itemId}`);
-    }
-
     if (chip.contentType === 'positions') {
-      coachVoice.preloadNote('position', chip.item);
+      sharedNotesVoice.preloadNote('position', chip.item);
       navigation.navigate('PositionDetail', { position: chip.item });
       return;
     }
     if (chip.contentType === 'foreplay') {
-      coachVoice.preloadNote('foreplay', chip.item);
+      sharedNotesVoice.preloadNote('foreplay', chip.item);
       navigation.navigate('ForeplayDetail', { item: chip.item });
       return;
     }
     if (chip.contentType === 'oral') {
-      coachVoice.preloadNote('oral', chip.item);
+      sharedNotesVoice.preloadNote('oral', chip.item);
       navigation.navigate('OralDetail', { item: chip.item });
       return;
     }
     if (chip.contentType === 'massage') {
-      coachVoice.preloadNote('massage', chip.item);
+      sharedNotesVoice.preloadNote('massage', chip.item);
       navigation.navigate('MassageDetail', { item: chip.item });
       return;
     }
-    coachVoice.preloadNote('roleplay', chip.item);
+    sharedNotesVoice.preloadNote('roleplay', chip.item);
     navigation.navigate('RolePlayDetail', { item: chip.item });
   }, [navigation]);
 
@@ -4903,7 +4895,7 @@ function ExploreScreen({ navigation }: any) {
         {(['all', 'newToYou', 'tried'] as const).map((option) => (
           <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { setSortBy(option); }}>
             <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
-              {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? '🆕 New to You' : `✓ ${t('explore.sort.tried')}`}
+              {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? `🆕 ${t('explore.sort.new_to_you')}` : `✓ ${t('explore.sort.tried')}`}
             </Text>
           </TouchableOpacity>
         ))}
@@ -5193,7 +5185,7 @@ function ProfileScreen({ navigation }: any) {
                 try {
                   await logout();
                 } catch (_) {
-                  // Ignore logout failure and still show re-auth guidance.
+                  // Ignore logout failure and still show re-auth help.
                 }
                 Alert.alert(t('settings.account.reauth_title'), t('settings.account.reauth_message'));
               } else {
@@ -5492,14 +5484,12 @@ const openPairedContent = (navigation: any, name: string): void => {
   const normalizedName = normalizePairName(name);
   const foreplayMatch = foreplayIdeas.find((entry) => normalizePairName(entry.name) === normalizedName);
   if (foreplayMatch) {
-    haptics.openCard(`foreplay:${foreplayMatch.id}`);
     navigation.push('ForeplayDetail', { item: foreplayMatch });
     return;
   }
 
   const positionMatch = positions.find((entry) => normalizePairName(entry.name) === normalizedName);
   if (positionMatch) {
-    haptics.openCard(`position:${positionMatch.id}`);
     navigation.push('PositionDetail', { position: positionMatch });
     return;
   }
@@ -5574,13 +5564,13 @@ function PositionDetailScreen({ route, navigation }: any) {
               )}
             </View>
             <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{position.vibe}"</Text></View>
-            <CoachNoteSection contentType="position" item={position} />
+            <SharedNoteSection contentType="position" item={position} />
             <View style={styles.actionRow}>
               <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleFavorite(position.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { store.toggleFavorite(position.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -5695,13 +5685,13 @@ function ForeplayDetailScreen({ route, navigation }: any) {
               )}
             </View>
             <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-            <CoachNoteSection contentType="foreplay" item={item} />
+            <SharedNoteSection contentType="foreplay" item={item} />
             <View style={styles.actionRow}>
               <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleForeplayFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { store.toggleForeplayFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -5808,13 +5798,13 @@ function OralDetailScreen({ route, navigation }: any) {
               )}
             </View>
             <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-            <CoachNoteSection contentType="oral" item={item} />
+            <SharedNoteSection contentType="oral" item={item} />
             <View style={styles.actionRow}>
               <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleOralFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { store.toggleOralFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -5924,13 +5914,13 @@ function MassageDetailScreen({ route, navigation }: any) {
               )}
             </View>
             <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-            <CoachNoteSection contentType="massage" item={item} />
+            <SharedNoteSection contentType="massage" item={item} />
             <View style={styles.actionRow}>
               <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleMassageFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { store.toggleMassageFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -6046,13 +6036,13 @@ function RolePlayDetailScreen({ route, navigation }: any) {
               )}
             </View>
             <View style={styles.detailVibe}><Text style={styles.detailVibeText}>"{item.vibe}"</Text></View>
-            <CoachNoteSection contentType="roleplay" item={item} />
+            <SharedNoteSection contentType="roleplay" item={item} />
             <View style={styles.actionRow}>
               <TouchableOpacity style={[styles.actionBtn, isTried && styles.actionBtnActive]} onPress={handleMarkTried}>
                 <Text style={styles.actionBtnIcon}>{isTried ? '✓' : '○'}</Text>
                 <Text style={styles.actionBtnText}>{isTried ? t('detail.actions.tried') : t('detail.actions.mark_tried')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { haptics.confirmAction(); store.toggleRoleplayFavorite(item.id); }}>
+              <TouchableOpacity style={[styles.actionBtn, isFavorite && styles.actionBtnFavorite]} onPress={() => { store.toggleRoleplayFavorite(item.id); }}>
                 <Text style={styles.actionBtnIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
                 <Text style={styles.actionBtnText}>{isFavorite ? t('detail.actions.favorited') : t('detail.actions.favorite')}</Text>
               </TouchableOpacity>
@@ -7305,12 +7295,12 @@ const styles = StyleSheet.create({
   actionBtnNotes: { backgroundColor: 'rgba(168, 85, 247, 0.2)' },
   actionBtnIcon: { fontSize: 16, marginRight: 6 },
   actionBtnText: { fontSize: 13, color: colors.text.primary },
-  coachNoteCard: { borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 16 },
-  coachNoteTitle: { fontSize: 14, fontWeight: '700', marginBottom: 8 },
-  coachNoteText: { fontSize: 14, lineHeight: 20, fontStyle: 'italic' },
-  coachSkeletonWrap: { height: 38, justifyContent: 'space-between', overflow: 'hidden' },
-  coachSkeletonLine: { height: 14, borderRadius: 8 },
-  coachShimmer: { position: 'absolute', top: 0, left: 0, width: 120, height: 42 },
+  sharedNoteCard: { borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 16 },
+  sharedNoteTitle: { fontSize: 14, fontWeight: '700', marginBottom: 8 },
+  sharedNoteText: { fontSize: 14, lineHeight: 20, fontStyle: 'italic' },
+  sharedNoteSkeletonWrap: { height: 38, justifyContent: 'space-between', overflow: 'hidden' },
+  sharedNoteSkeletonLine: { height: 14, borderRadius: 8 },
+  sharedNoteShimmer: { position: 'absolute', top: 0, left: 0, width: 120, height: 42 },
   detailSection: { marginBottom: 24 },
   detailSectionTitle: { fontSize: 18, fontWeight: '600', color: colors.text.primary, marginBottom: 12 },
   detailText: { fontSize: 15, color: colors.text.secondary, lineHeight: 24 },
