@@ -205,10 +205,10 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'stretch',
-    borderRadius: 16,
+    borderRadius: 14,
     borderWidth: 1,
     borderLeftWidth: 2,
-    marginBottom: 12,
+    marginBottom: 14,
     overflow: 'hidden',
   },
   accentBar: {
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
   },
   headerRow: {
     flexDirection: 'row',
@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
   name: {
     flex: 1,
     fontSize: 16,
-    fontWeight: '700',
+    lineHeight: 22,
+    fontWeight: '600',
     marginRight: 8,
   },
   badge: {
@@ -242,14 +243,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   vibe: {
-    fontSize: 13,
+    fontSize: 14,
     fontStyle: 'italic',
-    lineHeight: 18,
-    marginBottom: 8,
+    lineHeight: 22,
+    marginBottom: 9,
   },
   reason: {
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: 13,
+    lineHeight: 20,
     fontWeight: '600',
   },
   arrow: {

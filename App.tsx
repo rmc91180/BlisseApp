@@ -3650,6 +3650,20 @@ function HomeScreen({
   const dateNightUnlocked = isFeatureUnlocked('date_night_generator');
   const truthOrDareUnlocked = isFeatureUnlocked('truth_or_dare');
   const seasonalUnlocked = isFeatureUnlocked('seasonal_content');
+  const tonightActivity = useMemo(() => {
+    if (!selectedMoodContext) return null;
+    if (selectedMoodContext.id === 'romantic' || selectedMoodContext.id === 'relaxed') {
+      return dateNightUnlocked
+        ? { kind: 'date_night' as const, emoji: '🌙', title: t('date_night.title'), body: t('home.quality.romance') }
+        : { kind: 'spinner' as const, emoji: '🎰', title: t('home.feature.spin'), body: t('home.quality.playful') };
+    }
+    if (selectedMoodContext.id === 'playful' || selectedMoodContext.id === 'adventurous') {
+      return truthOrDareUnlocked
+        ? { kind: 'truth_dare' as const, emoji: '🎲', title: t('truth_dare.title'), body: t('truth_dare.subtitle') }
+        : { kind: 'spinner' as const, emoji: '🎰', title: t('home.feature.spin'), body: t('home.quality.playful') };
+    }
+    return { kind: 'challenge' as const, emoji: '🎯', title: t('challenge.title'), body: t('home.quality.challenge') };
+  }, [dateNightUnlocked, selectedMoodContext, t, truthOrDareUnlocked]);
   const lockProgressText = useCallback(
     (feature: keyof typeof FEATURE_LOCK_REQUIREMENTS) => {
       const requirement = FEATURE_LOCK_REQUIREMENTS[feature];
@@ -3871,6 +3885,23 @@ function HomeScreen({
     navigation.navigate('RolePlayDetail', { item: resolvedItem });
   }, [navigation, resolveRecommendationItem, trackRecommendationView]);
 
+  const openTonightActivity = useCallback(() => {
+    if (!tonightActivity) return;
+    if (tonightActivity.kind === 'date_night') {
+      setShowDateNight(true);
+      return;
+    }
+    if (tonightActivity.kind === 'truth_dare') {
+      setShowTruthOrDare(true);
+      return;
+    }
+    if (tonightActivity.kind === 'challenge') {
+      setShowChallenge(true);
+      return;
+    }
+    setShowSpinner(true);
+  }, [tonightActivity]);
+
   return (
     <ScreenWrapper scroll>
       {/* ── Warm Header ── */}
@@ -3940,16 +3971,44 @@ function HomeScreen({
               );
             })}
           </View>
-          {selectedMoodContext ? (
+          {selectedMoodContext || featureFlags.enableDailyJokes ? (
             <View
               style={[
                 styles.vibeEnhancements,
                 {
-                  borderColor: selectedMoodContext.color + '55',
-                  backgroundColor: selectedMoodContext.color + '12',
+                  borderColor: (selectedMoodContext?.color || colors.primary[500]) + '55',
+                  backgroundColor: (selectedMoodContext?.color || colors.primary[500]) + '12',
                 },
               ]}
             >
+              {featureFlags.enableDailyJokes ? (
+                <View style={styles.vibeEnhancementInlineItem}>
+                  <View style={styles.vibeEnhancementHeaderRow}>
+                    <Text style={styles.vibeEnhancementsTitle}>{t('home.daily_tease')}</Text>
+                    <Text style={styles.dailyJokeDate}>{dailyJokeDateKey}</Text>
+                  </View>
+                  <Text style={styles.vibeEnhancementBody}>{dailyJoke.setup}</Text>
+                  {!showDailyPunchline ? (
+                    <TouchableOpacity
+                      style={styles.dailyJokeRevealButton}
+                      onPress={() => {
+                        setShowDailyPunchline(true);
+                        Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
+                      }}
+                      accessibilityRole="button"
+                    >
+                      <Text style={styles.dailyJokeRevealText}>{t('home.reveal_punchline')}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.dailyJokePunchlineBox}>
+                      <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
+                    </View>
+                  )}
+                </View>
+              ) : null}
+              {featureFlags.enableDailyJokes && (selectedMoodContext || tonightPlaylist) ? (
+                <View style={styles.vibeEnhancementInlineDivider} />
+              ) : null}
               {tonightPlaylist ? (
                 <View style={styles.vibeEnhancementInlineItem}>
                   <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.music')}</Text>
@@ -3957,12 +4016,30 @@ function HomeScreen({
                   <Text style={styles.vibeEnhancementBody}>{tonightPlaylist.description}</Text>
                 </View>
               ) : null}
-              <View style={styles.vibeEnhancementInlineDivider} />
-              <View style={styles.vibeEnhancementInlineItem}>
-                <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.ritual')}</Text>
-                <Text style={styles.vibeEnhancementText}>{dailyRitualLine}</Text>
-                <Text style={styles.vibeEnhancementBody}>{t('home.ritual.body')}</Text>
-              </View>
+              {tonightPlaylist ? <View style={styles.vibeEnhancementInlineDivider} /> : null}
+              {selectedMoodContext ? (
+                <View style={styles.vibeEnhancementInlineItem}>
+                  <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.ritual')}</Text>
+                  <Text style={styles.vibeEnhancementText}>{dailyRitualLine}</Text>
+                  <Text style={styles.vibeEnhancementBody}>{t('home.ritual.body')}</Text>
+                </View>
+              ) : null}
+              {selectedMoodContext && tonightActivity ? <View style={styles.vibeEnhancementInlineDivider} /> : null}
+              {tonightActivity ? (
+                <TouchableOpacity
+                  style={styles.vibeActivityButton}
+                  onPress={openTonightActivity}
+                  activeOpacity={0.86}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.vibeActivityEmoji}>{tonightActivity.emoji}</Text>
+                  <View style={styles.vibeActivityCopy}>
+                    <Text style={styles.vibeEnhancementsTitle}>{t('home.challenge.active')}</Text>
+                    <Text style={styles.vibeEnhancementText}>{tonightActivity.title}</Text>
+                    <Text style={styles.vibeEnhancementBody}>{tonightActivity.body}</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : null}
             </View>
           ) : null}
         </View>
@@ -4062,33 +4139,8 @@ function HomeScreen({
         </Animated.View>
       ) : null}
 
-      {/* ── Daily Joke & Seasonal ── */}
+      {/* ── Seasonal ── */}
       <Animated.View style={{ opacity: suggestionsAnim, transform: [{ translateY: suggestionsTranslateY }] }}>
-        {featureFlags.enableDailyJokes && (
-          <View style={styles.dailyJokeCard}>
-            <View style={styles.dailyJokeHeaderRow}>
-              <Text style={styles.dailyJokeTitle}>😏 {t('home.daily_tease')}</Text>
-              <Text style={styles.dailyJokeDate}>{dailyJokeDateKey}</Text>
-            </View>
-            <Text style={styles.dailyJokeSetup}>{dailyJoke.setup}</Text>
-            {!showDailyPunchline ? (
-              <TouchableOpacity
-                style={styles.dailyJokeRevealButton}
-                onPress={() => {
-                  setShowDailyPunchline(true);
-                  Analytics.trackFeatureUsed('daily_joke_punchline_revealed');
-                }}
-              >
-                <Text style={styles.dailyJokeRevealText}>{t('home.reveal_punchline')}</Text>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.dailyJokePunchlineBox}>
-                <Text style={styles.dailyJokePunchline}>{dailyJoke.punchline}</Text>
-              </View>
-            )}
-          </View>
-        )}
-
         {featureFlags.showSeasonalCard && currentSeason && (
           <TouchableOpacity
             style={[styles.seasonalCard, { borderColor: currentSeason.color, opacity: seasonalUnlocked ? 1 : 0.9 }]}
@@ -4274,6 +4326,10 @@ function ExploreScreen({ navigation }: any) {
   const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'>('positions');
   const [sortBy, setSortBy] = useState<'all' | 'newToYou' | 'tried'>('all');
   const [showBrowseTools, setShowBrowseTools] = useState(false);
+  const [showExploreDateNight, setShowExploreDateNight] = useState(false);
+  const [showExploreChallenge, setShowExploreChallenge] = useState(false);
+  const [showExploreTruthOrDare, setShowExploreTruthOrDare] = useState(false);
+  const [showExploreInsights, setShowExploreInsights] = useState(false);
   const [forYouItemNames, setForYouItemNames] = useState<string[]>([]);
   const store = useStore();
   const { language, t, localizeTerm } = useI18n();
@@ -4283,6 +4339,8 @@ function ExploreScreen({ navigation }: any) {
     [store.unlockedFeatures]
   );
   const starterPacksUnlocked = unlockedFeatureSet.has('starter_pack_collections');
+  const dateNightUnlocked = unlockedFeatureSet.has('date_night_generator');
+  const truthOrDareUnlocked = unlockedFeatureSet.has('truth_or_dare');
   const dailyRecommendationRotationKey = getRecommendationRotationKey(new Date());
 
   const normalizeSearchText = useCallback((value: string) => (
@@ -4763,6 +4821,7 @@ function ExploreScreen({ navigation }: any) {
       </TouchableOpacity>
     </View>
   );
+  const showExploreResults = showBrowseTools || Boolean(selectedStarterPack);
 
   return (
     <ScreenWrapper>
@@ -4794,7 +4853,9 @@ function ExploreScreen({ navigation }: any) {
 
       <View style={styles.collectionSection}>
         <View style={styles.collectionHeader}>
-          <Text style={styles.collectionTitle}>{t('explore.collections.title')}</Text>
+          <Text style={styles.collectionTitle}>
+            {showBrowseTools ? t('explore.collections.title') : t('home.feature.for_you')}
+          </Text>
           {selectedStarterPack ? (
             <TouchableOpacity
               onPress={() => {
@@ -4817,6 +4878,9 @@ function ExploreScreen({ navigation }: any) {
                   setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
                 }}
                 activeOpacity={0.9}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isActive }}
+                accessibilityLabel={pack.title}
               >
                 <Text style={styles.collectionEmoji}>{pack.icon}</Text>
                 <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
@@ -4908,6 +4972,64 @@ function ExploreScreen({ navigation }: any) {
             </View>
           ) : null}
 
+          <View style={styles.exploreActivitySection}>
+            <Text style={styles.collectionTitle}>{t('explore.activities.title')}</Text>
+            <View style={styles.exploreActivityGrid}>
+              <TouchableOpacity
+                style={styles.exploreActivityCard}
+                onPress={() => {
+                  if (dateNightUnlocked) {
+                    setShowExploreDateNight(true);
+                    return;
+                  }
+                  setShowExploreInsights(true);
+                }}
+                activeOpacity={0.86}
+                accessibilityRole="button"
+              >
+                <Text style={styles.collectionEmoji}>🌙</Text>
+                <Text style={styles.collectionCardTitle}>{t('date_night.title')}</Text>
+                <Text style={styles.collectionCardSubtitle}>{t('home.quality.romance')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.exploreActivityCard}
+                onPress={() => {
+                  if (truthOrDareUnlocked) {
+                    setShowExploreTruthOrDare(true);
+                    return;
+                  }
+                  setShowExploreInsights(true);
+                }}
+                activeOpacity={0.86}
+                accessibilityRole="button"
+              >
+                <Text style={styles.collectionEmoji}>🎲</Text>
+                <Text style={styles.collectionCardTitle}>{t('truth_dare.title')}</Text>
+                <Text style={styles.collectionCardSubtitle}>{t('truth_dare.subtitle')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.exploreActivityCard}
+                onPress={() => setShowExploreChallenge(true)}
+                activeOpacity={0.86}
+                accessibilityRole="button"
+              >
+                <Text style={styles.collectionEmoji}>🎯</Text>
+                <Text style={styles.collectionCardTitle}>{t('challenge.title')}</Text>
+                <Text style={styles.collectionCardSubtitle}>{t('home.quality.challenge')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.exploreActivityCard}
+                onPress={() => navigation.navigate('Home')}
+                activeOpacity={0.86}
+                accessibilityRole="button"
+              >
+                <Text style={styles.collectionEmoji}>😏</Text>
+                <Text style={styles.collectionCardTitle}>{t('home.daily_tease')}</Text>
+                <Text style={styles.collectionCardSubtitle}>{t('home.ritual.title')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
           <View style={styles.exploreMusicSection}>
             <Text style={styles.collectionTitle}>{t('home.feature.music')}</Text>
             <Text style={styles.exploreMusicSubtitle}>{t('music.subtitle')}</Text>
@@ -4930,36 +5052,40 @@ function ExploreScreen({ navigation }: any) {
           </View>
         </View>
       ) : null}
-      {contentType === 'positions' && (
+      {showExploreResults && contentType === 'positions' && (
         <FlatList data={filteredPositions} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />}
           ListEmptyComponent={exploreEmptyState}
         />
       )}
-      {contentType === 'foreplay' && (
+      {showExploreResults && contentType === 'foreplay' && (
         <FlatList data={filteredForeplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />}
           ListEmptyComponent={exploreEmptyState}
         />
       )}
-      {contentType === 'oral' && (
+      {showExploreResults && contentType === 'oral' && (
         <FlatList data={filteredOral} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />}
           ListEmptyComponent={exploreEmptyState}
         />
       )}
-      {contentType === 'massage' && (
+      {showExploreResults && contentType === 'massage' && (
         <FlatList data={filteredMassage} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <MassageCard item={item} onPress={() => navigation.navigate('MassageDetail', { item })} />}
           ListEmptyComponent={exploreEmptyState}
         />
       )}
-      {contentType === 'roleplay' && (
+      {showExploreResults && contentType === 'roleplay' && (
         <FlatList data={filteredRoleplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <RolePlayCard item={item} onPress={() => navigation.navigate('RolePlayDetail', { item })} />}
           ListEmptyComponent={exploreEmptyState}
         />
       )}
+      <DateNightModal visible={showExploreDateNight} onClose={() => setShowExploreDateNight(false)} navigation={navigation} />
+      <ChallengeModal visible={showExploreChallenge} onClose={() => setShowExploreChallenge(false)} navigation={navigation} />
+      <TruthOrDareModal visible={showExploreTruthOrDare} onClose={() => setShowExploreTruthOrDare(false)} />
+      <InsightsModal visible={showExploreInsights} onClose={() => setShowExploreInsights(false)} />
     </ScreenWrapper>
   );
 }
@@ -6879,8 +7005,8 @@ const styles = StyleSheet.create({
   bloom: { width: 150, height: 150, borderRadius: 75, justifyContent: 'center', alignItems: 'center' },
   bloomCore: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#FFFAF0' },
   titleLarge: { fontSize: 48, fontWeight: '700', color: colors.text.primary, textAlign: 'center' },
-  title: { fontSize: 28, fontWeight: '700', color: colors.text.primary, marginBottom: 8 },
-  subtitle: { fontSize: 16, color: colors.text.secondary, textAlign: 'center', lineHeight: 24 },
+  title: { fontSize: 28, lineHeight: 36, fontWeight: '700', color: colors.text.primary, marginBottom: 10 },
+  subtitle: { fontSize: 16, color: colors.text.secondary, textAlign: 'center', lineHeight: 27 },
   welcomeTagline: { marginTop: 14, fontSize: 20, lineHeight: 28, color: colors.text.primary, textAlign: 'center', fontWeight: '700' },
   welcomeTeaser: { marginTop: 10, fontSize: 15, lineHeight: 22, color: colors.text.secondary, textAlign: 'center', maxWidth: 320 },
   welcomeJokeCard: { marginTop: 16, width: '100%', maxWidth: 340, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.cardLight, borderRadius: 16, padding: 14 },
@@ -6972,7 +7098,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  greeting: { fontSize: 14, color: colors.text.secondary },
+  greeting: { fontSize: 14, lineHeight: 21, color: colors.text.secondary },
   homeSparkBanner: { backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.cardLight, padding: 14, marginBottom: 16 },
   homeSparkBannerHeadline: { color: colors.text.primary, fontSize: 16, fontWeight: '700', marginBottom: 4 },
   homeSparkBannerBody: { color: colors.text.secondary, fontSize: 13, lineHeight: 18 },
@@ -7020,64 +7146,80 @@ const styles = StyleSheet.create({
   },
   vibePanel: {
     backgroundColor: colors.card,
-    borderRadius: 18,
-    padding: 18,
-    marginBottom: 16,
+    borderRadius: 20,
+    padding: 22,
+    marginBottom: 22,
     borderWidth: 1,
-    borderColor: colors.primary[500] + '44',
+    borderColor: colors.primary[500] + '38',
   },
-  vibePanelEyebrow: { color: colors.primary[400], fontSize: 12, fontWeight: '700', marginBottom: 6 },
-  vibePanelTitle: { color: colors.text.primary, fontSize: 28, lineHeight: 34, fontWeight: '800', marginBottom: 6 },
-  vibePanelBody: { color: colors.text.secondary, fontSize: 14, lineHeight: 20, marginBottom: 14 },
-  vibeGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 12 },
+  vibePanelEyebrow: { color: colors.primary[400], fontSize: 11, lineHeight: 15, fontWeight: '700', letterSpacing: 0.4, marginBottom: 8, textTransform: 'uppercase' },
+  vibePanelTitle: { color: colors.text.primary, fontSize: 30, lineHeight: 38, fontWeight: '700', marginBottom: 8 },
+  vibePanelBody: { color: colors.text.secondary, fontSize: 16, lineHeight: 26, marginBottom: 18 },
+  vibeGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 14 },
   vibeMoodButton: {
     width: '48%',
-    minHeight: 72,
+    minHeight: 78,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.cardLight,
     backgroundColor: colors.background.secondary,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    marginBottom: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
     justifyContent: 'center',
   },
   vibeMoodEmoji: { fontSize: 24, marginBottom: 4 },
-  vibeMoodLabel: { color: colors.text.primary, fontSize: 13, lineHeight: 17, fontWeight: '700' },
+  vibeMoodLabel: { color: colors.text.primary, fontSize: 14, lineHeight: 19, fontWeight: '600' },
   vibeMoodLabelSelected: { color: colors.white },
   vibeEnhancements: {
-    marginTop: 2,
+    marginTop: 4,
     borderRadius: 14,
     borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
   vibeEnhancementsTitle: {
     color: colors.text.muted,
-    fontSize: 12,
+    fontSize: 11,
+    lineHeight: 15,
     fontWeight: '700',
-    marginBottom: 5,
+    letterSpacing: 0.35,
+    marginBottom: 6,
+    textTransform: 'uppercase',
   },
   vibeEnhancementInlineItem: { marginBottom: 2 },
-  vibeEnhancementInlineDivider: { height: 1, backgroundColor: 'rgba(255,255,255,0.08)', marginVertical: 10 },
+  vibeEnhancementHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  vibeEnhancementInlineDivider: { height: 1, backgroundColor: 'rgba(255,255,255,0.08)', marginVertical: 12 },
   vibeEnhancementText: {
     color: colors.text.primary,
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: '600',
   },
   vibeEnhancementBody: {
     color: colors.text.secondary,
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 3,
+    fontSize: 14,
+    lineHeight: 23,
+    marginTop: 4,
   },
+  vibeActivityButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 58,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  vibeActivityEmoji: { fontSize: 24, marginRight: 12 },
+  vibeActivityCopy: { flex: 1 },
   homeChoiceRow: { flexDirection: 'row', gap: 10 },
   homePrimaryChoice: { flex: 1.2, minHeight: 48, borderRadius: 14, backgroundColor: colors.primary[500], alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   homePrimaryChoiceText: { color: colors.white, fontSize: 14, fontWeight: '800', textAlign: 'center' },
   homeSecondaryChoice: { flex: 1, minHeight: 48, borderRadius: 14, backgroundColor: colors.cardLight, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   homeSecondaryChoiceText: { color: colors.text.primary, fontSize: 14, fontWeight: '700', textAlign: 'center' },
-  tonightSuggestionHeader: { marginBottom: 6 },
-  tonightMoodCopy: { color: colors.text.secondary, fontSize: 13, lineHeight: 18, marginTop: -6, marginBottom: 10 },
+  tonightSuggestionHeader: { marginBottom: 10 },
+  tonightMoodCopy: { color: colors.text.secondary, fontSize: 14, lineHeight: 23, marginTop: -2, marginBottom: 12 },
   quietWinsToggle: {
     minHeight: 44,
     borderRadius: 14,
@@ -7108,7 +7250,7 @@ const styles = StyleSheet.create({
   challengePreviewLabel: { color: colors.text.secondary, fontSize: 12 },
   challengePreviewReward: { color: colors.gold, fontSize: 12, fontWeight: '600' },
   challengePreviewName: { color: colors.text.primary, fontSize: 16, fontWeight: '600' },
-  sectionTitle: { fontSize: 18, fontWeight: '600', color: colors.text.primary, marginBottom: 12, marginTop: 10 },
+  sectionTitle: { fontSize: 18, lineHeight: 24, fontWeight: '600', color: colors.text.primary, marginBottom: 12, marginTop: 8 },
   moodScroll: { marginBottom: 16 },
   horizontalScrollContent: { paddingRight: 20 },
   moodChip: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, marginRight: 10 },
@@ -7122,7 +7264,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, paddingVertical: 14, fontSize: 16, color: colors.text.primary },
   clearButton: { padding: 4 },
   clearButtonText: { color: colors.text.muted, fontSize: 16 },
-  exploreHeader: { paddingTop: 10, marginBottom: 16 },
+  exploreHeader: { paddingTop: 10, marginBottom: 18 },
   exploreDepthToggle: {
     minHeight: 42,
     borderRadius: 14,
@@ -7131,17 +7273,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+    marginBottom: 16,
     paddingHorizontal: 14,
   },
-  exploreDepthToggleText: { color: colors.text.secondary, fontSize: 13, fontWeight: '700' },
-  exploreAdvancedControls: { marginBottom: 2 },
-  collectionSection: { marginBottom: 14 },
-  collectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  collectionTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary },
+  exploreDepthToggleText: { color: colors.text.secondary, fontSize: 13, lineHeight: 18, fontWeight: '600' },
+  exploreAdvancedControls: { marginBottom: 4 },
+  collectionSection: { marginBottom: 16 },
+  collectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  collectionTitle: { fontSize: 16, lineHeight: 22, fontWeight: '600', color: colors.text.primary },
   collectionClearText: { fontSize: 13, fontWeight: '600', color: colors.primary[400] },
   collectionScrollContent: { paddingRight: 20 },
-  collectionCard: { width: 188, minHeight: 118, backgroundColor: colors.card, borderRadius: 18, padding: 14, marginRight: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
+  collectionCard: { width: 196, minHeight: 124, backgroundColor: colors.card, borderRadius: 16, padding: 16, marginRight: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)' },
   collectionCardActive: { backgroundColor: 'rgba(168, 85, 247, 0.22)', borderColor: 'rgba(196, 128, 255, 0.7)' },
   collectionLockedCard: { backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.cardLight, paddingVertical: 14, paddingHorizontal: 14, alignItems: 'center' },
   collectionLockedInlineCard: { marginTop: 10 },
@@ -7149,21 +7291,21 @@ const styles = StyleSheet.create({
   collectionLockedTitle: { fontSize: 13, fontWeight: '700', color: colors.text.primary, textAlign: 'center' },
   collectionLockedSubtitle: { marginTop: 4, fontSize: 12, color: colors.text.muted, textAlign: 'center' },
   collectionEmoji: { fontSize: 20, marginBottom: 10 },
-  collectionCardTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary, marginBottom: 6 },
+  collectionCardTitle: { fontSize: 15, lineHeight: 21, fontWeight: '600', color: colors.text.primary, marginBottom: 7 },
   collectionCardTitleActive: { color: colors.white },
-  collectionCardSubtitle: { fontSize: 12, lineHeight: 18, color: colors.text.muted },
+  collectionCardSubtitle: { fontSize: 13, lineHeight: 21, color: colors.text.muted },
   collectionCardSubtitleActive: { color: 'rgba(255,255,255,0.88)' },
   tripleToggleContainer: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: 12, padding: 4, marginBottom: 12 },
   tripleToggleButton: { flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
   tripleToggleButtonActive: { backgroundColor: colors.primary[500] },
   tripleToggleButtonText: { color: colors.text.muted, fontSize: 12 },
   tripleToggleButtonTextActive: { color: colors.white, fontWeight: '600' },
-  sortContainer: { flexDirection: 'row', marginBottom: 12 },
+  sortContainer: { flexDirection: 'row', marginBottom: 14 },
   sortButton: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, marginRight: 8, backgroundColor: colors.card },
   sortButtonActive: { backgroundColor: colors.primary[500] },
   sortButtonText: { fontSize: 12, color: colors.text.muted },
   sortButtonTextActive: { color: colors.white, fontWeight: '600' },
-  categoryWrapper: { marginBottom: 12 },
+  categoryWrapper: { marginBottom: 14 },
   categoryScrollContent: { paddingRight: 20 },
   categoryChip: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, marginRight: 8 },
   categoryChipSelected: { backgroundColor: colors.primary[500] },
@@ -7176,29 +7318,41 @@ const styles = StyleSheet.create({
   favoritesQuickScrollContent: { paddingRight: 20 },
   favoriteQuickChip: { backgroundColor: colors.card, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8, marginRight: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
   favoriteQuickChipText: { color: colors.text.primary, fontSize: 12, fontWeight: '600', maxWidth: 180 },
+  exploreActivitySection: { marginTop: 2, marginBottom: 14 },
+  exploreActivityGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 10 },
+  exploreActivityCard: {
+    width: '48%',
+    minHeight: 126,
+    backgroundColor: colors.card,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+    padding: 14,
+    marginBottom: 12,
+  },
   exploreMusicSection: { marginTop: 2, marginBottom: 14 },
-  exploreMusicSubtitle: { color: colors.text.muted, fontSize: 12, lineHeight: 17, marginTop: 4, marginBottom: 10 },
+  exploreMusicSubtitle: { color: colors.text.muted, fontSize: 13, lineHeight: 21, marginTop: 4, marginBottom: 12 },
   exploreMusicCard: {
     backgroundColor: colors.card,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.cardLight,
-    padding: 12,
-    marginBottom: 10,
+    padding: 14,
+    marginBottom: 12,
   },
-  exploreMusicCopy: { marginBottom: 10 },
+  exploreMusicCopy: { marginBottom: 12 },
   positionGrid: { paddingHorizontal: 10, paddingBottom: 20 },
   positionRow: { justifyContent: 'space-between' },
-  positionCard: { flex: 1, marginHorizontal: 6, backgroundColor: colors.card, borderRadius: 16, padding: 14, marginBottom: 12 },
+  positionCard: { flex: 1, marginHorizontal: 6, backgroundColor: colors.card, borderRadius: 14, padding: 15, marginBottom: 14 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   cardHeaderRight: { flexDirection: 'row', alignItems: 'center' },
   triedBadge: { color: colors.success, fontSize: 14, marginRight: 8, fontWeight: '700' },
   positionMoodBadge: { width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
   positionMoodEmoji: { fontSize: 16 },
   favoriteIcon: { fontSize: 18 },
-  positionName: { fontSize: 16, fontWeight: '600', color: colors.text.primary, marginBottom: 4 },
-  positionCategory: { fontSize: 12, color: colors.text.secondary, marginBottom: 6 },
-  positionVibe: { fontSize: 12, color: colors.text.muted, fontStyle: 'italic', marginBottom: 10 },
+  positionName: { fontSize: 16, lineHeight: 22, fontWeight: '600', color: colors.text.primary, marginBottom: 5 },
+  positionCategory: { fontSize: 12, lineHeight: 17, color: colors.text.secondary, marginBottom: 7 },
+  positionVibe: { fontSize: 13, lineHeight: 20, color: colors.text.muted, fontStyle: 'italic', marginBottom: 12 },
   positionFooter: { flexDirection: 'row' },
   difficultyBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
   difficultyBeginner: { backgroundColor: 'rgba(132, 204, 22, 0.2)' },
@@ -7213,7 +7367,7 @@ const styles = StyleSheet.create({
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
   emptyTitle: { fontSize: 18, fontWeight: '600', color: colors.text.primary, marginBottom: 8 },
   emptySubtitle: { fontSize: 14, color: colors.text.muted },
-  exploreEmptyBody: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 20, maxWidth: 280, marginBottom: 14 },
+  exploreEmptyBody: { fontSize: 14, color: colors.text.muted, textAlign: 'center', lineHeight: 23, maxWidth: 280, marginBottom: 16 },
   emptyActionButton: { backgroundColor: colors.primary[500], borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10 },
   emptyActionButtonText: { color: colors.white, fontSize: 13, fontWeight: '700' },
   viewToggleContainer: { flexDirection: 'row', backgroundColor: colors.card, borderRadius: 12, padding: 4, marginBottom: 12 },
@@ -7431,17 +7585,17 @@ const styles = StyleSheet.create({
   achievementDesc: { fontSize: 12, color: colors.text.muted },
   achievementDescLocked: { color: colors.text.muted },
   achievementCheck: { color: colors.success, fontSize: 18, fontWeight: '700' },
-  insightCard: { backgroundColor: colors.card, borderRadius: 16, padding: 20, marginBottom: 16 },
-  insightCardTitle: { fontSize: 18, fontWeight: '600', color: colors.text.primary, marginBottom: 16, textAlign: 'center' },
-  insightStatsRow: { flexDirection: 'row', justifyContent: 'space-around' },
-  insightStat: { alignItems: 'center' },
-  insightStatNumber: { fontSize: 24, fontWeight: '700', color: colors.text.primary },
-  insightStatLabel: { fontSize: 12, color: colors.text.muted, marginTop: 4 },
-  comparisonCard: { backgroundColor: colors.card, borderRadius: 16, padding: 16, marginBottom: 16 },
-  comparisonTitle: { fontSize: 14, fontWeight: '600', color: colors.text.secondary, marginBottom: 12 },
-  comparisonRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  comparisonLabel: { fontSize: 14, color: colors.text.muted },
-  comparisonValue: { fontSize: 14, fontWeight: '600' },
+  insightCard: { backgroundColor: colors.card, borderRadius: 16, padding: 20, marginBottom: 18 },
+  insightCardTitle: { fontSize: 18, lineHeight: 24, fontWeight: '600', color: colors.text.primary, marginBottom: 18, textAlign: 'center' },
+  insightStatsRow: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 2 },
+  insightStat: { alignItems: 'center', paddingHorizontal: 4 },
+  insightStatNumber: { fontSize: 24, lineHeight: 31, fontWeight: '700', color: colors.text.primary },
+  insightStatLabel: { fontSize: 12, lineHeight: 17, color: colors.text.muted, marginTop: 6, textAlign: 'center' },
+  comparisonCard: { backgroundColor: colors.card, borderRadius: 16, padding: 16, marginBottom: 18 },
+  comparisonTitle: { fontSize: 14, lineHeight: 20, fontWeight: '600', color: colors.text.secondary, marginBottom: 14 },
+  comparisonRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  comparisonLabel: { fontSize: 14, lineHeight: 20, color: colors.text.muted },
+  comparisonValue: { fontSize: 14, lineHeight: 20, fontWeight: '600' },
   comparisonUp: { color: colors.success },
   comparisonDown: { color: colors.error },
   streakCard: { backgroundColor: colors.card, borderRadius: 16, padding: 24, marginBottom: 16, alignItems: 'center' },
