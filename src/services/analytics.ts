@@ -36,6 +36,8 @@ export const ALLOWED_ANALYTICS_PROPERTY_KEYS = new Set([
   'category',
   'mood',
   'feature',
+  'intent',
+  'resolved_action',
   'level',
   'step',
   'trigger',
@@ -238,6 +240,12 @@ export const submitFormspreeMessage = async (payload: Record<string, string>): P
  * Events are flushed by the AnalyticsFlusher component which has PostHog access.
  */
 export const Analytics = {
+  track: (event: AnalyticsEventName, properties?: Record<string, unknown>) => {
+    pendingEvents.push({
+      event,
+      properties,
+    });
+  },
   trackOnboardingStep: (step: 'name' | 'relationship' | 'preferences' | 'experience' | 'legal' | 'payoff') => {
     pendingEvents.push({
       event: 'onboarding_step',

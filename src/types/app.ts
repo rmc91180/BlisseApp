@@ -95,6 +95,7 @@ export interface UserPlaylist {
 export type AnalyticsEventName =
   | 'content_tried'
   | 'content_completed'
+  | 'explore_intent_selected'
   | 'feature_used'
   | 'category_viewed'
   | 'mood_selected'

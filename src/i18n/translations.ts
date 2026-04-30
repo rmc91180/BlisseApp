@@ -133,6 +133,10 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'home.quality.trophies': 'Milestones worth bragging about',
 
     'explore.title': 'Explore',
+    'explore.intent.play': 'Play',
+    'explore.intent.connect': 'Connect',
+    'explore.intent.relax': 'Relax',
+    'explore.intent.explore': 'Explore',
     'explore.search_placeholder': 'Search {type}...',
     'explore.type.positions': 'Positions',
     'explore.type.foreplay': 'Foreplay',
@@ -605,6 +609,10 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'home.quality.trophies': 'Logros para celebrar en pareja',
 
     'explore.title': 'Explorar',
+    'explore.intent.play': 'Jugar',
+    'explore.intent.connect': 'Conectar',
+    'explore.intent.relax': 'Relajarse',
+    'explore.intent.explore': 'Explorar',
     'explore.search_placeholder': 'Buscar en {type}...',
     'explore.type.positions': 'Posiciones',
     'explore.type.foreplay': 'Preliminares',
@@ -1077,6 +1085,10 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'home.quality.trophies': 'Marcos para comemorar',
 
     'explore.title': 'Explorar',
+    'explore.intent.play': 'Brincar',
+    'explore.intent.connect': 'Conectar',
+    'explore.intent.relax': 'Relaxar',
+    'explore.intent.explore': 'Explorar',
     'explore.search_placeholder': 'Buscar em {type}...',
     'explore.type.positions': 'Posições',
     'explore.type.foreplay': 'Preliminares',
@@ -1549,6 +1561,10 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
     'home.quality.trophies': 'ऐसे पड़ाव जिन पर गर्व हो',
 
     'explore.title': 'खोजें',
+    'explore.intent.play': 'खेलें',
+    'explore.intent.connect': 'जुड़ें',
+    'explore.intent.relax': 'आराम करें',
+    'explore.intent.explore': 'खोजें',
     'explore.search_placeholder': '{type} खोजें...',
     'explore.type.positions': 'मुद्राएँ',
     'explore.type.foreplay': 'पूर्वरंग',

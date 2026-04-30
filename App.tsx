@@ -3921,7 +3921,7 @@ function HomeScreen({
           onPress={() => navigation.navigate('Origin', { fromSettings: true })}
           accessibilityRole="button"
         >
-          <Text style={styles.originLinkText}>{voice.home.whyWeMadeThis}</Text>
+          <Text style={styles.originLinkText}>{voice.home.whyBlisse}</Text>
         </TouchableOpacity>
       </View>
 
@@ -4319,15 +4319,19 @@ function HomeScreen({
   );
 }
 
+type ExploreContentType = 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
+type ExploreIntent = 'play' | 'connect' | 'relax' | 'explore';
+
 function ExploreScreen({ navigation }: any) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStarterPack, setSelectedStarterPack] = useState<string | null>(null);
-  const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'>('positions');
+  const [contentType, setContentType] = useState<ExploreContentType>('positions');
   const [sortBy, setSortBy] = useState<'all' | 'newToYou' | 'tried'>('all');
   const [showBrowseTools, setShowBrowseTools] = useState(false);
   const [showExploreDateNight, setShowExploreDateNight] = useState(false);
   const [showExploreChallenge, setShowExploreChallenge] = useState(false);
+  const [showExploreSpinner, setShowExploreSpinner] = useState(false);
   const [showExploreTruthOrDare, setShowExploreTruthOrDare] = useState(false);
   const [showExploreInsights, setShowExploreInsights] = useState(false);
   const [forYouItemNames, setForYouItemNames] = useState<string[]>([]);
@@ -4466,6 +4470,15 @@ function ExploreScreen({ navigation }: any) {
       { type: 'oral' as const, label: t('explore.type.oral') },
       { type: 'massage' as const, label: t('explore.type.massage') },
       { type: 'roleplay' as const, label: t('explore.type.roleplay') },
+    ],
+    [t]
+  );
+  const intentOptions = useMemo(
+    () => [
+      { id: 'play' as const, label: t('explore.intent.play'), emoji: '🎲' },
+      { id: 'connect' as const, label: t('explore.intent.connect'), emoji: '💞' },
+      { id: 'relax' as const, label: t('explore.intent.relax'), emoji: '🌿' },
+      { id: 'explore' as const, label: t('explore.intent.explore'), emoji: '✨' },
     ],
     [t]
   );
@@ -4805,11 +4818,73 @@ function ExploreScreen({ navigation }: any) {
     }
   }, [t]);
 
-  const handleContentTypeChange = (type: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay') => {
+  const handleContentTypeChange = useCallback((type: ExploreContentType) => {
     setContentType(type);
     setSelectedCategory(null);
     setSelectedStarterPack(null);
-  };
+  }, []);
+
+  function handleExploreIntent(intent: ExploreIntent): void {
+    const unlockedFeatures = new Set<UnlockableFeature>(store.unlockedFeatures || []);
+    let resolvedAction:
+      | 'truth_or_dare'
+      | 'spinner'
+      | 'challenge'
+      | 'date_night'
+      | 'insights'
+      | 'massage_browse'
+      | 'foreplay_browse'
+      | 'none' = 'none';
+
+    if (intent === 'play') {
+      if (unlockedFeatures.has('truth_or_dare')) {
+        resolvedAction = 'truth_or_dare';
+        setShowExploreTruthOrDare(true);
+      } else if (typeof setShowExploreSpinner === 'function') {
+        resolvedAction = 'spinner';
+        setShowExploreSpinner(true);
+      } else {
+        resolvedAction = 'challenge';
+        setShowExploreChallenge(true);
+      }
+      Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
+      return;
+    }
+
+    if (intent === 'connect') {
+      if (unlockedFeatures.has('date_night_generator')) {
+        resolvedAction = 'date_night';
+        setShowExploreDateNight(true);
+      } else if (typeof setShowExploreInsights === 'function') {
+        resolvedAction = 'insights';
+        setShowExploreInsights(true);
+      } else {
+        resolvedAction = 'spinner';
+        setShowExploreSpinner(true);
+      }
+      Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
+      return;
+    }
+
+    if (intent === 'relax') {
+      if (massageTechniques.length > 0) {
+        resolvedAction = 'massage_browse';
+        setContentType('massage');
+      } else if (foreplayIdeas.length > 0) {
+        resolvedAction = 'foreplay_browse';
+        setContentType('foreplay');
+      }
+      setSearchQuery('');
+      setSelectedCategory(null);
+      setSelectedStarterPack(null);
+      setSortBy('all');
+      setShowBrowseTools(true);
+      Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
+      return;
+    }
+
+    Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
+  }
 
   const exploreEmptyState = (
     <View style={styles.emptyState}>
@@ -4826,6 +4901,24 @@ function ExploreScreen({ navigation }: any) {
   return (
     <ScreenWrapper>
       <View style={styles.exploreHeader}><Text style={styles.title}>{t('explore.title')}</Text></View>
+
+      <View style={styles.intentRailWrapper}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.intentRailContent}>
+          {intentOptions.map((intent) => (
+            <TouchableOpacity
+              key={intent.id}
+              style={styles.intentChip}
+              onPress={() => handleExploreIntent(intent.id)}
+              activeOpacity={0.86}
+              accessibilityRole="button"
+              accessibilityLabel={intent.label}
+            >
+              <Text style={styles.intentChipEmoji}>{intent.emoji}</Text>
+              <Text style={styles.intentChipText}>{intent.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
       
       {/* Content Type Tabs */}
       <View style={styles.contentTypeSliderWrapper}>
@@ -5084,6 +5177,7 @@ function ExploreScreen({ navigation }: any) {
       )}
       <DateNightModal visible={showExploreDateNight} onClose={() => setShowExploreDateNight(false)} navigation={navigation} />
       <ChallengeModal visible={showExploreChallenge} onClose={() => setShowExploreChallenge(false)} navigation={navigation} />
+      <SpinnerModal visible={showExploreSpinner} onClose={() => setShowExploreSpinner(false)} navigation={navigation} />
       <TruthOrDareModal visible={showExploreTruthOrDare} onClose={() => setShowExploreTruthOrDare(false)} />
       <InsightsModal visible={showExploreInsights} onClose={() => setShowExploreInsights(false)} />
     </ScreenWrapper>
@@ -7264,7 +7358,22 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, paddingVertical: 14, fontSize: 16, color: colors.text.primary },
   clearButton: { padding: 4 },
   clearButtonText: { color: colors.text.muted, fontSize: 16 },
-  exploreHeader: { paddingTop: 10, marginBottom: 18 },
+  exploreHeader: { paddingTop: 10, marginBottom: 10 },
+  intentRailWrapper: { marginBottom: 12 },
+  intentRailContent: { paddingRight: 20 },
+  intentChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 40,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: colors.card,
+    paddingHorizontal: 14,
+    marginRight: 8,
+  },
+  intentChipEmoji: { fontSize: 15, marginRight: 7 },
+  intentChipText: { color: colors.text.primary, fontSize: 13, lineHeight: 18, fontWeight: '600' },
   exploreDepthToggle: {
     minHeight: 42,
     borderRadius: 14,

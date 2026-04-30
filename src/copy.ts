@@ -31,7 +31,7 @@ export type VoiceCopyPack = {
     exploreFreely: VoiceLine;
     suggestionsExplainerSelected: VoiceLine;
     suggestionsExplainerEmpty: VoiceLine;
-    whyWeMadeThis: VoiceLine;
+    whyBlisse: VoiceLine;
     dailyRitual: VoiceLineSet;
     privacyLine: VoiceLine;
     quietWinsHidden: VoiceLine;
@@ -285,7 +285,7 @@ const buildPack = (language: VoiceLanguage): VoiceCopyPack => {
         exploreFreely: 'Explorar libremente',
         suggestionsExplainerSelected: 'Todo lo de abajo va con esta vibra.',
         suggestionsExplainerEmpty: 'Pongan una vibra primero; lo demás sigue.',
-        whyWeMadeThis: 'Why Blisse',
+        whyBlisse: 'Why Blisse',
         dailyRitual: [
           'Un momento pequeño para ustedes esta noche.',
           'Una pausa compartida, solo para ustedes.',
@@ -593,7 +593,7 @@ Write the final note in Spanish.`,
         exploreFreely: 'Explorar livremente',
         suggestionsExplainerSelected: 'Tudo abaixo combina com essa vibe.',
         suggestionsExplainerEmpty: 'Escolham uma vibe primeiro; o resto acompanha.',
-        whyWeMadeThis: 'Why Blisse',
+        whyBlisse: 'Why Blisse',
         dailyRitual: [
           'Um momento pequeno pra vocês hoje.',
           'Uma pausa compartilhada, só de vocês.',
@@ -901,7 +901,7 @@ Write the final note in Brazilian Portuguese.`,
         exploreFreely: 'आराम से खोजें',
         suggestionsExplainerSelected: 'नीचे सब इसी माहौल से मेल खाता है।',
         suggestionsExplainerEmpty: 'पहले माहौल चुनें; बाकी सब साथ चलेगा।',
-        whyWeMadeThis: 'Why Blisse',
+        whyBlisse: 'Why Blisse',
         dailyRitual: [
           'आज आप दोनों के लिए एक छोटा-सा पल।',
           'एक साझा ठहराव, सिर्फ़ आप दोनों के लिए।',
@@ -1208,7 +1208,7 @@ Write the final note in Hindi.`,
       exploreFreely: 'Explore freely',
       suggestionsExplainerSelected: 'Everything below is picked to match this vibe.',
       suggestionsExplainerEmpty: 'Pick a vibe first — everything else follows.',
-      whyWeMadeThis: 'Why Blisse',
+      whyBlisse: 'Why Blisse',
       dailyRitual: [
         'A little moment for you two tonight.',
         'A shared pause, just for you.',
