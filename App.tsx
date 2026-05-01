@@ -74,7 +74,7 @@ import { useStore } from '@/store/useStore';
 import { useThemeStore, THEMES, FONT_SIZES, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy, pickVoiceLine } from '@/copy';
-import { useRecommendations } from '@/hooks/useRecommendations';
+import { useTonightExperience, type TonightContentSuggestion } from '@/hooks/useTonightExperience';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { AuthProvider, useAuth } from '@/services/auth';
@@ -118,10 +118,9 @@ const getCurrentMonth = () => new Date().toISOString().slice(0, 7);
 const APP_STORE_LINK = 'https://apps.apple.com/app/id6758679457';
 
 const FEATURE_LOCK_REQUIREMENTS: Record<
-  'starter_pack_collections' | 'truth_or_dare' | 'date_night_generator' | 'seasonal_content',
+  'truth_or_dare' | 'date_night_generator' | 'seasonal_content',
   { level: number; stars: number }
 > = {
-  starter_pack_collections: { level: 2, stars: 25 },
   truth_or_dare: { level: 3, stars: 75 },
   date_night_generator: { level: 4, stars: 150 },
   seasonal_content: { level: 5, stars: 300 },
@@ -2243,221 +2242,6 @@ function WeeklyGoalsModal({ visible, onClose }: { visible: boolean; onClose: () 
 }
 
 // ============================================
-// MOOD PLAYLISTS MODAL
-// ============================================
-function MoodPlaylistsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
-  const { t } = useI18n();
-  const store = useStore();
-
-  const handleSelectPlaylist = (playlist: MoodPlaylist) => {
-    store.setCurrentMood(playlist.mood);
-    onClose();
-  };
-
-  return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { maxHeight: '80%' }]}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{t('mood_playlists.title')}</Text>
-            <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
-          </View>
-          <Text style={styles.modalSubtitle}>{t('mood_playlists.subtitle')}</Text>
-          
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {MOOD_PLAYLISTS.map((playlist) => (
-              <TouchableOpacity 
-                key={playlist.id} 
-                style={[styles.playlistCard, store.currentMood === playlist.mood && styles.playlistCardActive]}
-                onPress={() => handleSelectPlaylist(playlist)}
-              >
-                <View style={[styles.playlistEmojiBg, { backgroundColor: playlist.color + '30' }]}>
-                  <Text style={styles.playlistEmoji}>{playlist.emoji}</Text>
-                </View>
-                <View style={styles.playlistInfo}>
-                  <Text style={styles.playlistName}>{playlist.name}</Text>
-                  <Text style={styles.playlistDescription}>{playlist.description}</Text>
-                </View>
-                {store.currentMood === playlist.mood && <Text style={styles.playlistCheck}>✓</Text>}
-              </TouchableOpacity>
-            ))}
-            
-            {/* Clear Mood Option */}
-            <TouchableOpacity 
-              style={[styles.playlistCard, !store.currentMood && styles.playlistCardActive]}
-              onPress={() => { store.setCurrentMood(null); onClose(); }}
-            >
-              <View style={[styles.playlistEmojiBg, { backgroundColor: colors.card }]}>
-                <Text style={styles.playlistEmoji}>🎲</Text>
-              </View>
-              <View style={styles.playlistInfo}>
-                <Text style={styles.playlistName}>{t('mood_playlists.surprise')}</Text>
-                <Text style={styles.playlistDescription}>{t('mood_playlists.surprise_desc')}</Text>
-              </View>
-              {!store.currentMood && <Text style={styles.playlistCheck}>✓</Text>}
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-// ============================================
-// RECOMMENDATIONS MODAL
-// ============================================
-function RecommendationsModal({ visible, onClose, navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
-  const { t, localizeTerm } = useI18n();
-  const store = useStore();
-  const themeStore = useThemeStore();
-  const themeColors = getThemeColors(themeStore.currentTheme);
-  
-  // Gather the quiet picks for tonight.
-  const smartRecs = useMemo(() => {
-    return store.getSmartRecommendations(10);
-  }, [store]);
-  
-  // Get user's preference summary
-  const prefSummary = useMemo(() => {
-    return store.getUserPreferenceSummary();
-  }, [store]);
-  
-  // Group recommendations by type for better display
-  const groupedRecs = useMemo(() => {
-    const groups: { [key: string]: typeof smartRecs } = {};
-    smartRecs.forEach(rec => {
-      if (!groups[rec.type]) groups[rec.type] = [];
-      groups[rec.type].push(rec);
-    });
-    return groups;
-  }, [smartRecs]);
-
-  const getTypeEmoji = (type: string) => {
-    switch (type) {
-      case 'position': return '💑';
-      case 'foreplay': return '🔥';
-      case 'oral': return '💋';
-      case 'massage': return '💆';
-      case 'roleplay': return '🎭';
-      default: return '✨';
-    }
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'position': return t('recommendations.type.position');
-      case 'foreplay': return t('recommendations.type.foreplay');
-      case 'oral': return t('recommendations.type.oral');
-      case 'massage': return t('recommendations.type.massage');
-      case 'roleplay': return t('recommendations.type.roleplay');
-      default: return type;
-    }
-  };
-
-  const handleSelectItem = (type: string, item: any) => {
-    // Track this interaction for learning
-    store.trackInteraction({
-      type: 'view',
-      contentType: type as InteractionEvent['contentType'],
-      itemId: item.id,
-      category: item.category,
-      mood: item.mood,
-    });
-    
-    onClose();
-    switch (type) {
-      case 'position':
-        navigation.navigate('PositionDetail', { position: item });
-        break;
-      case 'foreplay':
-        navigation.navigate('ForeplayDetail', { item });
-        break;
-      case 'oral':
-        navigation.navigate('OralDetail', { item });
-        break;
-      case 'massage':
-        navigation.navigate('MassageDetail', { item });
-        break;
-      case 'roleplay':
-        navigation.navigate('RolePlayDetail', { item });
-        break;
-    }
-  };
-
-  return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { maxHeight: '85%' }]}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>💡 {t('home.feature.for_you')}</Text>
-            <TouchableOpacity onPress={onClose}><Text style={styles.modalClose}>✕</Text></TouchableOpacity>
-          </View>
-          <Text style={styles.modalSubtitle}>{t('recommendations.subtitle')}</Text>
-          
-          {/* Preference summary */}
-          {prefSummary.categories.length > 0 && (
-            <View style={[styles.prefSummaryContainer, { backgroundColor: themeColors.card }]}>
-              <Text style={[styles.prefSummaryTitle, { color: themeColors.text.secondary }]}>{t('recommendations.preferences_title')}</Text>
-              <View style={styles.prefTagsRow}>
-                {prefSummary.categories.slice(0, 3).map((cat, i) => (
-                  <View key={`cat-${i}`} style={[styles.prefTag, { backgroundColor: themeColors.primary[500] + '30' }]}>
-                    <Text style={[styles.prefTagText, { color: themeColors.primary[400] }]}>{localizeTerm(cat)}</Text>
-                  </View>
-                ))}
-                {prefSummary.moods.slice(0, 2).map((mood, i) => (
-                  <View key={`mood-${i}`} style={[styles.prefTag, { backgroundColor: themeColors.cardLight }]}>
-                    <Text style={[styles.prefTagText, { color: themeColors.text.secondary }]}>{localizeTerm(mood)}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-          
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {Object.entries(groupedRecs).map(([type, recs]) => (
-              <View key={type} style={styles.recSection}>
-                <View style={styles.recHeader}>
-                  <Text style={styles.recEmoji}>{getTypeEmoji(type)}</Text>
-                  <Text style={styles.recTitle}>{getTypeLabel(type)}</Text>
-                </View>
-                {recs.slice(0, 3).map((rec) => (
-                  <TouchableOpacity 
-                    key={`${type}-${rec.item.id}`} 
-                    style={[styles.recCard, { backgroundColor: themeColors.card }]}
-                    onPress={() => handleSelectItem(type, rec.item)}
-                  >
-                    <View style={styles.recCardContent}>
-                      <Text style={[styles.recItemName, { color: themeColors.text.primary }]}>{rec.item.name}</Text>
-                      <Text style={[styles.recItemReason, { color: themeColors.primary[400] }]}>{localizeTerm(rec.reason)}</Text>
-                    </View>
-                    <View style={styles.recScoreBadge}>
-                      <Text style={styles.recScoreText}>{Math.round(rec.score)}%</Text>
-                    </View>
-                    <Text style={[styles.recItemArrow, { color: themeColors.text.muted }]}>→</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            ))}
-            
-            {smartRecs.length === 0 && (
-              <View style={styles.noRecsContainer}>
-                <Text style={styles.noRecsEmoji}>🔮</Text>
-                <Text style={[styles.noRecsText, { color: themeColors.text.muted }]}>
-                  {t('recommendations.empty_title')}
-                </Text>
-                <Text style={[styles.noRecsSubtext, { color: themeColors.text.muted }]}>
-                  {t('recommendations.empty_subtitle')}
-                </Text>
-              </View>
-            )}
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
-// ============================================
 // TRUTH OR DARE MODAL
 // ============================================
 function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
@@ -3563,12 +3347,15 @@ function HomeScreen({
   showTrialBanner?: boolean;
   onOpenPaywallModal?: () => void;
 }) {
-  type HomeRecommendation = ReturnType<typeof useRecommendations>['recommendations'][number];
   const store = useStore();
   const featureFlags = useFeatureFlags();
   const { language, t, localizeTerm } = useI18n();
   const voice = useMemo(() => getVoiceCopy(language), [language]);
-  const { recommendations } = useRecommendations();
+  const {
+    musicSuggestion: tonightPlaylist,
+    gameSuggestion: tonightActivity,
+    contentSuggestions: recommendations,
+  } = useTonightExperience();
   const introAnim = useRef(new Animated.Value(0)).current;
   const suggestionsAnim = useRef(new Animated.Value(0)).current;
   const actionsAnim = useRef(new Animated.Value(0)).current;
@@ -3578,9 +3365,6 @@ function HomeScreen({
   const [showAchievements, setShowAchievements] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
   const [showWeeklyGoals, setShowWeeklyGoals] = useState(false);
-  const [showPlaylists, setShowPlaylists] = useState(false);
-  const [showRecommendations, setShowRecommendations] = useState(false);
-  const [showExploreExtras, setShowExploreExtras] = useState(false);
   const [showQuietWins, setShowQuietWins] = useState(false);
   const trackedRecommendationImpressionsRef = useRef<Set<string>>(new Set());
   const [showSeasonal, setShowSeasonal] = useState(false);
@@ -3593,19 +3377,6 @@ function HomeScreen({
   const homeDisplayName = store.name || t('home.there');
   const selectedMoodContext = useMemo(() => getMoodContext(store.currentMood), [store.currentMood]);
   const selectedMoodValue = selectedMoodContext?.mood || store.currentMood;
-  const tonightPlaylist = useMemo(() => {
-    if (!selectedMoodContext) return null;
-    const playlistMoodByMoodId: Record<string, string> = {
-      romantic: 'romantic',
-      passionate: 'passionate',
-      playful: 'playful',
-      adventurous: 'dynamic',
-      relaxed: 'relaxed',
-      quickie: 'passionate',
-    };
-    const targetMood = playlistMoodByMoodId[selectedMoodContext.id] || selectedMoodContext.mood;
-    return CURATED_PLAYLISTS.find((playlist) => playlist.mood === targetMood) || null;
-  }, [selectedMoodContext]);
   const handleHomeMoodSelect = useCallback((mood: MoodPlaylist) => {
     const nextMood = selectedMoodValue === mood.mood ? null : mood.mood;
     store.setCurrentMood(nextMood);
@@ -3613,6 +3384,14 @@ function HomeScreen({
       Analytics.trackFeatureUsed(`mood_selected_${nextMood}`);
     }
   }, [selectedMoodValue, store]);
+  const openTonightPlaylist = useCallback(async () => {
+    if (!tonightPlaylist) return;
+    try {
+      await Linking.openURL(tonightPlaylist.spotifyUrl);
+    } catch {
+      Alert.alert(t('music.error_title'), t('music.error_message'));
+    }
+  }, [t, tonightPlaylist]);
   const homeGreetingCopy = currentHour >= 6 && currentHour <= 11
     ? {
       headline: voice.home.greeting.morning(homeDisplayName),
@@ -3650,20 +3429,6 @@ function HomeScreen({
   const dateNightUnlocked = isFeatureUnlocked('date_night_generator');
   const truthOrDareUnlocked = isFeatureUnlocked('truth_or_dare');
   const seasonalUnlocked = isFeatureUnlocked('seasonal_content');
-  const tonightActivity = useMemo(() => {
-    if (!selectedMoodContext) return null;
-    if (selectedMoodContext.id === 'romantic' || selectedMoodContext.id === 'relaxed') {
-      return dateNightUnlocked
-        ? { kind: 'date_night' as const, emoji: '🌙', title: t('date_night.title'), body: t('home.quality.romance') }
-        : { kind: 'spinner' as const, emoji: '🎰', title: t('home.feature.spin'), body: t('home.quality.playful') };
-    }
-    if (selectedMoodContext.id === 'playful' || selectedMoodContext.id === 'adventurous') {
-      return truthOrDareUnlocked
-        ? { kind: 'truth_dare' as const, emoji: '🎲', title: t('truth_dare.title'), body: t('truth_dare.subtitle') }
-        : { kind: 'spinner' as const, emoji: '🎰', title: t('home.feature.spin'), body: t('home.quality.playful') };
-    }
-    return { kind: 'challenge' as const, emoji: '🎯', title: t('challenge.title'), body: t('home.quality.challenge') };
-  }, [dateNightUnlocked, selectedMoodContext, t, truthOrDareUnlocked]);
   const lockProgressText = useCallback(
     (feature: keyof typeof FEATURE_LOCK_REQUIREMENTS) => {
       const requirement = FEATURE_LOCK_REQUIREMENTS[feature];
@@ -3815,7 +3580,7 @@ function HomeScreen({
   const suggestionsTranslateY = suggestionsAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] });
   const actionsTranslateY = actionsAnim.interpolate({ inputRange: [0, 1], outputRange: [18, 0] });
 
-  const resolveRecommendationItem = useCallback((recommendation: HomeRecommendation) => {
+  const resolveRecommendationItem = useCallback((recommendation: TonightContentSuggestion) => {
     const targetId = Number(recommendation.item?.id || 0);
     if (recommendation.type === 'position') {
       return positions.find((entry) => entry.id === targetId) || recommendation.item;
@@ -3832,7 +3597,7 @@ function HomeScreen({
     return rolePlayScenarios.find((entry) => entry.id === targetId) || recommendation.item;
   }, []);
 
-  const trackRecommendationView = useCallback((recommendation: HomeRecommendation) => {
+  const trackRecommendationView = useCallback((recommendation: TonightContentSuggestion) => {
     const resolvedItem = resolveRecommendationItem(recommendation);
     const contentType = recommendation.type as InteractionEvent['contentType'];
     const difficulty =
@@ -3854,7 +3619,7 @@ function HomeScreen({
     });
   }, [resolveRecommendationItem, store]);
 
-  const handleRecommendationPress = useCallback((recommendation: HomeRecommendation) => {
+  const handleRecommendationPress = useCallback((recommendation: TonightContentSuggestion) => {
     const recommendationKey = `${recommendation.type}:${recommendation.item.id}`;
     const resolvedItem = resolveRecommendationItem(recommendation);
     const contentType = recommendation.type as InteractionEvent['contentType'];
@@ -4010,19 +3775,29 @@ function HomeScreen({
                 <View style={styles.vibeEnhancementInlineDivider} />
               ) : null}
               {tonightPlaylist ? (
-                <View style={styles.vibeEnhancementInlineItem}>
+                <TouchableOpacity
+                  style={styles.vibeEnhancementInlineItem}
+                  onPress={openTonightPlaylist}
+                  activeOpacity={0.86}
+                  accessibilityRole="button"
+                >
                   <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.music')}</Text>
                   <Text style={styles.vibeEnhancementText}>{tonightPlaylist.name}</Text>
                   <Text style={styles.vibeEnhancementBody}>{tonightPlaylist.description}</Text>
-                </View>
+                </TouchableOpacity>
               ) : null}
               {tonightPlaylist ? <View style={styles.vibeEnhancementInlineDivider} /> : null}
               {selectedMoodContext ? (
-                <View style={styles.vibeEnhancementInlineItem}>
+                <TouchableOpacity
+                  style={styles.vibeEnhancementInlineItem}
+                  onPress={() => navigation.navigate('MoodCheckScreen')}
+                  activeOpacity={0.86}
+                  accessibilityRole="button"
+                >
                   <Text style={styles.vibeEnhancementsTitle}>{t('home.vibe_enhancements.ritual')}</Text>
                   <Text style={styles.vibeEnhancementText}>{dailyRitualLine}</Text>
                   <Text style={styles.vibeEnhancementBody}>{t('home.ritual.body')}</Text>
-                </View>
+                </TouchableOpacity>
               ) : null}
               {selectedMoodContext && tonightActivity ? <View style={styles.vibeEnhancementInlineDivider} /> : null}
               {tonightActivity ? (
@@ -4068,76 +3843,6 @@ function HomeScreen({
           ))
         ) : null}
       </Animated.View>
-
-      {showExploreExtras ? (
-        <Animated.View style={{ opacity: actionsAnim, transform: [{ translateY: actionsTranslateY }] }}>
-          <View style={styles.featureButtonsRow}>
-            <TouchableOpacity
-              style={styles.featureButton}
-              onPress={() => {
-                if (dateNightUnlocked) {
-                  setShowDateNight(true);
-                  return;
-                }
-                setShowInsights(true);
-                }}
-            >
-              <LinearGradient colors={GRADIENT_PRESETS.purplePink} style={styles.featureButtonGradient}>
-                <Text style={styles.featureButtonEmoji}>🌙</Text>
-                <Text style={styles.featureButtonText}>{dateNightUnlocked ? t('home.feature.date_night') : t('home.locked.level', { level: FEATURE_LOCK_REQUIREMENTS.date_night_generator.level })}</Text>
-                <Text style={styles.featureButtonSubtext}>{dateNightUnlocked ? t('home.quality.romance') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars)}/${FEATURE_LOCK_REQUIREMENTS.date_night_generator.stars} ⭐`}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.featureButton} onPress={() => setShowSpinner(true)}>
-              <LinearGradient colors={GRADIENT_PRESETS.warm} style={styles.featureButtonGradient}>
-                <Text style={styles.featureButtonEmoji}>🎰</Text>
-                <Text style={styles.featureButtonText}>{t('home.feature.spin')}</Text>
-                <Text style={styles.featureButtonSubtext}>{t('home.quality.playful')}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.featureButton}
-              onPress={() => {
-                if (truthOrDareUnlocked) {
-                  setShowTruthOrDare(true);
-                  return;
-                }
-                setShowInsights(true);
-                }}
-            >
-              <LinearGradient colors={[colors.error, '#ec4899']} style={styles.featureButtonGradient}>
-                <Text style={styles.featureButtonEmoji}>🎲</Text>
-                <Text style={styles.featureButtonText}>{truthOrDareUnlocked ? t('home.feature.truth_dare') : t('home.locked.level', { level: FEATURE_LOCK_REQUIREMENTS.truth_or_dare.level })}</Text>
-                <Text style={styles.featureButtonSubtext}>{truthOrDareUnlocked ? t('home.quality.truth_dare') : `${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars)}/${FEATURE_LOCK_REQUIREMENTS.truth_or_dare.stars} ⭐`}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.featureButtonsRow}>
-            <TouchableOpacity style={styles.featureButton} onPress={() => setShowPlaylists(true)}>
-              <LinearGradient colors={GRADIENT_PRESETS.pinkRose} style={styles.featureButtonGradient}>
-                <Text style={styles.featureButtonEmoji}>🎭</Text>
-                <Text style={styles.featureButtonText}>{t('home.feature.moods')}</Text>
-                <Text style={styles.featureButtonSubtext}>{t('home.quality.moods')}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.featureButton} onPress={() => navigation.navigate('Explore')}>
-              <LinearGradient colors={['#1DB954', colors.green]} style={styles.featureButtonGradient}>
-                <Text style={styles.featureButtonEmoji}>🎵</Text>
-                <Text style={styles.featureButtonText}>{t('home.feature.music')}</Text>
-                <Text style={styles.featureButtonSubtext}>{t('home.quality.music')}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.featureButton} onPress={() => setShowRecommendations(true)}>
-              <LinearGradient colors={GRADIENT_PRESETS.blueViolet} style={styles.featureButtonGradient}>
-                <Text style={styles.featureButtonEmoji}>💡</Text>
-                <Text style={styles.featureButtonText}>{t('home.feature.for_you')}</Text>
-                <Text style={styles.featureButtonSubtext}>{t('home.quality.for_you')}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      ) : null}
 
       {/* ── Seasonal ── */}
       <Animated.View style={{ opacity: suggestionsAnim, transform: [{ translateY: suggestionsTranslateY }] }}>
@@ -4303,8 +4008,6 @@ function HomeScreen({
       <AchievementsModal visible={showAchievements} onClose={() => setShowAchievements(false)} />
       <InsightsModal visible={showInsights} onClose={() => setShowInsights(false)} />
       <WeeklyGoalsModal visible={showWeeklyGoals} onClose={() => setShowWeeklyGoals(false)} />
-      <MoodPlaylistsModal visible={showPlaylists} onClose={() => setShowPlaylists(false)} navigation={navigation} />
-      <RecommendationsModal visible={showRecommendations} onClose={() => setShowRecommendations(false)} navigation={navigation} />
       <SeasonalModal
         visible={showSeasonal}
         onClose={() => setShowSeasonal(false)}
@@ -4320,148 +4023,31 @@ function HomeScreen({
 }
 
 type ExploreContentType = 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
-type ExploreIntent = 'play' | 'connect' | 'relax' | 'explore';
+type ExplorePrimaryTab = 'content' | 'music' | 'games' | 'activities';
 
 function ExploreScreen({ navigation }: any) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedStarterPack, setSelectedStarterPack] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<ExplorePrimaryTab>('content');
   const [contentType, setContentType] = useState<ExploreContentType>('positions');
-  const [sortBy, setSortBy] = useState<'all' | 'newToYou' | 'tried'>('all');
-  const [showBrowseTools, setShowBrowseTools] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showExploreDateNight, setShowExploreDateNight] = useState(false);
   const [showExploreChallenge, setShowExploreChallenge] = useState(false);
   const [showExploreSpinner, setShowExploreSpinner] = useState(false);
   const [showExploreTruthOrDare, setShowExploreTruthOrDare] = useState(false);
   const [showExploreInsights, setShowExploreInsights] = useState(false);
-  const [forYouItemNames, setForYouItemNames] = useState<string[]>([]);
+  const [showExploreWeeklyGoals, setShowExploreWeeklyGoals] = useState(false);
   const store = useStore();
-  const { language, t, localizeTerm } = useI18n();
-  const voice = useMemo(() => getVoiceCopy(language), [language]);
-  const unlockedFeatureSet = useMemo(
-    () => new Set<UnlockableFeature>(store.unlockedFeatures || []),
-    [store.unlockedFeatures]
+  const { t, localizeTerm } = useI18n();
+
+  const topTabs = useMemo(
+    () => [
+      { id: 'content' as const, label: t('explore.tab.content') },
+      { id: 'music' as const, label: t('explore.tab.music') },
+      { id: 'games' as const, label: t('explore.tab.games') },
+      { id: 'activities' as const, label: t('explore.tab.activities') },
+    ],
+    [t]
   );
-  const starterPacksUnlocked = unlockedFeatureSet.has('starter_pack_collections');
-  const dateNightUnlocked = unlockedFeatureSet.has('date_night_generator');
-  const truthOrDareUnlocked = unlockedFeatureSet.has('truth_or_dare');
-  const dailyRecommendationRotationKey = getRecommendationRotationKey(new Date());
-
-  const normalizeSearchText = useCallback((value: string) => (
-    value
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim()
-  ), []);
-
-  const buildSearchBlob = useCallback((parts: Array<string | string[] | null | undefined>) => (
-    normalizeSearchText(
-      parts
-        .flatMap((part) => Array.isArray(part) ? part : [part ?? ''])
-        .filter((part): part is string => Boolean(part))
-        .join(' ')
-    )
-  ), [normalizeSearchText]);
-
-  const normalizedQuery = useMemo(
-    () => normalizeSearchText(searchQuery),
-    [normalizeSearchText, searchQuery]
-  );
-
-  const currentCategories = contentType === 'positions' ? categories : contentType === 'foreplay' ? foreplayCategories : contentType === 'oral' ? oralCategories : contentType === 'massage' ? massageCategories : rolePlayCategories;
-  const recommendationContentType = contentType === 'positions' ? 'position' : contentType;
-  const currentTypeItemsForPack = useMemo<Array<{ id: number; name: string }>>(() => {
-    if (contentType === 'positions') return positions.map((item) => ({ id: item.id, name: item.name }));
-    if (contentType === 'foreplay') return foreplayIdeas.map((item) => ({ id: item.id, name: item.name }));
-    if (contentType === 'oral') return oralPlayIdeas.map((item) => ({ id: item.id, name: item.name }));
-    if (contentType === 'massage') return massageTechniques.map((item) => ({ id: item.id, name: item.name }));
-    return rolePlayScenarios.map((item) => ({ id: item.id, name: item.name }));
-  }, [contentType]);
-  const currentTriedIdsForType = useMemo(() => {
-    if (contentType === 'positions') return store.tried;
-    if (contentType === 'foreplay') return store.triedForeplay;
-    if (contentType === 'oral') return store.triedOral;
-    if (contentType === 'massage') return store.triedMassage;
-    return store.triedRoleplay;
-  }, [
-    contentType,
-    store.tried,
-    store.triedForeplay,
-    store.triedOral,
-    store.triedMassage,
-    store.triedRoleplay,
-  ]);
-  const categoryCounts = useMemo(() => {
-    const source = contentType === 'positions'
-      ? positions
-      : contentType === 'foreplay'
-        ? foreplayIdeas
-        : contentType === 'oral'
-          ? oralPlayIdeas
-          : contentType === 'massage'
-            ? massageTechniques
-            : rolePlayScenarios;
-    return source.reduce<Record<string, number>>((acc, item) => {
-      if (!item.category) return acc;
-      acc[item.category] = (acc[item.category] || 0) + 1;
-      return acc;
-    }, {});
-  }, [contentType]);
-  const currentFavoriteChips = useMemo(() => {
-    if (contentType === 'positions') return positions.filter((item) => store.favorites.includes(item.id)).map((item) => ({ contentType: 'positions' as const, item }));
-    if (contentType === 'foreplay') return foreplayIdeas.filter((item) => store.favoriteForeplay.includes(item.id)).map((item) => ({ contentType: 'foreplay' as const, item }));
-    if (contentType === 'oral') return oralPlayIdeas.filter((item) => store.favoriteOral.includes(item.id)).map((item) => ({ contentType: 'oral' as const, item }));
-    if (contentType === 'massage') return massageTechniques.filter((item) => store.favoriteMassage.includes(item.id)).map((item) => ({ contentType: 'massage' as const, item }));
-    return rolePlayScenarios.filter((item) => store.favoriteRoleplay.includes(item.id)).map((item) => ({ contentType: 'roleplay' as const, item }));
-  }, [
-    contentType,
-    store.favorites,
-    store.favoriteForeplay,
-    store.favoriteOral,
-    store.favoriteMassage,
-    store.favoriteRoleplay,
-  ]);
-
-  useEffect(() => {
-    const smartRecommendations = useStore.getState().getSmartRecommendations(4);
-    const smartNames = smartRecommendations
-      .filter((entry) => entry.type === recommendationContentType)
-      .map((entry) => (typeof entry.item?.name === 'string' ? entry.item.name : ''))
-      .filter((name): name is string => name.length > 0);
-
-    const deduped = Array.from(new Set(smartNames)).slice(0, 4);
-    if (deduped.length >= 4) {
-      setForYouItemNames(deduped);
-      return;
-    }
-
-    const currentTriedSet = new Set(currentTriedIdsForType);
-    const chosen = new Set(deduped);
-    const fallbackPool = [
-      ...currentTypeItemsForPack.filter((item) => !currentTriedSet.has(item.id)),
-      ...currentTypeItemsForPack,
-    ].filter((item) => !chosen.has(item.name));
-    const seedRaw = Number(dailyRecommendationRotationKey.replace(/-/g, ''));
-    const seed = Number.isFinite(seedRaw) ? seedRaw : 0;
-    const offset = fallbackPool.length > 0 ? seed % fallbackPool.length : 0;
-    const rotatedFallback = [...fallbackPool.slice(offset), ...fallbackPool.slice(0, offset)];
-    const withFallback = [...deduped];
-    for (const item of rotatedFallback) {
-      if (withFallback.length >= 4) break;
-      if (chosen.has(item.name)) continue;
-      withFallback.push(item.name);
-      chosen.add(item.name);
-    }
-
-    setForYouItemNames(withFallback.slice(0, 4));
-  }, [
-    contentType,
-    currentTriedIdsForType,
-    currentTypeItemsForPack,
-    dailyRecommendationRotationKey,
-    recommendationContentType,
-  ]);
 
   const contentTypeTabs = useMemo(
     () => [
@@ -4473,816 +4059,234 @@ function ExploreScreen({ navigation }: any) {
     ],
     [t]
   );
-  const intentOptions = useMemo(
-    () => [
-      { id: 'play' as const, label: t('explore.intent.play'), emoji: '🎲' },
-      { id: 'connect' as const, label: t('explore.intent.connect'), emoji: '💞' },
-      { id: 'relax' as const, label: t('explore.intent.relax'), emoji: '🌿' },
-      { id: 'explore' as const, label: t('explore.intent.explore'), emoji: '✨' },
-    ],
-    [t]
-  );
-  const starterPackConfig = useMemo(() => ({
-    positions: [
-      {
-        id: 'cozy-night-in',
-        icon: '🛋️',
-        title: t('explore.collections.positions.cozy.title'),
-        subtitle: t('explore.collections.positions.cozy.subtitle'),
-        itemNames: ['The Cradle', 'Spooning', 'The Lazy Spoon', 'The Sleepy Missionary'],
-      },
-      {
-        id: 'face-to-face',
-        icon: '💞',
-        title: t('explore.collections.positions.face_to_face.title'),
-        subtitle: t('explore.collections.positions.face_to_face.subtitle'),
-        itemNames: ['Missionary', 'The Lotus', 'Face to Face Float', 'The Full Embrace'],
-      },
-      {
-        id: 'quick-spark',
-        icon: '⚡',
-        title: t('explore.collections.positions.quick_spark.title'),
-        subtitle: t('explore.collections.positions.quick_spark.subtitle'),
-        itemNames: ['The Morning Rush', 'The Lazy Spoon', 'The Cradle', 'Spooning'],
-      },
-    ],
-    foreplay: [
-      {
-        id: 'ten-minute-spark',
-        icon: '💋',
-        title: t('explore.collections.foreplay.ten_minute_spark.title'),
-        subtitle: t('explore.collections.foreplay.ten_minute_spark.subtitle'),
-        itemNames: ['Neck & Ear Focus', 'Countdown Kiss', 'Inner Thigh Teasing', 'The Hallway Pause'],
-      },
-      {
-        id: 'cozy-reconnect',
-        icon: '🕯️',
-        title: t('explore.collections.foreplay.cozy_reconnect.title'),
-        subtitle: t('explore.collections.foreplay.cozy_reconnect.subtitle'),
-        itemNames: ['Couch Cocoon', 'Cuddling with Intent', 'Undressing Ritual', 'Pillow Fort Date'],
-      },
-      {
-        id: 'shared-intimacy',
-        icon: '🤝',
-        title: t('explore.collections.foreplay.shared_intimacy.title'),
-        subtitle: t('explore.collections.foreplay.shared_intimacy.subtitle'),
-        itemNames: ['Mutual Exploration', 'Warm Hands', 'Show Me Slower', 'Mirror Flirt'],
-      },
-    ],
-    oral: [
-      {
-        id: 'gentle-starters',
-        icon: '🌙',
-        title: t('explore.collections.oral.gentle_starters.title'),
-        subtitle: t('explore.collections.oral.gentle_starters.subtitle'),
-        itemNames: ['The Edge of the Bed', 'The Seated Signal', 'The Warm Welcome', 'The Hum & Kiss'],
-      },
-      {
-        id: 'mutual-flow',
-        icon: '🔄',
-        title: t('explore.collections.oral.mutual_flow.title'),
-        subtitle: t('explore.collections.oral.mutual_flow.subtitle'),
-        itemNames: ['The Slow Exchange', 'The Cushion Trade', 'The Stacked 69', 'The Duet'],
-      },
-      {
-        id: 'playful-variety',
-        icon: '🎲',
-        title: t('explore.collections.oral.playful_variety.title'),
-        subtitle: t('explore.collections.oral.playful_variety.subtitle'),
-        itemNames: ['The Mirror Game', 'The Blindfold Trade', 'The Shower Steam', 'The Chair Lean'],
-      },
-    ],
-    massage: [
-      {
-        id: 'melt-the-stress',
-        icon: '🧖',
-        title: t('explore.collections.massage.melt_the_stress.title'),
-        subtitle: t('explore.collections.massage.melt_the_stress.subtitle'),
-        itemNames: ['The Full-Body Surrender', 'Shoulder Melting Magic', 'Lower Back Love', 'Neck Reset'],
-      },
-      {
-        id: 'slow-build',
-        icon: '✨',
-        title: t('explore.collections.massage.slow_build.title'),
-        subtitle: t('explore.collections.massage.slow_build.subtitle'),
-        itemNames: ['The Almost-There Trail', 'The Oil Drizzle', 'Neck & Décolletage Flow', 'The Whisper Touch'],
-      },
-      {
-        id: 'quick-reset',
-        icon: '🌿',
-        title: t('explore.collections.massage.quick_reset.title'),
-        subtitle: t('explore.collections.massage.quick_reset.subtitle'),
-        itemNames: ['Scalp Serenity', 'Face & Jaw Release', 'Arm & Hand Heaven', 'Tension Headache Release'],
-      },
-    ],
-    roleplay: [
-      {
-        id: 'easy-to-start',
-        icon: '🎭',
-        title: t('explore.collections.roleplay.easy_to_start.title'),
-        subtitle: t('explore.collections.roleplay.easy_to_start.subtitle'),
-        itemNames: ['First Date Redux', 'Strangers at a Bar', 'Anniversary Surprise', 'The Dare Jar'],
-      },
-      {
-        id: 'playful-tonight',
-        icon: '🎲',
-        title: t('explore.collections.roleplay.playful_tonight.title'),
-        subtitle: t('explore.collections.roleplay.playful_tonight.subtitle'),
-        itemNames: ['Dice Decisions', 'Spin the Bottle (Two Player)', 'Costume Night', 'Two Truths & a Lie (Intimate)'],
-      },
-      {
-        id: 'escapist-fantasy',
-        icon: '🌆',
-        title: t('explore.collections.roleplay.escapist_fantasy.title'),
-        subtitle: t('explore.collections.roleplay.escapist_fantasy.subtitle'),
-        itemNames: ['The Photographer', 'Room Service', 'The Royalty Treatment', 'Sunset Getaway'],
-      },
-    ],
-  }), [t]);
-  const currentStarterPacks = starterPackConfig[contentType];
-  const forYouStarterPack = useMemo(
-    () => ({
-      id: 'for-you',
-      icon: '✨',
-      title: t('home.feature.for_you'),
-      subtitle: voice.home.forYouSubtitle,
-      itemNames: forYouItemNames,
-    }),
-    [forYouItemNames, t, voice.home.forYouSubtitle]
-  );
-  const visibleStarterPacks = useMemo(
-    () => starterPacksUnlocked && showBrowseTools
-      ? [forYouStarterPack, ...currentStarterPacks]
-      : [forYouStarterPack],
-    [currentStarterPacks, forYouStarterPack, showBrowseTools, starterPacksUnlocked]
-  );
-  const activeStarterPack = visibleStarterPacks.find((pack) => pack.id === selectedStarterPack) ?? null;
 
-  useEffect(() => {
-    if (!selectedStarterPack) return;
-    if (visibleStarterPacks.some((pack) => pack.id === selectedStarterPack)) return;
-    setSelectedStarterPack(null);
-  }, [selectedStarterPack, visibleStarterPacks]);
+  const currentCategories = contentType === 'positions'
+    ? categories
+    : contentType === 'foreplay'
+      ? foreplayCategories
+      : contentType === 'oral'
+        ? oralCategories
+        : contentType === 'massage'
+          ? massageCategories
+          : rolePlayCategories;
 
-  const starterPackMatches = useCallback(
-    <T extends { name: string }>(items: T[]) => {
-      if (!activeStarterPack || activeStarterPack.itemNames.length === 0) return items;
-      return items.filter((item) => activeStarterPack.itemNames.includes(item.name));
-    },
-    [activeStarterPack]
-  );
+  const filteredContent = useMemo(() => {
+    const source = contentType === 'positions'
+      ? positions
+      : contentType === 'foreplay'
+        ? foreplayIdeas
+        : contentType === 'oral'
+          ? oralPlayIdeas
+          : contentType === 'massage'
+            ? massageTechniques
+            : rolePlayScenarios;
 
-  const filteredPositions = useMemo(() => {
-    let result = starterPackMatches(positions);
-    if (selectedCategory) result = result.filter((p) => p.category === selectedCategory);
-    if (normalizedQuery) {
-      result = result.filter((p) => {
-        const moodLabel = moods.find((m) => m.id === p.mood)?.label || p.mood;
-        const searchable = buildSearchBlob([
-          p.name,
-          p.vibe,
-          p.category,
-          localizeTerm(p.category),
-          p.mood,
-          moodLabel,
-          localizeTerm(moodLabel),
-          p.difficulty,
-          localizeTerm(p.difficulty),
-          p.description,
-          p.howTo,
-          p.whyItWorks,
-          p.tips,
-          p.pairsWellWith,
-          p.goodFor,
-        ]);
-        return searchable.includes(normalizedQuery);
-      });
-    }
-    if (sortBy === 'newToYou') result = result.filter(p => !store.tried.includes(p.id));
-    if (sortBy === 'tried') result = result.filter(p => store.tried.includes(p.id));
-    return result;
-  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.tried]);
+    const favoriteIds = contentType === 'positions'
+      ? store.favorites
+      : contentType === 'foreplay'
+        ? store.favoriteForeplay
+        : contentType === 'oral'
+          ? store.favoriteOral
+          : contentType === 'massage'
+            ? store.favoriteMassage
+            : store.favoriteRoleplay;
 
-  const filteredForeplay = useMemo(() => {
-    let result = starterPackMatches(foreplayIdeas);
-    if (selectedCategory) result = result.filter((f) => f.category === selectedCategory);
-    if (normalizedQuery) {
-      result = result.filter((f) => (
-        buildSearchBlob([
-          f.name,
-          f.vibe,
-          f.category,
-          localizeTerm(f.category),
-          f.mood,
-          localizeTerm(f.mood),
-          f.duration,
-          localizeTerm(f.duration),
-          f.description,
-          f.howTo,
-          f.tips,
-          f.pairsWellWith,
-        ]).includes(normalizedQuery)
-      ));
-    }
-    if (sortBy === 'newToYou') result = result.filter(f => !store.triedForeplay.includes(f.id));
-    if (sortBy === 'tried') result = result.filter(f => store.triedForeplay.includes(f.id));
-    return result;
-  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedForeplay]);
-
-  const filteredOral = useMemo(() => {
-    let result = starterPackMatches(oralPlayIdeas);
-    if (selectedCategory) result = result.filter((o) => o.category === selectedCategory);
-    if (normalizedQuery) {
-      result = result.filter((o) => (
-        buildSearchBlob([
-          o.name,
-          o.vibe,
-          o.category,
-          localizeTerm(o.category),
-          o.mood,
-          localizeTerm(o.mood),
-          o.description,
-          o.howTo,
-          o.tips,
-          o.pairsWellWith,
-          o.giver,
-          o.giver === 'him' ? localizeTerm('He gives') : o.giver === 'her' ? localizeTerm('She gives') : localizeTerm('Mutual'),
-        ]).includes(normalizedQuery)
-      ));
-    }
-    if (sortBy === 'newToYou') result = result.filter(o => !store.triedOral.includes(o.id));
-    if (sortBy === 'tried') result = result.filter(o => store.triedOral.includes(o.id));
-    return result;
-  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedOral]);
-
-  const filteredMassage = useMemo(() => {
-    let result = starterPackMatches(massageTechniques);
-    if (selectedCategory) result = result.filter((m) => m.category === selectedCategory);
-    if (normalizedQuery) {
-      result = result.filter((m) => (
-        buildSearchBlob([
-          m.name,
-          m.vibe,
-          m.category,
-          localizeTerm(m.category),
-          m.mood,
-          localizeTerm(m.mood),
-          m.duration,
-          localizeTerm(m.duration),
-          m.bodyArea,
-          m.description,
-          m.howTo,
-          m.tips,
-          m.pairsWellWith,
-        ]).includes(normalizedQuery)
-      ));
-    }
-    if (sortBy === 'newToYou') result = result.filter(m => !store.triedMassage.includes(m.id));
-    if (sortBy === 'tried') result = result.filter(m => store.triedMassage.includes(m.id));
-    return result;
-  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedMassage]);
-
-  const filteredRoleplay = useMemo(() => {
-    let result = starterPackMatches(rolePlayScenarios);
-    if (selectedCategory) result = result.filter((r) => r.category === selectedCategory);
-    if (normalizedQuery) {
-      result = result.filter((r) => (
-        buildSearchBlob([
-          r.name,
-          r.vibe,
-          r.category,
-          localizeTerm(r.category),
-          r.mood,
-          localizeTerm(r.mood),
-          r.intensity,
-          localizeTerm(r.intensity),
-          r.description,
-          r.setup,
-          r.howToPlay,
-          r.tips,
-          r.pairsWellWith,
-        ]).includes(normalizedQuery)
-      ));
-    }
-    if (sortBy === 'newToYou') result = result.filter(r => !store.triedRoleplay.includes(r.id));
-    if (sortBy === 'tried') result = result.filter(r => store.triedRoleplay.includes(r.id));
-    return result;
-  }, [buildSearchBlob, localizeTerm, normalizedQuery, selectedCategory, sortBy, starterPackMatches, store.triedRoleplay]);
-
-  const openFavoriteChip = useCallback((chip: { contentType: 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay'; item: any }) => {
-    const itemId = Number(chip.item?.id || 0);
-    if (chip.contentType === 'positions') {
-      sharedNotesVoice.preloadNote('position', chip.item);
-      navigation.navigate('PositionDetail', { position: chip.item });
-      return;
-    }
-    if (chip.contentType === 'foreplay') {
-      sharedNotesVoice.preloadNote('foreplay', chip.item);
-      navigation.navigate('ForeplayDetail', { item: chip.item });
-      return;
-    }
-    if (chip.contentType === 'oral') {
-      sharedNotesVoice.preloadNote('oral', chip.item);
-      navigation.navigate('OralDetail', { item: chip.item });
-      return;
-    }
-    if (chip.contentType === 'massage') {
-      sharedNotesVoice.preloadNote('massage', chip.item);
-      navigation.navigate('MassageDetail', { item: chip.item });
-      return;
-    }
-    sharedNotesVoice.preloadNote('roleplay', chip.item);
-    navigation.navigate('RolePlayDetail', { item: chip.item });
-  }, [navigation]);
-
-  const clearExploreFilters = useCallback(() => {
-    setSearchQuery('');
-    setSelectedCategory(null);
-    setSelectedStarterPack(null);
-    setSortBy('all');
-  }, []);
-
-  const toggleBrowseTools = useCallback(() => {
-    setShowBrowseTools((current) => {
-      const next = !current;
-      if (!next) clearExploreFilters();
-      return next;
+    return source.filter((item) => {
+      if (selectedCategory && item.category !== selectedCategory) return false;
+      if (showFavoritesOnly && !favoriteIds.includes(item.id)) return false;
+      return true;
     });
-  }, [clearExploreFilters]);
+  }, [
+    contentType,
+    selectedCategory,
+    showFavoritesOnly,
+    store.favorites,
+    store.favoriteForeplay,
+    store.favoriteOral,
+    store.favoriteMassage,
+    store.favoriteRoleplay,
+  ]);
 
-  const openExplorePlaylist = useCallback(async (url: string) => {
+  const handleContentTypeChange = (type: ExploreContentType) => {
+    setContentType(type);
+    setSelectedCategory(null);
+  };
+
+  const openExplorePlaylist = async (url: string) => {
     try {
       await Linking.openURL(url);
     } catch {
       Alert.alert(t('music.error_title'), t('music.error_message'));
     }
-  }, [t]);
+  };
 
-  const handleContentTypeChange = useCallback((type: ExploreContentType) => {
-    setContentType(type);
-    setSelectedCategory(null);
-    setSelectedStarterPack(null);
-  }, []);
-
-  function handleExploreIntent(intent: ExploreIntent): void {
-    const unlockedFeatures = new Set<UnlockableFeature>(store.unlockedFeatures || []);
-    let resolvedAction:
-      | 'truth_or_dare'
-      | 'spinner'
-      | 'challenge'
-      | 'date_night'
-      | 'insights'
-      | 'massage_browse'
-      | 'foreplay_browse'
-      | 'none' = 'none';
-
-    if (intent === 'play') {
-      if (unlockedFeatures.has('truth_or_dare')) {
-        resolvedAction = 'truth_or_dare';
-        setShowExploreTruthOrDare(true);
-      } else if (typeof setShowExploreSpinner === 'function') {
-        resolvedAction = 'spinner';
-        setShowExploreSpinner(true);
-      } else {
-        resolvedAction = 'challenge';
-        setShowExploreChallenge(true);
-      }
-      Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
-      return;
+  const renderContentItem = ({ item }: { item: any }) => {
+    if (contentType === 'positions') {
+      return <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />;
     }
-
-    if (intent === 'connect') {
-      if (unlockedFeatures.has('date_night_generator')) {
-        resolvedAction = 'date_night';
-        setShowExploreDateNight(true);
-      } else if (typeof setShowExploreInsights === 'function') {
-        resolvedAction = 'insights';
-        setShowExploreInsights(true);
-      } else {
-        resolvedAction = 'spinner';
-        setShowExploreSpinner(true);
-      }
-      Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
-      return;
+    if (contentType === 'foreplay') {
+      return <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />;
     }
-
-    if (intent === 'relax') {
-      if (massageTechniques.length > 0) {
-        resolvedAction = 'massage_browse';
-        setContentType('massage');
-      } else if (foreplayIdeas.length > 0) {
-        resolvedAction = 'foreplay_browse';
-        setContentType('foreplay');
-      }
-      setSearchQuery('');
-      setSelectedCategory(null);
-      setSelectedStarterPack(null);
-      setSortBy('all');
-      setShowBrowseTools(true);
-      Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
-      return;
+    if (contentType === 'oral') {
+      return <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />;
     }
+    if (contentType === 'massage') {
+      return <MassageCard item={item} onPress={() => navigation.navigate('MassageDetail', { item })} />;
+    }
+    return <RolePlayCard item={item} onPress={() => navigation.navigate('RolePlayDetail', { item })} />;
+  };
 
-    Analytics.track('explore_intent_selected', { intent, resolved_action: resolvedAction });
-  }
-
-  const exploreEmptyState = (
+  const emptyContentState = (
     <View style={styles.emptyState}>
       <Text style={styles.emptyEmoji}>🔍</Text>
-      <Text style={styles.emptyTitle}>{pickVoiceLine(voice.empty.nothingYet, `explore-empty-${language}`)}</Text>
-      <Text style={styles.exploreEmptyBody}>{voice.empty.exploreBody}</Text>
-      <TouchableOpacity style={styles.emptyActionButton} onPress={clearExploreFilters} activeOpacity={0.85}>
-        <Text style={styles.emptyActionButtonText}>{voice.empty.clearFilters}</Text>
-      </TouchableOpacity>
+      <Text style={styles.emptyTitle}>{t('explore.empty')}</Text>
+      <Text style={styles.exploreEmptyBody}>{showFavoritesOnly ? t('explore.empty_favorites') : t('common.clear')}</Text>
     </View>
   );
-  const showExploreResults = showBrowseTools || Boolean(selectedStarterPack);
 
   return (
     <ScreenWrapper>
       <View style={styles.exploreHeader}><Text style={styles.title}>{t('explore.title')}</Text></View>
 
-      <View style={styles.intentRailWrapper}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.intentRailContent}>
-          {intentOptions.map((intent) => (
-            <TouchableOpacity
-              key={intent.id}
-              style={styles.intentChip}
-              onPress={() => handleExploreIntent(intent.id)}
-              activeOpacity={0.86}
-              accessibilityRole="button"
-              accessibilityLabel={intent.label}
-            >
-              <Text style={styles.intentChipEmoji}>{intent.emoji}</Text>
-              <Text style={styles.intentChipText}>{intent.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-      
-      {/* Content Type Tabs */}
-      <View style={styles.contentTypeSliderWrapper}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.contentTypeSliderContent}>
-          {contentTypeTabs.map((tab) => (
-            <TouchableOpacity
-              key={tab.type}
-              style={[styles.contentTypeSliderTab, contentType === tab.type && styles.contentTypeSliderTabActive]}
-              onPress={() => handleContentTypeChange(tab.type)}
-              activeOpacity={0.85}
-            >
-              <Text
-                allowFontScaling={false}
-                maxFontSizeMultiplier={1}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={[styles.contentTypeSliderTabText, contentType === tab.type && styles.contentTypeSliderTabTextActive]}
-              >
-                {tab.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+      <View style={styles.sortContainer}>
+        {topTabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.id}
+            style={[styles.sortButton, activeTab === tab.id && styles.sortButtonActive]}
+            onPress={() => setActiveTab(tab.id)}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityState={{ selected: activeTab === tab.id }}
+          >
+            <Text style={[styles.sortButtonText, activeTab === tab.id && styles.sortButtonTextActive]}>{tab.label}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
-      <View style={styles.collectionSection}>
-        <View style={styles.collectionHeader}>
-          <Text style={styles.collectionTitle}>
-            {showBrowseTools ? t('explore.collections.title') : t('home.feature.for_you')}
-          </Text>
-          {selectedStarterPack ? (
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedStarterPack(null);
-              }}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-            >
-              <Text style={styles.collectionClearText}>{t('common.clear')}</Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.collectionScrollContent}>
-          {visibleStarterPacks.map((pack) => {
-            const isActive = selectedStarterPack === pack.id;
-            return (
-              <TouchableOpacity
-                key={pack.id}
-                style={[styles.collectionCard, isActive && styles.collectionCardActive]}
-                onPress={() => {
-                  setSelectedStarterPack((current) => (current === pack.id ? null : pack.id));
-                }}
-                activeOpacity={0.9}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isActive }}
-                accessibilityLabel={pack.title}
-              >
-                <Text style={styles.collectionEmoji}>{pack.icon}</Text>
-                <Text style={[styles.collectionCardTitle, isActive && styles.collectionCardTitleActive]}>{pack.title}</Text>
-                <Text style={[styles.collectionCardSubtitle, isActive && styles.collectionCardSubtitleActive]}>{pack.subtitle}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-        {!starterPacksUnlocked && showBrowseTools ? (
-          <View style={[styles.collectionLockedCard, styles.collectionLockedInlineCard]}>
-            <Text style={styles.collectionLockedEmoji}>🔒</Text>
-            <Text style={styles.collectionLockedTitle}>{voice.labels.collectionLevel2Lock}</Text>
-            <Text style={styles.collectionLockedSubtitle}>
-              {`${Math.min(store.totalStars, FEATURE_LOCK_REQUIREMENTS.starter_pack_collections.stars)}/${FEATURE_LOCK_REQUIREMENTS.starter_pack_collections.stars} ⭐`}
-            </Text>
-          </View>
-        ) : null}
-      </View>
-
-      <TouchableOpacity
-        style={styles.exploreDepthToggle}
-        onPress={toggleBrowseTools}
-        activeOpacity={0.85}
-        accessibilityRole="button"
-      >
-        <Text style={styles.exploreDepthToggleText}>
-          {showBrowseTools ? t('explore.browse_less') : t('explore.browse_more')}
-        </Text>
-      </TouchableOpacity>
-      
-      {showBrowseTools ? (
-        <View style={styles.exploreAdvancedControls}>
-          <SearchBar
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onClear={() => setSearchQuery('')}
-            placeholder={t('explore.search_placeholder', {
-              type: translateUi(language, getContentTypeKey(contentType)).toLowerCase(),
-            })}
-          />
-
-          <View style={styles.sortContainer}>
-            {(['all', 'newToYou', 'tried'] as const).map((option) => (
-              <TouchableOpacity key={option} style={[styles.sortButton, sortBy === option && styles.sortButtonActive]} onPress={() => { setSortBy(option); }}>
-                <Text style={[styles.sortButtonText, sortBy === option && styles.sortButtonTextActive]}>
-                  {option === 'all' ? t('explore.sort.all') : option === 'newToYou' ? `🆕 ${t('explore.sort.new_to_you')}` : `✓ ${t('explore.sort.tried')}`}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <View style={styles.categoryWrapper}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
-              <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(null); }}>
-                <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>{t('common.all')}</Text>
-              </TouchableOpacity>
-              {currentCategories.map((cat) => (
-                <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => { setSelectedCategory(cat); }}>
-                  <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>
-                    {localizeTerm(cat)}{' '}
-                    <Text style={[styles.categoryChipCountText, selectedCategory === cat && styles.categoryChipCountTextSelected]}>
-                      ({categoryCounts[cat] || 0})
-                    </Text>
+      {activeTab === 'content' ? (
+        <>
+          <View style={styles.contentTypeSliderWrapper}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.contentTypeSliderContent}>
+              {contentTypeTabs.map((tab) => (
+                <TouchableOpacity
+                  key={tab.type}
+                  style={[styles.contentTypeSliderTab, contentType === tab.type && styles.contentTypeSliderTabActive]}
+                  onPress={() => handleContentTypeChange(tab.type)}
+                  activeOpacity={0.85}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: contentType === tab.type }}
+                >
+                  <Text
+                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={[styles.contentTypeSliderTabText, contentType === tab.type && styles.contentTypeSliderTabTextActive]}
+                  >
+                    {tab.label}
                   </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
 
-          {currentFavoriteChips.length >= 3 ? (
-            <View style={styles.favoritesQuickBar}>
-              <Text style={styles.favoritesQuickHeader}>
-                {contentType === 'positions' ? t('explore.saved.positions') : t('explore.saved.ideas')}
-              </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.favoritesQuickScrollContent}>
-                {currentFavoriteChips.map((chip) => (
-                  <TouchableOpacity
-                    key={`${chip.contentType}-${chip.item.id}`}
-                    style={styles.favoriteQuickChip}
-                    onPress={() => openFavoriteChip(chip)}
-                    activeOpacity={0.85}
-                  >
-                    <Text style={styles.favoriteQuickChipText} numberOfLines={1}>
-                      {chip.item.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          ) : null}
-
-          <View style={styles.exploreActivitySection}>
-            <Text style={styles.collectionTitle}>{t('explore.activities.title')}</Text>
-            <View style={styles.exploreActivityGrid}>
-              <TouchableOpacity
-                style={styles.exploreActivityCard}
-                onPress={() => {
-                  if (dateNightUnlocked) {
-                    setShowExploreDateNight(true);
-                    return;
-                  }
-                  setShowExploreInsights(true);
-                }}
-                activeOpacity={0.86}
-                accessibilityRole="button"
-              >
-                <Text style={styles.collectionEmoji}>🌙</Text>
-                <Text style={styles.collectionCardTitle}>{t('date_night.title')}</Text>
-                <Text style={styles.collectionCardSubtitle}>{t('home.quality.romance')}</Text>
+          <View style={styles.categoryWrapper}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScrollContent}>
+              <TouchableOpacity style={[styles.categoryChip, !selectedCategory && styles.categoryChipSelected]} onPress={() => setSelectedCategory(null)} accessibilityRole="button">
+                <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextSelected]}>{t('common.all')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.exploreActivityCard}
-                onPress={() => {
-                  if (truthOrDareUnlocked) {
-                    setShowExploreTruthOrDare(true);
-                    return;
-                  }
-                  setShowExploreInsights(true);
-                }}
-                activeOpacity={0.86}
-                accessibilityRole="button"
-              >
-                <Text style={styles.collectionEmoji}>🎲</Text>
-                <Text style={styles.collectionCardTitle}>{t('truth_dare.title')}</Text>
-                <Text style={styles.collectionCardSubtitle}>{t('truth_dare.subtitle')}</Text>
+              {currentCategories.map((cat) => (
+                <TouchableOpacity key={cat} style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipSelected]} onPress={() => setSelectedCategory(cat)} accessibilityRole="button">
+                  <Text style={[styles.categoryChipText, selectedCategory === cat && styles.categoryChipTextSelected]}>{localizeTerm(cat)}</Text>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity style={[styles.categoryChip, showFavoritesOnly && styles.categoryChipSelected]} onPress={() => setShowFavoritesOnly((current) => !current)} accessibilityRole="button" accessibilityState={{ selected: showFavoritesOnly }}>
+                <Text style={[styles.categoryChipText, showFavoritesOnly && styles.categoryChipTextSelected]}>{t('explore.filter.favorites')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.exploreActivityCard}
-                onPress={() => setShowExploreChallenge(true)}
-                activeOpacity={0.86}
-                accessibilityRole="button"
-              >
-                <Text style={styles.collectionEmoji}>🎯</Text>
-                <Text style={styles.collectionCardTitle}>{t('challenge.title')}</Text>
-                <Text style={styles.collectionCardSubtitle}>{t('home.quality.challenge')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.exploreActivityCard}
-                onPress={() => navigation.navigate('Home')}
-                activeOpacity={0.86}
-                accessibilityRole="button"
-              >
-                <Text style={styles.collectionEmoji}>😏</Text>
-                <Text style={styles.collectionCardTitle}>{t('home.daily_tease')}</Text>
-                <Text style={styles.collectionCardSubtitle}>{t('home.ritual.title')}</Text>
-              </TouchableOpacity>
-            </View>
+            </ScrollView>
           </View>
 
-          <View style={styles.exploreMusicSection}>
-            <Text style={styles.collectionTitle}>{t('home.feature.music')}</Text>
-            <Text style={styles.exploreMusicSubtitle}>{t('music.subtitle')}</Text>
-            {CURATED_PLAYLISTS.map((playlist) => (
-              <View key={playlist.mood} style={styles.exploreMusicCard}>
-                <View style={styles.exploreMusicCopy}>
-                  <Text style={styles.musicPlaylistName}>{playlist.name}</Text>
-                  <Text style={styles.musicPlaylistDesc}>{playlist.description}</Text>
-                </View>
-                <View style={styles.musicButtonsRow}>
-                  <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#1DB954' }]} onPress={() => openExplorePlaylist(playlist.spotifyUrl)}>
-                    <Text style={styles.musicButtonText}>{t('music.spotify')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.musicButton, { backgroundColor: '#FA243C' }]} onPress={() => openExplorePlaylist(playlist.appleMusicUrl)}>
-                    <Text style={styles.musicButtonText}>{t('music.apple_music')}</Text>
-                  </TouchableOpacity>
-                </View>
+          <FlatList
+            data={filteredContent}
+            numColumns={2}
+            keyExtractor={(item) => `${contentType}-${item.id}`}
+            contentContainerStyle={styles.positionGrid}
+            columnWrapperStyle={styles.positionRow}
+            showsVerticalScrollIndicator={false}
+            renderItem={renderContentItem}
+            ListEmptyComponent={emptyContentState}
+          />
+        </>
+      ) : null}
+
+      {activeTab === 'music' ? (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.exploreListContent}>
+          {CURATED_PLAYLISTS.map((playlist) => (
+            <TouchableOpacity key={playlist.mood} style={styles.exploreMusicCard} onPress={() => openExplorePlaylist(playlist.spotifyUrl)} activeOpacity={0.86} accessibilityRole="button">
+              <View style={styles.exploreMusicCopy}>
+                <Text style={styles.musicPlaylistName}>{playlist.name}</Text>
+                <Text style={styles.musicPlaylistDesc}>{playlist.description}</Text>
               </View>
-            ))}
-          </View>
+              <Text style={styles.collectionClearText}>{t('music.spotify')}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : null}
+
+      {activeTab === 'games' ? (
+        <View style={styles.exploreActivityGrid}>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreTruthOrDare(true)} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>🎲</Text>
+            <Text style={styles.collectionCardTitle}>{t('truth_dare.title')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('truth_dare.subtitle')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreChallenge(true)} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>🎯</Text>
+            <Text style={styles.collectionCardTitle}>{t('challenge.title')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('home.quality.challenge')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreDateNight(true)} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>🌙</Text>
+            <Text style={styles.collectionCardTitle}>{t('date_night.title')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('home.quality.romance')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreSpinner(true)} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>🎰</Text>
+            <Text style={styles.collectionCardTitle}>{t('spinner.title')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('home.quality.playful')}</Text>
+          </TouchableOpacity>
         </View>
       ) : null}
-      {showExploreResults && contentType === 'positions' && (
-        <FlatList data={filteredPositions} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />}
-          ListEmptyComponent={exploreEmptyState}
-        />
-      )}
-      {showExploreResults && contentType === 'foreplay' && (
-        <FlatList data={filteredForeplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />}
-          ListEmptyComponent={exploreEmptyState}
-        />
-      )}
-      {showExploreResults && contentType === 'oral' && (
-        <FlatList data={filteredOral} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />}
-          ListEmptyComponent={exploreEmptyState}
-        />
-      )}
-      {showExploreResults && contentType === 'massage' && (
-        <FlatList data={filteredMassage} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <MassageCard item={item} onPress={() => navigation.navigate('MassageDetail', { item })} />}
-          ListEmptyComponent={exploreEmptyState}
-        />
-      )}
-      {showExploreResults && contentType === 'roleplay' && (
-        <FlatList data={filteredRoleplay} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <RolePlayCard item={item} onPress={() => navigation.navigate('RolePlayDetail', { item })} />}
-          ListEmptyComponent={exploreEmptyState}
-        />
-      )}
+
+      {activeTab === 'activities' ? (
+        <View style={styles.exploreActivityGrid}>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => navigation.navigate('MoodCheckScreen')} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>🌸</Text>
+            <Text style={styles.collectionCardTitle}>{t('home.feature.tonight')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('home.quality.for_you')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreWeeklyGoals(true)} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>🌿</Text>
+            <Text style={styles.collectionCardTitle}>{t('home.feature.goals')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('home.quality.goals')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreInsights(true)} activeOpacity={0.86} accessibilityRole="button">
+            <Text style={styles.collectionEmoji}>✨</Text>
+            <Text style={styles.collectionCardTitle}>{t('profile.insights')}</Text>
+            <Text style={styles.collectionCardSubtitle}>{t('insights.usage_snapshot')}</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+
       <DateNightModal visible={showExploreDateNight} onClose={() => setShowExploreDateNight(false)} navigation={navigation} />
       <ChallengeModal visible={showExploreChallenge} onClose={() => setShowExploreChallenge(false)} navigation={navigation} />
       <SpinnerModal visible={showExploreSpinner} onClose={() => setShowExploreSpinner(false)} navigation={navigation} />
       <TruthOrDareModal visible={showExploreTruthOrDare} onClose={() => setShowExploreTruthOrDare(false)} />
       <InsightsModal visible={showExploreInsights} onClose={() => setShowExploreInsights(false)} />
+      <WeeklyGoalsModal visible={showExploreWeeklyGoals} onClose={() => setShowExploreWeeklyGoals(false)} />
     </ScreenWrapper>
   );
 }
-
-function FavoritesScreen({ navigation }: any) {
-  const store = useStore();
-  const { language, t } = useI18n();
-  const [contentType, setContentType] = useState<'positions' | 'foreplay' | 'oral'>('positions');
-  const [showRecentlyTried, setShowRecentlyTried] = useState(false);
-  const favoritePositions = positions.filter((p) => store.favorites.includes(p.id));
-  const favoriteForeplayItems = foreplayIdeas.filter((f) => store.favoriteForeplay.includes(f.id));
-  const favoriteOralItems = oralPlayIdeas.filter((o) => store.favoriteOral.includes(o.id));
-
-  // Recently tried items (last 10)
-  const recentlyTried = useMemo(() => {
-    void language;
-    return store.activityLog
-      .slice(-10)
-      .reverse()
-      .map(activity => {
-        if (activity.type === 'position') return { type: 'position', item: positions.find(p => p.id === activity.itemId) };
-        if (activity.type === 'foreplay') return { type: 'foreplay', item: foreplayIdeas.find(f => f.id === activity.itemId) };
-        if (activity.type === 'oral') return { type: 'oral', item: oralPlayIdeas.find(o => o.id === activity.itemId) };
-        return null;
-      })
-      .filter(Boolean);
-  }, [language, store.activityLog]);
-
-  return (
-    <ScreenWrapper>
-      <View style={styles.exploreHeader}><Text style={styles.title}>{t('favorites.title')}</Text></View>
-      
-      {/* View Toggle */}
-      <View style={styles.viewToggleContainer}>
-        <TouchableOpacity style={[styles.viewToggleButton, !showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { setShowRecentlyTried(false); }}>
-          <Text style={[styles.viewToggleText, !showRecentlyTried && styles.viewToggleTextActive]}>❤️ {t('favorites.favorites_toggle')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.viewToggleButton, showRecentlyTried && styles.viewToggleButtonActive]} onPress={() => { setShowRecentlyTried(true); }}>
-          <Text style={[styles.viewToggleText, showRecentlyTried && styles.viewToggleTextActive]}>🕐 {t('favorites.recent_toggle')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {!showRecentlyTried ? (
-        <>
-          <View style={styles.tripleToggleContainer}>
-            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'positions' && styles.tripleToggleButtonActive]} onPress={() => { setContentType('positions'); }}>
-              <Text style={[styles.tripleToggleButtonText, contentType === 'positions' && styles.tripleToggleButtonTextActive]}>{t('favorites.positions_count', { count: favoritePositions.length })}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'foreplay' && styles.tripleToggleButtonActive]} onPress={() => { setContentType('foreplay'); }}>
-              <Text style={[styles.tripleToggleButtonText, contentType === 'foreplay' && styles.tripleToggleButtonTextActive]}>{t('favorites.foreplay_count', { count: favoriteForeplayItems.length })}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.tripleToggleButton, contentType === 'oral' && styles.tripleToggleButtonActive]} onPress={() => { setContentType('oral'); }}>
-              <Text style={[styles.tripleToggleButtonText, contentType === 'oral' && styles.tripleToggleButtonTextActive]}>{t('favorites.oral_count', { count: favoriteOralItems.length })}</Text>
-            </TouchableOpacity>
-          </View>
-          {contentType === 'positions' && (favoritePositions.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>{t('favorites.empty.positions.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.positions.subtitle')}</Text></View>
-          ) : (
-            <FlatList data={favoritePositions} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => <PositionCard position={item} onPress={() => navigation.navigate('PositionDetail', { position: item })} />}
-            />
-          ))}
-          {contentType === 'foreplay' && (favoriteForeplayItems.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>{t('favorites.empty.foreplay.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.foreplay.subtitle')}</Text></View>
-          ) : (
-            <FlatList data={favoriteForeplayItems} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => <ForeplayCard item={item} onPress={() => navigation.navigate('ForeplayDetail', { item })} />}
-            />
-          ))}
-          {contentType === 'oral' && (favoriteOralItems.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>💜</Text><Text style={styles.emptyTitle}>{t('favorites.empty.oral.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.oral.subtitle')}</Text></View>
-          ) : (
-            <FlatList data={favoriteOralItems} numColumns={2} keyExtractor={(item) => item.id.toString()} contentContainerStyle={styles.positionGrid} columnWrapperStyle={styles.positionRow} showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => <OralPlayCard item={item} onPress={() => navigation.navigate('OralDetail', { item })} />}
-            />
-          ))}
-        </>
-      ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {recentlyTried.length === 0 ? (
-            <View style={styles.emptyState}><Text style={styles.emptyEmoji}>🕐</Text><Text style={styles.emptyTitle}>{t('favorites.empty.recent.title')}</Text><Text style={styles.emptySubtitle}>{t('favorites.empty.recent.subtitle')}</Text></View>
-          ) : (
-            recentlyTried.map((entry: any, index) => (
-              <TouchableOpacity key={index} style={styles.recentlyTriedItem} onPress={() => {
-                if (entry.type === 'position') navigation.navigate('PositionDetail', { position: entry.item });
-                else if (entry.type === 'foreplay') navigation.navigate('ForeplayDetail', { item: entry.item });
-                else navigation.navigate('OralDetail', { item: entry.item });
-              }}>
-                <Text style={styles.recentlyTriedEmoji}>{entry.type === 'position' ? '💑' : entry.type === 'foreplay' ? '💕' : '👄'}</Text>
-                <View style={styles.recentlyTriedContent}>
-                  <Text style={styles.recentlyTriedName}>{entry.item?.name}</Text>
-                  <Text style={styles.recentlyTriedVibe}>{entry.item?.vibe}</Text>
-                </View>
-                <Text style={styles.recentlyTriedArrow}>→</Text>
-              </TouchableOpacity>
-            ))
-          )}
-        </ScrollView>
-      )}
-    </ScreenWrapper>
-  );
-}
-
 function ProfileScreen({ navigation }: any) {
   const store = useStore();
   const { t, localizeTerm, language } = useI18n();
@@ -6978,7 +5982,6 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
                 />
               ),
               ExploreScreen,
-              FavoritesScreen,
               ProfileScreen,
               MoodCheckScreen,
               TonightSessionScreen,
@@ -7359,21 +6362,6 @@ const styles = StyleSheet.create({
   clearButton: { padding: 4 },
   clearButtonText: { color: colors.text.muted, fontSize: 16 },
   exploreHeader: { paddingTop: 10, marginBottom: 10 },
-  intentRailWrapper: { marginBottom: 12 },
-  intentRailContent: { paddingRight: 20 },
-  intentChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 40,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    backgroundColor: colors.card,
-    paddingHorizontal: 14,
-    marginRight: 8,
-  },
-  intentChipEmoji: { fontSize: 15, marginRight: 7 },
-  intentChipText: { color: colors.text.primary, fontSize: 13, lineHeight: 18, fontWeight: '600' },
   exploreDepthToggle: {
     minHeight: 42,
     borderRadius: 14,
@@ -7387,6 +6375,7 @@ const styles = StyleSheet.create({
   },
   exploreDepthToggleText: { color: colors.text.secondary, fontSize: 13, lineHeight: 18, fontWeight: '600' },
   exploreAdvancedControls: { marginBottom: 4 },
+  exploreListContent: { paddingBottom: 20 },
   collectionSection: { marginBottom: 16 },
   collectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   collectionTitle: { fontSize: 16, lineHeight: 22, fontWeight: '600', color: colors.text.primary },

@@ -46,7 +46,6 @@ export type UnlockableFeature =
   | 'beginner_content'
   | 'daily_bonus'
   | 'weekly_goals'
-  | 'starter_pack_collections'
   | 'notes_ratings'
   | 'truth_or_dare'
   | 'mood_filtering'
@@ -67,7 +66,6 @@ export const FEATURE_UNLOCK_LABELS: Record<UnlockableFeature, string> = {
   beginner_content: 'Beginner content access',
   daily_bonus: 'Daily Bonus',
   weekly_goals: 'Weekly Goals',
-  starter_pack_collections: 'Starter Pack collections',
   notes_ratings: 'Notes & ratings',
   truth_or_dare: 'Truth or Dare',
   mood_filtering: 'Mood-based filtering',
@@ -88,7 +86,7 @@ export const LEVEL_UNLOCKS: LevelUnlock[] = [
   {
     level: 2,
     minStars: 25,
-    features: ['starter_pack_collections', 'notes_ratings'],
+    features: ['notes_ratings'],
     unlockMessage: 'Your secret garden just got bigger 🌿',
   },
   {

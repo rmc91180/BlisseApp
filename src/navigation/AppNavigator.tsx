@@ -20,7 +20,6 @@ export interface AppNavigatorScreens {
   AuthScreen: ScreenComponent;
   HomeScreen: ScreenComponent;
   ExploreScreen: ScreenComponent;
-  FavoritesScreen: ScreenComponent;
   ProfileScreen: ScreenComponent;
   MoodCheckScreen: ScreenComponent;
   TonightSessionScreen: ScreenComponent;
@@ -570,11 +569,6 @@ function MainTabs({
         name="Explore"
         component={screens.ExploreScreen}
         options={{ tabBarLabel: t('tabs.explore'), tabBarIcon: ({ color, size }) => <Ionicons name="compass-outline" size={size} color={color} /> }}
-      />
-      <Tab.Screen
-        name="Favorites"
-        component={screens.FavoritesScreen}
-        options={{ tabBarLabel: t('tabs.favorites'), tabBarIcon: ({ color, size }) => <Ionicons name="heart-outline" size={size} color={color} /> }}
       />
       <Tab.Screen
         name="Profile"
