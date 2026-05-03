@@ -71,7 +71,7 @@ import {
 import { scheduleReactivationReminder, clearReactivationReminder } from '@/services/reactivationNotifications';
 import { scheduleDailyStreakReminder, clearDailyStreakReminder } from '@/services/streakNotifications';
 import { useStore } from '@/store/useStore';
-import { useThemeStore, THEMES, FONT_SIZES, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
+import { useThemeStore, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
 import { getVoiceCopy, pickVoiceLine } from '@/copy';
 import { useTonightExperience, type TonightContentSuggestion } from '@/hooks/useTonightExperience';
@@ -94,7 +94,6 @@ import type {
   SeasonalGameAction, SeasonalGameOption, TruthOrDareItem,
   Level,
   UserPlaylist, MoodPlaylist, InteractionEvent,
-  FontSizePreset,
 } from '@/types/app';
 import type { DailyJokeBank } from '@/services/dailyJokes';
 
@@ -2331,105 +2330,6 @@ function TruthOrDareModal({ visible, onClose }: { visible: boolean; onClose: () 
 // ============================================
 // SETTINGS MODAL
 // ============================================
-// ============================================
-// THEME SELECTOR COMPONENT
-// ============================================
-function ThemeSelector() {
-  const { t } = useI18n();
-  const themeStore = useThemeStore();
-  const currentColors = getThemeColors(themeStore.currentTheme);
-  
-  return (
-    <View style={styles.themeSelectorContainer}>
-      <Text style={[styles.themeSelectorLabel, { color: currentColors.text.primary }]}>{t('settings.appearance.color_theme')}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.themeSelectorScroll}>
-        {THEMES.map((theme) => (
-          <TouchableOpacity
-            key={theme.id}
-            style={[
-              styles.themeOption,
-              { 
-                backgroundColor: theme.colors.card,
-                borderColor: themeStore.currentTheme === theme.id ? theme.colors.primary[500] : 'transparent',
-                borderWidth: 2,
-              }
-            ]}
-            onPress={() => {
-              themeStore.setTheme(theme.id);
-            }}
-          >
-            <View style={[styles.themeColorPreview, { backgroundColor: theme.colors.primary[500] }]} />
-            <Text style={styles.themeEmoji}>{theme.emoji}</Text>
-            <Text style={[styles.themeName, { color: theme.colors.text.primary }]}>{theme.name}</Text>
-            {themeStore.currentTheme === theme.id && (
-              <View style={[styles.themeSelectedBadge, { backgroundColor: theme.colors.primary[500] }]}>
-                <Text style={styles.themeSelectedText}>✓</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
-  );
-}
-
-// ============================================
-// FONT SIZE SELECTOR COMPONENT
-// ============================================
-function FontSizeSelector() {
-  const { t } = useI18n();
-  const themeStore = useThemeStore();
-  const currentColors = getThemeColors(themeStore.currentTheme);
-  
-  const sizes: { id: FontSizePreset; label: string; preview: string }[] = [
-    { id: 'small', label: t('settings.font.small'), preview: 'Aa' },
-    { id: 'medium', label: t('settings.font.medium'), preview: 'Aa' },
-    { id: 'large', label: t('settings.font.large'), preview: 'Aa' },
-  ];
-  
-  return (
-    <View style={styles.fontSelectorContainer}>
-      <Text style={[styles.themeSelectorLabel, { color: currentColors.text.primary }]}>{t('settings.appearance.font_size')}</Text>
-      <View style={styles.fontSizeOptions}>
-        {sizes.map((size) => (
-          <TouchableOpacity
-            key={size.id}
-            style={[
-              styles.fontSizeOption,
-              { 
-                backgroundColor: themeStore.fontSize === size.id ? currentColors.primary[500] + '30' : currentColors.card,
-                borderColor: themeStore.fontSize === size.id ? currentColors.primary[500] : 'transparent',
-              }
-            ]}
-            onPress={() => {
-              themeStore.setFontSize(size.id);
-            }}
-          >
-            <Text style={[
-              styles.fontSizePreview,
-              { 
-                fontSize: FONT_SIZES[size.id].large,
-                color: themeStore.fontSize === size.id ? currentColors.primary[500] : currentColors.text.primary,
-              }
-            ]}>
-              {size.preview}
-            </Text>
-            <Text style={[
-              styles.fontSizeLabel,
-              { color: themeStore.fontSize === size.id ? currentColors.primary[500] : currentColors.text.muted }
-            ]}>
-              {size.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-// ============================================
-// SETTINGS MODAL
-// ============================================
 function SettingsModal({ visible, onClose, navigation: _navigation }: { visible: boolean; onClose: () => void; navigation: any }) {
   const store = useStore();
   const { languageLabel, language, t } = useI18n();
@@ -2792,11 +2692,6 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
             >
               <Text style={styles.settingsItemText}>{t('settings.notifications.open_settings')}</Text>
             </TouchableOpacity>
-
-            {/* Appearance Section */}
-            <Text style={styles.settingsSectionTitle}>🎨 {t('settings.section.appearance')}</Text>
-            <ThemeSelector />
-            <FontSizeSelector />
 
             {/* Account Section */}
             <Text style={styles.settingsSectionTitle}>👤 {t('settings.section.account')}</Text>
@@ -4023,7 +3918,7 @@ function HomeScreen({
 }
 
 type ExploreContentType = 'positions' | 'foreplay' | 'oral' | 'massage' | 'roleplay';
-type ExplorePrimaryTab = 'content' | 'music' | 'games' | 'activities';
+type ExplorePrimaryTab = 'content' | 'music' | 'games';
 
 function ExploreScreen({ navigation }: any) {
   const [activeTab, setActiveTab] = useState<ExplorePrimaryTab>('content');
@@ -4034,17 +3929,14 @@ function ExploreScreen({ navigation }: any) {
   const [showExploreChallenge, setShowExploreChallenge] = useState(false);
   const [showExploreSpinner, setShowExploreSpinner] = useState(false);
   const [showExploreTruthOrDare, setShowExploreTruthOrDare] = useState(false);
-  const [showExploreInsights, setShowExploreInsights] = useState(false);
-  const [showExploreWeeklyGoals, setShowExploreWeeklyGoals] = useState(false);
   const store = useStore();
   const { t, localizeTerm } = useI18n();
 
   const topTabs = useMemo(
     () => [
-      { id: 'content' as const, label: t('explore.tab.content') },
+      { id: 'content' as const, label: 'Play' },
       { id: 'music' as const, label: t('explore.tab.music') },
       { id: 'games' as const, label: t('explore.tab.games') },
-      { id: 'activities' as const, label: t('explore.tab.activities') },
     ],
     [t]
   );
@@ -4258,32 +4150,10 @@ function ExploreScreen({ navigation }: any) {
         </View>
       ) : null}
 
-      {activeTab === 'activities' ? (
-        <View style={styles.exploreActivityGrid}>
-          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => navigation.navigate('MoodCheckScreen')} activeOpacity={0.86} accessibilityRole="button">
-            <Text style={styles.collectionEmoji}>🌸</Text>
-            <Text style={styles.collectionCardTitle}>{t('home.feature.tonight')}</Text>
-            <Text style={styles.collectionCardSubtitle}>{t('home.quality.for_you')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreWeeklyGoals(true)} activeOpacity={0.86} accessibilityRole="button">
-            <Text style={styles.collectionEmoji}>🌿</Text>
-            <Text style={styles.collectionCardTitle}>{t('home.feature.goals')}</Text>
-            <Text style={styles.collectionCardSubtitle}>{t('home.quality.goals')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.exploreActivityCard} onPress={() => setShowExploreInsights(true)} activeOpacity={0.86} accessibilityRole="button">
-            <Text style={styles.collectionEmoji}>✨</Text>
-            <Text style={styles.collectionCardTitle}>{t('profile.insights')}</Text>
-            <Text style={styles.collectionCardSubtitle}>{t('insights.usage_snapshot')}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-
       <DateNightModal visible={showExploreDateNight} onClose={() => setShowExploreDateNight(false)} navigation={navigation} />
       <ChallengeModal visible={showExploreChallenge} onClose={() => setShowExploreChallenge(false)} navigation={navigation} />
       <SpinnerModal visible={showExploreSpinner} onClose={() => setShowExploreSpinner(false)} navigation={navigation} />
       <TruthOrDareModal visible={showExploreTruthOrDare} onClose={() => setShowExploreTruthOrDare(false)} />
-      <InsightsModal visible={showExploreInsights} onClose={() => setShowExploreInsights(false)} />
-      <WeeklyGoalsModal visible={showExploreWeeklyGoals} onClose={() => setShowExploreWeeklyGoals(false)} />
     </ScreenWrapper>
   );
 }
@@ -4300,14 +4170,12 @@ function ProfileScreen({ navigation }: any) {
   const [showAboutBlisse, setShowAboutBlisse] = useState(false);
   const [expandedSections, setExpandedSections] = useState<{
     notifications: boolean;
-    appearance: boolean;
     privacy: boolean;
     account: boolean;
     appData: boolean;
     about: boolean;
   }>({
     notifications: true,
-    appearance: false,
     privacy: false,
     account: false,
     appData: false,
@@ -4522,17 +4390,6 @@ function ProfileScreen({ navigation }: any) {
               <Text style={styles.profileActionRowText}>{t('profile.menu.settings')}</Text>
               <Text style={styles.profileActionRowArrow}>→</Text>
             </TouchableOpacity>
-          </View>
-        ) : null}
-
-        <TouchableOpacity style={styles.profileGroupHeader} onPress={() => toggleSection('appearance')} activeOpacity={0.85}>
-          <Text style={styles.profileGroupHeaderText}>🎨 {t('settings.section.appearance')}</Text>
-          <Text style={styles.profileGroupChevron}>{expandedSections.appearance ? '▾' : '▸'}</Text>
-        </TouchableOpacity>
-        {expandedSections.appearance ? (
-          <View style={styles.profileGroupContent}>
-            <ThemeSelector />
-            <FontSizeSelector />
           </View>
         ) : null}
 
@@ -6201,7 +6058,7 @@ const styles = StyleSheet.create({
   homeSparkBannerBody: { color: colors.text.secondary, fontSize: 13, lineHeight: 18 },
   starCounter: { backgroundColor: colors.gold, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
   starCounterText: { color: colors.textDark, fontWeight: '700', fontSize: 14 },
-  streakBanner: { backgroundColor: 'rgba(239, 68, 68, 0.2)', borderRadius: 12, padding: 12, marginBottom: 16, alignItems: 'center' },
+  streakBanner: { paddingVertical: 8, marginBottom: 16, alignItems: 'center' },
   streakBannerText: { color: colors.error, fontWeight: '600', fontSize: 14 },
 
   // Couple's Spark card
@@ -6353,7 +6210,7 @@ const styles = StyleSheet.create({
   moodChip: { backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, marginRight: 10 },
   moodChipText: { color: colors.text.primary, fontSize: 14 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
-  statCard: { flex: 1, backgroundColor: colors.card, borderRadius: 12, padding: 16, marginHorizontal: 4, alignItems: 'center' },
+  statCard: { flex: 1, paddingVertical: 12, paddingHorizontal: 4, marginHorizontal: 4, alignItems: 'center' },
   statNumber: { fontSize: 28, fontWeight: '700', color: colors.text.primary },
   statLabel: { fontSize: 12, color: colors.text.muted, marginTop: 4 },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, marginBottom: 12 },
@@ -6755,7 +6612,7 @@ const styles = StyleSheet.create({
   weeklyGoalDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.cardLight, marginHorizontal: 2 },
   weeklyGoalDotComplete: { backgroundColor: colors.success },
   weeklyGoalsPreviewText: { fontSize: 12, color: colors.text.muted },
-  weeklyRecapCard: { backgroundColor: colors.card, borderRadius: 14, padding: 14, marginBottom: 14 },
+  weeklyRecapCard: { paddingVertical: 8, marginBottom: 14 },
   weeklyRecapHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
   weeklyRecapTitle: { fontSize: 15, fontWeight: '700', color: colors.text.primary },
   weeklyRecapAction: { fontSize: 12, color: colors.primary[400], fontWeight: '700' },
@@ -7063,28 +6920,6 @@ const styles = StyleSheet.create({
   appleButtonText: { color: colors.white, fontSize: 17, fontWeight: '600' },
   authSwitchContainer: { alignItems: 'center', marginTop: 16 },
   authSwitchText: { fontSize: 15 },
-
-  // ============================================
-  // THEME SELECTOR STYLES
-  // ============================================
-  themeSelectorContainer: { marginBottom: 16 },
-  themeSelectorLabel: { fontSize: 14, fontWeight: '600', marginBottom: 12, color: colors.text.primary },
-  themeSelectorScroll: { marginHorizontal: -8 },
-  themeOption: { width: 100, padding: 12, borderRadius: 12, marginHorizontal: 6, alignItems: 'center' },
-  themeColorPreview: { width: 40, height: 40, borderRadius: 20, marginBottom: 8 },
-  themeEmoji: { fontSize: 20, marginBottom: 4 },
-  themeName: { fontSize: 11, textAlign: 'center' },
-  themeSelectedBadge: { position: 'absolute', top: 6, right: 6, width: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
-  themeSelectedText: { color: colors.white, fontSize: 10, fontWeight: '700' },
-
-  // ============================================
-  // FONT SIZE SELECTOR STYLES
-  // ============================================
-  fontSelectorContainer: { marginBottom: 16 },
-  fontSizeOptions: { flexDirection: 'row', justifyContent: 'space-between' },
-  fontSizeOption: { flex: 1, padding: 16, borderRadius: 12, marginHorizontal: 4, alignItems: 'center', borderWidth: 2 },
-  fontSizePreview: { fontWeight: '600', marginBottom: 4 },
-  fontSizeLabel: { fontSize: 12 },
 
   // ============================================
   // ANIMATION STYLES
