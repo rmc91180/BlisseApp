@@ -70,6 +70,8 @@ import {
 } from '@/services/dailyJokes';
 import { scheduleReactivationReminder, clearReactivationReminder } from '@/services/reactivationNotifications';
 import { scheduleDailyStreakReminder, clearDailyStreakReminder } from '@/services/streakNotifications';
+import { getDailyPositionForDate, type DailyPositionPick } from '@/services/dailyPosition';
+import { ensureDailyPositionNotifications, clearDailyPositionNotifications } from '@/services/dailyPositionNotifications';
 import { useStore } from '@/store/useStore';
 import { useThemeStore, getThemeColors, colors, GRADIENT_PRESETS } from '@/store/useThemeStore';
 import { useI18n } from '@/hooks/useI18n';
@@ -2387,6 +2389,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
   const clearAllReminderNotifications = useCallback(async () => {
     await Promise.all([
       clearDailyJokeTeaserNotifications(),
+      clearDailyPositionNotifications(),
       clearDailyStreakReminder(),
       clearReactivationReminder(),
     ]);
@@ -2413,6 +2416,7 @@ function SettingsModal({ visible, onClose, navigation: _navigation }: { visible:
         enabled: store.dailyJokeNotificationsEnabled,
         forceRefresh: true,
       }),
+      ensureDailyPositionNotifications({ enabled: true, forceRefresh: true }),
       scheduleDailyStreakReminder({ enabled: store.dailyStreakNotificationsEnabled }),
       scheduleReactivationReminder({ enabled: store.reactivationNotificationsEnabled }),
     ]);
@@ -3227,6 +3231,33 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
 // ============================================
 // MAIN APP SCREENS
 // ============================================
+
+function DailyPositionCard({ pick, onOpen }: { pick: DailyPositionPick | null; onOpen: () => void }) {
+  if (!pick) return null;
+
+  const meta = pick.type === 'position'
+    ? `${pick.item.category} · ${pick.item.difficulty}`
+    : `${pick.item.category} · ${pick.item.giver === 'both' ? 'Mutual' : pick.item.giver === 'him' ? 'For Her' : 'For Him'}`;
+
+  return (
+    <TouchableOpacity
+      style={styles.dailyPositionCard}
+      onPress={onOpen}
+      activeOpacity={0.88}
+      accessibilityRole="button"
+      accessibilityLabel={`Position of the Day. ${pick.item.name}. Open`}
+    >
+      <View style={styles.dailyPositionHeaderRow}>
+        <Text style={styles.dailyPositionEyebrow}>Position of the Day 🔥</Text>
+        <Text style={styles.dailyPositionOpen}>Open</Text>
+      </View>
+      <Text style={styles.dailyPositionName}>{pick.item.name}</Text>
+      <Text style={styles.dailyPositionMeta}>{meta}</Text>
+      <Text style={styles.dailyPositionVibe} numberOfLines={2}>{pick.item.vibe}</Text>
+    </TouchableOpacity>
+  );
+}
+
 function HomeScreen({
   navigation,
   pendingDailyJokeDateKey,
@@ -3353,6 +3384,33 @@ function HomeScreen({
     () => getDailyJokeForDate(new Date(`${dailyJokeDateKey}T12:00:00`), dailyJokeBank, language),
     [dailyJokeDateKey, dailyJokeBank, language]
   );
+  const dailyPosition = useMemo(
+    () => getDailyPositionForDate(new Date(`${dailyJokeDateKey}T12:00:00`)),
+    [dailyJokeDateKey, language]
+  );
+  const openDailyPosition = useCallback(() => {
+    if (!dailyPosition) return;
+
+    const contentType = dailyPosition.type;
+    const itemId = Number(dailyPosition.item.id || 0);
+    sharedNotesVoice.preloadNote(contentType, dailyPosition.item);
+    store.trackInteraction({
+      type: 'view',
+      contentType,
+      itemId,
+      category: dailyPosition.item.category,
+      mood: dailyPosition.item.mood,
+      difficulty: dailyPosition.type === 'position' ? dailyPosition.item.difficulty : undefined,
+      opened: true,
+    });
+    Analytics.trackFeatureUsed('position_of_the_day_opened');
+
+    if (dailyPosition.type === 'position') {
+      navigation.navigate('PositionDetail', { position: dailyPosition.item });
+      return;
+    }
+    navigation.navigate('OralDetail', { item: dailyPosition.item });
+  }, [dailyPosition, navigation, store]);
   const weeklyRecap = useMemo(() => {
     const now = Date.now();
     const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
@@ -3599,6 +3657,8 @@ function HomeScreen({
           </Text>
         </TouchableOpacity>
       ) : null}
+
+      <DailyPositionCard pick={dailyPosition} onOpen={openDailyPosition} />
 
       <Animated.View style={{ opacity: introAnim, transform: [{ translateY: introTranslateY }] }}>
         <View style={styles.vibePanel}>
@@ -5605,6 +5665,13 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
 
     const data = response.notification.request.content.data;
     const payload = data && typeof data === 'object' ? (data as Record<string, unknown>) : null;
+    if (payload?.type === 'daily_position') {
+      Analytics.trackFeatureUsed('position_of_the_day_notification_opened');
+      if (navigationRef.isReady()) {
+        navigationRef.navigate('MainTabs', { screen: 'Home' });
+      }
+      return;
+    }
     if (payload?.type !== 'daily_joke_tease') return;
 
     const notificationDateKey = typeof payload.dateKey === 'string' && payload.dateKey.length > 0
@@ -5710,6 +5777,9 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
             featureFlags.enableDailyJokes &&
             useStore.getState().dailyJokeNotificationsEnabled,
         });
+        void ensureDailyPositionNotifications({
+          enabled: useStore.getState().notificationsEnabled,
+        });
         void scheduleDailyStreakReminder({
           enabled: useStore.getState().notificationsEnabled && useStore.getState().dailyStreakNotificationsEnabled,
         });
@@ -5729,6 +5799,9 @@ function AppContent({ enableAnalytics = false }: { enableAnalytics?: boolean }) 
     if (!isReady || !store.hasAgreedToTerms) return;
     void ensureDailyJokeTeaserNotifications({
       enabled: store.notificationsEnabled && featureFlags.enableDailyJokes && store.dailyJokeNotificationsEnabled,
+    });
+    void ensureDailyPositionNotifications({
+      enabled: store.notificationsEnabled,
     });
     void scheduleDailyStreakReminder({
       enabled: store.notificationsEnabled && store.dailyStreakNotificationsEnabled,
@@ -6035,6 +6108,52 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
     marginTop: 4,
+  },
+    dailyPositionCard: {
+    backgroundColor: colors.card,
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.cardLight,
+  },
+  dailyPositionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  dailyPositionEyebrow: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.primary[400],
+    letterSpacing: 0.2,
+  },
+  dailyPositionOpen: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.primary[400],
+  },
+  dailyPositionName: {
+    fontSize: 21,
+    lineHeight: 27,
+    fontWeight: '800',
+    color: colors.text.primary,
+    marginBottom: 4,
+  },
+  dailyPositionMeta: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text.secondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: 6,
+  },
+  dailyPositionVibe: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.text.muted,
+    fontStyle: 'italic',
   },
   trialBanner: {
     height: 36,
