@@ -8,7 +8,7 @@
     "newArchEnabled": false,
     "userInterfaceStyle": "dark",
     "scheme": "blisse",
-    "githubUrl": "https://github.com/blisse-app",
+    "githubUrl": "https://github.com/rmc91180/BlisseApp",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -101,3 +101,4 @@
     }
   }
 }
+
