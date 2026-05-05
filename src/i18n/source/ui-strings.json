@@ -130,7 +130,7 @@
         "en": "Your name or nickname",
         "es": "Tu nombre o apodo",
         "pt-BR": "Seu nome ou apelido",
-        "hi": "आपका नाम या nickname"
+        "hi": "आपका नाम या उपनाम"
       }
     },
     "relationship": {
@@ -144,32 +144,32 @@
         "en": "This helps us personalize your experience",
         "es": "Esto nos ayuda a personalizar tu experiencia",
         "pt-BR": "Isso nos ajuda a personalizar sua experiência",
-        "hi": "इससे हम आपकी experience को personalize कर पाएँगे"
+        "hi": "इससे हम आपका अनुभव आपके लिए बेहतर बना पाएँगे"
       },
       "types": {
         "hetero": {
           "en": "Man & Woman",
           "es": "Hombre y Mujer",
           "pt-BR": "Homem e Mulher",
-          "hi": "Man & Woman"
+          "hi": "पुरुष और महिला"
         },
         "mm": {
           "en": "Man & Man",
           "es": "Hombre y Hombre",
           "pt-BR": "Homem e Homem",
-          "hi": "Man & Man"
+          "hi": "पुरुष और पुरुष"
         },
         "ff": {
           "en": "Woman & Woman",
           "es": "Mujer y Mujer",
           "pt-BR": "Mulher e Mulher",
-          "hi": "Woman & Woman"
+          "hi": "महिला और महिला"
         },
         "other": {
           "en": "Other / Flexible",
           "es": "Otro / Flexible",
           "pt-BR": "Outro / Flexível",
-          "hi": "Other / Flexible"
+          "hi": "अन्य / लचीला"
         }
       },
       "duration": {
@@ -183,25 +183,25 @@
           "en": "Less than 1 year",
           "es": "Menos de 1 año",
           "pt-BR": "Menos de 1 ano",
-          "hi": "Less than 1 year"
+          "hi": "1 साल से कम"
         },
         "established": {
           "en": "1-5 years",
           "es": "1-5 años",
           "pt-BR": "1-5 anos",
-          "hi": "1-5 years"
+          "hi": "1-5 साल"
         },
         "longterm": {
           "en": "5-10 years",
           "es": "5-10 años",
           "pt-BR": "5-10 anos",
-          "hi": "5-10 years"
+          "hi": "5-10 साल"
         },
         "veteran": {
           "en": "10+ years",
           "es": "10+ años",
           "pt-BR": "10+ anos",
-          "hi": "10+ years"
+          "hi": "10+ साल"
         }
       }
     },
@@ -216,56 +216,56 @@
         "en": "Select all that apply",
         "es": "Selecciona todo lo que aplique",
         "pt-BR": "Selecione tudo que se aplica",
-        "hi": "Select all that apply"
+        "hi": "जो भी लागू हो, चुनें"
       },
       "options": {
         "deepConnection": {
           "en": "Deeper connection",
           "es": "Conexión más profunda",
           "pt-BR": "Conexão mais profunda",
-          "hi": "Deeper connection"
+          "hi": "और गहरा जुड़ाव"
         },
         "tryingNew": {
           "en": "Trying new things",
           "es": "Probar cosas nuevas",
           "pt-BR": "Experimentar coisas novas",
-          "hi": "Trying new things"
+          "hi": "नई चीज़ें आज़माना"
         },
         "quickMoments": {
           "en": "Quick intimate moments",
           "es": "Momentos íntimos rápidos",
           "pt-BR": "Momentos íntimos rápidos",
-          "hi": "Quick intimate moments"
+          "hi": "छोटे अंतरंग पल"
         },
         "extendedSessions": {
           "en": "Extended sessions",
           "es": "Sesiones extendidas",
           "pt-BR": "Sessões prolongadas",
-          "hi": "Extended sessions"
+          "hi": "लंबे सत्र"
         },
         "foreplayFocus": {
           "en": "Foreplay & anticipation",
           "es": "Preliminares y anticipación",
           "pt-BR": "Preliminares e antecipação",
-          "hi": "Foreplay & anticipation"
+          "hi": "पूर्वरंग और प्रतीक्षा"
         },
         "adventurous": {
           "en": "Adventurous experiences",
           "es": "Experiencias aventureras",
           "pt-BR": "Experiências aventureiras",
-          "hi": "Adventurous experiences"
+          "hi": "रोमांचक अनुभव"
         },
         "communication": {
           "en": "Better communication",
           "es": "Mejor comunicación",
           "pt-BR": "Melhor comunicação",
-          "hi": "Better communication"
+          "hi": "बेहतर बातचीत"
         },
         "playful": {
           "en": "Playful & fun",
           "es": "Juguetón y divertido",
           "pt-BR": "Brincalhão e divertido",
-          "hi": "Playful & fun"
+          "hi": "चुलबुला और मज़ेदार"
         }
       }
     },
@@ -274,7 +274,7 @@
         "en": "Your experience level",
         "es": "Tu nivel de experiencia",
         "pt-BR": "Seu nível de experiência",
-        "hi": "आपका experience level"
+        "hi": "आपका अनुभव स्तर"
       },
       "beginner": {
         "en": "Just getting started",
@@ -300,37 +300,37 @@
         "en": "Before we continue",
         "es": "Antes de continuar",
         "pt-BR": "Antes de continuar",
-        "hi": "Before we continue"
+        "hi": "आगे बढ़ने से पहले"
       },
       "ageVerification": {
         "en": "I confirm that I am 18 years of age or older",
         "es": "Confirmo que tengo 18 años o más",
         "pt-BR": "Confirmo que tenho 18 anos ou mais",
-        "hi": "I confirm that I am 18 years of age or older"
+        "hi": "मैं पुष्टि करता/करती हूँ कि मेरी उम्र 18 वर्ष या उससे अधिक है"
       },
       "termsAcceptance": {
         "en": "I agree to the",
         "es": "Acepto los",
         "pt-BR": "Eu concordo com os",
-        "hi": "I agree to the"
+        "hi": "मैं सहमत हूँ"
       },
       "termsOfService": {
         "en": "Terms of Service",
         "es": "Términos de Servicio",
         "pt-BR": "Termos de Serviço",
-        "hi": "Terms of Service"
+        "hi": "सेवा की शर्तों से"
       },
       "and": {
         "en": "and",
         "es": "y",
         "pt-BR": "e",
-        "hi": "and"
+        "hi": "और"
       },
       "privacyPolicy": {
         "en": "Privacy Policy",
         "es": "Política de Privacidad",
         "pt-BR": "Política de Privacidade",
-        "hi": "Privacy Policy"
+        "hi": "गोपनीयता नीति से"
       }
     }
   },
@@ -340,19 +340,19 @@
         "en": "Welcome Back",
         "es": "Bienvenido de nuevo",
         "pt-BR": "Bem-vindo de volta",
-        "hi": "Welcome Back"
+        "hi": "वापस स्वागत है"
       },
       "email": {
         "en": "Email",
         "es": "Correo electrónico",
         "pt-BR": "Email",
-        "hi": "Email"
+        "hi": "ईमेल"
       },
       "password": {
         "en": "Password",
         "es": "Contraseña",
         "pt-BR": "Senha",
-        "hi": "Password"
+        "hi": "पासवर्ड"
       },
       "forgotPassword": {
         "en": "Reset password",
@@ -364,7 +364,7 @@
         "en": "Sign In",
         "es": "Iniciar Sesión",
         "pt-BR": "Entrar",
-        "hi": "Sign In"
+        "hi": "साइन इन करें"
       },
       "noAccount": {
         "en": "New here",
@@ -376,7 +376,7 @@
         "en": "Sign Up",
         "es": "Registrarse",
         "pt-BR": "Cadastrar-se",
-        "hi": "Sign Up"
+        "hi": "साइन अप करें"
       }
     },
     "signUp": {
@@ -384,31 +384,31 @@
         "en": "Create Account",
         "es": "Crear Cuenta",
         "pt-BR": "Criar Conta",
-        "hi": "Create Account"
+        "hi": "खाता बनाएँ"
       },
       "confirmPassword": {
         "en": "Confirm Password",
         "es": "Confirmar Contraseña",
         "pt-BR": "Confirmar Senha",
-        "hi": "Confirm Password"
+        "hi": "पासवर्ड की पुष्टि करें"
       },
       "passwordRequirements": {
         "en": "At least 8 characters",
         "es": "Al menos 8 caracteres",
         "pt-BR": "Pelo menos 8 caracteres",
-        "hi": "At least 8 characters"
+        "hi": "कम से कम 8 अक्षर"
       },
       "button": {
         "en": "Create Account",
         "es": "Crear Cuenta",
         "pt-BR": "Criar Conta",
-        "hi": "Create Account"
+        "hi": "खाता बनाएँ"
       },
       "orContinueWith": {
         "en": "Or continue with",
         "es": "O continuar con",
         "pt-BR": "Ou continue com",
-        "hi": "Or continue with"
+        "hi": "या इसके साथ जारी रखें"
       }
     }
   },
@@ -418,19 +418,19 @@
         "en": "Good morning",
         "es": "Buenos días",
         "pt-BR": "Bom dia",
-        "hi": "Good morning"
+        "hi": "सुप्रभात"
       },
       "afternoon": {
         "en": "Good afternoon",
         "es": "Buenas tardes",
         "pt-BR": "Boa tarde",
-        "hi": "Good afternoon"
+        "hi": "शुभ दोपहर"
       },
       "evening": {
         "en": "Good evening",
         "es": "Buenas noches",
         "pt-BR": "Boa noite",
-        "hi": "Good evening"
+        "hi": "शुभ संध्या"
       }
     },
     "tonight": {
@@ -438,19 +438,19 @@
         "en": "Tonight's pick",
         "es": "Elección de esta noche",
         "pt-BR": "Escolha da noite",
-        "hi": "आज रात की pick"
+        "hi": "आज रात की पसंद"
       },
       "seeDetails": {
         "en": "See Details",
         "es": "Ver Detalles",
         "pt-BR": "Ver Detalhes",
-        "hi": "See Details"
+        "hi": "विवरण देखें"
       },
       "refresh": {
         "en": "Try Another",
         "es": "Probar Otra",
         "pt-BR": "Tentar Outra",
-        "hi": "Try Another"
+        "hi": "कुछ और आज़माएँ"
       }
     },
     "mood": {
@@ -464,49 +464,49 @@
         "en": "Passionate",
         "es": "Apasionado",
         "pt-BR": "Apaixonado",
-        "hi": "Passionate"
+        "hi": "जोशीला"
       },
       "playful": {
         "en": "Playful",
         "es": "Juguetón",
         "pt-BR": "Brincalhão",
-        "hi": "Playful"
+        "hi": "चुलबुला"
       },
       "flowing": {
         "en": "Flowing",
         "es": "Fluido",
         "pt-BR": "Fluido",
-        "hi": "Flowing"
+        "hi": "बहता हुआ"
       },
       "grounded": {
         "en": "Grounded",
         "es": "Conectado",
         "pt-BR": "Conectado",
-        "hi": "Grounded"
+        "hi": "स्थिर"
       },
       "commanding": {
         "en": "Commanding",
         "es": "Dominante",
         "pt-BR": "Dominante",
-        "hi": "Commanding"
+        "hi": "आत्मविश्वासी"
       },
       "unified": {
         "en": "Unified",
         "es": "Unificado",
         "pt-BR": "Unificado",
-        "hi": "Unified"
+        "hi": "एकताल"
       },
       "dynamic": {
         "en": "Dynamic",
         "es": "Dinámico",
         "pt-BR": "Dinâmico",
-        "hi": "Dynamic"
+        "hi": "ऊर्जावान"
       },
       "blossoming": {
         "en": "Blossoming",
         "es": "Floreciente",
         "pt-BR": "Florescendo",
-        "hi": "Blossoming"
+        "hi": "खिलता हुआ"
       }
     },
     "quickAccess": {
@@ -514,19 +514,19 @@
         "en": "Foreplay Ideas",
         "es": "Ideas de Preliminares",
         "pt-BR": "Ideias de Preliminares",
-        "hi": "Foreplay Ideas"
+        "hi": "पूर्वरंग के विचार"
       },
       "sessionBuilder": {
         "en": "Build a Session",
         "es": "Crear una Sesión",
         "pt-BR": "Criar uma Sessão",
-        "hi": "Build a Session"
+        "hi": "सत्र बनाएँ"
       },
       "random": {
         "en": "Surprise Me",
         "es": "Sorpréndeme",
         "pt-BR": "Me Surpreenda",
-        "hi": "Surprise Me"
+        "hi": "मुझे सरप्राइज़ करें"
       }
     },
     "journey": {
@@ -549,14 +549,14 @@
       "en": "Explore",
       "es": "Explorar",
       "pt-BR": "Explorar",
-      "hi": "Explore"
+      "hi": "खोजें"
     },
     "search": {
       "placeholder": {
         "en": "Search positions...",
         "es": "Buscar posiciones...",
         "pt-BR": "Buscar posições...",
-        "hi": "Search positions..."
+        "hi": "मुद्राएँ खोजें..."
       }
     },
     "sections": {
@@ -564,26 +564,26 @@
         "en": "Positions",
         "es": "Posiciones",
         "pt-BR": "Posições",
-        "hi": "Positions"
+        "hi": "मुद्राएँ"
       },
       "foreplay": {
         "en": "Foreplay",
         "es": "Preliminares",
         "pt-BR": "Preliminares",
-        "hi": "Foreplay"
+        "hi": "पूर्वरंग"
       },
       "byMood": {
         "en": "By Mood",
         "es": "Por Estado de Ánimo",
         "pt-BR": "Por Humor",
-        "hi": "By Mood"
+        "hi": "मूड के अनुसार"
       }
     },
     "seeAll": {
       "en": "See all",
       "es": "Ver todo",
       "pt-BR": "Ver tudo",
-      "hi": "See all"
+      "hi": "सब देखें"
     }
   },
   "categories": {
@@ -591,13 +591,13 @@
       "en": "Woman on Top",
       "es": "Mujer Arriba",
       "pt-BR": "Mulher por Cima",
-      "hi": "Woman on Top"
+      "hi": "महिला ऊपर"
     },
     "manOnTop": {
       "en": "Man on Top",
       "es": "Hombre Arriba",
       "pt-BR": "Homem por Cima",
-      "hi": "Man on Top"
+      "hi": "पुरुष ऊपर"
     },
     "oral": {
       "en": "Oral",
@@ -609,37 +609,37 @@
       "en": "Rear Entry",
       "es": "Entrada Trasera",
       "pt-BR": "Entrada Traseira",
-      "hi": "Rear Entry"
+      "hi": "पीछे से"
     },
     "sitting": {
       "en": "Sitting",
       "es": "Sentados",
       "pt-BR": "Sentados",
-      "hi": "Sitting"
+      "hi": "बैठकर"
     },
     "sideBySide": {
       "en": "Side by Side",
       "es": "Lado a Lado",
       "pt-BR": "Lado a Lado",
-      "hi": "Side by Side"
+      "hi": "साथ-साथ"
     },
     "standing": {
       "en": "Standing",
       "es": "De Pie",
       "pt-BR": "Em Pé",
-      "hi": "Standing"
+      "hi": "खड़े होकर"
     },
     "furniture": {
       "en": "Furniture",
       "es": "Muebles",
       "pt-BR": "Móveis",
-      "hi": "Furniture"
+      "hi": "फर्नीचर"
     },
     "exotic": {
       "en": "Exotic",
       "es": "Exótico",
       "pt-BR": "Exótico",
-      "hi": "Exotic"
+      "hi": "अनोखा"
     },
     "anal": {
       "en": "Anal",
@@ -651,19 +651,19 @@
       "en": "Wet & Wild",
       "es": "Mojado y Salvaje",
       "pt-BR": "Molhado e Selvagem",
-      "hi": "Wet & Wild"
+      "hi": "गीला और रोमांचक"
     },
     "lightBondage": {
       "en": "Light Bondage",
       "es": "Bondage Suave",
       "pt-BR": "Bondage Suave",
-      "hi": "Light Bondage"
+      "hi": "हल्का बंधन"
     },
     "pillowAndProps": {
       "en": "Pillow & Props",
       "es": "Almohadas y Accesorios",
       "pt-BR": "Travesseiros e Acessórios",
-      "hi": "Pillow & Props"
+      "hi": "तकिया और सहारे"
     }
   },
   "difficulty": {
@@ -671,19 +671,19 @@
       "en": "Beginner",
       "es": "Principiante",
       "pt-BR": "Iniciante",
-      "hi": "Beginner"
+      "hi": "शुरुआती"
     },
     "intermediate": {
       "en": "Intermediate",
       "es": "Intermedio",
       "pt-BR": "Intermediário",
-      "hi": "Intermediate"
+      "hi": "मध्यम"
     },
     "advanced": {
       "en": "Advanced",
       "es": "Avanzado",
       "pt-BR": "Avançado",
-      "hi": "Advanced"
+      "hi": "उन्नत"
     }
   },
   "positionDetail": {
@@ -697,43 +697,43 @@
       "en": "Why It Works",
       "es": "Por Qué Funciona",
       "pt-BR": "Por Que Funciona",
-      "hi": "Why It Works"
+      "hi": "यह क्यों काम करता है"
     },
     "tips": {
       "en": "Tips",
       "es": "Consejos",
       "pt-BR": "Dicas",
-      "hi": "Tips"
+      "hi": "सुझाव"
     },
     "pairsWellWith": {
       "en": "Pairs Well With",
       "es": "Combina Bien Con",
       "pt-BR": "Combina Bem Com",
-      "hi": "Pairs Well With"
+      "hi": "इसके साथ अच्छा लगता है"
     },
     "goodFor": {
       "en": "Good For",
       "es": "Bueno Para",
       "pt-BR": "Bom Para",
-      "hi": "Good For"
+      "hi": "इनके लिए अच्छा"
     },
     "markAsTried": {
       "en": "Mark as Tried",
       "es": "Marcar como Probado",
       "pt-BR": "Marcar como Experimentado",
-      "hi": "Mark as Tried"
+      "hi": "आज़माया हुआ चिह्नित करें"
     },
     "tried": {
       "en": "Tried ✓",
       "es": "Probado ✓",
       "pt-BR": "Experimentado ✓",
-      "hi": "Tried ✓"
+      "hi": "आज़माया ✓"
     },
     "addToFavorites": {
       "en": "Add to Favorites",
       "es": "Agregar a Favoritos",
       "pt-BR": "Adicionar aos Favoritos",
-      "hi": "Add to Favorites"
+      "hi": "पसंदीदा में जोड़ें"
     }
   },
   "favorites": {
@@ -741,20 +741,20 @@
       "en": "Favorites",
       "es": "Favoritos",
       "pt-BR": "Favoritos",
-      "hi": "Favorites"
+      "hi": "पसंदीदा"
     },
     "empty": {
       "title": {
         "en": "No favorites yet",
         "es": "Sin favoritos aún",
         "pt-BR": "Nenhum favorito ainda",
-        "hi": "No favorites yet"
+        "hi": "अभी कोई पसंदीदा नहीं"
       },
       "subtitle": {
         "en": "Save positions you want to try by tapping the heart icon",
         "es": "Guarda posiciones que quieras probar tocando el ícono de corazón",
         "pt-BR": "Salve posições que quer experimentar tocando no ícone de coração",
-        "hi": "Save positions you want to try by tapping the heart icon"
+        "hi": "जिन मुद्राओं को आज़माना चाहते हैं, उन्हें दिल आइकन से सहेजें"
       }
     },
     "filters": {
@@ -762,19 +762,19 @@
         "en": "All",
         "es": "Todo",
         "pt-BR": "Tudo",
-        "hi": "All"
+        "hi": "सभी"
       },
       "positions": {
         "en": "Positions",
         "es": "Posiciones",
         "pt-BR": "Posições",
-        "hi": "Positions"
+        "hi": "मुद्राएँ"
       },
       "foreplay": {
         "en": "Foreplay",
         "es": "Preliminares",
         "pt-BR": "Preliminares",
-        "hi": "Foreplay"
+        "hi": "पूर्वरंग"
       }
     }
   },
@@ -783,13 +783,13 @@
       "en": "Profile",
       "es": "Perfil",
       "pt-BR": "Perfil",
-      "hi": "Profile"
+      "hi": "प्रोफ़ाइल"
     },
     "memberSince": {
       "en": "Member since",
       "es": "Miembro desde",
       "pt-BR": "Membro desde",
-      "hi": "Member since"
+      "hi": "सदस्यता शुरू हुई"
     },
     "journey": {
       "positionsTried": {
@@ -811,44 +811,44 @@
       "en": "Settings",
       "es": "Configuración",
       "pt-BR": "Configurações",
-      "hi": "Settings"
+      "hi": "सेटिंग्स"
     },
     "sections": {
       "relationship": {
         "en": "Relationship",
         "es": "Relación",
         "pt-BR": "Relacionamento",
-        "hi": "Relationship"
+        "hi": "रिश्ता"
       },
       "preferences": {
         "en": "Preferences",
         "es": "Preferencias",
         "pt-BR": "Preferências",
-        "hi": "Preferences"
+        "hi": "पसंदें"
       },
       "app": {
         "en": "App",
         "es": "Aplicación",
         "pt-BR": "Aplicativo",
-        "hi": "App"
+        "hi": "ऐप"
       },
       "privacy": {
         "en": "Privacy & Security",
         "es": "Privacidad y Seguridad",
         "pt-BR": "Privacidade e Segurança",
-        "hi": "Privacy & Security"
+        "hi": "गोपनीयता और सुरक्षा"
       },
       "data": {
         "en": "Your Data",
         "es": "Tus Datos",
         "pt-BR": "Seus Dados",
-        "hi": "Your Data"
+        "hi": "आपका डेटा"
       },
       "about": {
         "en": "About",
         "es": "Acerca de",
         "pt-BR": "Sobre",
-        "hi": "About"
+        "hi": "परिचय"
       }
     },
     "items": {
@@ -856,19 +856,19 @@
         "en": "Relationship Type",
         "es": "Tipo de Relación",
         "pt-BR": "Tipo de Relacionamento",
-        "hi": "Relationship Type"
+        "hi": "रिश्ते का प्रकार"
       },
       "experienceLevel": {
         "en": "Experience Level",
         "es": "Nivel de Experiencia",
         "pt-BR": "Nível de Experiência",
-        "hi": "Experience Level"
+        "hi": "अनुभव स्तर"
       },
       "interests": {
         "en": "Interests",
         "es": "Intereses",
         "pt-BR": "Interesses",
-        "hi": "Interests"
+        "hi": "रुचियाँ"
       },
       "hiddenCategories": {
         "en": "Hidden Categories",
