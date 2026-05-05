@@ -438,12 +438,14 @@ export const getDailyJokeBank = async (forceRemote = false): Promise<DailyJokeBa
 const getLocalizedFallbackSetups = (language: AppLanguage): string[] => {
   if (language === 'es') return DAILY_JOKE_SETUPS_ES;
   if (language === 'pt') return DAILY_JOKE_SETUPS_PT;
+  if (language === 'hi') return DAILY_JOKE_SETUPS_HI;
   return _DAILY_JOKE_SETUPS_EN;
 };
 
 const getLocalizedFallbackPunchlines = (language: AppLanguage): string[] => {
   if (language === 'es') return DAILY_JOKE_PUNCHLINES_ES;
   if (language === 'pt') return DAILY_JOKE_PUNCHLINES_PT;
+  if (language === 'hi') return DAILY_JOKE_PUNCHLINES_HI;
   return _DAILY_JOKE_PUNCHLINES_EN;
 };
 

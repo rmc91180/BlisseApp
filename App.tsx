@@ -3233,6 +3233,7 @@ function AppLockScreen({ onUnlock }: { onUnlock: () => void }) {
 // ============================================
 
 function DailyPositionCard({ pick, onOpen }: { pick: DailyPositionPick | null; onOpen: () => void }) {
+  const { t, localizeTerm } = useI18n();
   if (!pick) return null;
 
   const meta = pick.type === 'position'
@@ -3245,11 +3246,11 @@ function DailyPositionCard({ pick, onOpen }: { pick: DailyPositionPick | null; o
       onPress={onOpen}
       activeOpacity={0.88}
       accessibilityRole="button"
-      accessibilityLabel={`Position of the Day. ${pick.item.name}. Open`}
+      accessibilityLabel={`${t('home.position_of_day')}. ${pick.item.name}. ${t('common.open')}`}
     >
       <View style={styles.dailyPositionHeaderRow}>
-        <Text style={styles.dailyPositionEyebrow}>Position of the Day 🔥</Text>
-        <Text style={styles.dailyPositionOpen}>Open</Text>
+        <Text style={styles.dailyPositionEyebrow}>{t('home.position_of_day')}</Text>
+        <Text style={styles.dailyPositionOpen}>{t('common.open')}</Text>
       </View>
       <Text style={styles.dailyPositionName}>{pick.item.name}</Text>
       <Text style={styles.dailyPositionMeta}>{meta}</Text>
@@ -7064,3 +7065,5 @@ const styles = StyleSheet.create({
   legalConfirmButton: { backgroundColor: colors.primary[500], paddingVertical: 16, borderRadius: 25, alignItems: 'center', marginTop: 12 },
   legalConfirmButtonText: { color: colors.white, fontSize: 16, fontWeight: '600' },
 });
+
+
