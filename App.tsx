@@ -3237,8 +3237,8 @@ function DailyPositionCard({ pick, onOpen }: { pick: DailyPositionPick | null; o
   if (!pick) return null;
 
   const meta = pick.type === 'position'
-    ? `${pick.item.category} · ${pick.item.difficulty}`
-    : `${pick.item.category} · ${pick.item.giver === 'both' ? 'Mutual' : pick.item.giver === 'him' ? 'For Her' : 'For Him'}`;
+    ? `${localizeTerm(pick.item.category)} · ${localizeTerm(pick.item.difficulty)}`
+    : localizeTerm(pick.type);
 
   return (
     <TouchableOpacity
