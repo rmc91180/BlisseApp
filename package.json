@@ -12,10 +12,11 @@
     "typecheck": "tsc --noEmit",
     "check:i18n": "node scripts/check-i18n-consistency.mjs",
     "check:content": "node scripts/check-content-integrity.mjs",
-    "check:release": "npm run lint && npm run typecheck && npm run check:i18n && npm run check:content && npx expo-doctor && npm audit --omit=dev --audit-level=high",
+    "check:release": "npm run lint && npm run typecheck && npm run check:i18n && npm run check:content && npm run check:runtime-localization && npx expo-doctor && npm audit --omit=dev --audit-level=high",
     "ui:smoke": "npx expo export --platform all --output-dir dist-check",
     "ui:e2e:ios": "maestro test .maestro/flows/ios-beta-smoke.yaml",
-    "ui:e2e:android": "maestro test .maestro/flows/android-beta-smoke.yaml"
+    "ui:e2e:android": "maestro test .maestro/flows/android-beta-smoke.yaml",
+    "check:runtime-localization": "node scripts/check-runtime-localization-leaks.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

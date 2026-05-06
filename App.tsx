@@ -3991,11 +3991,11 @@ function ExploreScreen({ navigation }: any) {
   const [showExploreSpinner, setShowExploreSpinner] = useState(false);
   const [showExploreTruthOrDare, setShowExploreTruthOrDare] = useState(false);
   const store = useStore();
-  const { t, localizeTerm } = useI18n();
+  const { t, localizeTerm, language } = useI18n();
 
   const topTabs = useMemo(
     () => [
-      { id: 'content' as const, label: 'Play' },
+      { id: 'content' as const, label: t('explore.tab.play') },
       { id: 'music' as const, label: t('explore.tab.music') },
       { id: 'games' as const, label: t('explore.tab.games') },
     ],
@@ -4049,16 +4049,14 @@ function ExploreScreen({ navigation }: any) {
       if (showFavoritesOnly && !favoriteIds.includes(item.id)) return false;
       return true;
     });
-  }, [
-    contentType,
+  }, [contentType,
     selectedCategory,
     showFavoritesOnly,
     store.favorites,
     store.favoriteForeplay,
     store.favoriteOral,
     store.favoriteMassage,
-    store.favoriteRoleplay,
-  ]);
+    store.favoriteRoleplay,, language]);
 
   const handleContentTypeChange = (type: ExploreContentType) => {
     setContentType(type);
@@ -4160,6 +4158,7 @@ function ExploreScreen({ navigation }: any) {
           </View>
 
           <FlatList
+          key={`explore-${language}-${activeTab}`}
             data={filteredContent}
             numColumns={2}
             keyExtractor={(item) => `${contentType}-${item.id}`}

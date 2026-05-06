@@ -136,6 +136,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
 
     'explore.title': 'Explore',
     'explore.tab.content': 'Content',
+    'explore.tab.play': 'Play',
     'explore.tab.music': 'Music',
     'explore.tab.games': 'Games',
     'explore.tab.activities': 'Activities',
@@ -585,6 +586,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
 
     'explore.title': 'Explorar',
     'explore.tab.content': 'Contenido',
+    'explore.tab.play': 'Jugar',
     'explore.tab.music': 'Música',
     'explore.tab.games': 'Juegos',
     'explore.tab.activities': 'Actividades',
@@ -1034,6 +1036,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
 
     'explore.title': 'Explorar',
     'explore.tab.content': 'Conteúdo',
+    'explore.tab.play': 'Jogar',
     'explore.tab.music': 'Música',
     'explore.tab.games': 'Jogos',
     'explore.tab.activities': 'Atividades',
@@ -1483,6 +1486,7 @@ const UI_TRANSLATIONS: Record<AppLanguage, Record<string, TranslationValue>> = {
 
     'explore.title': 'खोजें',
     'explore.tab.content': 'सामग्री',
+    'explore.tab.play': 'खेलें',
     'explore.tab.music': 'संगीत',
     'explore.tab.games': 'खेल',
     'explore.tab.activities': 'गतिविधियाँ',
